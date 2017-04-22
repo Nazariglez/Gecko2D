@@ -1,0 +1,3 @@
+[submodule "Kha"]
+	path = Kha
+	url = https://github.com/KTXSoftware/Kha
