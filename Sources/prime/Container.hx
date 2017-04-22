@@ -7,16 +7,16 @@ class Container extends Actor {
 
 	override public function update(delta:Float) : Void {
 		if(children.length > 0) {
-			for(actor in children) {
-				actor.update(delta);
+			for(i in 0...children.length) {
+				children[i].update(delta);
 			}
 		}
 	}
 
 	override public function render(graphics:Graphics) : Void {
 		if(children.length > 0) {
-			for(actor in children) {
-				actor.render(graphics);
+			for(i in 0...children.length) {
+				children[i].render(graphics);
 			}
 		}
 	}

@@ -15,7 +15,9 @@ class Game {
 	public var stage:Container = new Container();
 
 	public function new(title:String, width:Int, height:Int) {
-		
+		_title = title;
+		_width = width;
+		_height = height;
 	}
 
 	public function start() : Void {

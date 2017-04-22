@@ -14,4 +14,16 @@ class Point {
 			this.y = x;
 		}
 	}
+
+	public function clone(point:Point) : Point {
+		return new Point(this.x, this.y);
+	}
+
+	public function copy(point:Point) : Void {
+		this.set(point.x, point.y);
+	}
+
+	public function isEqual(point:Point) : Bool {
+		return (x == point.x && y == point.y);
+	}
 }
