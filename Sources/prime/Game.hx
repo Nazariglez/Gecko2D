@@ -1,7 +1,6 @@
 package prime;
 
 import kha.System;
-import kha.Scheduler;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
 
@@ -10,6 +9,7 @@ class Game {
 	private var _title:String = "My Game";
 	private var _width:Int = 800;
 	private var _height:Int = 600;
+	private var _loop:Loop = new Loop();
 
 	public var isRunning:Bool = false;
 	public var stage:Container = new Container();
@@ -20,28 +20,29 @@ class Game {
 		_height = height;
 	}
 
-	public function start() : Void {
+	public function init() : Void {
 		if(!_initiated){
 			_initiated = true;
-			isRunning = true;
 			System.init({
 				title: _title,
 				width: _width,
 				height: _height
 			}, _onInit);
-		}else if(Scheduler.isStopped()){
+		}
+	}
+
+	public function start() : Void {
+		if(!isRunning){
 			isRunning = true;
-			Scheduler.start();
+			_loop.start();
 		}
 	}
 
 	public function stop() : Void {
-		isRunning = false;
-		Scheduler.stop();
-	}
-
-	private function _update() : Void {
-		update(1/60);
+		if(isRunning){
+			isRunning = false;
+			_loop.stop();
+		}
 	}
 
 	public function update(delta:Float) : Void {
@@ -60,7 +61,14 @@ class Game {
 
 	private function _onInit() : Void {
 		System.notifyOnRender(_render);
-		Scheduler.addTimeTask(_update, 0, 1/60);
+		_loop.onTick(update);
+		trace("before start (oninit)");
+		start();
+		onInit();
+	}
+
+	public function onInit() : Void {
+		trace("Game initiated");
 	}
 
 }
