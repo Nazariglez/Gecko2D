@@ -54,6 +54,7 @@ class Game {
 	}
 
 	public function render(graphics:Graphics) : Void {
+		trace("render");
 		graphics.begin();
 		stage.render(graphics);
 		graphics.end();
@@ -64,6 +65,7 @@ class Game {
 		_loop.onTick(update);
 		trace("before start (oninit)");
 		start();
+		trace("Started");
 		onInit();
 	}
 
