@@ -14,6 +14,8 @@ class Container extends Actor {
 	}
 
 	override public function render(graphics:Graphics) : Void {
+		super.render(graphics);
+		
 		if(children.length > 0) {
 			for(i in 0...children.length) {
 				children[i].render(graphics);

@@ -17,9 +17,7 @@ class Game extends prime.Game {
   }
 
   override function update(delta:Float) : Void {
-    trace("pre update");
     super.update(delta);
-    trace("post updae");
   }
 
   override function render(g:Graphics) : Void {
@@ -42,7 +40,6 @@ class Actor1 extends Actor {
 
   override public function update(delta:Float) : Void {
     super.update(delta);
-    trace(delta);
     position.x += 100*delta;
     position.y += 20*delta;
   }
