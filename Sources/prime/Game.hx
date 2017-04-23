@@ -11,7 +11,7 @@ class Game {
 	private var _height:Int = 600;
 	private var _loop:Loop = new Loop();
 
-	public var isRunning:Bool = false;
+	public var isRunning(get, null):Bool;
 	public var stage:Container = new Container();
 
 	public function new(title:String, width:Int, height:Int) {
@@ -32,15 +32,13 @@ class Game {
 	}
 
 	public function start() : Void {
-		if(!isRunning){
-			isRunning = true;
+		if(!_loop.isRunning){
 			_loop.start();
 		}
 	}
 
 	public function stop() : Void {
-		if(isRunning){
-			isRunning = false;
+		if(_loop.isRunning){
 			_loop.stop();
 		}
 	}
@@ -71,6 +69,10 @@ class Game {
 
 	public function onInit() : Void {
 		trace("Game initiated");
+	}
+
+	function get_isRunning() : Bool {
+		return _loop.isRunning;
 	}
 
 }
