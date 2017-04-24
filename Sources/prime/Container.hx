@@ -24,10 +24,12 @@ class Container extends Actor {
 	}
 
 	public function addChild(actor:Actor) : Void {
+		actor.parent = this;
 		children.push(actor);
 	}
 
 	public function removeChild(actor:Actor) : Void {
+		actor.parent = null;
 		children.remove(actor);
 	}
 }
