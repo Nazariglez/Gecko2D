@@ -10,6 +10,7 @@ class Game {
 	private var _width:Int = 800;
 	private var _height:Int = 600;
 	private var _loop:Loop = new Loop();
+	private var _renderer:Renderer = new Renderer();
 
 	public var isRunning(get, null):Bool;
 	public var stage:Container = new Container();
@@ -20,7 +21,13 @@ class Game {
 		_height = height;
 	}
 
-	public function init() : Void {
+	static function init(title:String, width:Int, height:Int) : Game {
+		var game = new Game(title, width, height);
+		game.initialize();
+		return game;
+	}
+
+	public function initialize() : Void {
 		if(!_initiated){
 			_initiated = true;
 			System.init({
@@ -48,13 +55,17 @@ class Game {
 	}
 
 	private function _render(framebuffer:Framebuffer) : Void {
-		render(framebuffer.g2);
+		if(_renderer.framebuffer == null){
+			_renderer.setFramebuffer(framebuffer);
+		}
+	
+		render();
 	}
 
-	public function render(graphics:Graphics) : Void {
-		graphics.begin();
-		stage.render(graphics);
-		graphics.end();
+	public function render() : Void {
+		_renderer.g2d.begin();
+		stage.render(_renderer);
+		_renderer.g2d.end();
 	}
 
 	private function _onInit() : Void {

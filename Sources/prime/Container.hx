@@ -13,12 +13,12 @@ class Container extends Actor {
 		}
 	}
 
-	override public function render(graphics:Graphics) : Void {
-		super.render(graphics);
+	override public function render(renderer:Renderer) : Void {
+		super.render(renderer);
 		
 		if(children.length > 0) {
 			for(i in 0...children.length) {
-				children[i].render(graphics);
+				children[i].render(renderer);
 			}
 		}
 	}

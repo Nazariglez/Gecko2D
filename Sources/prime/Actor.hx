@@ -39,11 +39,11 @@ class Actor {
 	}
 
 	public function update(delta:Float) : Void {}
-	public function render(g:Graphics) : Void {
+	public function render(renderer:Renderer) : Void {
 		if(!visible)return;
 		_updateMatrix();
-		g.opacity = worldAlpha;
-		g.transformation.setFrom(matrix.world);
+		renderer.alpha = worldAlpha;
+		renderer.setMatrix(matrix.world);
 	}
 
 	function get_rotation() : Float {

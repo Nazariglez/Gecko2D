@@ -12,8 +12,8 @@ class Sprite extends Actor {
 		this.image = image;
 	}
 
-	override function render(graphics:Graphics) : Void {
-		super.render(graphics);
-		graphics.drawImage(image, 0, 0);
+	override function render(renderer:Renderer) : Void {
+		super.render(renderer);
+		renderer.drawImage(image, 0, 0);
 	}
 }
