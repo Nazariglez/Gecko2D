@@ -129,11 +129,11 @@ class Counter extends Actor {
     r.fillRect(0, 0, 180, 20);
     //r.fillCircle(0, 0, 30);
 
-    /*if(font != null){
-      g.color = Color.White;
-      g.font = font;
-      g.fontSize = 16;
-      g.drawString("Actors: " + count + " - FPS: " + fps, 5, 0);
-    }*/
+    if(font != null){
+      r.color = Color.Red;
+      r.font = font;
+      r.fontSize = 16;
+      r.drawString("Actors: " + count + " - FPS: " + fps, 5, 0);
+    }
   }
 }

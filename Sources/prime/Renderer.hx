@@ -9,11 +9,18 @@ import kha.Image;
 import kha.Video;
 import kha.FastFloat;
 import kha.Framebuffer;
+import kha.Font;
 
 class Renderer {
 	public var framebuffer:Framebuffer;
 	public var g2d:Graphics2d;
 	public var g3d:Graphics3d;
+
+	private var _font:Font;
+	public var font(get, set):Font;
+
+	private var _fontSize:Int;
+	public var fontSize(get, set):Int;
 
 	private var _color:Int = 0xffffff;
 	public var color(get, set):Int;
@@ -33,7 +40,6 @@ class Renderer {
 		g2d.transformation.setFrom(matrix);
 	}
 
-	//todo inline som methods
 	public inline function drawImage(img:Image, x:FastFloat, y:FastFloat) : Void {
 		g2d.drawImage(img, x, y);
 	}
@@ -103,5 +109,23 @@ class Renderer {
 	public function set_alpha(value:Float) : Float {
 		g2d.opacity = value;
 		return _alpha = value;
+	}	
+
+	public function get_font() : Font {
+		return _font;
+	}
+
+	public function set_font(value:Font) : Font {
+		g2d.font = value;
+		return _font = value;
+	}	
+
+	public function get_fontSize() : Int {
+		return _fontSize;
+	}
+
+	public function set_fontSize(value:Int) : Int {
+		g2d.fontSize = value;
+		return _fontSize = value;
 	}	
 }

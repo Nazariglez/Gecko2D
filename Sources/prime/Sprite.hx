@@ -1,8 +1,6 @@
 package prime;
 
 import kha.Image;
-import kha.graphics2.Graphics;
-import kha.Color;
 
 class Sprite extends Actor {
 	public var image:Image;
