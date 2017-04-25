@@ -2,7 +2,7 @@ package;
 
 class Main {
   public static function main() {
-    var game:Game = new Game();
-    game.init();
+    //Game.init();
+    new Game().initialize();
   }
 }
