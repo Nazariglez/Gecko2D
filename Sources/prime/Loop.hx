@@ -23,7 +23,9 @@ class Loop {
 	}
 
 	private inline function _now() : Float {
-		return Date.now().getTime();
+		//Scheduler.realTime();
+
+		return Scheduler.realTime(); //Date.now().getTime();
 	}
 
 	public function start() : Void {
@@ -93,7 +95,7 @@ class Loop {
 		var now = _now();
 		time += (now - _last)*speed;
 		deltaMS = time - _lastTime;
-		delta = deltaMS/1000;
+		delta = deltaMS;///1000;
 		_lastTime = time;
 		_last = now;
 
