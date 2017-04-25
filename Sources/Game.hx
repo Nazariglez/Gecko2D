@@ -5,9 +5,8 @@ import prime.Actor;
 import prime.Sprite;
 import prime.Container;
 import prime.Renderer;
-import kha.graphics2.Graphics;
+import prime.Color;
 import kha.math.FastMatrix3;
-import kha.Color;
 import kha.Assets;
 import kha.input.Mouse;
 import kha.Font;
@@ -126,8 +125,9 @@ class Counter extends Actor {
 
   override function render(r:Renderer) : Void {
     super.render(r);
-    r.color = 0xffff00;
+    r.color = Color.Cyan;
     r.fillRect(0, 0, 180, 20);
+    //r.fillCircle(0, 0, 30);
 
     /*if(font != null){
       g.color = Color.White;

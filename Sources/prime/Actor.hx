@@ -1,7 +1,5 @@
 package prime;
 
-import kha.graphics2.Graphics;
-
 class Actor {
 	public var position:Point = new Point();
 	public var scale:Point = new Point(1,1);
@@ -14,6 +12,7 @@ class Actor {
 	public var zIndex:Int = 0;
 	public var parent:Actor;
 	public var matrix:Matrix = new Matrix();
+	public var tint:Int = Color.White;
 
 	public var rotation(get, set):Float;
 
@@ -42,6 +41,7 @@ class Actor {
 	public function render(renderer:Renderer) : Void {
 		if(!visible)return;
 		_updateMatrix();
+		renderer.color = tint;
 		renderer.alpha = worldAlpha;
 		renderer.setMatrix(matrix.world);
 	}
