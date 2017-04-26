@@ -18,9 +18,9 @@ class Game extends prime.Game {
   var count:Int = 0;
 
   var minX:Float = 0;
-  var maxX:Float = 800;
+  var maxX:Float = 1024;
   var minY:Float = 0;
-  var maxY:Float = 600;
+  var maxY:Float = 768;
 
   var font:Font;
 
@@ -33,30 +33,36 @@ class Game extends prime.Game {
   var elapsed:Float = 0;
 
   public function new(){
-    super("Mi Juego", 800, 600);
+    super("Mi Juego", 1024, 768);
   }
 
   override function onInit() : Void {
     super.onInit();
     Assets.loadEverything(function(){
+      var scale = Math.min(windowWidth/maxX, windowHeight/maxY);
+      stage.position.set(
+        windowWidth/2 - maxX*scale/2, windowHeight/2 - maxY*scale/2
+      );
+      stage.scale.set(scale);
+      trace(scale);
       stage.addChild(container);
 
       counter.font = Assets.fonts.mainfont;
       counter.position.set(
-        615, 5
+        515, 5
       );
       stage.addChild(counter);
       font = Assets.fonts.mainfont;
       Mouse.get().notify(mouseDown, null, null, null);
 
-      for(i in 0...2000){
+      for(i in 0...1000){
         addRabbit();
       }
     });
   }
 
   function mouseDown(button:Int, x:Int, y:Int) : Void {
-    for(i in 0...2000){
+    for(i in 0...500){
       addRabbit();
     }
   }
@@ -126,13 +132,13 @@ class Counter extends Actor {
   override function render(r:Renderer) : Void {
     super.render(r);
     r.color = Color.Cyan;
-    r.fillRect(0, 0, 180, 20);
+    r.fillRect(0, 0, 280, 30);
     //r.fillCircle(0, 0, 30);
 
     if(font != null){
       r.color = Color.Red;
       r.font = font;
-      r.fontSize = 16;
+      r.fontSize = 26;
       r.drawString("Actors: " + count + " - FPS: " + fps, 5, 0);
     }
   }

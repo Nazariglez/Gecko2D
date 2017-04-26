@@ -2,7 +2,6 @@ package prime;
 
 import kha.System;
 import kha.Framebuffer;
-import kha.graphics2.Graphics;
 
 class Game {
 	private var _initiated:Bool = false;
@@ -14,6 +13,9 @@ class Game {
 
 	public var isRunning(get, null):Bool;
 	public var stage:Container = new Container();
+
+	public var windowWidth(get, null):Int;
+	public var windowHeight(get, null):Int;
 
 	public function new(title:String, width:Int, height:Int) {
 		_title = title;
@@ -81,6 +83,14 @@ class Game {
 
 	function get_isRunning() : Bool {
 		return _loop.isRunning;
+	}
+
+	function get_windowWidth() : Int {
+		return System.windowWidth();
+	}
+
+	function get_windowHeight() : Int {
+		return System.windowHeight();
 	}
 
 }

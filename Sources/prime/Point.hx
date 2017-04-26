@@ -1,5 +1,6 @@
 package prime;
 
+//todo inherits from vector2?
 class Point {
 	private var _x:Float = 0;
 	private var _y:Float = 0;
@@ -10,7 +11,6 @@ class Point {
 	private var _observer:Point -> Void = function(point:Point) : Void {};
 	private var _isObserved:Bool = false;
 	public var isObserved(get, null):Bool;
-
 
 	public function new(x:Float = 0, y:Float = 0) {
 		set(x,y);
