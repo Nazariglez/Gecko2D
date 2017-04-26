@@ -39,7 +39,7 @@ class Actor {
 
 	public function update(delta:Float) : Void {}
 	public function render(renderer:Renderer) : Void {
-		if(!visible)return;
+		if(!visible || worldAlpha <= 0)return;
 		_updateMatrix();
 		renderer.color = tint;
 		renderer.alpha = worldAlpha;

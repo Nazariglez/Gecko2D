@@ -10,6 +10,7 @@ import kha.math.FastMatrix3;
 import kha.Assets;
 import kha.input.Mouse;
 import kha.Font;
+import kha.Scheduler;
 
 class Game extends prime.Game {
   var rabbits:Array<Rabbit> = [];
@@ -34,6 +35,7 @@ class Game extends prime.Game {
 
   public function new(){
     super("Mi Juego", 1024, 768);
+    //_loop.setFPS(30);
   }
 
   override function onInit() : Void {
@@ -71,6 +73,7 @@ class Game extends prime.Game {
     var rabbit = new Rabbit();
     rabbit.speed.x = Math.random() * 5;
     rabbit.speed.y = Math.random() * 5 - 2.5;
+    rabbit.tint = Color.fromFloats(Math.random(), Math.random(), Math.random());
     container.addChild(rabbit);
 
     rabbits.push(rabbit);
@@ -78,16 +81,24 @@ class Game extends prime.Game {
     counter.count = count;
   }
 
+  var lastNow:Float = 0;
+  override function render() : Void {
+      /*var now = Scheduler.realTime();
+      totalFrames++;
+      elapsed += now - lastNow;
+      lastNow = now;
+      if(elapsed >= 1) {
+        counter.fps = Math.round((totalFrames/elapsed)*100)/100;
+        totalFrames = 0;
+        elapsed = 0;
+      }*/
+      counter.fps = stats.renderFps;
+      counter.ms = stats.renderMs;
+      super.render();
+  }
+
   override function update(delta:Float) : Void {
     super.update(delta);
-
-    totalFrames++;
-    elapsed += delta;
-    if(totalFrames == 30){
-      counter.fps = Math.round(1/(60*(elapsed/totalFrames))*60);
-      totalFrames = 0;
-      elapsed = 0;
-    }
 
     if(rabbits.length > 0){
       for(i in 0...rabbits.length){
@@ -128,18 +139,19 @@ class Counter extends Actor {
   public var font:Font;
   public var count:Int = 0;
   public var fps:Float = 0;
+  public var ms:Float = 0;
 
   override function render(r:Renderer) : Void {
     super.render(r);
     r.color = Color.Cyan;
-    r.fillRect(0, 0, 280, 30);
+    r.fillRect(0, 0, 300, 30);
     //r.fillCircle(0, 0, 30);
 
     if(font != null){
       r.color = Color.Red;
       r.font = font;
       r.fontSize = 26;
-      r.drawString("Actors: " + count + " - FPS: " + fps, 5, 0);
+      r.drawString("Obj: " + count + " - MS: " + ms + " - FPS: " + fps, 5, 0);
     }
   }
 }

@@ -2,6 +2,7 @@ package prime;
 
 import kha.System;
 import kha.Framebuffer;
+import prime.utils.Stats;
 
 class Game {
 	private var _initiated:Bool = false;
@@ -11,6 +12,7 @@ class Game {
 	private var _loop:Loop = new Loop();
 	private var _renderer:Renderer = new Renderer();
 
+	public var stats:Stats = new Stats();
 	public var isRunning(get, null):Bool;
 	public var stage:Container = new Container();
 
@@ -53,6 +55,9 @@ class Game {
 	}
 
 	public function update(delta:Float) : Void {
+		//#if debug
+		stats.updateTick(); //todo
+		//#end
 		stage.update(delta);
 	}
 
@@ -61,6 +66,9 @@ class Game {
 			_renderer.setFramebuffer(framebuffer);
 		}
 	
+		//#if debug
+		stats.renderTick(); //todo
+		//#end
 		render();
 	}
 
