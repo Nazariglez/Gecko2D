@@ -4,8 +4,8 @@ class Actor {
 	public var position:Point = new Point();
 	public var scale:Point = new Point(1,1);
 	public var skew:Point = new Point();
-	public var pivot:Point = new Point();
-	public var anchor:Point = new Point(0.5);
+	public var pivot:Point = new Point(0.5, 0.5);
+	public var anchor:Point = new Point(0.5, 0.5);
 	public var visible:Bool = true;
 	public var alpha:Float = 1;
 	public var worldAlpha:Float = 1;
@@ -23,11 +23,11 @@ class Actor {
 	private var _bounds:Rectangle = Rectangle.empty();
 	public var bounds(get, null):Rectangle;
 
-	private var _width:Int = 0;
-	public var width(get, set):Int;
+	private var _width:Float = 0;
+	public var width(get, set):Float;
 
-	private var _height:Int = 0;
-	public var height(get, set):Int;
+	private var _height:Float = 0;
+	public var height(get, set):Float;
 
 	public var box:Rectangle;
 
@@ -60,7 +60,6 @@ class Actor {
 	}
 
 	public function checkBounds() : Void {
-		//todo if box != null set box as bounds
 		if(box != null){
 			_bounds.x = box.x - box.width * anchor.x;
 			_bounds.y = box.y - box.height * anchor.y;
@@ -74,7 +73,6 @@ class Actor {
 
 	public function calculateBounds() : Void {
 		//todo override this
-
 	}
 
 	function get_rotation() : Float {
@@ -92,19 +90,19 @@ class Actor {
 		return _bounds;
 	}
 
-	function get_width() : Int {
+	function get_width() : Float {
 		return _width;
 	}
 
-	function set_width(value:Int) : Int {
+	function set_width(value:Float) : Float {
 		return _width = value;
 	}
 
-	function get_height() : Int {
+	function get_height() : Float {
 		return _height;
 	}
 
-	function set_height(value:Int) : Int {
+	function set_height(value:Float) : Float {
 		return _height = value;
 	}
 

@@ -50,6 +50,10 @@ package prime;
 		 return contains(point.x, point.y);
 	 }
 
+	 public function containsRectangle(rect:Rectangle) : Bool {
+		 return contains(rect.x, rect.y) || contains(rect.x, rect.y+rect.height) || contains(rect.x+rect.width, rect.y) || contains(rect.x+rect.width, rect.y+rect.height);
+	 }
+
 	 public function clear() : Void {
 		 x = 0;
 		 y = 0;

@@ -24,7 +24,7 @@ class Sprite extends Actor {
 		}
 	}
 
-	override function get_width() : Int {
+	override function get_width() : Float {
 		if(image == null){
 			return 0;
 		}
@@ -32,7 +32,7 @@ class Sprite extends Actor {
 		return image.width;
 	}
 
-	override function get_height() : Int {
+	override function get_height() : Float {
 		if(image == null) {
 			return 0;
 		}

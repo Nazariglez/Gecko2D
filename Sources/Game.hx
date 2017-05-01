@@ -25,16 +25,27 @@ class Game extends prime.Game {
       rabbit.position.set(
        1024*0.5, 768*0.5
       );
-      //rabbit.flipY = true;
       rabbit.scale.set(5);
-      rabbit.anchor.set(1,0);
-      rabbit.pivot.set(0.5);
+      //rabbit.skew.x = 1;
+      //rabbit.anchor.set(0.5);
+      //rabbit.pivot.set(0.5);
       stage.addChild(rabbit);
+
+      var text = new Text("PrimeGame Engine", Assets.fonts.mainfont);
+      text.tint = Color.Red;
+      text.size = 50;
+      text.anchor.set(0);
+      //text.rotation = 90*Math.PI/180;
+      text.flipX = true;
+      text.position.set(
+        1024*0.5, 768*0.5
+      );
+      stage.addChild(text);
     });
   }
 
   override function render(r:Renderer) : Void {
-    if(rabbit != null)rabbit.rotation += 1*Math.PI/180;
+    //if(rabbit != null)rabbit.rotation += 1*Math.PI/180;
     super.render(r);
     r.color = Color.Red;
     r.drawCircle(1024*0.5, 768*0.5, 2);
