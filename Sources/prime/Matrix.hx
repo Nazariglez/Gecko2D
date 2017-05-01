@@ -13,9 +13,7 @@ class Matrix {
 
 	public function new(){}
 
-	//todo apply changes in the matrix
 	public function updateSkew(skew:Point, rotation:Float) : Void {
-		//todo improve with observablePoint https://github.com/pixijs/pixi.js/blob/dev/src/core/display/Transform.js#L68
 		_cx = Math.cos(rotation + skew.y);
 		_sx = Math.sin(rotation + skew.y);
 		_cy = -Math.sin(rotation - skew.x);

@@ -28,12 +28,27 @@ class Renderer {
 	private var _alpha:Float = 1;
 	public var alpha(get, set):Float;
 
+	private var _cleanMatrix:FastMatrix3 = FastMatrix3.identity();
+
 	public function new(){}
 
 	public function setFramebuffer(framebuffer:Framebuffer) : Void {
 		this.framebuffer = framebuffer;
 		g2d = framebuffer.g2;
 		g3d = framebuffer.g4;
+	}
+
+	public function reset() : Void {
+		color = Color.White;
+		g2d.opacity = 1;
+		_alpha = 1;
+		g2d.color = 0xffffffff;
+		_color = 0xffffff;
+		g2d.transformation.setFrom(_cleanMatrix);
+	}
+
+	public function renderActor(actor:Actor) : Void {
+		actor.render(this);
 	}
 
 	public function setMatrix(matrix:FastMatrix3) : Void {

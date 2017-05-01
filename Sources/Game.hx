@@ -6,11 +6,11 @@ import prime.Sprite;
 import prime.Container;
 import prime.Renderer;
 import prime.Color;
+import prime.Text;
 import kha.math.FastMatrix3;
 import kha.Assets;
 import kha.input.Mouse;
 import kha.Font;
-import kha.Scheduler;
 
 class Game extends prime.Game {
   var rabbits:Array<Rabbit> = [];
@@ -81,17 +81,7 @@ class Game extends prime.Game {
     counter.count = count;
   }
 
-  var lastNow:Float = 0;
   override function render() : Void {
-      /*var now = Scheduler.realTime();
-      totalFrames++;
-      elapsed += now - lastNow;
-      lastNow = now;
-      if(elapsed >= 1) {
-        counter.fps = Math.round((totalFrames/elapsed)*100)/100;
-        totalFrames = 0;
-        elapsed = 0;
-      }*/
       counter.fps = stats.renderFps;
       counter.ms = stats.renderMs;
       super.render();
@@ -140,6 +130,7 @@ class Counter extends Actor {
   public var count:Int = 0;
   public var fps:Float = 0;
   public var ms:Float = 0;
+  private var text:Text = new Text("", null);
 
   override function render(r:Renderer) : Void {
     super.render(r);
@@ -148,10 +139,15 @@ class Counter extends Actor {
     //r.fillCircle(0, 0, 30);
 
     if(font != null){
-      r.color = Color.Red;
-      r.font = font;
-      r.fontSize = 26;
-      r.drawString("Obj: " + count + " - MS: " + ms + " - FPS: " + fps, 5, 0);
+      text.font = font;
+      text.size = 26;
+      text.tint = Color.Red;
+      //r.color = Color.Red;
+      //r.font = font;
+      //r.fontSize = 26;
+      //r.drawString("Obj: " + count + " - MS: " + ms + " - FPS: " + fps, 5, 0);
+      text.text = "Obj: " + count + " - MS: " + ms + " - FPS: " + fps;
+      r.renderActor(text);
     }
   }
 }

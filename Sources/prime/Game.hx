@@ -55,9 +55,9 @@ class Game {
 	}
 
 	public function update(delta:Float) : Void {
-		//#if debug
-		stats.updateTick(); //todo
-		//#end
+		#if debug
+		stats.updateTick();
+		#end
 		stage.update(delta);
 	}
 
@@ -66,16 +66,18 @@ class Game {
 			_renderer.setFramebuffer(framebuffer);
 		}
 	
-		//#if debug
-		stats.renderTick(); //todo
-		//#end
+		#if debug
+		stats.renderTick();
+		#end
+
+		_renderer.g2d.begin();
 		render();
+		_renderer.g2d.end();
 	}
 
 	public function render() : Void {
-		_renderer.g2d.begin();
 		stage.render(_renderer);
-		_renderer.g2d.end();
+		_renderer.reset();
 	}
 
 	private function _onInit() : Void {
