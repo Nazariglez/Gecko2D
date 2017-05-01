@@ -13,26 +13,39 @@ class Actor {
 	public var parent:Actor;
 	public var matrix:Matrix = new Matrix();
 	public var tint:Int = Color.White;
+	public var flipX:Bool = false;
+	public var flipY:Bool = false;
 
 	public var rotation(get, set):Float;
 
 	private var _rotation:Float = 0;
+	
+	private var _bounds:Rectangle = Rectangle.empty();
+	public var bounds(get, null):Rectangle;
+
+	private var _width:Int = 0;
+	public var width(get, set):Int;
+
+	private var _height:Int = 0;
+	public var height(get, set):Int;
+
+	public var box:Rectangle;
 
 	public function new(){
 		skew.setObserver(_skewObserver);
 	}
 
 	private function _skewObserver(point:Point) : Void {
-		matrix.updateSkew(point, _rotation);
+		matrix.updateSkew(this);
 	}
 
 	private function _updateMatrix() : Void {
 		if(parent == null){
-			matrix.updateLocal(position, scale, pivot);
+			matrix.updateLocal(this);
 			matrix.world.setFrom(matrix.local);
 			worldAlpha = alpha;
 		}else{
-			matrix.update(position, scale, pivot, parent.matrix.world);
+			matrix.update(this, parent.matrix.world);
 			worldAlpha = parent.worldAlpha * alpha;
 		}
 	}
@@ -46,12 +59,53 @@ class Actor {
 		renderer.setMatrix(matrix.world);
 	}
 
+	public function checkBounds() : Void {
+		//todo if box != null set box as bounds
+		if(box != null){
+			_bounds.x = box.x - box.width * anchor.x;
+			_bounds.y = box.y - box.height * anchor.y;
+			_bounds.width = _bounds.x + box.width;
+			_bounds.height = _bounds.y + box.height;
+			return;
+		}
+
+		calculateBounds();
+	}
+
+	public function calculateBounds() : Void {
+		//todo override this
+
+	}
+
 	function get_rotation() : Float {
 		return _rotation;
 	}
 
 	function set_rotation(value:Float) : Float {
-		matrix.updateSkew(skew, value);
-		return _rotation = value;
+		_rotation = value;
+		matrix.updateSkew(this);
+		return _rotation;
 	}
+
+	function get_bounds() : Rectangle {
+		//todo update bounds
+		return _bounds;
+	}
+
+	function get_width() : Int {
+		return _width;
+	}
+
+	function set_width(value:Int) : Int {
+		return _width = value;
+	}
+
+	function get_height() : Int {
+		return _height;
+	}
+
+	function set_height(value:Int) : Int {
+		return _height = value;
+	}
+
 }

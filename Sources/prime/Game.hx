@@ -71,11 +71,11 @@ class Game {
 		#end
 
 		_renderer.g2d.begin();
-		render();
+		render(_renderer);
 		_renderer.g2d.end();
 	}
 
-	public function render() : Void {
+	public function render(renderer:Renderer) : Void {
 		stage.render(_renderer);
 		_renderer.reset();
 	}

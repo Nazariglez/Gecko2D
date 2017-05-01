@@ -11,23 +11,52 @@ class Matrix {
 	private var _cy:Float = 0;
 	private var _sy:Float = 1;
 
+	private var _aW:Float = 0;
+	private var _aH:Float = 0;
+	private var _pW:Float = 0;
+	private var _pH:Float = 0;
+
+	private var _scX:Float = 0;
+	private var _scY:Float = 0;
+	private var _anX:Float = 0;
+	private var _anY:Float = 0;
+	private var _piX:Float = 0;
+	private var _piY:Float = 0;
+
 	public function new(){}
 
-	public function updateSkew(skew:Point, rotation:Float) : Void {
-		_cx = Math.cos(rotation + skew.y);
-		_sx = Math.sin(rotation + skew.y);
-		_cy = -Math.sin(rotation - skew.x);
-		_sy = Math.cos(rotation - skew.x);
+	public function updateSkew(actor:Actor) : Void {
+		_cx = Math.cos(actor.rotation + actor.skew.y);
+		_sx = Math.sin(actor.rotation + actor.skew.y);
+		_cy = -Math.sin(actor.rotation - actor.skew.x);
+		_sy = Math.cos(actor.rotation - actor.skew.x);
 	}
 
-	public function updateLocal(position:Point, scale:Point, pivot:Point) : Void {
-		local._00 = _cx * scale.x;
-		local._01 = _sx * scale.x;
-		local._10 = _cy * scale.y;
-		local._11 = _sy * scale.y;
+	public function updateLocal(actor:Actor) : Void {
+		_scX = actor.scale.x * (actor.flipX ? -1 : 1);
+		_scY = actor.scale.y * (actor.flipY ? -1 : 1);
+		_anX = actor.flipX ? 1-actor.anchor.x : actor.anchor.x;
+		_anY = actor.flipY ? 1-actor.anchor.y : actor.anchor.y;
+		_piX = actor.flipX ? 1-actor.pivot.x : actor.pivot.x;
+		_piY = actor.flipY ? 1-actor.pivot.y : actor.pivot.y;
 
-		local._20 = position.x - ((pivot.x * local._00) + (pivot.y * local._10));
-		local._21 = position.y - ((pivot.x * local._01) + (pivot.y * local._11));
+		local._00 = _cx * _scX;
+		local._01 = _sx * _scX;
+		local._10 = _cy * _scY;
+		local._11 = _sy * _scY;
+
+		_aW = _anX * actor.width;
+		_aH = _anY * actor.height;
+		_pW = _piX * actor.width;
+		_pH = _piY * actor.height;
+
+		local._20 = actor.position.x - _aW * _scX + _pW * _scX;
+		local._21 = actor.position.y - _aH * _scY + _pH * _scY;
+		
+		if(_pW != 0 || _pH != 0){
+			local._20 -= _pW * local._00 + _pH * local._10;
+			local._21 -= _pW * local._01 + _pH * local._11;
+		}
 	}
 
 	public function updateWorld(parentMatrix:FastMatrix3) : Void {
@@ -41,8 +70,8 @@ class Matrix {
 		world._21 = (local._20 * pm._01) + (local._21 * pm._11) + pm._21;
 	}
 
-	public function update(position:Point, scale:Point, pivot:Point, parentMatrix:FastMatrix3) : Void {
-		updateLocal(position, scale, pivot);
+	public function update(actor:Actor, parentMatrix:FastMatrix3) : Void {
+		updateLocal(actor);
 		updateWorld(parentMatrix);
 	}
 

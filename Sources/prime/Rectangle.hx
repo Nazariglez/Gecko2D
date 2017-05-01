@@ -34,7 +34,7 @@ package prime;
 
 	 public function contains(x:Float, y:Float) : Bool {
 		 if(this.width <= 0 || this.height <= 0){
-			 return false
+			 return false;
 		 }
 
 		 if(x >= this.x && x < this.x+this.width) {
@@ -48,6 +48,13 @@ package prime;
 
 	 public function containsPoint(point:Point) : Bool {
 		 return contains(point.x, point.y);
+	 }
+
+	 public function clear() : Void {
+		 x = 0;
+		 y = 0;
+		 width = 0;
+		 height = 0;
 	 }
 
 	 public function get_top() : Float {
