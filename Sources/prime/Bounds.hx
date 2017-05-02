@@ -1,0 +1,5 @@
+package prime;
+
+class Bounds {
+	
+}

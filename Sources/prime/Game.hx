@@ -77,6 +77,9 @@ class Game {
 
 	public function render(renderer:Renderer) : Void {
 		stage.render(_renderer);
+		#if debug
+		stage.debugRender(_renderer);
+		#end
 		_renderer.reset();
 	}
 

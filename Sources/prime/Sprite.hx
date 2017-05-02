@@ -3,7 +3,8 @@ package prime;
 import kha.Image;
 
 class Sprite extends Actor {
-	public var image:Image;
+	private var _image:Image;
+	public var image(get, set):Image;
 
 	public function new(image:Image) {
 		super();
@@ -15,28 +16,12 @@ class Sprite extends Actor {
 		renderer.drawImage(image, 0, 0);
 	}
 
-	override function calculateBounds() : Void {
-		if(image != null){
-			_bounds.x = -image.width * anchor.x;
-			_bounds.y = -image.height * anchor.y;
-			_bounds.width = _bounds.x + image.width;
-			_bounds.height = _bounds.y + image.height;
-		}
+	public function get_image() : Image {
+		return _image;
 	}
 
-	override function get_width() : Float {
-		if(image == null){
-			return 0;
-		}
-
-		return image.width;
-	}
-
-	override function get_height() : Float {
-		if(image == null) {
-			return 0;
-		}
-
-		return image.height;
+	public function set_image(img:Image) : Image {
+		size.set(img.width, img.height);
+		return _image = img;
 	}
 }

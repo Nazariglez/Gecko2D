@@ -45,10 +45,10 @@ class Matrix {
 		local._10 = _cy * _scY;
 		local._11 = _sy * _scY;
 
-		_aW = _anX * actor.width;
-		_aH = _anY * actor.height;
-		_pW = _piX * actor.width;
-		_pH = _piY * actor.height;
+		_aW = _anX * actor.size.x;
+		_aH = _anY * actor.size.y;
+		_pW = _piX * actor.size.x;
+		_pH = _piY * actor.size.y;
 
 		local._20 = actor.position.x - _aW * _scX + _pW * _scX;
 		local._21 = actor.position.y - _aH * _scY + _pH * _scY;

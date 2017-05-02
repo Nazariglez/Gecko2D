@@ -10,11 +10,14 @@ package prime;
 	 public var left(get, null):Float;
 	 public var right(get, null):Float;
 
-	 public static function empty() : Rectangle {
-		 return new Rectangle(0,0,0,0);
+	 public function new(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0) {
+		 this.x = x;
+		 this.y = y;
+		 this.width = width;
+		 this.height = height;
 	 }
 
-	 public function new(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0) {
+	 public function set(x:Float, y:Float, width:Float, height:Float) : Void {
 		 this.x = x;
 		 this.y = y;
 		 this.width = width;
@@ -76,5 +79,9 @@ package prime;
 	 public function get_right() : Float {
 		 return x+width;
 	 }
+
+	 function toString() : String {
+		return "Rectangle(" + x + "," + y + "," + width + "," + height + ")";
+	}
 
  }

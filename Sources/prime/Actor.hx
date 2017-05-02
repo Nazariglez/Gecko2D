@@ -1,11 +1,14 @@
 package prime;
 
 class Actor {
-	public var position:Point = new Point();
+	public static var actorID:Int = 0;
+
+	public var position:Point = new Point(0,0);
 	public var scale:Point = new Point(1,1);
-	public var skew:Point = new Point();
+	public var skew:Point = new Point(0,0);
 	public var pivot:Point = new Point(0.5, 0.5);
 	public var anchor:Point = new Point(0.5, 0.5);
+	public var size:Point = new Point(1,1);
 	public var visible:Bool = true;
 	public var alpha:Float = 1;
 	public var worldAlpha:Float = 1;
@@ -20,7 +23,7 @@ class Actor {
 
 	private var _rotation:Float = 0;
 	
-	private var _bounds:Rectangle = Rectangle.empty();
+	private var _bounds:Rectangle = new Rectangle();
 	public var bounds(get, null):Rectangle;
 
 	private var _width:Float = 0;
@@ -30,8 +33,10 @@ class Actor {
 	public var height(get, set):Float;
 
 	public var box:Rectangle;
+	private var _actorId:Int = -1;
 
 	public function new(){
+		_actorId = Actor.actorID++;
 		skew.setObserver(_skewObserver);
 	}
 
@@ -48,6 +53,7 @@ class Actor {
 			matrix.update(this, parent.matrix.world);
 			worldAlpha = parent.worldAlpha * alpha;
 		}
+		checkBounds();
 	}
 
 	public function update(delta:Float) : Void {}
@@ -59,12 +65,18 @@ class Actor {
 		renderer.setMatrix(matrix.world);
 	}
 
+	public function debugRender(renderer:Renderer) : Void {
+		renderer.color = Color.Magenta;
+		renderer.drawRect(0, 0, size.x, size.y, 1);
+		renderer.color = Color.White;
+	}
+
 	public function checkBounds() : Void {
 		if(box != null){
 			_bounds.x = box.x - box.width * anchor.x;
 			_bounds.y = box.y - box.height * anchor.y;
-			_bounds.width = _bounds.x + box.width;
-			_bounds.height = _bounds.y + box.height;
+			_bounds.width = box.width;
+			_bounds.height = box.height;
 			return;
 		}
 
@@ -72,7 +84,14 @@ class Actor {
 	}
 
 	public function calculateBounds() : Void {
-		//todo override this
+		_bounds.x = -width * anchor.x;
+		_bounds.y = -height * anchor.y;
+		_bounds.width = width;
+		_bounds.height = height;
+	}
+
+	public inline function addTo(container:Container) : Void {
+		container.addChild(this);
 	}
 
 	function get_rotation() : Float {
@@ -86,23 +105,26 @@ class Actor {
 	}
 
 	function get_bounds() : Rectangle {
-		//todo update bounds
+		//todo don't recalculate use a cacheId
+		checkBounds();
 		return _bounds;
 	}
 
 	function get_width() : Float {
-		return _width;
+		return scale.x * size.x;
 	}
 
 	function set_width(value:Float) : Float {
+		scale.x = scale.x * value / size.x;
 		return _width = value;
 	}
 
 	function get_height() : Float {
-		return _height;
+		return scale.y * size.y;
 	}
 
 	function set_height(value:Float) : Float {
+		scale.y = scale.y * value / size.y;
 		return _height = value;
 	}
 
