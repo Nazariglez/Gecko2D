@@ -23,10 +23,16 @@ class Game extends prime.Game {
     super.onInit();
     Assets.loadEverything(function(){
       stage.anchor.set(0);
+      //stage.scale.set(4);
+      var container = new Container();
+      container.position.set(1024*0.5, 768*0.5);
+      stage.addChild(container);
+
       bunny = new Sprite(Assets.images.rabbit);
-      bunny.position.set(1024*0.5, 768*0.5);
-      bunny.scale.set(10, 10);
-      bunny.addTo(stage);
+      bunny.anchor.set(0.5);
+      bunny.position.set(0,0);
+      bunny.scale.set(1);
+      bunny.addTo(container);
 
       /*
       	height : 555, 
@@ -41,12 +47,11 @@ class Game extends prime.Game {
       bunny2.scale.set(bunny.scale.x, bunny.scale.y);
       bunny2.tint = Color.Cyan;
       bunny2.matrix.local._22 = 20;
-      bunny2.addTo(stage);
-
+      bunny2.addTo(container);
     });
   }
 
-  override function render(r:Renderer) : Void {
+  /*override function render(r:Renderer) : Void {
     super.render(r);
     if(bunny != null){
       //bunny.rotation += 2*Math.PI/180;
@@ -58,5 +63,5 @@ class Game extends prime.Game {
     var b = stage.bounds;
     //r.drawRect(stage.position.x + b.x, stage.position.y + b.y, b.width, b.height, 4);
     r.drawCircle(b.x, b.y, 5);
-  }
+  }*/
 }

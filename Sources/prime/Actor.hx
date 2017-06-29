@@ -23,6 +23,7 @@ class Actor {
 
 	private var _rotation:Float = 0;
 	
+	private var _localBounds:Rectangle = new Rectangle();
 	private var _bounds:Rectangle = new Rectangle();
 	public var bounds(get, null):Rectangle;
 
@@ -71,10 +72,15 @@ class Actor {
 		renderer.color = Color.White;
 	}
 
+	public function getLocalBounds() : Rectangle {
+		_localBounds.set(0, 0, size.x, size.y);
+		return _localBounds;
+	}
+
 	public function checkBounds() : Void {
 		if(box != null){
-			_bounds.x = box.x - box.width * anchor.x;
-			_bounds.y = box.y - box.height * anchor.y;
+			_bounds.x = -box.width * anchor.x;
+			_bounds.y = -box.height * anchor.y;
 			_bounds.width = box.width;
 			_bounds.height = box.height;
 			return;
@@ -88,6 +94,10 @@ class Actor {
 		_bounds.y = -height * anchor.y;
 		_bounds.width = width;
 		_bounds.height = height;
+		/*_bounds.x = -size.x * anchor.x;
+		_bounds.y = -size.y * anchor.y;
+		_bounds.width = size.x;
+		_bounds.height = size.y;*/
 	}
 
 	public inline function addTo(container:Container) : Void {
