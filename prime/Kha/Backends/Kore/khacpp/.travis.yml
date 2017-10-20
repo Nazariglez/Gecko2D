@@ -1,0 +1,61 @@
+language: cpp
+
+os:
+  - linux
+  - osx
+
+sudo: required
+dist: trusty
+
+install:
+  # install dependencies
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+      travis_retry sudo add-apt-repository ppa:haxe/ocaml -y;
+      travis_retry sudo apt-get update -y;
+      travis_retry sudo apt-get install pkg-config libgc-dev libssl-dev libpcre3-dev zlib1g-dev apache2-dev libmysqlclient-dev libsqlite3-dev libgtk2.0-dev ocaml-native-compilers camlp4 gcc-multilib g++-multilib -y;
+      travis_retry sudo add-apt-repository ppa:haxe/snapshots -y;
+      travis_retry sudo apt-get install -y neko;
+    fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
+      brew uninstall --force brew-cask;
+      travis_retry brew update;
+      travis_retry brew install opam;
+      export OPAMYES=1;
+      opam init;
+      opam install camlp4 ocamlfind;
+      eval `opam config env`;
+      travis_retry brew install neko --HEAD;
+    fi
+  # build haxe
+  - git clone --recursive https://github.com/HaxeFoundation/haxe.git ~/haxe
+  - pushd ~/haxe
+  - make OCAMLOPT=ocamlopt.opt ADD_REVISION=1 && sudo make install INSTALL_DIR=/usr/local
+  - popd
+  - haxe -version
+  # setup haxelib
+  - mkdir ~/haxelib && haxelib setup ~/haxelib
+  - haxelib dev hxcpp $TRAVIS_BUILD_DIR
+  - haxelib install record-macros
+
+env:
+  - HXCPP_COMPILE_CACHE=~/hxcache
+
+script:
+  - cd ${TRAVIS_BUILD_DIR}/tools/run
+  - haxe compile.hxml
+  - cd ${TRAVIS_BUILD_DIR}/tools/hxcpp
+  - haxe compile.hxml
+  - cd ${TRAVIS_BUILD_DIR}/project
+  - haxe compile-cppia.hxml
+  - cd ${TRAVIS_BUILD_DIR}/test
+  - haxe --run RunTests cffi
+  - haxe --run RunTests haxe
+  - haxe --run RunTests telemetry
+  - haxe --run RunTests std32
+  - haxe --run RunTests std64
+  - haxe --run RunTests debugger
+  - haxe --run RunTests native
+  - cd ~/haxe/tests/unit
+  - haxe compile-cpp.hxml -D HXCPP_M32 && ./bin/cpp/TestMain-debug && rm -rf bin/cpp
+  - haxe compile-cpp.hxml -D HXCPP_M64 && ./bin/cpp/TestMain-debug
+  - haxe compile-cppia.hxml -debug && haxelib run hxcpp ./bin/unit.cppia

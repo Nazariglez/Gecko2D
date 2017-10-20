@@ -1,0 +1,12 @@
+package flash.events;
+
+@:require(flash10_2) extern class StageVideoEvent extends Event {
+	var codecInfo(default,never) : String;
+	var colorSpace(default,never) : String;
+	var status(default,never) : String;
+	function new(type : String, bubbles : Bool = false, cancelable : Bool = false, ?status : String, ?colorSpace : String) : Void;
+	static var RENDER_STATE(default,never) : String;
+	static var RENDER_STATUS_ACCELERATED(default,never) : String;
+	static var RENDER_STATUS_SOFTWARE(default,never) : String;
+	static var RENDER_STATUS_UNAVAILABLE(default,never) : String;
+}

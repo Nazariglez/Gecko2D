@@ -1,0 +1,121 @@
+<xml>
+
+
+<section unless="HXCPP_CLEAN_ONLY" >
+   <error value="TIZEN_SDK must be defined to build for Tizen" unless="TIZEN_SDK" />
+</section>
+
+<set name="HXCPP_X86" value="1" if="simulator" />
+
+<section if="HXCPP_X86">
+	<set name="ARCH" value="-x86" />
+	<set name="PLATFORM_TYPE" value="emulator" />
+	<set name="EXEPREFIX" value="i386-linux-gnueabi" />
+</section>
+
+<section unless="HXCPP_X86">
+	<set name="ARCH" value="-v7" />
+	<set name="PLATFORM_TYPE" value="device" />
+	<set name="EXEPREFIX" value="arm-linux-gnueabi" />
+</section>
+
+
+<section if="TIZEN_22" >
+   <set name="TIZEN_PLATFORM" value="${TIZEN_SDK}/platforms/tizen2.2/rootstraps/tizen-${PLATFORM_TYPE}-2.2.native" />
+   <path name="${TIZEN_SDK}/tools/${EXEPREFIX}-gcc-4.5/bin" />
+</section>
+
+<section unless="TIZEN_22" >
+   <set name="TIZEN_PLATFORM" value="${TIZEN_SDK}/platforms/mobile-2.3/rootstraps/mobile-2.3-${PLATFORM_TYPE}.core" />
+   <path name="${TIZEN_SDK}/tools/${EXEPREFIX}-gcc-4.8/bin" />
+</section>
+ 
+<include name="toolchain/gcc-toolchain.xml"/>
+
+
+<!-- TIZEN TOOLS -------------------------------------------------->
+	
+<compiler id="tizen" exe="${EXEPREFIX}-g++" if="tizen">
+	<flag value="-c"/>
+	<flag value="-g" if="debug"/>
+	<flag value="-O2" unless="debug"/>
+	<flag value="-I${HXCPP}/include"/>
+	<flag value="-I${TIZEN_PLATFORM}/usr/include"/>
+	<flag value="-DTIZEN=TIZEN"/>
+	<flag value="-D_APP_LOG"/>
+	<flag value="-march=armv7-a" unless="HXCPP_X86"/>
+	<flag value="-mfloat-abi=softfp" unless="HXCPP_X86"/>
+	<flag value="-mfpu=vfpv3-d16" unless="HXCPP_X86"/>
+	<flag value="-mtune=cortex-a8" unless="HXCPP_X86"/>
+	<include name="toolchain/common-defines.xml" />
+	<flag value="-fvisibility=hidden"/>
+	<flag value="-fdollars-in-identifiers"/>
+	<flag value="-fpic"/>
+	<flag value="-fPIC"/>
+	<cppflag value="-frtti"/>
+	<!-- <flag value="-fPIE" /> -->
+	<flag value="--sysroot=${TIZEN_PLATFORM}" />
+	<outflag value="-o"/>
+	<objdir value="./obj/tizen${OBJEXT}${ARCH}" />
+</compiler>
+
+<linker id="exe" exe="${EXEPREFIX}-g++" if="tizen">
+	<flag value="-g" if="debug"/>
+	<flag value="-O2" unless="debug"/>
+	<flag value="-s" unless="debug"/>
+	<!-- <flag value="-rdynamic"/> -->
+	<flag value="-pie" />
+	<lib name="-lpthread" />
+	<flag value="-march=armv7-a" unless="HXCPP_X86"/>
+	<flag value="-mfloat-abi=softfp" unless="HXCPP_X86"/>
+	<flag value="-mfpu=vfpv3-d16" unless="HXCPP_X86"/>
+	<flag value="-mtune=cortex-a8" unless="HXCPP_X86"/>
+	<flag value="-Xlinker" />
+	<flag value="--as-needed" />
+	<flag value="-Xlinker" />
+	<flag value="-rpath=/opt/usr/apps/${APP_ID}/lib" />
+	<flag value="-Xlinker" />
+	<flag value="-rpath=/home/developer/sdk_tools/lib" />
+	<flag value="--sysroot=${TIZEN_PLATFORM}" />
+	<flag value="-L${TIZEN_PLATFORM}/usr/lib" />
+	<flag value="-L${TIZEN_PLATFORM}/usr/lib/osp" />
+	<lib name="-losp-appfw" />
+	<lib name="-lrt" />
+	<!-- <flag value="-fpic"/>
+	<flag value="-fPIC"/> -->
+	<ext value=".exe"/>
+	<outflag value="-o"/>
+	<lib name="-ldl"/>
+</linker>
+	
+<linker id="dll" exe="${EXEPREFIX}-g++" if="tizen">
+	<flag value="-shared"/>
+	<flag value="-g" if="debug"/>
+	<flag value="-O2" unless="debug"/>
+	<flag value="-s" unless="debug"/>
+	<!-- <flag value="-pie" /> -->
+	<lib name="-lpthread" />
+	<flag value="-march=armv7-a" unless="HXCPP_X86"/>
+	<flag value="-mfloat-abi=softfp" unless="HXCPP_X86"/>
+	<flag value="-mfpu=vfpv3-d16" unless="HXCPP_X86"/>
+	<flag value="-mtune=cortex-a8" unless="HXCPP_X86"/>
+	<flag value="-Xlinker" />
+	<flag value="--as-needed" />
+	<!--<flag value="-Xlinker" />
+	<flag value="-rpath=/opt/usr/apps/DugJgh8Hxl/lib" /> -->
+	<flag value="-Xlinker" />
+	<flag value="-rpath=/home/developer/sdk_tools/lib" />
+	<flag value="--sysroot=${TIZEN_PLATFORM}" />
+	<flag value="-L${TIZEN_PLATFORM}/usr/lib" />
+	<flag value="-L${TIZEN_PLATFORM}/usr/lib/osp" />
+	<cppflag value="-frtti"/>
+	<!-- <flag value="-fpic"/>
+	<flag value="-fPIC"/> -->
+	<!-- <flag value="-pie" /> -->
+	<lib name="-ldl"/>
+	<ext value=".so"/>
+	<outflag value="-o"/>
+</linker>
+
+
+</xml>

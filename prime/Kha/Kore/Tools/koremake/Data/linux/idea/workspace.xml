@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RunManager" selected="Application.ShaderTest">
+    <configuration default="false" name="ShaderTest" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="{workingdir}" PASS_PARENT_ENVS_2="true" PROJECT_NAME="{project}" TARGET_NAME="{target}" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="{project}" RUN_TARGET_NAME="{target}">
+      <envs />
+      <method />
+    </configuration>
+  </component>
+</project>

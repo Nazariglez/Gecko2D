@@ -1,0 +1,72 @@
+<xml>
+
+<set name="PalmPDK" value="c:\Program Files (x86)\HP webOS\PDK" unless="PalmPDK" if="windows_host" />
+<set name="PalmPDK" value="/opt/PalmPDK" unless="PalmPDK" />
+
+
+<path name="${PalmPDK}/arm-gcc/bin/" unless="windows_host" />
+
+<set name="CodeSourcery" value="C:\Program Files (x86)\CodeSourcery\Sourcery G++ Lite" unless = "CodeSourcery" />
+<path name="${CodeSourcery}/bin" if="windows_host"/>
+ 
+<include name="toolchain/gcc-toolchain.xml"/>
+
+
+<!-- WEBOS TOOLS -------------------------------------------------->
+	
+<compiler id="webos" exe="arm-none-linux-gnueabi-g++" if="webos">
+	<flag value="-c"/>
+	<flag value="-g" if="debug"/>
+	<flag value="-O2" unless="debug"/>
+	<flag value="-I${HXCPP}/include"/>
+	<flag value="-I${PalmPDK}/include"/>
+  	<flag value="-mcpu=cortex-a8" unless="armv6" />
+	<flag value="-mfpu=neon" unless="armv6" />
+	<flag value="-mcpu=arm1136jf-s" if="armv6" />
+	<flag value="-mfpu=vfp" if="armv6" />
+	<flag value="-mfloat-abi=softfp"/>
+	<flag value="-DWEBOS=WEBOS"/>
+	<include name="toolchain/common-defines.xml" />
+	<flag value="-fvisibility=hidden"/>
+	<flag value="-fdollars-in-identifiers"/>
+	<flag value="-DHXCPP_LOAD_DEBUG" if="HXCPP_LOAD_DEBUG"/>
+	<flag value="-DHXCPP_RTLD_LAZY" if="HXCPP_RTLD_LAZY"/>
+	<flag value="-fpic"/>
+	<flag value="-fPIC"/>
+	<cppflag value="-frtti"/>
+	<outflag value="-o"/>
+	<objdir value="./obj/webos${OBJEXT}" />
+</compiler>
+
+
+<linker id="exe" exe="arm-none-linux-gnueabi-g++" if="webos">
+	<flag value="-g" if="debug"/>
+	<flag value="-O2" unless="debug"/>
+	<flag value="-s" unless="debug"/>
+	<flag value="-rdynamic"/>
+	<flag value="-L${PalmPDK}/device/lib"/>
+	<ext value=""/>
+	<outflag value="-o"/>
+	<lib name="-lpthread"/>
+	<lib name="-ldl"/>
+	<lib name="-lrt"/>
+</linker>
+	
+<linker id="dll" exe="arm-none-linux-gnueabi-g++" if="webos">
+	<flag value="-shared"/>
+	<flag value="-g" if="debug"/>
+	<flag value="-O2" unless="debug"/>
+	<flag value="-s" unless="debug"/>
+	<flag value="-L${PalmPDK}/device/lib"/>
+	<cppflag value="-frtti"/>
+	<lib name="-lpthread"/>
+	<flag value="-fpic"/>
+	<flag value="-fPIC"/>
+	<lib name="-ldl"/>
+	<ext value=".so"/>
+	<outflag value="-o"/>
+</linker>
+
+
+
+</xml>

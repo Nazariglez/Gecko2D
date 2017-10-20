@@ -1,0 +1,28 @@
+{
+  "name": "khamake",
+  "version": "1.0.0",
+  "description": "Kha build tool",
+  "main": "khamake.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ktxsoftware/khamake.git"
+  },
+  "keywords": [
+    "kha"
+  ],
+  "author": "Robert Konrad",
+  "license": "Zlib",
+  "bugs": {
+    "url": "https://github.com/ktxsoftware/khamake/issues"
+  },
+  "homepage": "https://github.com/ktxsoftware/khamake#readme",
+  "dependencies": {
+    "chokidar": "^1.6.0",
+    "fs-extra": "^0.20.0",
+    "node-static": "^0.7.6",
+    "uuid": "^2.0.2"
+  }
+}
