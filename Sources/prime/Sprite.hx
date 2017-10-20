@@ -15,7 +15,7 @@ class Sprite extends Actor {
 		super.render(renderer);
 		renderer.drawImage(image, 0, 0);
 		renderer.color = Color.Cyan;
-		renderer.drawRect(0, 0, bounds.width, bounds.height, 1);
+		renderer.drawRect(0, 0, bounds.width, bounds.height, 1); //todo bounds in sprite are incosistent (0, 0 must be bounds.x, bounds.y)
 		renderer.color = Color.White;
 	}
 
