@@ -2,5 +2,11 @@
     "compilerOptions": {
       "target": "es5",
       "sourceMap": true
-    }
+    },
+
+    "exclude": [
+      "node_modules/**/*",
+      "Kha/**/*",
+      "prime/**/*"
+    ]
   }

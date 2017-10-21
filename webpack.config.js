@@ -1,4 +1,4 @@
-var production = (process.env.NODE_ENV === "production");
+const production = (process.env.NODE_ENV === "production");
 
 module.exports = {
   devtool: !production ? 'inline-source-map' :  false,
@@ -19,8 +19,7 @@ module.exports = {
     loaders: [
       { 
         test: /\.ts$/, 
-        loader: 'ts-loader',
-        include: ["./cli"]
+        loader: 'ts-loader'
       }
     ]
   }
