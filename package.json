@@ -1,0 +1,33 @@
+{
+  "name": "k2d",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "preferGlobal": true,
+  "bin": {
+    "k2d": "main.js"
+  },
+  "scripts": {
+    "update-kha": "git submodule foreach --recursive git pull origin master",
+    "dev": "webpack --config webpack.config.js --progress --colors --watch",
+    "build": "NODE_ENV=production webpack --config webpack.config.js --progress --colors -p"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nazariglez/primegame.git"
+  },
+  "author": "Nazariglez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nazariglez/primegame/issues"
+  },
+  "homepage": "https://github.com/Nazariglez/primegame",
+  "devDependencies": {
+    "ts-loader": "^3.0.5",
+    "typescript": "^2.5.3",
+    "webpack": "^3.8.1"
+  },
+  "dependencies": {
+    "toml": "^2.3.3"
+  }
+}
