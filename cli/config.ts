@@ -4,10 +4,14 @@ import * as toml from 'toml';
 
 export const defaultConfig = `# development ${C.ENGINE_NAME} config.
 name = "My ${C.ENGINE_NAME} Game"
-sources = ["src"]
+sources = ["Sources"]
+output = "build"
 
 [html5]
 enable = true
+webgl = true
+canvas = "khanvas"          #canvas id
+script = "game"             #script name
 
 [core]
 haxe = ""
@@ -17,6 +21,7 @@ kha = ""
 export interface Config {
     name:string
     sources:string[]
+    output:string
 
     html5:ConfigHTML5
 
@@ -25,6 +30,9 @@ export interface Config {
 
 interface ConfigHTML5 {
     enable:boolean
+    webgl:boolean
+    canvas:string
+    script:string
 }
 
 interface ConfigCore {

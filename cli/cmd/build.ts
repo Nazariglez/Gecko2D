@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {Command} from "../cli";
-import {HAXE_PATH, KHA_PATH, KHA_MAKE_PATH, CURRENT_PATH, ENGINE_NAME, TEMP_PATH} from "../const";
+import * as C from "../const";
 import {existsConfigFile, createTempFolder, trimLineSpaces} from "./utils";
 import {parseConfig, Config} from "../config";
 import {exec} from 'child_process';
@@ -14,7 +14,7 @@ export const cmdBuild:Command = {
 
 function _action(args:string[]) : string[] {
     if(!existsConfigFile()){
-        console.log(`Invalid ${ENGINE_NAME} project. Config file not found.`);
+        console.log(`Invalid ${C.ENGINE_NAME} project. Config file not found.`);
         return [];
     }
 
@@ -30,7 +30,6 @@ function _action(args:string[]) : string[] {
         return;
     }
 
-    console.log(config);
     let err = _generateKhafile(config);
     if(err){
         console.error(err);
@@ -39,9 +38,9 @@ function _action(args:string[]) : string[] {
 
     let kmake:KhaMakeConfig = {
         target: "html5",
-        projectfile: "khafile.js",
-        from: TEMP_PATH,
-        to: path.join(TEMP_PATH, "./build"),
+        projectfile: path.join(C.TEMP_RELATIVE_PATH, "khafile.js"),
+        from: ".",
+        to: C.TEMP_BUILD_PATH,
         kha: config.core.kha,
         haxe: config.core.haxe,
     };
@@ -50,17 +49,17 @@ function _action(args:string[]) : string[] {
 }
 
 function _getConfigFile() : string {
-    let fileName = `dev.${ENGINE_NAME}.toml`;
-    const _pathFile = path.join(CURRENT_PATH, fileName);
+    let fileName = `dev.${C.ENGINE_NAME}.toml`;
+    const _pathFile = path.join(C.CURRENT_PATH, fileName);
 
     let file:string;
     if(fs.existsSync(_pathFile)){
         file = fs.readFileSync(_pathFile, {encoding: "UTF-8"});
     }else{
-        const files = fs.readdirSync(CURRENT_PATH);
+        const files = fs.readdirSync(C.CURRENT_PATH);
         for(let i = 0; i < files.length; i++) {
-            if(files[i].indexOf(`${ENGINE_NAME}.toml`) !== -1){
-                file = fs.readFileSync(path.join(CURRENT_PATH, files[i]), {encoding: "UTF-8"});
+            if(files[i].indexOf(`${C.ENGINE_NAME}.toml`) !== -1){
+                file = fs.readFileSync(path.join(C.CURRENT_PATH, files[i]), {encoding: "UTF-8"});
                 fileName = files[i];
                 break;
             }
@@ -82,11 +81,16 @@ function _generateKhafile(config:Config) : Error {
     ${config.sources.map((s)=>{
         return `p.addSources("${s}");`
     }).join("\n")}
+
+    p.targetOptions.html5.canvasId = "${config.html5.canvas}";
+    p.targetOptions.html5.scriptName = "${config.html5.script}";
+    p.targetOptions.html5.webgl = ${config.html5.webgl};
+
     resolve(p);
     `);
 
     try {
-        fs.writeFileSync(path.join(TEMP_PATH, "khafile.js"), kfile, {encoding: "UTF-8"});        
+        fs.writeFileSync(path.join(C.TEMP_PATH, "khafile.js"), kfile, {encoding: "UTF-8"});        
     } catch(e){
         err = e
     }
@@ -104,15 +108,23 @@ interface KhaMakeConfig {
 }
 
 function _runKhaMake(config:KhaMakeConfig) {
-    let cmd = `${KHA_MAKE_PATH}`;
+    console.log(`Compiling ${config.target}...`);
+
+    let cmd = `${C.KHA_MAKE_PATH}`;
     cmd += ` -t ${config.target}`;
     cmd += ` --projectfile ${config.projectfile}`;
     cmd += ` -k ${config.kha}`;
     cmd += ` --haxe ${config.haxe}`;
-    cmd += ` --from ${config.from}`;
+    //cmd += ` --from ${config.from}`;
     cmd += ` --to ${config.to}`;
     console.log(cmd);
     exec(cmd, (err:Error, stdout:string, stderr:string)=>{
-        console.log(err, stdout, stderr);
+        if(err){
+            console.log(stdout);
+            console.error(err);
+            return;
+        }
+
+        //todo move the build to config.output
     });
 }
