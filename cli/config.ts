@@ -6,6 +6,7 @@ import * as colors from 'colors';
 export const defaultConfig = `# development ${C.ENGINE_NAME} config.
 name = "My ${C.ENGINE_NAME} Game"
 sources = ["Sources"]
+libraries = []                  #libs at Libraries folder or haxelib
 output = "build"                #build output
 
 [html5]
@@ -23,6 +24,7 @@ kha = ""
 export interface Config {
     name:string
     sources:string[]
+    libraries:string[]
     output:string
 
     html5:ConfigHTML5
@@ -55,6 +57,8 @@ export function parseConfig(input:string) : Config {
     if(config){
         config.core.haxe = config.core.haxe ? path.resolve(config.core.haxe) : C.HAXE_PATH;
         config.core.kha = config.core.kha ? path.resolve(config.core.kha) : C.KHA_PATH;
+
+        config.libraries.unshift(C.ENGINE_NAME);
     }
 
     return config;

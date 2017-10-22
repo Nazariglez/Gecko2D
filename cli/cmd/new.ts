@@ -1,7 +1,7 @@
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 import {Command, ActionCallback} from "../cli";
-import {CURRENT_PATH, ENGINE_NAME} from "../const";
+import {CURRENT_PATH, ENGINE_NAME, ENGINE_PATH} from "../const";
 import {existsConfigFile} from "./utils";
 import {defaultConfig} from "../config";
 import * as colors from 'colors';
@@ -37,5 +37,36 @@ function _createProject() : Error {
         err = e;
     }
 
+    if(err){
+        return err;
+    }
+
+    return _copyTemplate();
+}
+
+function _copyTemplate() : Error {
+    let err:Error;
+    const templatePath = path.join(ENGINE_PATH, "template");
+    const files = fs.readdirSync(templatePath);
+    for(let i = 0; i < files.length; i++){
+        let f = files[i];
+        try {
+            fs.copySync(path.join(templatePath, f), path.join(CURRENT_PATH, f));            
+        }catch(e){
+            err = e;
+            break;
+        }
+    }
+
+    if(err){
+        return err;
+    }
+
+    try {
+        fs.copySync(path.join(ENGINE_PATH, ENGINE_NAME), path.join(CURRENT_PATH, "Libraries", ENGINE_NAME));
+    }catch(e){
+        err = e;
+    }
+    
     return err;
 }

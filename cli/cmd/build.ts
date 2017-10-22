@@ -99,18 +99,28 @@ function _generateKhafile(config:Config) : Error {
         return err;
     }
 
-    let kfile = trimLineSpaces(`
-    let p = new Project("${config.name}");
-    ${config.sources.map((s)=>{
-        return `p.addSources("${s}");`
-    }).join("\n")}
+    let kfile = `let p = new Project("${config.name}");\n`;
+    config.sources.forEach((s)=>{
+        kfile += `p.addSources("${s}");\n`;
+    });
 
+    if(config.libraries&&config.libraries.length){
+        config.libraries.forEach((s)=>{
+            kfile += `p.addLibrary("${s}");\n`;
+        });
+    }
+
+    kfile += `p.addAssets('Assets/**', {nameBaseDir: 'Assets', destination: '{dir}/{name}', name: '{dir}/{name}'});\n`;
+
+    kfile += `
     p.targetOptions.html5.canvasId = "${config.html5.canvas}";
     p.targetOptions.html5.scriptName = "${config.html5.script}";
     p.targetOptions.html5.webgl = ${config.html5.webgl};
+    `;
 
-    resolve(p);
-    `);
+    kfile += "resolve(p);";
+
+    kfile = trimLineSpaces(kfile);
 
     try {
         fs.writeFileSync(path.join(C.TEMP_PATH, "khafile.js"), kfile, {encoding: "UTF-8"});        
