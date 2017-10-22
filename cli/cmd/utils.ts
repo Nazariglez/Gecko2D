@@ -17,14 +17,14 @@ export function existsConfigFile() : boolean {
     return exists;
 }
 
-export function createTempFolder() : Error {
+export function createFolder(folder:string) : Error {
     let err:Error;
 
-    if(fs.existsSync(TEMP_PATH)){
+    if(fs.existsSync(folder)){
         return err;
     }
     try {
-        fs.mkdirSync(TEMP_PATH)
+        fs.mkdirSync(folder)
     } catch(e){
         err = e
     }

@@ -1,9 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import {Command} from "../cli";
+import {Command, ActionCallback} from "../cli";
 import {CURRENT_PATH, ENGINE_NAME} from "../const";
 import {existsConfigFile} from "./utils";
 import {defaultConfig} from "../config";
+import * as colors from 'colors';
 
 export const cmdNew:Command = {
     name: "new",
@@ -11,20 +12,20 @@ export const cmdNew:Command = {
     action: _action
 }
 
-function _action(args:string[]) : string[] {
+function _action(args:string[], cb:ActionCallback) {
     if(existsConfigFile()){
-        console.log(`Already exists a ${ENGINE_NAME} project in this path: ${CURRENT_PATH}`);
-        return [];
+        cb(new Error(`Already exists a ${ENGINE_NAME} project in this path: ${CURRENT_PATH}`));
+        return;
     }
 
     let err = _createProject();
     if(err){
-        console.error(err);
-        return [];
+        cb(err);
+        return;
     }
 
-    console.log(`Created a new ${ENGINE_NAME} project.`);
-    return args;
+    console.log(colors.green(`Created a new ${ENGINE_NAME} project.`));
+    cb(null, args);
 }
 
 function _createProject() : Error {

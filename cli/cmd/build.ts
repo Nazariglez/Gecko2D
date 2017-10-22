@@ -1,10 +1,12 @@
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
-import {Command} from "../cli";
+import {Command, ActionCallback} from "../cli";
 import * as C from "../const";
-import {existsConfigFile, createTempFolder, trimLineSpaces} from "./utils";
+import {existsConfigFile, createFolder, trimLineSpaces} from "./utils";
 import {parseConfig, Config} from "../config";
 import {exec} from 'child_process';
+import {series} from 'async';
+import * as colors from 'colors';
 
 export const cmdBuild:Command = {
     name: "build",
@@ -12,40 +14,61 @@ export const cmdBuild:Command = {
     action: _action
 }
 
-function _action(args:string[]) : string[] {
+function _action(args:string[], cb:ActionCallback) {
     if(!existsConfigFile()){
-        console.log(`Invalid ${C.ENGINE_NAME} project. Config file not found.`);
-        return [];
+        cb(new Error(`Invalid ${C.ENGINE_NAME} project. Config file not found.`));
+        return;
     }
 
     const file = _getConfigFile();
     if(!file){
-        console.log("Not found any config file.");
-        return [];
+        cb(new Error("Not found any config file."));
+        return;
     }
 
     const config = parseConfig(file);
     if(!config){
-        console.log("Invalid config file");
+        cb(new Error("Invalid config file"));
         return;
     }
 
     let err = _generateKhafile(config);
     if(err){
-        console.error(err);
-        return [];
+        cb(err);
+        return;
     }
 
     let kmake:KhaMakeConfig = {
         target: "html5",
         projectfile: path.join(C.TEMP_RELATIVE_PATH, "khafile.js"),
-        from: ".",
         to: C.TEMP_BUILD_PATH,
         kha: config.core.kha,
         haxe: config.core.haxe,
+        build: path.resolve(C.CURRENT_PATH, config.output)
     };
 
-    _runKhaMake(kmake)
+
+    series([
+        function(next){
+            _runKhaMake(kmake, next);
+        }
+    ], function(err){
+        if(err){
+            cb(err);
+            return;
+        }
+
+        if(config.core.clean_temp){
+            err = _cleanTempFolder();
+            if(err){
+                cb(err);
+                return;
+            }
+        }
+
+        console.log(colors.bold(colors.green("Done.")));
+        cb(null, args);
+    });
 }
 
 function _getConfigFile() : string {
@@ -66,12 +89,12 @@ function _getConfigFile() : string {
         }
     }
 
-    console.log(`Using '${fileName}' config file.`);
+    console.log(colors.blue(`Using '${colors.magenta(fileName)}' config file.`));
     return file;
 }
 
 function _generateKhafile(config:Config) : Error {
-    let err = createTempFolder();
+    let err = createFolder(C.TEMP_PATH);
     if(err){
         return err;
     }
@@ -103,28 +126,81 @@ interface KhaMakeConfig {
     projectfile:string
     kha:string
     haxe:string
-    from:string
     to:string
+    build:string
 }
 
-function _runKhaMake(config:KhaMakeConfig) {
-    console.log(`Compiling ${config.target}...`);
+async function _runKhaMake(config:KhaMakeConfig, cb) {
+    console.log(colors.cyan(`Compiling ${config.target}...`));
 
     let cmd = `${C.KHA_MAKE_PATH}`;
     cmd += ` -t ${config.target}`;
     cmd += ` --projectfile ${config.projectfile}`;
     cmd += ` -k ${config.kha}`;
     cmd += ` --haxe ${config.haxe}`;
-    //cmd += ` --from ${config.from}`;
     cmd += ` --to ${config.to}`;
-    console.log(cmd);
+    
     exec(cmd, (err:Error, stdout:string, stderr:string)=>{
         if(err){
             console.log(stdout);
-            console.error(err);
+            cb(err);
             return;
         }
 
-        //todo move the build to config.output
+        err = createFolder(C.TEMP_PATH);
+        if(err){
+            cb(err);
+            return;
+        }
+
+        err = _moveBuild(config.target, config.build);
+        if(err){
+            cb(err);
+            return;
+        }
+
+        cb();
+    });
+}
+
+
+function _moveBuild(target:string, to:string) : Error {
+    let err:Error;
+
+    try {
+        switch(target){
+            case "html5":
+                fs.copySync(path.join(C.TEMP_BUILD_PATH, "html5"), path.join(to, "html5"));
+                break;
+        }
+    }catch(e){
+        err = e
+    }
+
+    return err
+}
+
+function _cleanTempFolder() : Error {
+    console.log(colors.cyan("Cleaning temporal files..."));
+    let err:Error;
+    try {
+        fs.removeSync(C.TEMP_PATH);
+    }catch(e){
+        err = e
+    }
+    return err;
+}
+
+async function syncExec(cmd, cb) : Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+        const child = exec(cmd, (err, stdout, stderr) =>{
+            let _err = cb(err, stdout, stderr);
+            if(_err){
+                reject(_err);
+                return;
+            }
+
+            resolve(true);
+        });
     });
 }

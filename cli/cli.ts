@@ -1,12 +1,15 @@
 import {commands} from "./cmd/cmd";
+import * as colors from 'colors';
 
 const inputArgs = process.argv.slice(2);
 let commandList:{[key:string]:Command} = {};
 
+export type ActionCallback = (err:Error, args?:string[])=>void;
+
 export interface Command {
     name:string
     usage:string
-    action:(args:string[])=>string[]
+    action:(args:string[], cb:ActionCallback)=>void
     sub?:Command[]
 }
 
@@ -27,23 +30,35 @@ export function registerCommand(command:Command) {
 
 function _processArgs(){
     let args = inputArgs;
-    let cmd = args.shift();
-    args = _runCommand(cmd, args);
+    _consumeArgs(args);
+}
+
+function _consumeArgs(args:string[]){
+    if(args.length){
+        let cmd = args.shift();
+        _runCommand(cmd, args, (err, args)=>{
+            if(err){
+                console.error(colors.red(err.message));
+                if(err.message === "Invalid command."){
+                    _showHelp();
+                }
+                return;
+            }
+
+            _consumeArgs(args);
+        });
+    }
 }
 
 function _showHelp() {
     console.log("help info");
 }
 
-function _runCommand(cmd:string, args:string[]) : string[] {
+function _runCommand(cmd:string, args:string[], cb:ActionCallback) {
     let command = commandList[cmd];
     if(!command){
-        console.log("Invalid command.");
-        _showHelp();
-        return;
+        return cb(new Error("Invalid command."));
     }
 
-    args = command.action(args);
-
-    return args;
+    command.action(args, cb);
 }

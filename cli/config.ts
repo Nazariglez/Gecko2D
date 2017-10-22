@@ -1,11 +1,12 @@
 import * as C from "./const";
 import * as path from 'path';
 import * as toml from 'toml';
+import * as colors from 'colors';
 
 export const defaultConfig = `# development ${C.ENGINE_NAME} config.
 name = "My ${C.ENGINE_NAME} Game"
 sources = ["Sources"]
-output = "build"
+output = "build"                #build output
 
 [html5]
 enable = true
@@ -14,6 +15,7 @@ canvas = "khanvas"          #canvas id
 script = "game"             #script name
 
 [core]
+clean_temp = true               #clean temporal files after compile
 haxe = ""
 kha = ""
 `;
@@ -36,6 +38,7 @@ interface ConfigHTML5 {
 }
 
 interface ConfigCore {
+    clean_temp:boolean
     haxe:string
     kha:string
 }
@@ -46,7 +49,7 @@ export function parseConfig(input:string) : Config {
     try {
         config = toml.parse(input) as Config;
     } catch(e){
-        console.error(`Error: (${e.line},${e.column}) ${e.message}`);
+        console.error(colors.red(`Error: (${e.line},${e.column}) ${e.message}`));
     }
 
     if(config){
