@@ -64,7 +64,7 @@ function _copyTemplate() : Error {
     }
 
     try {
-        fs.copySync(path.join(ENGINE_PATH, ENGINE_NAME), path.join(CURRENT_PATH, "Libraries", ENGINE_NAME));
+        fs.copySync(path.join(ENGINE_PATH, "Sources"), path.join(CURRENT_PATH, "Libraries", ENGINE_NAME, "Sources"));
     }catch(e){
         err = e;
     }
