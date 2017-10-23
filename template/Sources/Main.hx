@@ -1,9 +1,7 @@
-import kha.System;
+import k2d.Game;
 
 class Main {
 	public static function main() {
-		System.init({title: "Empty", width: 800, height: 600}, function() {
-			new Empty();
-		});
+		Game.init("k2d game", 800, 600);
 	}
 }
