@@ -1,8 +1,12 @@
 import {Command} from "../cli";
-import {cmdNew} from "./new";
+import {cmdInit} from "./init";
 import {cmdBuild} from "./build";
+import {cmdVersion} from "./version";
+import {cmdHelp} from "./help";
 
 export const commands:Command[] = [
-    cmdNew,
-    cmdBuild
+    cmdInit,
+    cmdBuild,
+    cmdVersion,
+    cmdHelp,
 ];

@@ -2,6 +2,16 @@ import * as C from "./const";
 import * as path from 'path';
 import * as toml from 'toml';
 import * as colors from 'colors';
+import {trimLineSpaces} from './cmd/utils';
+
+export const platform = {
+    HTML5: "html5",
+    OSX: "osx",
+    Linux: "linux",
+    Win: "windows",
+    Android: "android",
+    IOS: "ios"
+};
 
 export const defaultConfig = `# development ${C.ENGINE_NAME} config.
 name = "My ${C.ENGINE_NAME} Game"
@@ -10,9 +20,8 @@ libraries = []                  #libs at Libraries folder or haxelib
 output = "build"                #build output
 
 [html5]
-enable = true
 webgl = true
-canvas = "khanvas"          #canvas id
+canvas = "kanvas"           #canvas id
 script = "game"             #script name
 
 [core]
@@ -27,22 +36,48 @@ export interface Config {
     libraries:string[]
     output:string
 
-    html5:ConfigHTML5
+    html5?:ConfigHTML5
+    osx?:ConfigOSX
+    windows?:ConfigWin
+    linus?:ConfigLinux
+    android?:ConfigAndroid
+    ios?:ConfigIOS
 
     core:ConfigCore
 }
 
 interface ConfigHTML5 {
-    enable:boolean
+    disable?:boolean
     webgl:boolean
     canvas:string
     script:string
+}
+
+interface ConfigOSX {
+    disable?:boolean
+}
+
+interface ConfigWin {
+    disable?:boolean
+}
+
+interface ConfigLinux {
+    disable?:boolean
+}
+
+interface ConfigAndroid {
+    disable?:boolean
+}
+
+interface ConfigIOS {
+    disable?:boolean
 }
 
 interface ConfigCore {
     clean_temp:boolean
     haxe:string
     kha:string
+    khafile?:string //add extra opts to include in khafile as plain text -> "$project.addAssets("assets");";
 }
 
 export function parseConfig(input:string) : Config {
@@ -62,4 +97,35 @@ export function parseConfig(input:string) : Config {
     }
 
     return config;
+}
+
+export function generateKhafileContent(config:Config) : string {
+    let kfile = `let p = new Project("${config.name}");\n`;
+    config.sources.forEach((s)=>{
+        kfile += `p.addSources("${s}");\n`;
+    });
+
+    if(config.libraries&&config.libraries.length){
+        config.libraries.forEach((s)=>{
+            kfile += `p.addLibrary("${s}");\n`;
+        });
+    }
+
+    kfile += `p.addAssets('Assets/**', {nameBaseDir: 'Assets', destination: '{dir}/{name}', name: '{dir}/{name}'});\n`;
+
+    if(config.html5 && !config.html5.disable){
+        kfile += `
+        p.targetOptions.html5.canvasId = "${config.html5.canvas}";
+        p.targetOptions.html5.scriptName = "${config.html5.script}";
+        p.targetOptions.html5.webgl = ${config.html5.webgl};
+        `;
+    }
+
+    if(config.core.khafile){
+        kfile += config.core.khafile.replace("$project", "p") + "\n";
+    }
+
+    kfile += "resolve(p);";
+
+    return trimLineSpaces(kfile);
 }

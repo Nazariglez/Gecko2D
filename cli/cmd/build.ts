@@ -2,16 +2,80 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import {Command, ActionCallback} from "../cli";
 import * as C from "../const";
-import {existsConfigFile, createFolder, trimLineSpaces} from "./utils";
-import {parseConfig, Config} from "../config";
+import {existsConfigFile, createFolder} from "./utils";
+import {parseConfig, Config, generateKhafileContent, platform} from "../config";
 import {exec} from 'child_process';
-import {series} from 'async';
+import {series, eachSeries} from 'async';
 import * as colors from 'colors';
+
+const usage = `compile the current project
+          ${C.ENGINE_NAME} build [ target ] [ -c config ]
+          
+          where [ target ] can be some platform as 'html5' or 'osx',
+          and where [ -c config ] can be the prefix of a config file.
+          For example: 'dev' to use 'dev.${C.ENGINE_NAME}.toml' 
+          or 'prod' to use 'prod.${C.ENGINE_NAME}.toml'.
+          
+          By default will compile all the targets in 'dev.${C.ENGINE_NAME}.toml'`;
 
 export const cmdBuild:Command = {
     name: "build",
-    usage: "-",
+    alias: ["-b", "--build"],
+    usage: usage,
     action: _action
+}
+
+interface buildParseArgs {
+    err?:string
+    args:string[]
+    target:string
+    config:string
+}
+
+function _parseArgs(args:string[]) : buildParseArgs {
+    let parsed = {
+        err:"",
+        args: args,
+        target: "",
+        config: ""
+    };
+
+    if(!args.length){
+        return parsed;
+    }
+
+    let platformList = Object.keys(platform);
+    if(args[0][0] !== "-"){
+        let target = args.shift();
+        let valid = false;
+        for(let i = 0; i < platformList.length; i++) {
+            let t = platform[platformList[i]];
+            if(t === target){
+                valid = true;
+                parsed.target = t;
+                break;
+            }
+        }
+
+        if(!valid){
+            parsed.err = `Invalid target '${target}'.`;
+            return parsed;
+        }
+    }
+
+    if(args.length >= 2 && args[0][0] === "-" && args[0] === "-c"){
+        args.shift(); //discard -c
+        let file = args.shift();
+        if(file[0] === "-"){
+            parsed.err = `Invalid config '-c ${file}'.`;
+            return parsed;
+        }
+
+        parsed.config = file;
+    }
+
+    parsed.args = args;
+    return parsed;
 }
 
 function _action(args:string[], cb:ActionCallback) {
@@ -20,7 +84,15 @@ function _action(args:string[], cb:ActionCallback) {
         return;
     }
 
-    const file = _getConfigFile();
+    const parsed = _parseArgs(args);
+    if(parsed.err){
+        cb(new Error(parsed.err));
+        return;
+    }
+
+    args = parsed.args;
+
+    const file = _getConfigFile(parsed.config);
     if(!file){
         cb(new Error("Not found any config file."));
         return;
@@ -32,14 +104,27 @@ function _action(args:string[], cb:ActionCallback) {
         return;
     }
 
+    if(parsed.target){
+        if(!config[parsed.target]){
+            cb(new Error(`Target ${parsed.target} not defined in the config file.`));
+            return;
+        }
+
+        if(config[parsed.target].disable){
+            cb(new Error(`Target ${parsed.target} is disabled in the config file.`));
+            return;
+        }
+    }
+
+    let platformList = Object.keys(platform);
     let err = _generateKhafile(config);
     if(err){
         cb(err);
         return;
     }
 
-    let kmake:KhaMakeConfig = {
-        target: "html5",
+    let kmakeBasic:KhaMakeConfig = {
+        target: "",
         projectfile: path.join(C.TEMP_RELATIVE_PATH, "khafile.js"),
         to: C.TEMP_BUILD_PATH,
         kha: config.core.kha,
@@ -47,19 +132,42 @@ function _action(args:string[], cb:ActionCallback) {
         build: path.resolve(C.CURRENT_PATH, config.output)
     };
 
-
-    series([
-        function(next){
-            _runKhaMake(kmake, next);
+    let existsTarget = false;
+    for(let i = 0; i < platformList.length; i++){
+        let target = platform[platformList[i]];
+        if(config[target] && !config[target].disable) {
+            existsTarget = true;
+            break;
         }
-    ], function(err){
+    }
+
+    if(!existsTarget){
+        cb(new Error("No one platform it's defined as target in the config file."));
+        return;
+    }
+
+    let list = parsed.target ? [_getPlatformByValue(parsed.target)] : platformList;
+
+    eachSeries(list, (key, next)=>{
+        
+        let target = platform[key];
+        if(!config[target] || config[target].disabled){
+            next();
+            return;
+        }
+
+        let kmake = JSON.parse(JSON.stringify(kmakeBasic));
+        kmake.target = target;
+        _runKhaMake(kmake, next);
+
+    }, (err)=>{
         if(err){
             cb(err);
             return;
         }
 
         if(config.core.clean_temp){
-            err = _cleanTempFolder();
+            let err = _cleanTempFolder();
             if(err){
                 cb(err);
                 return;
@@ -71,14 +179,27 @@ function _action(args:string[], cb:ActionCallback) {
     });
 }
 
-function _getConfigFile() : string {
-    let fileName = `dev.${C.ENGINE_NAME}.toml`;
+function _getPlatformByValue(v:string) : string {
+    let key = "";
+    for(var k in platform){
+        if(platform[k] === v){
+            key = k;
+            break;
+        }
+    }
+    return key;
+}
+
+function _getConfigFile(prefix:string) : string {
+    let _prefix = prefix || "dev";
+
+    let fileName = `${_prefix}.${C.ENGINE_NAME}.toml`;
     const _pathFile = path.join(C.CURRENT_PATH, fileName);
 
     let file:string;
     if(fs.existsSync(_pathFile)){
         file = fs.readFileSync(_pathFile, {encoding: "UTF-8"});
-    }else{
+    }else if(!prefix){
         const files = fs.readdirSync(C.CURRENT_PATH);
         for(let i = 0; i < files.length; i++) {
             if(files[i].indexOf(`${C.ENGINE_NAME}.toml`) !== -1){
@@ -87,6 +208,9 @@ function _getConfigFile() : string {
                 break;
             }
         }
+    }else{
+        console.error(colors.red(`Error: config file '${fileName}' not found.`));
+        return file;
     }
 
     console.log(colors.blue(`Using '${colors.magenta(fileName)}' config file.`));
@@ -99,31 +223,8 @@ function _generateKhafile(config:Config) : Error {
         return err;
     }
 
-    let kfile = `let p = new Project("${config.name}");\n`;
-    config.sources.forEach((s)=>{
-        kfile += `p.addSources("${s}");\n`;
-    });
-
-    if(config.libraries&&config.libraries.length){
-        config.libraries.forEach((s)=>{
-            kfile += `p.addLibrary("${s}");\n`;
-        });
-    }
-
-    kfile += `p.addAssets('Assets/**', {nameBaseDir: 'Assets', destination: '{dir}/{name}', name: '{dir}/{name}'});\n`;
-
-    kfile += `
-    p.targetOptions.html5.canvasId = "${config.html5.canvas}";
-    p.targetOptions.html5.scriptName = "${config.html5.script}";
-    p.targetOptions.html5.webgl = ${config.html5.webgl};
-    `;
-
-    kfile += "resolve(p);";
-
-    kfile = trimLineSpaces(kfile);
-
     try {
-        fs.writeFileSync(path.join(C.TEMP_PATH, "khafile.js"), kfile, {encoding: "UTF-8"});        
+        fs.writeFileSync(path.join(C.TEMP_PATH, "khafile.js"), generateKhafileContent(config), {encoding: "UTF-8"});        
     } catch(e){
         err = e
     }
@@ -150,9 +251,12 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
     cmd += ` --haxe ${config.haxe}`;
     cmd += ` --to ${config.to}`;
     
+    console.log(colors.yellow(" - - - - "));
     exec(cmd, (err:Error, stdout:string, stderr:string)=>{
+        console.log(stdout);
+        console.log(colors.yellow(" - - - - \n"));
+
         if(err){
-            console.log(stdout);
             cb(err);
             return;
         }
@@ -199,18 +303,4 @@ function _cleanTempFolder() : Error {
         err = e
     }
     return err;
-}
-
-async function syncExec(cmd, cb) : Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-        const child = exec(cmd, (err, stdout, stderr) =>{
-            let _err = cb(err, stdout, stderr);
-            if(_err){
-                reject(_err);
-                return;
-            }
-
-            resolve(true);
-        });
-    });
 }

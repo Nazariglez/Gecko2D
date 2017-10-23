@@ -8,9 +8,9 @@ export type ActionCallback = (err:Error, args?:string[])=>void;
 
 export interface Command {
     name:string
+    alias?:string[]
     usage:string
     action:(args:string[], cb:ActionCallback)=>void
-    sub?:Command[]
 }
 
 export function run(){
@@ -26,6 +26,11 @@ export function run(){
 
 export function registerCommand(command:Command) {
     commandList[command.name] = command;
+    if(command.alias && command.alias.length) {
+        command.alias.forEach(cmd => {
+            commandList[cmd] = command;
+        });
+    }
 }
 
 function _processArgs(){

@@ -6,9 +6,10 @@ import {existsConfigFile} from "./utils";
 import {defaultConfig} from "../config";
 import * as colors from 'colors';
 
-export const cmdNew:Command = {
-    name: "new",
-    usage: "-",
+export const cmdInit:Command = {
+    name: "init",
+    alias: ["-i", "--init"],
+    usage: "initialize a new project",
     action: _action
 }
 
