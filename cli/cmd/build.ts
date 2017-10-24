@@ -244,8 +244,8 @@ interface KhaMakeConfig {
 async function _runKhaMake(config:KhaMakeConfig, cb) {
     console.log(colors.cyan(`Compiling ${config.target}...`));
 
-    let cmd = `${C.KHA_MAKE_PATH}`;
-    cmd += ` -t ${config.target}`;
+    let cmd = `${C.KHA_MAKE_PATH} ${config.target} --compile`;
+    //cmd += ` -t ${config.target}`;
     cmd += ` --projectfile ${config.projectfile}`;
     cmd += ` -k ${config.kha}`;
     cmd += ` --haxe ${config.haxe}`;
@@ -285,6 +285,7 @@ function _moveBuild(target:string, to:string) : Error {
         switch(target){
             case "html5":
                 fs.copySync(path.join(C.TEMP_BUILD_PATH, "html5"), path.join(to, "html5"));
+                //todo move other platforms
                 break;
         }
     }catch(e){
