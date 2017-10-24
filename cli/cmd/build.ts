@@ -4,7 +4,7 @@ import {Command, ActionCallback} from "../cli";
 import * as C from "../const";
 import {existsConfigFile, createFolder} from "../utils";
 import {parseConfig, Config, generateKhafileContent, platform} from "../config";
-import {exec} from 'child_process';
+import {exec, spawn} from 'child_process';
 import {series, eachSeries} from 'async';
 import * as colors from 'colors';
 
@@ -151,13 +151,19 @@ function _action(args:string[], cb:ActionCallback) {
     eachSeries(list, (key, next)=>{
         
         let target = platform[key];
-        if(!config[target] || config[target].disabled){
+        if(!config[target] || config[target].disable){
             next();
             return;
         }
 
         let kmake = JSON.parse(JSON.stringify(kmakeBasic));
         kmake.target = target;
+        if(target === platform.OSX || target === platform.Win) {
+            if(config[target].graphics){
+                kmake.graphics = config[target].graphics;
+            }
+        }
+
         _runKhaMake(kmake, next);
 
     }, (err)=>{
@@ -239,12 +245,16 @@ interface KhaMakeConfig {
     haxe:string
     to:string
     build:string
+    graphics?:string
 }
 
 async function _runKhaMake(config:KhaMakeConfig, cb) {
     console.log(colors.cyan(`Compiling ${config.target}...`));
 
     let cmd = `${C.KHA_MAKE_PATH} ${config.target} --compile`;
+    if(config.graphics){
+        cmd += ` -g ${config.graphics}`;
+    }
     //cmd += ` -t ${config.target}`;
     cmd += ` --projectfile ${config.projectfile}`;
     cmd += ` -k ${config.kha}`;
@@ -252,8 +262,7 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
     cmd += ` --to ${config.to}`;
     
     console.log(colors.yellow(" - - - - "));
-    exec(cmd, (err:Error, stdout:string, stderr:string)=>{
-        console.log(stdout);
+    let k = exec(cmd, {maxBuffer: 1024 * 1024}, (err:Error, stdout:string, stderr:string)=>{
         console.log(colors.yellow(" - - - - \n"));
 
         if(err){
@@ -275,19 +284,21 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
 
         cb();
     });
+
+    //k.stdout.on('data', d => console.log(d.toString()));
+    k.stdout.pipe(process.stdout);
 }
 
+const releaseDestination = {
+    html5: "html5",
+    osx: "osx-build/build/Release"
+};
 
 function _moveBuild(target:string, to:string) : Error {
     let err:Error;
 
     try {
-        switch(target){
-            case "html5":
-                fs.copySync(path.join(C.TEMP_BUILD_PATH, "html5"), path.join(to, "html5"));
-                //todo move other platforms
-                break;
-        }
+        fs.copySync(path.join(C.TEMP_BUILD_PATH, target), path.join(to, releaseDestination[target]));
     }catch(e){
         err = e
     }

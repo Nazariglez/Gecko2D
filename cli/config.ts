@@ -24,6 +24,10 @@ webgl = true
 canvas = "kanvas"           #canvas id
 script = "game"             #script name
 
+[osx]
+disable = true
+graphics = "opengl"         #mac graphics [opengl || metal]
+
 [core]
 clean_temp = true               #clean temporal files after compile
 haxe = ""
@@ -46,32 +50,29 @@ export interface Config {
     core:ConfigCore
 }
 
-interface ConfigHTML5 {
+interface DisableInterface {
     disable?:boolean
+}
+
+interface ConfigHTML5 extends DisableInterface {
     webgl:boolean
     canvas:string
     script:string
 }
 
-interface ConfigOSX {
-    disable?:boolean
+interface ConfigOSX  extends DisableInterface{
+    graphics?:string
 }
 
-interface ConfigWin {
-    disable?:boolean
+interface ConfigWin  extends DisableInterface{
+    graphics?:string
 }
 
-interface ConfigLinux {
-    disable?:boolean
-}
+interface ConfigLinux extends DisableInterface{}
 
-interface ConfigAndroid {
-    disable?:boolean
-}
+interface ConfigAndroid extends DisableInterface{}
 
-interface ConfigIOS {
-    disable?:boolean
-}
+interface ConfigIOS extends DisableInterface{}
 
 interface ConfigCore {
     clean_temp:boolean
