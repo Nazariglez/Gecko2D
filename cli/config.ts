@@ -30,6 +30,8 @@ graphics = "opengl"         #mac graphics [opengl || metal]
 
 [core]
 clean_temp = true               #clean temporal files after compile
+flags = []                      #custom compiler flags (ex: "debug_collisions")
+compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
 haxe = ""
 kha = ""
 `;
@@ -76,6 +78,8 @@ interface ConfigIOS extends DisableInterface{}
 
 interface ConfigCore {
     clean_temp:boolean
+    flags:string[]
+    compiler_parameters:string[]
     haxe:string
     kha:string
     khafile?:string //add extra opts to include in khafile as plain text -> "$project.addAssets("assets");";
@@ -120,6 +124,18 @@ export function generateKhafileContent(config:Config) : string {
         p.targetOptions.html5.scriptName = "${config.html5.script}";
         p.targetOptions.html5.webgl = ${config.html5.webgl};
         `;
+    }
+
+    if(config.core.compiler_parameters.length){
+        config.core.compiler_parameters.forEach((s)=>{
+            kfile += `p.addParameter("${s}");\n`;
+        });
+    }
+
+    if(config.core.flags.length){
+        config.core.flags.forEach((s)=>{
+            kfile += `p.addDefine("${s}");\n`;
+        });
     }
 
     if(config.core.khafile){
