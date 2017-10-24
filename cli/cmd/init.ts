@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import {Command, ActionCallback} from "../cli";
 import {CURRENT_PATH, ENGINE_NAME, ENGINE_PATH} from "../const";
-import {existsConfigFile} from "./utils";
+import {existsConfigFile, copyEngineToProject} from "./utils";
 import {defaultConfig} from "../config";
 import * as colors from 'colors';
 
@@ -63,11 +63,5 @@ function _copyTemplate() : Error {
         return err;
     }
 
-    try {
-        fs.copySync(path.join(ENGINE_PATH, "Sources"), path.join(CURRENT_PATH, "Libraries", ENGINE_NAME, "Sources"));
-    }catch(e){
-        err = e;
-    }
-    
-    return err;
+    return copyEngineToProject();
 }
