@@ -1,7 +1,7 @@
 import {Command, ActionCallback} from '../cli';
 import {ENGINE_NAME} from '../const';
 
-export const cmdVersion:Command = {
+export const cmd:Command = {
     name: "version",
     alias: ["-v", "--version"],
     usage: `print ${ENGINE_NAME} version`,

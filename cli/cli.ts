@@ -1,5 +1,8 @@
-import {commands} from "./cmd/cmd";
 import * as colors from 'colors';
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as C from './const';
+import {commands} from './commands';
 
 const inputArgs = process.argv.slice(2);
 let commandList:{[key:string]:Command} = {};
@@ -14,13 +17,13 @@ export interface Command {
 }
 
 export function run(){
+    commands.forEach(registerCommand);
+
     if(!inputArgs.length){
         _showHelp();
         return;
     }
 
-
-    commands.forEach(registerCommand);
     _processArgs();
 }
 
@@ -56,7 +59,11 @@ function _consumeArgs(args:string[]){
 }
 
 function _showHelp() {
-    console.log("help info");
+    _runCommand("help", [], (err)=>{
+        if(err){
+            console.error(colors.red(err.message));
+        }
+    });
 }
 
 function _runCommand(cmd:string, args:string[], cb:ActionCallback) {

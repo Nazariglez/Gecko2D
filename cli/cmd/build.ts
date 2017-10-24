@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import {Command, ActionCallback} from "../cli";
 import * as C from "../const";
-import {existsConfigFile, createFolder} from "./utils";
+import {existsConfigFile, createFolder} from "../utils";
 import {parseConfig, Config, generateKhafileContent, platform} from "../config";
 import {exec} from 'child_process';
 import {series, eachSeries} from 'async';
@@ -18,7 +18,7 @@ const usage = `compile the current project
           
           By default will compile all the targets in 'dev.${C.ENGINE_NAME}.toml'`;
 
-export const cmdBuild:Command = {
+export const cmd:Command = {
     name: "build",
     alias: ["-b", "--build"],
     usage: usage,

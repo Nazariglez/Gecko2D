@@ -1,6 +1,6 @@
 ///<reference path="../node_modules/@types/node/index.d.ts" />
 import {run} from './cli';
-import {nodeVersion} from './cmd/utils';
+import {nodeVersion} from './utils';
 import * as colors from 'colors';
 
 if(nodeVersion()[0] < 6){

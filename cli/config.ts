@@ -2,7 +2,7 @@ import * as C from "./const";
 import * as path from 'path';
 import * as toml from 'toml';
 import * as colors from 'colors';
-import {trimLineSpaces} from './cmd/utils';
+import {trimLineSpaces} from './utils';
 
 export const platform = {
     HTML5: "html5",

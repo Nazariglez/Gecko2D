@@ -1,10 +1,9 @@
 import {Command, ActionCallback} from '../cli';
-import {commands} from "./cmd";
-import {existsConfigFile, copyEngineToProject} from './utils';
+import {existsConfigFile, copyEngineToProject} from '../utils';
 import * as colors from 'colors';
 import * as C from '../const';
 
-export const cmdUpdate:Command = {
+export const cmd:Command = {
     name: "update",
     alias: ["-u", "--update"],
     usage: `update ${C.ENGINE_NAME} in the current project`,

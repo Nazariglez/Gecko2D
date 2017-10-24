@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import {ENGINE_NAME, CURRENT_PATH, TEMP_PATH, ENGINE_PATH} from "../const";
+import {ENGINE_NAME, CURRENT_PATH, TEMP_PATH, ENGINE_PATH} from "./const";
 
 export function existsConfigFile() : boolean {
     const findName = `${ENGINE_NAME}.toml`;

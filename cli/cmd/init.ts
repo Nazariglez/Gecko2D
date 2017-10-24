@@ -2,11 +2,11 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import {Command, ActionCallback} from "../cli";
 import {CURRENT_PATH, ENGINE_NAME, ENGINE_PATH} from "../const";
-import {existsConfigFile, copyEngineToProject} from "./utils";
+import {existsConfigFile, copyEngineToProject} from "../utils";
 import {defaultConfig} from "../config";
 import * as colors from 'colors';
 
-export const cmdInit:Command = {
+export const cmd:Command = {
     name: "init",
     alias: ["-i", "--init"],
     usage: "initialize a new project",

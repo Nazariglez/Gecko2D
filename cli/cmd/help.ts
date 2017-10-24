@@ -1,8 +1,8 @@
 import {Command, ActionCallback} from '../cli';
-import {commands} from "./cmd";
+import {commands} from '../commands';
 import * as C from '../const';
 
-export const cmdHelp:Command = {
+export const cmd:Command = {
     name: "help",
     alias: ["-h", "--help"],
     usage: "print command list help",
