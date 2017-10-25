@@ -1,6 +1,0 @@
-engines:
- haxe-checkstyle:
-    enabled: true
-ratings:
-  paths:
-    - "**.hx"
