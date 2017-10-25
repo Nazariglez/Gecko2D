@@ -78,9 +78,10 @@ function _action(args:string[], cb:ActionCallback) {
         return;
     }
 
-    console.log(colors.blue(`Running server on '${colors.magenta(config.html5.serve_port.toString())}'`))
+    const buildPath = path.join(config.output, "html5");
+    console.log(colors.blue(`Serving '${colors.magenta(buildPath)}' on '${colors.magenta(config.html5.serve_port.toString())}'`))
 
-    const serv = new nodeStatic.Server(path.resolve(C.CURRENT_PATH, config.output, "html5"), {cache: 0});
+    const serv = new nodeStatic.Server(path.resolve(C.CURRENT_PATH, buildPath), {cache: 0});
     const htmlServer = http.createServer((req, res)=>{
         req.addListener("end", ()=>serv.serve(req, res)).resume();
     });

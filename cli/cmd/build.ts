@@ -228,10 +228,7 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
     if(config.graphics){
         cmd += ` -g ${config.graphics}`;
     }
-    //cmd += ` -t ${config.target}`;
     cmd += ` --projectfile ${config.projectfile}`;
-    cmd += ` -k ${config.kha}`;
-    cmd += ` --haxe ${config.haxe}`;
     cmd += ` --to ${config.to}`;
     
     console.log(colors.yellow(" - - - - "));
