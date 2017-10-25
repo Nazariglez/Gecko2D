@@ -10,3 +10,5 @@ export const COMMANDS_PATH = path.resolve(ENGINE_PATH, "cli/cmd");
 export const KHA_PATH = path.join(ENGINE_PATH, "Kha");
 export const KHA_MAKE_PATH = path.join(KHA_PATH, (process.platform === 'win32')? "make.bat" : "make.sh");
 export const HAXE_PATH = path.join(KHA_PATH, "Tools", "haxe");
+
+export const HTML5_SERVE_PORT = 8080;

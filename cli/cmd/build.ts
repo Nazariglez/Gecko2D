@@ -3,7 +3,7 @@ import * as path from 'path';
 import {Command, ActionCallback} from "../cli";
 import * as C from "../const";
 import {existsConfigFile, createFolder} from "../utils";
-import {parseConfig, Config, generateKhafileContent, platform} from "../config";
+import {parseConfig, Config, generateKhafileContent, platform, getConfigFile} from "../config";
 import {exec, spawn} from 'child_process';
 import {series, eachSeries} from 'async';
 import * as colors from 'colors';
@@ -33,7 +33,7 @@ interface buildParseArgs {
 }
 
 function _parseArgs(args:string[]) : buildParseArgs {
-    let parsed = {
+    let parsed:buildParseArgs = {
         err:"",
         args: args,
         target: "",
@@ -92,7 +92,7 @@ function _action(args:string[], cb:ActionCallback) {
 
     args = parsed.args;
 
-    const file = _getConfigFile(parsed.config);
+    const file = getConfigFile(parsed.config);
     if(!file){
         cb(new Error("Not found any config file."));
         return;
@@ -194,33 +194,6 @@ function _getPlatformByValue(v:string) : string {
         }
     }
     return key;
-}
-
-function _getConfigFile(prefix:string) : string {
-    let _prefix = prefix || "dev";
-
-    let fileName = `${_prefix}.${C.ENGINE_NAME}.toml`;
-    const _pathFile = path.join(C.CURRENT_PATH, fileName);
-
-    let file:string;
-    if(fs.existsSync(_pathFile)){
-        file = fs.readFileSync(_pathFile, {encoding: "UTF-8"});
-    }else if(!prefix){
-        const files = fs.readdirSync(C.CURRENT_PATH);
-        for(let i = 0; i < files.length; i++) {
-            if(files[i].indexOf(`${C.ENGINE_NAME}.toml`) !== -1){
-                file = fs.readFileSync(path.join(C.CURRENT_PATH, files[i]), {encoding: "UTF-8"});
-                fileName = files[i];
-                break;
-            }
-        }
-    }else{
-        console.error(colors.red(`Error: config file '${fileName}' not found.`));
-        return file;
-    }
-
-    console.log(colors.blue(`Using '${colors.magenta(fileName)}' config file.`));
-    return file;
 }
 
 function _generateKhafile(config:Config) : Error {

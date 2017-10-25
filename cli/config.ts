@@ -2,6 +2,7 @@ import * as C from "./const";
 import * as path from 'path';
 import * as toml from 'toml';
 import * as colors from 'colors';
+import * as fs from 'fs-extra';
 import {trimLineSpaces} from './utils';
 
 export const platform = {
@@ -28,6 +29,7 @@ output = "build"                #build output
 webgl = true
 canvas = "kanvas"           #canvas id
 script = "game"             #script name
+serve_port = 8080           #port to serve the build with ${C.ENGINE_NAME} serve
 
 [osx]
 disable = true
@@ -65,6 +67,7 @@ interface ConfigHTML5 extends DisableInterface {
     webgl:boolean
     canvas:string
     script:string
+    serve_port?:number
 }
 
 interface ConfigOSX  extends DisableInterface{
@@ -118,9 +121,40 @@ export function parseConfig(input:string) : Config {
                 config[platform.Win].graphics = graphics.windows[0];
             }
         }
+
+        if(config.html5 && !config.html5.serve_port){
+            config.html5.serve_port = C.HTML5_SERVE_PORT;
+        }
     }
 
     return config;
+}
+
+export function getConfigFile(prefix:string) : string {
+    let _prefix = prefix || "dev";
+
+    let fileName = `${_prefix}.${C.ENGINE_NAME}.toml`;
+    const _pathFile = path.join(C.CURRENT_PATH, fileName);
+
+    let file:string;
+    if(fs.existsSync(_pathFile)){
+        file = fs.readFileSync(_pathFile, {encoding: "UTF-8"});
+    }else if(!prefix){
+        const files = fs.readdirSync(C.CURRENT_PATH);
+        for(let i = 0; i < files.length; i++) {
+            if(files[i].indexOf(`${C.ENGINE_NAME}.toml`) !== -1){
+                file = fs.readFileSync(path.join(C.CURRENT_PATH, files[i]), {encoding: "UTF-8"});
+                fileName = files[i];
+                break;
+            }
+        }
+    }else{
+        console.error(colors.red(`Error: config file '${fileName}' not found.`));
+        return file;
+    }
+
+    console.log(colors.blue(`Using '${colors.magenta(fileName)}' config file.`));
+    return file;
 }
 
 export function generateKhafileContent(config:Config) : string {

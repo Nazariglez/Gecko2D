@@ -34,6 +34,7 @@
     "colors": "^1.1.2",
     "fs-extra": "^4.0.2",
     "khamake": "Kha/Tools/khamake",
+    "node-static": "^0.7.10",
     "toml": "^2.3.3"
   }
 }
