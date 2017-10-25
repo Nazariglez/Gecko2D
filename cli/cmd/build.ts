@@ -232,7 +232,7 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
     cmd += ` --to ${config.to}`;
     
     console.log(colors.yellow(" - - - - "));
-    let k = exec(cmd, {maxBuffer: 1024 * 1024 * 10}, (err:Error, stdout:string, stderr:string)=>{
+    let k = exec(cmd, {maxBuffer: 1024 * 1024 * 15}, (err:Error, stdout:string, stderr:string)=>{
         console.log(colors.yellow(" - - - - \n"));
 
         if(err){
@@ -266,9 +266,12 @@ const releaseDestination = {
 
 function _moveBuild(target:string, to:string) : Error {
     let err:Error;
+    let _from = path.join(C.TEMP_BUILD_PATH, releaseDestination[target]);
+    let _to = path.join(to, target);
 
+    //console.log(colors.cyan(`Moving build '${_from} to ${_to}`));
     try {
-        fs.copySync(path.join(C.TEMP_BUILD_PATH, target), path.join(to, releaseDestination[target]));
+        fs.copySync(_from, _to);
     }catch(e){
         err = e
     }
