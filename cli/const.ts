@@ -8,5 +8,5 @@ export const TEMP_BUILD_PATH = path.join(TEMP_PATH, "build");
 export const ENGINE_PATH = path.resolve(__dirname, "../../");
 export const COMMANDS_PATH = path.resolve(ENGINE_PATH, "cli/cmd");
 export const KHA_PATH = path.join(ENGINE_PATH, "Kha");
-export const KHA_MAKE_PATH = path.join(KHA_PATH, "make.sh");
+export const KHA_MAKE_PATH = path.join(KHA_PATH, (process.platform === 'win32')? "make.bat" : "make.sh");
 export const HAXE_PATH = path.join(KHA_PATH, "Tools", "haxe");
