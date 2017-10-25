@@ -232,7 +232,7 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
     cmd += ` --to ${config.to}`;
     
     console.log(colors.yellow(" - - - - "));
-    let k = exec(cmd, {maxBuffer: 1024 * 1024}, (err:Error, stdout:string, stderr:string)=>{
+    let k = exec(cmd, {maxBuffer: 1024 * 1024 * 10}, (err:Error, stdout:string, stderr:string)=>{
         console.log(colors.yellow(" - - - - \n"));
 
         if(err){

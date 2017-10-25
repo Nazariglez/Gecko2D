@@ -130,7 +130,7 @@ export function parseConfig(input:string) : Config {
     return config;
 }
 
-export function getConfigFile(prefix:string) : string {
+export function getConfigFile(prefix:string, silence:boolean = false) : string {
     let _prefix = prefix || "dev";
 
     let fileName = `${_prefix}.${C.ENGINE_NAME}.toml`;
@@ -153,7 +153,10 @@ export function getConfigFile(prefix:string) : string {
         return file;
     }
 
-    console.log(colors.blue(`Using '${colors.magenta(fileName)}' config file.`));
+    if(!silence){
+        console.log(colors.blue(`Using '${colors.magenta(fileName)}' config file.`));
+    }
+    
     return file;
 }
 

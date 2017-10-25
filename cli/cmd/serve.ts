@@ -66,7 +66,7 @@ function _action(args:string[], cb:ActionCallback) {
 
     args = parsed.args;
 
-    const file = getConfigFile(parsed.config);
+    const file = getConfigFile(parsed.config, true);
     if(!file){
         cb(new Error("Not found any config file."));
         return;
