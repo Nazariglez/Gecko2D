@@ -13,6 +13,11 @@ export const platform = {
     IOS: "ios"
 };
 
+export const graphics = {
+    osx : ["opengl", "metal"],
+    windows: [/*todo*/]
+}
+
 export const defaultConfig = `# development ${C.ENGINE_NAME} config.
 name = "My ${C.ENGINE_NAME} Game"
 sources = ["Sources"]
@@ -26,7 +31,7 @@ script = "game"             #script name
 
 [osx]
 disable = true
-graphics = "opengl"         #mac graphics [opengl || metal]
+graphics = "${graphics.osx[0]}"         #mac graphics [${graphics.osx.join(" | ")}]
 
 [core]
 clean_temp = true               #clean temporal files after compile
@@ -99,6 +104,20 @@ export function parseConfig(input:string) : Config {
         config.core.kha = config.core.kha ? path.resolve(config.core.kha) : C.KHA_PATH;
 
         config.libraries.unshift(C.ENGINE_NAME);
+
+        if(graphics.osx.length && config[platform.OSX] && config[platform.OSX].graphics){
+            if(graphics.osx.indexOf(config[platform.OSX].graphics) === -1){
+                console.error(colors.red(`Invalid graphics '${config[platform.OSX].graphics}' for osx, using '${graphics.osx[0]}'`));
+                config[platform.OSX].graphics = graphics.osx[0];
+            }
+        }
+
+        if(graphics.windows.length && config[platform.Win] && config[platform.Win].graphics){
+            if(graphics.windows.indexOf(config[platform.Win].graphics) === -1){
+                console.error(colors.red(`Invalid graphics '${config[platform.Win].graphics}' for windows, using '${graphics.windows[0]}'`));
+                config[platform.Win].graphics = graphics.windows[0];
+            }
+        }
     }
 
     return config;
