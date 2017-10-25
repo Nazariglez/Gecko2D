@@ -8,10 +8,10 @@ import * as path from 'path';
 import * as C from '../const';
 
 const usage = `serve the html5 build
-        ${C.ENGINE_NAME} serve [ -c config ]
+          ${C.ENGINE_NAME} serve [ -c config ]
 
-        where [ -c config ] can be the prefix of a config file.
-        For example: 'dev' to use 'dev.${C.ENGINE_NAME}.toml'`;
+          where [ -c config ] can be the prefix of a config file.
+          For example: 'dev' to use 'dev.${C.ENGINE_NAME}.toml'`;
 
 export const cmd:Command = {
     name: "serve",

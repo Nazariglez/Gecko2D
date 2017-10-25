@@ -10,10 +10,10 @@ import * as colors from 'colors';
 import * as C from '../const';
 
 const usage = `watch the project and serve the changes
-        ${C.ENGINE_NAME} watch [ -c config ]
+          ${C.ENGINE_NAME} watch [ -c config ]
 
-        where [ -c config ] can be the prefix of a config file.
-        For example: 'dev' to use 'dev.${C.ENGINE_NAME}.toml'`;
+          where [ -c config ] can be the prefix of a config file.
+          For example: 'dev' to use 'dev.${C.ENGINE_NAME}.toml'`;
 
 export const cmd:Command = {
     name: "watch",
