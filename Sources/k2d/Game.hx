@@ -1,13 +1,9 @@
 package k2d;
 
-import k2d.exception.NotImplementedException;
 import k2d.i.IUpdatable;
 import k2d.i.IRenderable;
-import k2d.math.Rect;
 
-import kha.System;
-
-class Game implements IUpdatable implements IRenderable {
+class Game {
     public var title:String;
     public var width:Int;
     public var height:Int;
@@ -16,18 +12,14 @@ class Game implements IUpdatable implements IRenderable {
     public var isRunning(get, null):Bool;
 
     private var _loop:Loop = new Loop();
+    private var _initiated:Bool = false;
 
 	public function onPreUpdate(delta: Float)   { /*throw new NotImplementedException();*/ }
-	public function onUpdate(delta: Float)      { trace("my update"); }
+	public function onUpdate(delta: Float)      { trace("on game update"); }
 	public function onPostUpdate(delta: Float)  { /*throw new NotImplementedException();*/ }
 
-    public function onRender(framebuffer: Framebuffer) { trace("my renderer"); }
-
-    static public function init(title:String, width:Int, height:Int) : Game {
-        var game = new Game(title, width, height);
-        game.run();
-        return game;
-    }
+    public function onRender(renderer:Renderer) { trace("on game render"); }
+    public function onInit() { trace("on game init."); }
 
     public function new(title:String, width:Int, height:Int) {
         this.title = title;
@@ -36,34 +28,51 @@ class Game implements IUpdatable implements IRenderable {
     }
     
     public function run() {
-        System.init({
-            title: this.title,
-            width: this.width,
-            height: this.height
+        kha.System.init({
+            title: title,
+            width: width,
+            height: height
         }, function onRun() {
-            System.notifyOnRender(this._render);
-            this._loop.onTick(this._update);
-            this._loop.start();
+            kha.System.notifyOnRender(_render);
+            _loop.onTick(_update);
         });
     }
 
     public function start() {
-        this._loop.start();
+        if(!_initiated){ return; }
+        _loop.start();
     }
 
     public function stop() {
-        this._loop.stop();
+        if(!_initiated){ return; }
+        _loop.stop();
     }
 
     private function _update(delta:Float) {
-        this.onPreUpdate(delta);
-        this.onUpdate(delta);
-        this.onPostUpdate(delta);
+        onPreUpdate(delta);
+        onUpdate(delta);
+        onPostUpdate(delta);
     }
 
     private function _render(framebuffer:Framebuffer) {
-        renderer.setFramebuffer(framebuffer);
-        this.onRender(framebuffer);
+        _init(framebuffer);
+        renderer.begin();
+        _renderSceneGraph();
+        renderer.end();
+        renderer.clear();
+    }
+
+    private inline function _renderSceneGraph() {
+        //todo render sceneGraph
+        onRender(renderer);
+    }
+
+    private inline function _init(frb:Framebuffer) {
+        if(_initiated){ return; }
+        _initiated = true;
+        renderer.setFramebuffer(frb);
+        onInit();
+        start();
     }
 
     function get_isRunning() : Bool {

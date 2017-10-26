@@ -1,6 +1,7 @@
 package k2d.math;
 
 import kha.math.Vector2;
+import k2d.math.Point;
 
 class Vec2Pool {
     static public var maxLen:Int = 500; //max objects stored
@@ -19,6 +20,13 @@ class Vec2Pool {
         }
 
         return new Vector2(0, 0);
+    }
+
+    static public function getFromPoint(p:Point) : Vector2 {
+        var v = Vec2Pool.get();
+        v.x = p.x;
+        v.y = p.y;
+        return v;
     }
 
     static public function put(v:Vector2) {
