@@ -235,6 +235,11 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
     let k = exec(cmd, {maxBuffer: 1024 * 1024 * 15}, (err:Error, stdout:string, stderr:string)=>{
         console.log(colors.yellow(" - - - - \n"));
 
+        if(stderr){
+            cb(new Error(`Error: ${stderr}`));
+            return;
+        }
+
         if(err){
             cb(err);
             return;

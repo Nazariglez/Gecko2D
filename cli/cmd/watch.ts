@@ -90,7 +90,13 @@ function _action(args:string[], cb:ActionCallback) {
     let _buildArgs = ["html5"].concat(_args);
     series([
         function(next:(err:Error, ...args)=>void){
-            build.action([].concat(_buildArgs), next);
+            build.action([].concat(_buildArgs), (err)=>{
+                if(err){
+                    console.error(colors.red(err.message));
+                }
+
+                next(null);
+            });
         },
         function(next:(err:Error, ...args)=>void){
             serve.action([].concat(_args), next);
