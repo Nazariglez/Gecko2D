@@ -1,18 +1,8 @@
-import k2d.Game;
-import k2d.math.Rect;
+package;
 
-import kha.Framebuffer;
-
-class Main extends Game {
-	override public function onUpdate(delta: Float) {
-		trace("u:", _loop.delta);
-	}
-
-	override public function onRender(framebuffer: Framebuffer) {
-	}
-
+class Main {
 	public static function main() {
-		new Main("k2d game", Rect.fromRectangle(800, 600))
-			.run();
+		var game = new Game("My k2d game", 800, 600);
+		game.run();
 	}
 }
