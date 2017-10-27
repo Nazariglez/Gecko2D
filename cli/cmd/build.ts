@@ -238,6 +238,8 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
     if(config.debug){
         cmd += ` --debug`; 
     }
+
+    //todo export to osx -> gamename_version_$mode ?
     
     console.log(colors.yellow(" - - - - "));
     let k = exec(cmd, {maxBuffer: 1024 * 1024 * 15}, (err:Error, stdout:string, stderr:string)=>{
@@ -259,7 +261,7 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
             return;
         }
 
-        err = _moveBuild(config.target, config.build);
+        err = _moveBuild(config.target, config.build, config.debug);
         if(err){
             cb(err);
             return;
@@ -274,12 +276,13 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
 
 const releaseDestination = {
     html5: "html5",
-    osx: "osx-build/build/Release"
+    osx: "osx-build/build/$mode"
 };
 
-function _moveBuild(target:string, to:string) : Error {
+function _moveBuild(target:string, to:string, debug:boolean) : Error {
     let err:Error;
-    let _from = path.join(C.TEMP_BUILD_PATH, releaseDestination[target]);
+    let buildPath = releaseDestination[target].replace("$mode", debug ? "Debug" : "Release");
+    let _from = path.join(C.TEMP_BUILD_PATH, buildPath);
     let _to = path.join(to, target);
 
     //console.log(colors.cyan(`Moving build '${_from} to ${_to}`));

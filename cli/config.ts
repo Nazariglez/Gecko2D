@@ -21,6 +21,7 @@ export const graphics = {
 
 export const defaultConfig = `# development ${C.ENGINE_NAME} config.
 name = "My ${C.ENGINE_NAME} Game"
+version = "0.1.0"               #game version
 sources = ["Sources"]
 libraries = []                  #libs at Libraries folder or haxelib
 output = "build"                #build output
@@ -31,6 +32,7 @@ webgl = true
 canvas = "kanvas"           #canvas id
 script = "game"             #script name
 serve_port = 8080           #port to serve the build with ${C.ENGINE_NAME} serve
+html_file = ""              #inject the script in a custom html
 
 [osx]
 disable = true
@@ -46,6 +48,7 @@ kha = ""
 
 export interface Config {
     name:string
+    version:string //todo parse to avoid spaces or wrong charaters for file names
     sources:string[]
     libraries:string[]
     output:string
@@ -70,6 +73,7 @@ interface ConfigHTML5 extends DisableInterface {
     canvas:string
     script:string
     serve_port?:number
+    html_file?:string //todo create custom html file
 }
 
 interface ConfigOSX  extends DisableInterface{
