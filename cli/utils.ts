@@ -49,6 +49,17 @@ export function copyEngineToProject() : Error {
     return err;
 }
 
+export function removeEngineFromLibraries() : Error {
+    let err:Error;
+    try {
+        fs.removeSync(path.join(CURRENT_PATH, "Libraries", ENGINE_NAME));
+    }catch(e){
+        err = e;
+    }
+
+    return err;
+}
+
 export function nodeVersion() : [number, number, number] {
     let v = process.version;
     v = v.replace("v", "");

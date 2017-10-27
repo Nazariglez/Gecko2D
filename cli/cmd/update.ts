@@ -1,5 +1,6 @@
 import {Command, ActionCallback} from '../cli';
-import {existsConfigFile, copyEngineToProject} from '../utils';
+import {existsConfigFile, copyEngineToProject, removeEngineFromLibraries} from '../utils';
+import * as fs from 'fs-extra';
 import * as colors from 'colors';
 import * as C from '../const';
 
@@ -16,8 +17,14 @@ function _action(args:string[], cb:ActionCallback) {
         return;
     }
 
-    console.log(colors.blue(`Updating ${C.ENGINE_NAME} at '${colors.magenta(`/Libraries/${C.ENGINE_NAME}`)}'...`));
-    let err = copyEngineToProject();
+    console.log(colors.blue(`Updating ${C.ENGINE_NAME} at '${colors.magenta(`/Libraries/${C.ENGINE_NAME}`)}'...`));    
+    let err = removeEngineFromLibraries();
+    if(err){
+        cb(err);
+        return;
+    }
+
+    err = copyEngineToProject();
     if(err){
         cb(err);
         return;

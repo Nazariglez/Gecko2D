@@ -24,6 +24,7 @@ name = "My ${C.ENGINE_NAME} Game"
 sources = ["Sources"]
 libraries = []                  #libs at Libraries folder or haxelib
 output = "build"                #build output
+debug = true                    #compile in debug mode
 
 [html5]
 webgl = true
@@ -48,6 +49,7 @@ export interface Config {
     sources:string[]
     libraries:string[]
     output:string
+    debug:boolean
 
     html5?:ConfigHTML5
     osx?:ConfigOSX

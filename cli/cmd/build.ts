@@ -129,7 +129,8 @@ function _action(args:string[], cb:ActionCallback) {
         to: C.TEMP_BUILD_PATH,
         kha: config.core.kha,
         haxe: config.core.haxe,
-        build: path.resolve(C.CURRENT_PATH, config.output)
+        build: path.resolve(C.CURRENT_PATH, config.output),
+        debug: !!config.debug
     };
 
     let existsTarget = false;
@@ -219,17 +220,24 @@ interface KhaMakeConfig {
     to:string
     build:string
     graphics?:string
+    debug?:boolean
 }
 
 async function _runKhaMake(config:KhaMakeConfig, cb) {
     console.log(colors.cyan(`Compiling ${config.target}...`));
 
     let cmd = `${C.KHA_MAKE_PATH} ${config.target} --compile`;
+    
     if(config.graphics){
         cmd += ` -g ${config.graphics}`;
     }
+
     cmd += ` --projectfile ${config.projectfile}`;
     cmd += ` --to ${config.to}`;
+    
+    if(config.debug){
+        cmd += ` --debug`; 
+    }
     
     console.log(colors.yellow(" - - - - "));
     let k = exec(cmd, {maxBuffer: 1024 * 1024 * 15}, (err:Error, stdout:string, stderr:string)=>{

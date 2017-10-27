@@ -50,7 +50,7 @@ class Game {
 
     @:generic public function addRenderer<T:IRenderer>(id:String, renderer:T, action:T->Void){
         if(_initiated){
-            new Error("Renderers must be added before onInit.");
+            throw new Error("Renderers must be added before onInit.");
             return;
         }
 
