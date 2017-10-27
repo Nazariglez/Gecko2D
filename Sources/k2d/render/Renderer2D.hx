@@ -1,4 +1,4 @@
-package k2d;
+package k2d.render;
 
 import kha.graphics2.Graphics;
 import kha.graphics2.GraphicsExtension;
@@ -7,12 +7,11 @@ import k2d.math.Vec2Pool;
 import k2d.math.Point;
 import k2d.math.Matrix;
 import k2d.utils.Color;
+import k2d.i.IRenderer;
 
 
-class Renderer {
+class Renderer2D extends Renderer {
     public var graphics:Graphics;
-
-    private var _framebuffer:Framebuffer;
 
     public var color(get, set):Int;
     private var _color:Int = Color.WHITE;
@@ -34,26 +33,24 @@ class Renderer {
         return vecs;
     }
 
-    @:extern public inline function begin() {
+    override public function begin() {
         graphics.begin();
     }
 
-    @:extern public inline function end() {
+    override public function end() {
         graphics.end();
     }
 
-    @:extern public inline function clear() {
+    override public function clear() {
         color = 0xffffff;
         alpha = 1;
         graphics.transformation.setFrom(_emptyMatrix);
     }
 
-    @:extern public inline function setFramebuffer(framebuffer:Framebuffer) {
-        if(_framebuffer == null){
-            _framebuffer = framebuffer;
-            graphics = framebuffer.g2;
-            clear();
-        }
+    override public function setFramebuffer(framebuffer:Framebuffer) {
+        _framebuffer = framebuffer;
+        graphics = framebuffer.g2;
+        clear();
     }
 
     @:extern public inline function drawLine(x1:Float, y1:Float, x2:Float, y2:Float, ?strength:Float) : Void {
@@ -87,7 +84,7 @@ class Renderer {
 
 	//todo change Vector2 for Point and use a pool of vector2 to pass to the drawPolygon.
 	@:extern public inline function drawPolygon(x:Float, y:Float, vertices:Array<Point>, ?strength:Float) : Void {
-        var _pointVerts = Renderer._pointsToVec2(vertices);
+        var _pointVerts = Renderer2D._pointsToVec2(vertices);
 		GraphicsExtension.drawPolygon(graphics, x, y, _pointVerts, strength);
         
         for(p in _pointVerts){ 
@@ -100,7 +97,7 @@ class Renderer {
 	}
 
 	@:extern public inline function fillPolygon(x:Float, y:Float, vertices:Array<Point>) : Void {
-        var _pointVerts = Renderer._pointsToVec2(vertices);
+        var _pointVerts = Renderer2D._pointsToVec2(vertices);
 		GraphicsExtension.fillPolygon(graphics, x, y, _pointVerts);
 
         for(p in _pointVerts){ 
