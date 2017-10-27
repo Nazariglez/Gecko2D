@@ -1,8 +1,8 @@
-package k2d.exception;
+package k2d;
 
 import haxe.CallStack;
 
-class Exception {
+class Error {
 	public var message: String;
 	public var stackTrace: Array<StackItem>;
 

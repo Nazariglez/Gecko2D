@@ -6,6 +6,7 @@ import k2d.render.Renderer;
 import k2d.render.Framebuffer;
 
 typedef RenderAction<T:IRenderer> = {
+    public var id:String;
     public var renderer:IRenderer;
     public var action:T->Void;
 }
@@ -33,7 +34,7 @@ class Game {
         this.width = width;
         this.height = height;
         
-        addRenderer(new Renderer2D(), _render2D);
+        addRenderer("2d", new Renderer2D(), _render2D);
     }
     
     public function run() {
@@ -47,11 +48,50 @@ class Game {
         });
     }
 
-    @:generic public function addRenderer<T:IRenderer>(renderer:T, action:T->Void){
-        renderers.push({
+    @:generic public function addRenderer<T:IRenderer>(id:String, renderer:T, action:T->Void){
+        if(_initiated){
+            new Error("Renderers must be added before onInit.");
+            return;
+        }
+
+        //TODO addRenderers could be added at compilation time by macros
+        var rAction:RenderAction<T> = {
+            id: id,
             renderer: renderer,
             action: action
-        });
+        };
+
+        var index = _getRendererIndex(id);
+        if(index == -1) {
+            renderers.push(rAction);
+            return;
+        }
+
+        renderers[index] = rAction;
+    }
+
+    private inline function _getRendererIndex(id:String) : Int {
+        var index = -1;
+        for(i in 0...renderers.length){
+            if(renderers[i].id == id){
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
+
+    @:generic public function getRenderer<T:IRenderer>(id:String, type:Class<T>) : T {
+        var r:T = null;
+        for(rAction in renderers){
+            if(rAction.id == id){
+                r = cast rAction.renderer;
+                break;
+            }
+        }
+
+        return r;
     }
 
     public function start() {
