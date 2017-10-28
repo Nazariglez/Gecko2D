@@ -3,10 +3,9 @@ import * as path from 'path';
 import {Command, ActionCallback} from "../cli";
 import * as C from "../const";
 import {existsConfigFile, createFolder} from "../utils";
-import {parseConfig, Config, generateKhafileContent, platform, getConfigFile} from "../config";
-import {exec, spawn} from 'child_process';
+import {parseConfig, Config, generateKhafileContent, platform, getConfigFile, ConfigHTML5} from "../config";
+import {exec, execSync} from 'child_process';
 import {series, eachSeries} from 'async';
-import {minify} from 'uglify-js';
 import * as colors from 'colors';
 
 const usage = `compile the current project
@@ -131,7 +130,7 @@ function _action(args:string[], cb:ActionCallback) {
         kha: config.core.kha,
         haxe: config.core.haxe,
         build: path.resolve(C.CURRENT_PATH, config.output),
-        debug: !!config.debug
+        debug: !!config.debug,
     };
 
     let existsTarget = false;
@@ -164,6 +163,10 @@ function _action(args:string[], cb:ActionCallback) {
             if(config[target].graphics){
                 kmake.graphics = config[target].graphics;
             }
+        }
+
+        if(target === platform.HTML5){
+            kmake.html5 = config.html5;
         }
 
         _runKhaMake(kmake, next);
@@ -220,8 +223,9 @@ interface KhaMakeConfig {
     haxe:string
     to:string
     build:string
+    debug:boolean
+    html5?:ConfigHTML5
     graphics?:string
-    debug?:boolean
 }
 
 async function _runKhaMake(config:KhaMakeConfig, cb) {
@@ -262,7 +266,7 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
             return;
         }
 
-        err = _moveBuild(config.target, config.build, config.debug);
+        err = _moveBuild(config.target, config.build, config.debug, config.html5);
         if(err){
             cb(err);
             return;
@@ -280,7 +284,7 @@ const releaseDestination = {
     osx: "osx-build/build/$mode"
 };
 
-function _moveBuild(target:string, to:string, debug:boolean) : Error {
+function _moveBuild(target:string, to:string, debug:boolean, html5?:ConfigHTML5) : Error {
     let err:Error;
     let buildPath = releaseDestination[target].replace("$mode", debug ? "Debug" : "Release");
     let _from = path.join(C.TEMP_BUILD_PATH, buildPath);
@@ -288,7 +292,7 @@ function _moveBuild(target:string, to:string, debug:boolean) : Error {
 
     switch(target) {
         case platform.HTML5:
-            err = _moveHTML5Build(_from, _to, debug);
+            err = _moveHTML5Build(_from, _to, debug, html5);
             break;
         default:
             _to = path.join(_to, debug ? "debug" : "release");
@@ -299,10 +303,78 @@ function _moveBuild(target:string, to:string, debug:boolean) : Error {
     return err
 }
 
-function _moveHTML5Build(from:string, to:string, debug:boolean) : Error {
+function _moveHTML5Build(from:string, to:string, debug:boolean, html5:ConfigHTML5) : Error {
     //todo uglify html5 in !debug mode
     //todo if exists a custom html file copy and replace vars
-    return _copy(from, to);
+    let err:Error;
+
+    let scriptName = html5.script;
+    if(debug){
+        err = _copy(path.join(from, `${scriptName}.js`), path.join(to, `${scriptName}.js`));
+        if(err){
+            return err;
+        }
+
+        err = _copy(path.join(from, `${scriptName}.js.map`), path.join(to, `${scriptName}.js.map`));
+        if(err){
+            return err;
+        }
+    }else{
+        if(html5.uglify){
+            let file:string;
+            try {
+                file = fs.readFileSync(path.join(from, `${scriptName}.js`), {encoding: "UTF-8"});
+            }catch(e){
+                return e;
+            }
+
+            let min:string;
+            try {
+                console.log(colors.cyan("Minifying javascript..."));
+                min = execSync(`node ${C.ENGINE_PATH}/node_modules/uglify-js/bin/uglifyjs ${path.join(from, `${scriptName}.js`)} --compress --mangle`, {encoding: "UTF-8"}) as any;
+            }catch(e){
+                return e;
+            }
+
+            try {
+                fs.ensureDirSync(to);
+                fs.writeFileSync(path.join(to, `${scriptName}.js`), min, {encoding: "UTF-8", flags: "w"});
+            }catch(e){
+                return e;
+            }
+
+        }else{
+            err = _copy(path.join(from, `${scriptName}.js`), path.join(to, `${scriptName}.js`));
+            if(err){
+                return err;
+            }
+        }
+    }
+
+    if(html5.html_file){
+        let file:string;
+        try {
+            file = fs.readFileSync(path.resolve(C.CURRENT_PATH, html5.html_file), {encoding: "UTF-8"});
+        }catch(e){
+            return e;
+        }
+
+        //TODO parse file with html5 vars
+
+        try {
+            fs.writeFileSync(path.join(to, `index.html`), file, {encoding: "UTF-8"});
+        }catch(e){
+            return e;
+        }
+
+    }else{
+        err = _copy(path.join(from, `index.html`), path.join(to, `index.html`));
+        if(err){
+            return err;
+        }
+    }
+
+    return err;
 }
 
 function _copy(from:string, to:string) : Error {

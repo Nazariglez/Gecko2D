@@ -68,7 +68,7 @@ interface DisableInterface {
     disable?:boolean
 }
 
-interface ConfigHTML5 extends DisableInterface {
+export interface ConfigHTML5 extends DisableInterface {
     webgl:boolean
     canvas:string
     script:string
