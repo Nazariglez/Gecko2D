@@ -285,6 +285,12 @@ function _moveBuild(target:string, to:string, debug:boolean) : Error {
     let _from = path.join(C.TEMP_BUILD_PATH, buildPath);
     let _to = path.join(to, target);
 
+    if(target != "html5"){
+        _to = path.join(_to, debug ? "debug" : "release");
+    }
+
+    //todo uglify html5 in !debug mode
+
     //console.log(colors.cyan(`Moving build '${_from} to ${_to}`));
     try {
         fs.copySync(_from, _to);

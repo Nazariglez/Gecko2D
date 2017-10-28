@@ -21,7 +21,6 @@ export const graphics = {
 
 export const defaultConfig = `# development ${C.ENGINE_NAME} config.
 name = "My ${C.ENGINE_NAME} Game"
-version = "0.1.0"                   #game version
 sources = ["Sources"]
 shaders = ["Sources/Shaders/**"]    #shaders directory
 libraries = []                      #libs at Libraries folder or haxelib
@@ -49,7 +48,6 @@ kha = ""
 
 export interface Config {
     name:string
-    version:string //todo parse to avoid spaces or wrong charaters for file names
     sources:string[]
     shaders:string[]
     libraries:string[]
@@ -130,8 +128,14 @@ export function parseConfig(input:string) : Config {
             }
         }
 
-        if(config.html5 && !config.html5.serve_port){
-            config.html5.serve_port = C.HTML5_SERVE_PORT;
+        if(config.html5 && !config.html5.disable){
+            if(config.debug){
+                config.html5.script += ".debug";
+            }
+
+            if(!config.html5.serve_port) {
+                config.html5.serve_port = C.HTML5_SERVE_PORT;
+            }
         }
     }
 
