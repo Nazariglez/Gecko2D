@@ -9,7 +9,7 @@
 
     "exclude": [
       "node_modules/**/*",
-      "Kha/**/*",
+      "Sources/Kha/**/*",
       "prime/**/*"
     ]
   }

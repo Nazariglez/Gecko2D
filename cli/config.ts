@@ -74,6 +74,7 @@ interface ConfigHTML5 extends DisableInterface {
     script:string
     serve_port?:number
     html_file?:string //todo create custom html file
+    uglify?:boolean
 }
 
 interface ConfigOSX  extends DisableInterface{
@@ -135,6 +136,10 @@ export function parseConfig(input:string) : Config {
 
             if(!config.html5.serve_port) {
                 config.html5.serve_port = C.HTML5_SERVE_PORT;
+            }
+
+            if(typeof config.html5.uglify === "undefined"){
+                config.html5.uglify = !config.debug; //uglify in !debug by default
             }
         }
     }

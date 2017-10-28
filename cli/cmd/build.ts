@@ -6,6 +6,7 @@ import {existsConfigFile, createFolder} from "../utils";
 import {parseConfig, Config, generateKhafileContent, platform, getConfigFile} from "../config";
 import {exec, spawn} from 'child_process';
 import {series, eachSeries} from 'async';
+import {minify} from 'uglify-js';
 import * as colors from 'colors';
 
 const usage = `compile the current project
@@ -285,20 +286,34 @@ function _moveBuild(target:string, to:string, debug:boolean) : Error {
     let _from = path.join(C.TEMP_BUILD_PATH, buildPath);
     let _to = path.join(to, target);
 
-    if(target != "html5"){
-        _to = path.join(_to, debug ? "debug" : "release");
-    }
-
-    //todo uglify html5 in !debug mode
-
-    //console.log(colors.cyan(`Moving build '${_from} to ${_to}`));
-    try {
-        fs.copySync(_from, _to);
-    }catch(e){
-        err = e
+    switch(target) {
+        case platform.HTML5:
+            err = _moveHTML5Build(_from, _to, debug);
+            break;
+        default:
+            _to = path.join(_to, debug ? "debug" : "release");
+            err = _copy(_from, _to);
+            break;
     }
 
     return err
+}
+
+function _moveHTML5Build(from:string, to:string, debug:boolean) : Error {
+    //todo uglify html5 in !debug mode
+    //todo if exists a custom html file copy and replace vars
+    return _copy(from, to);
+}
+
+function _copy(from:string, to:string) : Error {
+    //console.log(colors.cyan(`Moving build '${from} to ${to}`));
+    let err:Error;
+    try {
+        fs.copySync(from, to);
+    }catch(e){
+        err = e
+    }
+    return err;
 }
 
 function _cleanTempFolder() : Error {
