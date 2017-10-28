@@ -2,3 +2,4 @@
 node_modules
 build
 *.log
+examples/**/Libraries/k2d
