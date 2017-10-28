@@ -21,11 +21,12 @@ export const graphics = {
 
 export const defaultConfig = `# development ${C.ENGINE_NAME} config.
 name = "My ${C.ENGINE_NAME} Game"
-version = "0.1.0"               #game version
+version = "0.1.0"                   #game version
 sources = ["Sources"]
-libraries = []                  #libs at Libraries folder or haxelib
-output = "build"                #build output
-debug = true                    #compile in debug mode
+shaders = ["Sources/Shaders/**"]    #shaders directory
+libraries = []                      #libs at Libraries folder or haxelib
+output = "build"                    #build output
+debug = true                        #compile in debug mode
 
 [html5]
 webgl = true
@@ -50,6 +51,7 @@ export interface Config {
     name:string
     version:string //todo parse to avoid spaces or wrong charaters for file names
     sources:string[]
+    shaders:string[]
     libraries:string[]
     output:string
     debug:boolean
@@ -177,6 +179,10 @@ export function generateKhafileContent(config:Config) : string {
             kfile += `p.addLibrary("${s}");\n`;
         });
     }
+
+    config.shaders.forEach((s)=>{
+        kfile += `p.addShaders("${s}");\n`;
+    });
 
     kfile += `p.addAssets('Assets/**', {nameBaseDir: 'Assets', destination: '{dir}/{name}', name: '{dir}/{name}'});\n`;
 
