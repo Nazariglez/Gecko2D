@@ -1,0 +1,26 @@
+# development k2d config.
+name = "My k2d Game"
+version = "0.1.0"               #game version
+sources = ["Sources"]
+shaders = ["Sources/Shaders/**"]
+libraries = []                  #libs at Libraries folder or haxelib
+output = "build"                #build output
+debug = true                    #compile in debug mode
+
+[html5]
+webgl = true
+canvas = "kanvas"           #canvas id
+script = "game"             #script name
+serve_port = 8080           #port to serve the build with k2d serve
+html_file = ""              #inject the script in a custom html
+
+[osx]
+disable = true
+graphics = "opengl"         #mac graphics [opengl | metal]
+
+[core]
+clean_temp = false               #clean temporal files after compile
+flags = []                      #custom compiler flags (ex: "debug_collisions")
+compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
+haxe = ""
+kha = ""
