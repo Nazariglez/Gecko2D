@@ -19,7 +19,7 @@ disable = true
 graphics = "opengl"         #mac graphics [opengl | metal]
 
 [core]
-clean_temp = false               #clean temporal files after compile
+clean_temp = true               #clean temporal files after compile
 flags = []                      #custom compiler flags (ex: "debug_collisions")
 compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
 haxe = ""
