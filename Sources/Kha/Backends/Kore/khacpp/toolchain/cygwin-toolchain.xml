@@ -1,0 +1,47 @@
+<!-- CYGWIN TOOLS -------------------------------------->
+<xml>
+<include name="toolchain/gcc-toolchain.xml"/>
+
+<set name="SUBSYSTEMWINDOWS" value="1" if="no_console" unless="HXCPP_DEBUGGER" />
+
+<compiler id="cygwin" exe="env g++" if="cygwin">
+  <flag value="-c"/>
+  <cppflag value="-frtti"/>
+  <flag value="-g" if="debug"/>
+  <flag value="-O2" unless="debug"/>
+  <flag value="-DHX_LINUX"/>
+  <flag value="-DHXCPP_BIG_ENDIAN" if="HXCPP_BIG_ENDIAN"/>
+  <include name="toolchain/common-defines.xml" />
+  <flag value="-m32" unless="HXCPP_M64"/>
+  <flag value="-m64" if="HXCPP_M64"/>
+  <flag value="-I${HXCPP}/include"/>
+  <objdir value="obj/cygwin${OBJEXT}/"/>
+  <outflag value="-o"/>
+  <ext value=".o"/>
+</compiler>
+
+<linker id="dll" exe="env g++" if="cygwin">
+  <flag value="-shared"/>
+  <flag value="-m32" unless="HXCPP_M64"/>
+  <flag value="-m64" if="HXCPP_M64"/>
+  <flag value="-W,l--unresolved-symbols=report-all"/>
+  <flag value="-Xlinker"/>
+  <flag value="--no-undefined"/>
+  <flag value="-debug" if="debug"/>
+  <lib name="-ldl"/>
+  <ext value=".dso"/>
+  <outflag value="-o "/>
+</linker>
+
+<linker id="exe" exe="env g++" if="cygwin">
+  <flag value="-debug" if="debug"/>
+  <flag value="-m32" unless="HXCPP_M64"/>
+  <flag value="-m64" if="HXCPP_M64"/>
+  <flag value="-mwindows" if="SUBSYSTEMWINDOWS" />
+  <lib name="-ldl"/>
+  <ext value=".exe"/>
+  <outflag value="-o "/>
+</linker>
+
+</xml>
+

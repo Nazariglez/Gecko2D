@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"target": "es6",
+		"module": "commonjs",
+		"sourceMap": true,
+		"outDir": "out",
+		"noImplicitAny": true,
+		"forceConsistentCasingInFileNames": true,
+		"newLine": "LF",
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitReturns": true
+	},
+	"include": [
+		"src/**/*.ts",
+		"node_modules/@types/**/*.ts"
+	],
+	"exclude": [
+		"src/@types/**/*.ts"
+	],
+	"compileOnSave": true
+}

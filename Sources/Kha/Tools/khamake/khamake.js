@@ -1,0 +1,1 @@
+require('./out/khamake.js');

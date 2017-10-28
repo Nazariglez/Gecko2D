@@ -1,0 +1,16 @@
+{
+  "name": "kha-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "kha.js",
+  "dependencies": {
+    "express": "^4.13.3",
+    "express-ws": "^0.2.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "khamake",
+  "license": "Zlib"
+}

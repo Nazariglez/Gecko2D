@@ -1,0 +1,6 @@
+<xml>
+   <pragma once="true" />
+   <include name="toolchain/haxe-target.xml" />
+</xml>
+
+

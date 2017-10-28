@@ -1,0 +1,28 @@
+/*
+#version 100
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform sampler2D tex;
+varying vec2 texCoord;
+varying vec4 color;
+
+void kore() {
+	vec4 texcolor = texture2D(tex, texCoord) * color;
+	texcolor.rgb *= color.a;
+	gl_FragColor = texcolor;
+}
+*/
+
+/*void main(float2 in  v_TexCoord : TEXCOORD0, float4 out Color : COLOR, uniform sampler2D Texture0 : TEXUNIT0) {
+	Color = tex2D(Texture0, v_TexCoord);
+}*/
+
+void main(float2 in texCoord : TEXCOORD0, float4 in color : TEXCOORD1, float4 out gl_FragColor : COLOR, uniform sampler2D tex : TEXUNIT0) {
+	float4 texcolor = tex2D(tex, texCoord) * color;
+	//texcolor.rgb *= color.a;
+	gl_FragColor = texcolor;
+	//gl_FragColor = float4(1.0, 0.0, 0.0, 1.0);
+}
