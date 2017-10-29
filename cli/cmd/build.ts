@@ -351,27 +351,22 @@ function _moveHTML5Build(from:string, to:string, debug:boolean, html5:ConfigHTML
         }
     }
 
-    if(html5.html_file){
-        let file:string;
-        try {
-            file = fs.readFileSync(path.resolve(C.CURRENT_PATH, html5.html_file), {encoding: "UTF-8"});
-        }catch(e){
-            return e;
-        }
+    let html5File = html5.html_file ? path.resolve(C.CURRENT_PATH, html5.html_file) : path.join(C.HTML5_TEMPLATE_PATH, "index.html");
+    let file:string;
+    try {
+        file = fs.readFileSync(html5File, {encoding: "UTF-8"});
+    }catch(e){
+        return e;
+    }
 
-        //TODO parse file with html5 vars
+    file = file.replace(/\{name\}/g, "Test");
+    file = file.replace(/\{scriptName\}/g, html5.script);
+    file = file.replace(/\{canvasID\}/g, html5.canvas);
 
-        try {
-            fs.writeFileSync(path.join(to, `index.html`), file, {encoding: "UTF-8"});
-        }catch(e){
-            return e;
-        }
-
-    }else{
-        err = _copy(path.join(from, `index.html`), path.join(to, `index.html`));
-        if(err){
-            return err;
-        }
+    try {
+        fs.writeFileSync(path.join(to, `index.html`), file, {encoding: "UTF-8"});
+    }catch(e){
+        return e;
     }
 
     return err;
