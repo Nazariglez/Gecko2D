@@ -131,6 +131,7 @@ function _action(args:string[], cb:ActionCallback) {
         haxe: config.core.haxe,
         build: path.resolve(C.CURRENT_PATH, config.output),
         debug: !!config.debug,
+        engineConfig: config
     };
 
     let existsTarget = false;
@@ -163,10 +164,6 @@ function _action(args:string[], cb:ActionCallback) {
             if(config[target].graphics){
                 kmake.graphics = config[target].graphics;
             }
-        }
-
-        if(target === platform.HTML5){
-            kmake.html5 = config.html5;
         }
 
         _runKhaMake(kmake, next);
@@ -224,7 +221,7 @@ interface KhaMakeConfig {
     to:string
     build:string
     debug:boolean
-    html5?:ConfigHTML5
+    engineConfig:Config
     graphics?:string
 }
 
@@ -243,8 +240,6 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
     if(config.debug){
         cmd += ` --debug`; 
     }
-
-    //todo export to osx -> gamename_version_$mode ?
     
     console.log(colors.yellow(" - - - - "));
     let k = exec(cmd, {maxBuffer: 1024 * 1024 * 15}, (err:Error, stdout:string, stderr:string)=>{
@@ -266,7 +261,7 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
             return;
         }
 
-        err = _moveBuild(config.target, config.build, config.debug, config.html5);
+        err = _moveBuild(config.target, config.build, config.debug, config.engineConfig);
         if(err){
             cb(err);
             return;
@@ -284,7 +279,7 @@ const releaseDestination = {
     osx: "osx-build/build/$mode"
 };
 
-function _moveBuild(target:string, to:string, debug:boolean, html5?:ConfigHTML5) : Error {
+function _moveBuild(target:string, to:string, debug:boolean, config?:Config) : Error {
     let err:Error;
     let buildPath = releaseDestination[target].replace("$mode", debug ? "Debug" : "Release");
     let _from = path.join(C.TEMP_BUILD_PATH, buildPath);
@@ -292,7 +287,7 @@ function _moveBuild(target:string, to:string, debug:boolean, html5?:ConfigHTML5)
 
     switch(target) {
         case platform.HTML5:
-            err = _moveHTML5Build(_from, _to, debug, html5);
+            err = _moveHTML5Build(_from, _to, debug, config);
             break;
         default:
             _to = path.join(_to, debug ? "debug" : "release");
@@ -303,12 +298,12 @@ function _moveBuild(target:string, to:string, debug:boolean, html5?:ConfigHTML5)
     return err
 }
 
-function _moveHTML5Build(from:string, to:string, debug:boolean, html5:ConfigHTML5) : Error {
+function _moveHTML5Build(from:string, to:string, debug:boolean, config:Config) : Error {
     //todo uglify html5 in !debug mode
     //todo if exists a custom html file copy and replace vars
     let err:Error;
 
-    let scriptName = html5.script;
+    let scriptName = config.html5.script;
     if(debug){
         err = _copy(path.join(from, `${scriptName}.js`), path.join(to, `${scriptName}.js`));
         if(err){
@@ -320,7 +315,7 @@ function _moveHTML5Build(from:string, to:string, debug:boolean, html5:ConfigHTML
             return err;
         }
     }else{
-        if(html5.uglify){
+        if(config.html5.uglify){
             let file:string;
             try {
                 file = fs.readFileSync(path.join(from, `${scriptName}.js`), {encoding: "UTF-8"});
@@ -351,7 +346,7 @@ function _moveHTML5Build(from:string, to:string, debug:boolean, html5:ConfigHTML
         }
     }
 
-    let html5File = html5.html_file ? path.resolve(C.CURRENT_PATH, html5.html_file) : path.join(C.HTML5_TEMPLATE_PATH, "index.html");
+    let html5File = config.html5.html_file ? path.resolve(C.CURRENT_PATH, config.html5.html_file) : path.join(C.HTML5_TEMPLATE_PATH, "index.html");
     let file:string;
     try {
         file = fs.readFileSync(html5File, {encoding: "UTF-8"});
@@ -359,9 +354,9 @@ function _moveHTML5Build(from:string, to:string, debug:boolean, html5:ConfigHTML
         return e;
     }
 
-    file = file.replace(/\{name\}/g, "Test");
-    file = file.replace(/\{scriptName\}/g, html5.script);
-    file = file.replace(/\{canvasID\}/g, html5.canvas);
+    file = file.replace(/\{name\}/g, config.name);
+    file = file.replace(/\{scriptName\}/g, scriptName);
+    file = file.replace(/\{canvasID\}/g, config.html5.canvas);
 
     try {
         fs.writeFileSync(path.join(to, `index.html`), file, {encoding: "UTF-8"});
