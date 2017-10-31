@@ -114,6 +114,10 @@ class Game {
     public function getCanvas() : js.html.CanvasElement {
         return cast js.Browser.document.getElementById(kha.CompilerDefines.canvas_id);
     }
+    #else
+    public function getCanvas() : Dynamic {
+        return null;
+    }
     #end
 
     private function _update(delta:Float) {
