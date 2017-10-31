@@ -193,7 +193,7 @@ export function generateKhafileContent(config:Config) : string {
         kfile += `p.addShaders("${s}");\n`;
     });
 
-    kfile += `p.addAssets('Assets/**', {nameBaseDir: 'Assets', destination: '{dir}/{name}', name: '{dir}/{name}'});\n`;
+    kfile += `p.addAssets('Assets/**', {nameBaseDir: 'Assets', destination: 'assets/{dir}/{name}', name: '{dir}/{name}'});\n`;
 
     if(config.html5 && !config.html5.disable){
         kfile += `

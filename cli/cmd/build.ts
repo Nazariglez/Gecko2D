@@ -364,7 +364,7 @@ function _moveHTML5Build(from:string, to:string, debug:boolean, config:Config) :
         return e;
     }
 
-    return err;
+    return _copy(path.join(from, "assets"), path.join(to, "assets"));
 }
 
 function _copy(from:string, to:string) : Error {
