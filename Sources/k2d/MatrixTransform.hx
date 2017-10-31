@@ -22,33 +22,38 @@ class MatrixTransform {
 	private var _anY:Float = 0;
 	private var _piX:Float = 0;
 	private var _piY:Float = 0;
+
+	private var _midSizeX:Float = 0;
+	private var _midSizeY:Float = 0;
     
     public function new(){}
 
-    public function updateSkew(actor:Actor) : Void {
+    public inline function updateSkew(actor:Actor) : Void {
 		_cx = Math.cos(actor.rotation + actor.skew.y);
 		_sx = Math.sin(actor.rotation + actor.skew.y);
 		_cy = -Math.sin(actor.rotation - actor.skew.x);
 		_sy = Math.cos(actor.rotation - actor.skew.x);
 	}
 
-    public function updateLocal(actor:Actor) : Void {
+    public inline function updateLocal(actor:Actor) : Void {
 		_scX = actor.scale.x * (actor.flip.x ? -1 : 1);
 		_scY = actor.scale.y * (actor.flip.y ? -1 : 1);
 		_anX = actor.flip.x ? 1-actor.anchor.x : actor.anchor.x;
 		_anY = actor.flip.y ? 1-actor.anchor.y : actor.anchor.y;
 		_piX = actor.flip.x ? 1-actor.pivot.x : actor.pivot.x;
 		_piY = actor.flip.y ? 1-actor.pivot.y : actor.pivot.y;
+		_midSizeX = actor.size.x*0.5;
+		_midSizeY = actor.size.y*0.5;
 
 		local._00 = _cx * _scX;
 		local._01 = _sx * _scX;
 		local._10 = _cy * _scY;
 		local._11 = _sy * _scY;
 
-		_aW = _anX * actor.size.x;
-		_aH = _anY * actor.size.y;
-		_pW = _piX * actor.size.x;
-		_pH = _piY * actor.size.y;
+		_aW = _anX * actor.size.x - _midSizeX;
+		_aH = _anY * actor.size.y - _midSizeY;
+		_pW = _piX * actor.size.x - _midSizeX;
+		_pH = _piY * actor.size.y - _midSizeY;
 
 		local._20 = actor.position.x - _aW * _scX + _pW * _scX;
 		local._21 = actor.position.y - _aH * _scY + _pH * _scY;
@@ -59,7 +64,7 @@ class MatrixTransform {
 		}
 	}
 
-	public function updateWorld(parentMatrix:Matrix) : Void {
+	public inline function updateWorld(parentMatrix:Matrix) : Void {
 		var pm = parentMatrix;
 		world._00 = (local._00 * pm._00) + (local._01 * pm._10);
 		world._01 = (local._00 * pm._01) + (local._01 * pm._11);
