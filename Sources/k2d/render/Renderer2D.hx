@@ -44,7 +44,7 @@ class Renderer2D extends Renderer {
     override public function clear() {
         color = 0xffffff;
         alpha = 1;
-        graphics.transformation.setFrom(_emptyMatrix);
+        matrix = _emptyMatrix;
     }
 
     override public function setFramebuffer(framebuffer:Framebuffer) {
@@ -61,7 +61,10 @@ class Renderer2D extends Renderer {
 		graphics.drawString(text, x, y);
 	}
 
-    //todo drawRect
+    @:extern public inline function drawRect(x:Float, y:Float, width:Float, height:Float, ?strength:Float) : Void {
+		graphics.drawRect(x, y, width, height, strength);
+	}
+
     @:extern public inline function fillRect(x:Float, y:Float, width:Float, height:Float) : Void {
 		graphics.fillRect(x, y, width, height);
 	}

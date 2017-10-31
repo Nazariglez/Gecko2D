@@ -132,7 +132,7 @@ function _action(args:string[], cb:ActionCallback) {
                     return;
                 }
             });
-        }, 500);
+        }, 1000);
 
 
         const regex = /^[^.].*$/;
