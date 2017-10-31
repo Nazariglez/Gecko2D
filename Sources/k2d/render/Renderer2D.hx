@@ -3,6 +3,8 @@ package k2d.render;
 import kha.graphics2.Graphics;
 import kha.graphics2.GraphicsExtension;
 import kha.math.Vector2;
+import kha.Image;
+import k2d.math.FastFloat;
 import k2d.math.Vec2Pool;
 import k2d.math.Point;
 import k2d.math.Matrix;
@@ -55,6 +57,10 @@ class Renderer2D extends Renderer {
 
     @:extern public inline function drawLine(x1:Float, y1:Float, x2:Float, y2:Float, ?strength:Float) : Void {
 		graphics.drawLine(x1, y1, x2, y2, strength);
+	}
+
+    @:extern public inline function drawImage(img:Image, x:FastFloat, y:FastFloat) : Void {
+		graphics.drawImage(img, x, y);
 	}
 
     @:extern public inline function drawString(text:String, x:Float, y:Float) : Void {
