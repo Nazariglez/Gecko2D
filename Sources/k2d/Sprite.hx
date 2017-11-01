@@ -2,27 +2,38 @@ package k2d;
 
 import kha.Image;
 import k2d.render.Renderer2D;
+import k2d.Assets;
 
 class Sprite extends Actor {
-    public var texture(get, set):Image;
-    private var _texture:Image;
+    public var image(get, set):Image;
+    private var _image:Image;
 
-    public override function new(img:Image){
+    static public function fromImage(img:Image) : Sprite {
+        var s = new Sprite();
+        s.image = img;
+        return s;
+    }
+
+    public override function new(?img:String){
         super();
-        this.texture = img;
+        if(img != null){
+            this.image = Assets.images[img];
+        }
     }
 
     public override function render(r:Renderer2D) {
         super.render(r);
-        r.drawImage(texture, -size.x*0.5, -size.y*0.5);
+        if(image != null){
+            r.drawImage(image, -size.x*0.5, -size.y*0.5);
+        }
     }
 
-    public function get_texture() : Image {
-		return _texture;
+    public function get_image() : Image {
+		return _image;
 	}
 
-	public function set_texture(img:Image) : Image {
+	public function set_image(img:Image) : Image {
 		size.set(img.width, img.height);
-		return _texture = img;
+		return _image = img;
 	}
 }
