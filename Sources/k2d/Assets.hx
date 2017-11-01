@@ -15,6 +15,11 @@ class Assets {
     static public var fonts:Map<String, Font> = new Map<String, Font>();
     //todo parse json, and toml
 
+    static private var _imageExtensions = ["hdr", "jpg", "png"];
+    static private var _soundExtensions = ["wav"];
+    static private var _fontExtensions = ["ttf"];
+    static private var _videoExtensions = ["mp4"];
+
     //todo compare in compilation time with macros the load and unload params with kha.Assets.*.names to check if exists
     static private function _parseAssetName(name:String) : String {
         return (~/[\/\.]/gi).replace(Path.normalize(Path.withoutExtension(name)), "_");
@@ -28,13 +33,13 @@ class Assets {
         var ext = Path.extension(name);
         //check images
         switch ext {
-            case e if (Assets.imageFormats.indexOf(e) >= 0):
+            case e if (Assets._imageExtensions.indexOf(e) >= 0):
                 Assets.loadImage(name, next);
-            case e if (Assets.videoFormats.indexOf(e) >= 0):
+            case e if (Assets._videoExtensions.indexOf(e) >= 0):
                 Assets.loadVideo(name, next);
-            case e if (Assets.fontFormats.indexOf(e) >= 0):
+            case e if (Assets._fontExtensions.indexOf(e) >= 0):
                 Assets.loadFont(name, next);
-            case e if (Assets.soundFormats.indexOf(e) >= 0):
+            case e if (Assets._soundExtensions.indexOf(e) >= 0):
                 Assets.loadSound(name, next);
             default:
                 Assets.loadBlob(name, next);

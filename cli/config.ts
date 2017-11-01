@@ -42,6 +42,7 @@ graphics = "${graphics.osx[0]}"         #mac graphics [${graphics.osx.join(" | "
 clean_temp = true               #clean temporal files after compile
 flags = []                      #custom compiler flags (ex: "debug_collisions")
 compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
+ffmpeg = ""                     #ffmpeg drivers path (could be absolute)
 haxe = ""
 kha = ""
 `;
@@ -95,6 +96,7 @@ interface ConfigCore {
     clean_temp:boolean
     flags:string[]
     compiler_parameters:string[]
+    ffmpeg?:string
     haxe:string
     kha:string
     khafile?:string //add extra opts to include in khafile as plain text -> "$project.addAssets("assets");";

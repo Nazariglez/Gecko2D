@@ -131,7 +131,8 @@ function _action(args:string[], cb:ActionCallback) {
         haxe: config.core.haxe,
         build: path.resolve(C.CURRENT_PATH, config.output),
         debug: !!config.debug,
-        engineConfig: config
+        engineConfig: config,
+        ffmpeg: config.core.ffmpeg ? path.resolve(config.core.ffmpeg) : ""
     };
 
     let existsTarget = false;
@@ -223,6 +224,7 @@ interface KhaMakeConfig {
     debug:boolean
     engineConfig:Config
     graphics?:string
+    ffmpeg?:string
 }
 
 async function _runKhaMake(config:KhaMakeConfig, cb) {
@@ -236,6 +238,10 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
 
     cmd += ` --projectfile ${config.projectfile}`;
     cmd += ` --to ${config.to}`;
+
+    if(config.ffmpeg){
+        cmd += ` --ffmpeg "${config.ffmpeg}"`;
+    }
     
     if(config.debug){
         cmd += ` --debug`; 

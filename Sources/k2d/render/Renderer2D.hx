@@ -4,6 +4,7 @@ import kha.graphics2.Graphics;
 import kha.graphics2.GraphicsExtension;
 import kha.math.Vector2;
 import k2d.Image;
+import k2d.Video;
 import k2d.math.FastFloat;
 import k2d.math.Vec2Pool;
 import k2d.math.Point;
@@ -61,6 +62,10 @@ class Renderer2D extends Renderer {
 
     @:extern public inline function drawImage(img:Image, x:FastFloat, y:FastFloat) : Void {
 		graphics.drawImage(img, x, y);
+	}
+
+	@:extern public inline function drawVideo(video:Video, x:Float, y:Float, width:Float, height:Float) : Void {
+		graphics.drawVideo(video, x, y, width, height);
 	}
 
     @:extern public inline function drawString(text:String, x:Float, y:Float) : Void {
