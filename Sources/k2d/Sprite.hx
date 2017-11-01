@@ -1,6 +1,6 @@
 package k2d;
 
-import kha.Image;
+import k2d.Image;
 import k2d.render.Renderer2D;
 import k2d.Assets;
 
@@ -8,16 +8,19 @@ class Sprite extends Actor {
     public var image(get, set):Image;
     private var _image:Image;
 
+    public var imageName(get, set):String;
+    private var _imageName:String = "";
+
     static public function fromImage(img:Image) : Sprite {
         var s = new Sprite();
         s.image = img;
         return s;
     }
 
-    public override function new(?img:String){
+    public override function new(?imgName:String){
         super();
-        if(img != null){
-            this.image = Assets.images[img];
+        if(imgName != null){
+            this.imageName = imgName;
         }
     }
 
@@ -28,12 +31,28 @@ class Sprite extends Actor {
         }
     }
 
-    public function get_image() : Image {
+    function get_imageName() : String {
+        return _imageName;
+    }
+
+    function set_imageName(name:String) : String {
+        if(!Assets.images.exists(name)){
+            throw new k2d.Error('Image $name not loaded...'); //todo better use log than error?
+            return "";
+        }
+
+        this.image = Assets.images[name];
+        return this._imageName = name;
+    }
+
+    function get_image() : Image {
 		return _image;
 	}
 
-	public function set_image(img:Image) : Image {
-		size.set(img.width, img.height);
+	function set_image(img:Image) : Image {
+        if(img != null){
+            size.set(img.width, img.height);
+        }
 		return _image = img;
 	}
 }

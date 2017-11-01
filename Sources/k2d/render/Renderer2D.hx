@@ -3,7 +3,7 @@ package k2d.render;
 import kha.graphics2.Graphics;
 import kha.graphics2.GraphicsExtension;
 import kha.math.Vector2;
-import kha.Image;
+import k2d.Image;
 import k2d.math.FastFloat;
 import k2d.math.Vec2Pool;
 import k2d.math.Point;
