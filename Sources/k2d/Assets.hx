@@ -27,7 +27,9 @@ class Assets {
 
     static public function load(arr:Array<String>, done:?String->Void) : LoadProgress {
         var progress = new LoadProgress(arr.length);
-        Async.each(arr, progress.observProgress(Assets._loadAsset), done);
+        progress.setTask(function(){
+            Async.each(arr, progress.observProgress(Assets._loadAsset), done);
+        });
         return progress;
     }
 
@@ -93,7 +95,9 @@ class Assets {
 
     static public function unload(arr:Array<String>, done:?String->Void) : LoadProgress {
         var progress = new LoadProgress(arr.length);
-        Async.each(arr, progress.observProgress(Assets._unloadAsset), done);
+        progress.setTask(function(){
+            Async.each(arr, progress.observProgress(Assets._unloadAsset), done);
+        });
         return progress;
     }
     
@@ -175,14 +179,27 @@ class LoadProgress {
     public var loaded:Int = 0;
 
     private var _onComplete:Void->Void = function(){};
-    private var _onProgress:Int->String->Void = function(progress:Int, asset:String){};
+    private var _onProgressStart:Int->String->Void = function(progress:Int, asset:String){};
+    private var _onProgressEnd:Int->String->Void = function(progress:Int, asset:String){};
+
+    private var _task:Void->Void = function(){};
 
     public function new(len:Int){
         this.len = len;
     }
 
+    public function start() {
+        this._task();
+    }
+
+    public function setTask(task:Void->Void){
+        _task = task;
+    }
+
     public function observProgress(task:String->(?String->Void)->Void) : String->(?String->Void)->Void{
         return function(name:String, next:?String->Void){
+            _onProgressStart(this.progress, name);
+
             task(name, function(?err:String){
                 if(err != null){
                     next(err);
@@ -192,7 +209,7 @@ class LoadProgress {
                 loaded += 1;
                 next();
 
-                _onProgress(this.progress, name);
+                _onProgressEnd(this.progress, name);
 
                 if(len != 0 && len == loaded){
                     _onComplete();
@@ -205,8 +222,12 @@ class LoadProgress {
         _onComplete = cb;
     }
 
-    public function notifyOnProgress(cb:Int->String->Void){
-        _onProgress = cb;
+    public function notifyOnProgressStart(cb:Int->String->Void){
+        _onProgressStart = cb;
+    }
+
+    public function notifyOnProgressEnd(cb:Int->String->Void){
+        _onProgressEnd = cb;
     }
 
     function get_progress() : Int {
