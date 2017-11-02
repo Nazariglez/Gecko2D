@@ -10,9 +10,11 @@ class Movie extends Actor {
     public var videoName(get, set):String;
     private var _videoName:String = "";
 
-    //todo add controllers, play, stop, loop, pause, speed, etc...
+    //todo add controllers, speed, etc...
+    //todo add controller as playAt(position)
+    //todo add conttoller as stopAt(position)
 
-    static public function fromImage(vid:Video) : Movie {
+    static public function fromVideo(vid:Video) : Movie {
         var m = new Movie();
         m.video = vid;
         return m;
@@ -25,11 +27,25 @@ class Movie extends Actor {
         }
     }
 
+    //todo use the update to reproduce the video, not the render loop, because the render loop never stops
+
     public override function render(r:Renderer2D) {
         super.render(r);
         if(video != null){
             r.drawVideo(video, -size.x*0.5, -size.y*0.5, video.width(), video.height());
         }
+    }
+
+    public function play(loop:Bool = false) {
+        video.play(loop);
+    }
+
+    public function pause() {
+        video.pause();
+    }
+
+    public function stop() {
+        video.stop();
     }
 
     function get_videoName() : String {
