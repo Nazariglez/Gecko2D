@@ -4,6 +4,7 @@ import k2d.i.IRenderer;
 import k2d.render.Renderer2D;
 import k2d.render.Renderer;
 import k2d.render.Framebuffer;
+import k2d.Movie;
 
 typedef RenderAction<T:IRenderer> = {
     public var id:String;
@@ -102,11 +103,17 @@ class Game {
 
     public function start() {
         if(!_initiated){ return; }
+        if(isRunning){ return; }
+
+        Movie.unpauseAll();
         _loop.start();
     }
 
     public function stop() {
         if(!_initiated){ return; }
+        if(!isRunning){ return; }
+
+        Movie.pauseAll();
         _loop.stop();
     }
 
@@ -128,6 +135,11 @@ class Game {
 
     private function _render(framebuffer:Framebuffer) {
         _init(framebuffer);
+
+        if(!isRunning){
+            return;
+        }
+
         for(rAction in renderers){
             rAction.action(rAction.renderer);
         }
