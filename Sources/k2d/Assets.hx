@@ -1,11 +1,11 @@
 package k2d;
 
 import haxe.io.Path;
-import k2d.Image;
-import k2d.Video;
-import k2d.Blob;
-import k2d.Sound;
-import k2d.Font;
+import k2d.resources.Image;
+import k2d.resources.Video;
+import k2d.resources.Blob;
+import k2d.resources.Sound;
+import k2d.resources.Font;
 
 class Assets {
     static public var images:Map<String, Image> = new Map<String, Image>();
@@ -14,6 +14,8 @@ class Assets {
     static public var sounds:Map<String, Sound> = new Map<String, Sound>();
     static public var fonts:Map<String, Font> = new Map<String, Font>();
     //todo parse json, and toml
+
+    //todo add progress
 
     static private var _imageExtensions = ["hdr", "jpg", "png"];
     static private var _soundExtensions = ["wav"];
@@ -97,13 +99,13 @@ class Assets {
         var ext = Path.extension(name);
         //check images
         switch ext {
-            case e if (Assets.imageFormats.indexOf(e) >= 0):
+            case e if (Assets._imageExtensions.indexOf(e) >= 0):
                 Assets.unloadImage(name, next);
-            case e if (Assets.videoFormats.indexOf(e) >= 0):
+            case e if (Assets._videoExtensions.indexOf(e) >= 0):
                 Assets.unloadVideo(name, next);
-            case e if (Assets.fontFormats.indexOf(e) >= 0):
+            case e if (Assets._fontExtensions.indexOf(e) >= 0):
                 Assets.unloadFont(name, next);
-            case e if (Assets.soundFormats.indexOf(e) >= 0):
+            case e if (Assets._soundExtensions.indexOf(e) >= 0):
                 Assets.unloadSound(name, next);
             default:
                 Assets.unloadBlob(name, next);

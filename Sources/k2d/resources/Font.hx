@@ -1,3 +1,3 @@
-package k2d;
+package k2d.resources;
 
 typedef Font = kha.Font;

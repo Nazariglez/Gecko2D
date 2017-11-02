@@ -1,8 +1,7 @@
 package k2d;
 
-import k2d.Image;
+import k2d.resources.Image;
 import k2d.render.Renderer2D;
-import k2d.Assets;
 
 class Sprite extends Actor {
     public var image(get, set):Image;
