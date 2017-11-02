@@ -15,8 +15,6 @@ class Assets {
     static public var fonts:Map<String, Font> = new Map<String, Font>();
     //todo parse json, and toml
 
-    //todo add progress
-
     static private var _imageExtensions = ["hdr", "jpg", "png"];
     static private var _soundExtensions = ["wav"];
     static private var _fontExtensions = ["ttf"];
@@ -27,8 +25,10 @@ class Assets {
         return (~/[\/\.]/gi).replace(Path.normalize(Path.withoutExtension(name)), "_");
     }
 
-    static public function load(arr:Array<String>, done:?String->Void){
-        Async.each(arr, Assets._loadAsset, done);
+    static public function load(arr:Array<String>, done:?String->Void) : LoadProgress {
+        var progress = new LoadProgress(arr.length);
+        Async.each(arr, progress.observProgress(Assets._loadAsset), done);
+        return progress;
     }
 
     static private function _loadAsset(name:String, next:?String->Void) {
@@ -91,8 +91,10 @@ class Assets {
         });
     }
 
-    static public function unload(arr:Array<String>, done:?String->Void){
-        Async.each(arr, _unloadAsset, done);
+    static public function unload(arr:Array<String>, done:?String->Void) : LoadProgress {
+        var progress = new LoadProgress(arr.length);
+        Async.each(arr, progress.observProgress(Assets._unloadAsset), done);
+        return progress;
     }
     
     static private function _unloadAsset(name:String, next:?String->Void) {
@@ -163,4 +165,51 @@ class Assets {
     }
 
     //todo add a wrapper to load from web with xhr
+}
+
+//progress loader
+class LoadProgress {
+    public var progress(get, null):Int;
+
+    public var len:Int = 0;
+    public var loaded:Int = 0;
+
+    private var _onComplete:Void->Void = function(){};
+    private var _onProgress:Int->String->Void = function(progress:Int, asset:String){};
+
+    public function new(len:Int){
+        this.len = len;
+    }
+
+    public function observProgress(task:String->(?String->Void)->Void) : String->(?String->Void)->Void{
+        return function(name:String, next:?String->Void){
+            task(name, function(?err:String){
+                if(err != null){
+                    next(err);
+                    return;
+                }
+
+                loaded += 1;
+                next();
+
+                _onProgress(this.progress, name);
+
+                if(len != 0 && len == loaded){
+                    _onComplete();
+                }
+            }); 
+        }
+    }
+
+    public function notifyOnComplete(cb:Void->Void){
+        _onComplete = cb;
+    }
+
+    public function notifyOnProgress(cb:Int->String->Void){
+        _onProgress = cb;
+    }
+
+    function get_progress() : Int {
+        return Std.int(Math.ceil(100/(len/loaded)));
+    }
 }
