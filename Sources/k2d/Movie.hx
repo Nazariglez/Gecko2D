@@ -102,7 +102,9 @@ class Movie extends Actor {
         _loop = loop;
 
         video.play(loop);
-        Movie.playing.push(this);
+        
+        //Movie.playing.push(this);
+        //TODO: wtf this ^ make osx crash when the r.drawVideo is called
     }
 
     public function pause() {
@@ -132,7 +134,7 @@ class Movie extends Actor {
         _isPlaying = false;
 
         video.stop();
-        Movie.playing.remove(this);
+        //Movie.playing.remove(this);
     }
 
     function get_videoName() : String {
