@@ -202,13 +202,14 @@ class Assets {
                 }
 
                 loaded += 1;
-                next();
 
                 _onProgressEnd(this.progress, name);
 
                 if(len != 0 && len == loaded){
                     _onComplete();
                 }
+
+                next();
             }); 
         }
     }
@@ -230,69 +231,4 @@ class Assets {
     }
 
     //todo add a wrapper to load from web with xhr
-}
-
-//progress loader
-class LoadProgress {
-    public var progress(get, null):Int;
-
-    public var len:Int = 0;
-    public var loaded:Int = 0;
-
-    private var _onComplete:Void->Void = function(){};
-    private var _onProgressStart:Int->String->Void = function(progress:Int, asset:String){};
-    private var _onProgressEnd:Int->String->Void = function(progress:Int, asset:String){};
-
-    private var _task:Void->Void = function(){};
-
-    public function new(len:Int){
-        this.len = len;
-    }
-
-    public function start() {
-        this._task();
-    }
-
-    public function setTask(task:Void->Void){
-        _task = task;
-    }
-
-    public function observProgress(task:String->(?String->Void)->Void) : String->(?String->Void)->Void{
-        return function(name:String, next:?String->Void){
-            _onProgressStart(this.progress, name);
-
-            task(name, function(?err:String){
-                if(err != null){
-                    next(err);
-                    return;
-                }
-
-                loaded += 1;
-
-                _onProgressEnd(this.progress, name);
-
-                if(len != 0 && len == loaded){
-                    _onComplete();
-                }
-
-                next();
-            }); 
-        }
-    }
-
-    public function notifyOnComplete(cb:Void->Void){
-        _onComplete = cb;
-    }
-
-    public function notifyOnProgressStart(cb:Int->String->Void){
-        _onProgressStart = cb;
-    }
-
-    public function notifyOnProgressEnd(cb:Int->String->Void){
-        _onProgressEnd = cb;
-    }
-
-    function get_progress() : Int {
-        return Std.int(Math.ceil(100/(len/loaded)));
-    }
 }
