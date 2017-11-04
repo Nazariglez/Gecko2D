@@ -3,7 +3,7 @@ package k2d;
 import k2d.resources.Image;
 import k2d.render.Renderer2D;
 
-class Sprite extends Actor {
+class Sprite extends Entity {
     public var image(get, set):Image;
     private var _image:Image;
 

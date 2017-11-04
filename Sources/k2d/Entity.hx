@@ -4,10 +4,10 @@ import k2d.math.Point;
 import k2d.math.VectorG;
 import k2d.render.Renderer2D;
 
-class Actor {
-    public static var actorID:Int = 0;
+class Entity {
+    public static var entityID:Int = 0;
 
-    private var _actorID:Int = -1;
+    private var _entityID:Int = -1;
 
     public var position:Point = new Point(0, 0);
     public var scale:Point = new Point(1,1);
@@ -22,7 +22,7 @@ class Actor {
     public var worldAlpha:Float = 1;
     public var tint:Int = 0xffffff;
 
-    public var parent:Actor = null;
+    public var parent:Entity = null;
 
     public var matrixTransform:MatrixTransform = new MatrixTransform();
 
@@ -36,7 +36,7 @@ class Actor {
     private var _height:Float = 1;
 
     public function new(){
-        _actorID = Actor.actorID++;
+        _entityID = Entity.entityID++;
         skew.setObserver(_observSkewPoint);
     }
 

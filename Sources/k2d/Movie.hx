@@ -3,7 +3,7 @@ package k2d;
 import k2d.resources.Video;
 import k2d.render.Renderer2D;
 
-class Movie extends Actor {
+class Movie extends Entity {
     static public var playing:Array<Movie> = new Array<Movie>();
 
     public var video(get, set):Video;

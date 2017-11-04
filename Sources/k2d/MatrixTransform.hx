@@ -28,35 +28,35 @@ class MatrixTransform {
     
     public function new(){}
 
-    public inline function updateSkew(actor:Actor) : Void {
-		_cx = Math.cos(actor.rotation + actor.skew.y);
-		_sx = Math.sin(actor.rotation + actor.skew.y);
-		_cy = -Math.sin(actor.rotation - actor.skew.x);
-		_sy = Math.cos(actor.rotation - actor.skew.x);
+    public inline function updateSkew(entity:Entity) : Void {
+		_cx = Math.cos(entity.rotation + entity.skew.y);
+		_sx = Math.sin(entity.rotation + entity.skew.y);
+		_cy = -Math.sin(entity.rotation - entity.skew.x);
+		_sy = Math.cos(entity.rotation - entity.skew.x);
 	}
 
-    public inline function updateLocal(actor:Actor) : Void {
-		_scX = actor.scale.x * (actor.flip.x ? -1 : 1);
-		_scY = actor.scale.y * (actor.flip.y ? -1 : 1);
-		_anX = actor.flip.x ? 1-actor.anchor.x : actor.anchor.x;
-		_anY = actor.flip.y ? 1-actor.anchor.y : actor.anchor.y;
-		_piX = actor.flip.x ? 1-actor.pivot.x : actor.pivot.x;
-		_piY = actor.flip.y ? 1-actor.pivot.y : actor.pivot.y;
-		_midSizeX = actor.size.x*0.5;
-		_midSizeY = actor.size.y*0.5;
+    public inline function updateLocal(entity:Entity) : Void {
+		_scX = entity.scale.x * (entity.flip.x ? -1 : 1);
+		_scY = entity.scale.y * (entity.flip.y ? -1 : 1);
+		_anX = entity.flip.x ? 1-entity.anchor.x : entity.anchor.x;
+		_anY = entity.flip.y ? 1-entity.anchor.y : entity.anchor.y;
+		_piX = entity.flip.x ? 1-entity.pivot.x : entity.pivot.x;
+		_piY = entity.flip.y ? 1-entity.pivot.y : entity.pivot.y;
+		_midSizeX = entity.size.x*0.5;
+		_midSizeY = entity.size.y*0.5;
 
 		local._00 = _cx * _scX;
 		local._01 = _sx * _scX;
 		local._10 = _cy * _scY;
 		local._11 = _sy * _scY;
 
-		_aW = _anX * actor.size.x - _midSizeX;
-		_aH = _anY * actor.size.y - _midSizeY;
-		_pW = _piX * actor.size.x - _midSizeX;
-		_pH = _piY * actor.size.y - _midSizeY;
+		_aW = _anX * entity.size.x - _midSizeX;
+		_aH = _anY * entity.size.y - _midSizeY;
+		_pW = _piX * entity.size.x - _midSizeX;
+		_pH = _piY * entity.size.y - _midSizeY;
 
-		local._20 = actor.position.x - _aW * _scX + _pW * _scX;
-		local._21 = actor.position.y - _aH * _scY + _pH * _scY;
+		local._20 = entity.position.x - _aW * _scX + _pW * _scX;
+		local._21 = entity.position.y - _aH * _scY + _pH * _scY;
 		
 		if(_pW != 0 || _pH != 0){
 			local._20 -= _pW * local._00 + _pH * local._10;
@@ -64,8 +64,7 @@ class MatrixTransform {
 		}
 	}
 
-	public inline function updateWorld(parentMatrix:Matrix) : Void {
-		var pm = parentMatrix;
+	public inline function updateWorld(pm:Matrix) : Void {
 		world._00 = (local._00 * pm._00) + (local._01 * pm._10);
 		world._01 = (local._00 * pm._01) + (local._01 * pm._11);
 		world._10 = (local._10 * pm._00) + (local._11 * pm._10);
@@ -75,8 +74,8 @@ class MatrixTransform {
 		world._21 = (local._20 * pm._01) + (local._21 * pm._11) + pm._21;
 	}
 
-    @:extern public inline function update(actor:Actor, parentMatrix:Matrix) : Void {
-		updateLocal(actor);
+    @:extern public inline function update(entity:Entity, parentMatrix:Matrix) : Void {
+		updateLocal(entity);
 		updateWorld(parentMatrix);
 	}
 }
