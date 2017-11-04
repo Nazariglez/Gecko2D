@@ -5,6 +5,7 @@ import kha.graphics2.GraphicsExtension;
 import kha.math.Vector2;
 import k2d.resources.Image;
 import k2d.resources.Video;
+import k2d.resources.Font;
 import k2d.math.FastFloat;
 import k2d.math.Vec2Pool;
 import k2d.math.Point;
@@ -21,6 +22,12 @@ class Renderer2D extends Renderer {
 
     public var alpha(get, set):Float;
     private var _alpha:Float = 1;
+
+    public var font(get, set):Font;
+    private var _font:Font;
+
+    public var fontSize(get, set):Int;
+    private var _fontSize:Int = 1;
 
     private var _emptyMatrix:Matrix = Matrix.identity();
     public var matrix(get, set):Matrix;
@@ -145,5 +152,23 @@ class Renderer2D extends Renderer {
 	public function set_matrix(matrix:Matrix) : Matrix {
         graphics.transformation.setFrom(matrix);
 		return graphics.transformation;
+    }
+
+    public function get_font() : Font {
+		return _font;
+	}
+
+	public function set_font(value:Font) : Font {
+		graphics.font = value;
+		return _font = value;
+	}	
+
+	public function get_fontSize() : Int {
+		return _fontSize;
+	}
+
+	public function set_fontSize(value:Int) : Int {
+		graphics.fontSize = value;
+		return _fontSize = value;
 	}	
 }
