@@ -1,5 +1,6 @@
 package k2d;
 
+import k2d.utils.GameStats;
 import k2d.i.IRenderer;
 import k2d.render.Renderer2D;
 import k2d.render.Renderer;
@@ -13,6 +14,10 @@ typedef RenderAction<T:IRenderer> = {
 }
 
 class Game {
+    #if debug
+    public var stats = new GameStats();
+    #end
+
     public var title:String;
     
     public var width(get, set):Int;
@@ -128,12 +133,20 @@ class Game {
     #end
 
     private function _update(delta:Float) {
+        #if debug
+        stats.update.tick();
+        #end
+
         onPreUpdate(delta);
         onUpdate(delta);
         onPostUpdate(delta);
     }
 
     private function _render(framebuffer:Framebuffer) {
+        #if debug
+        stats.renderer.tick();
+        #end
+
         _init(framebuffer);
 
         if(!isRunning){
