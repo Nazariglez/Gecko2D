@@ -2,6 +2,12 @@ package k2d;
 
 import k2d.resources.Font;
 import k2d.render.Renderer2D;
+import k2d.render.HorizontalTextAlign;
+import k2d.render.VerticalTextAlign;
+
+typedef TextOptions = {
+    //todo wrap text lines, align, text, font, size, etc...
+};
 
 class Text extends Entity {
     public var font(get, set):Font;
@@ -10,8 +16,12 @@ class Text extends Entity {
     public var fontName(get, set):String;
     private var _fontName:String = "";
 
-    public var fontSize:Int = 1;
-    public var text:String = "";
+    public var text(get, set):String;
+    private var _text:String = "";
+
+    public var fontSize(get, set):Int;
+    private var _fontSize:Int = 10;
+
 
     static public function fromFont(text:String, fnt:Font) : Text {
         var t = new Text(text);
@@ -32,7 +42,7 @@ class Text extends Entity {
         if(font != null){
             r.font = _font;
             r.fontSize = fontSize;
-            r.drawString(text, 0, 0);
+            r.drawAlignedString(text, 0, 0, HorizontalTextAlign.TextCenter, VerticalTextAlign.TextMiddle);
         }
     }
 
@@ -55,7 +65,37 @@ class Text extends Entity {
     }
 
     function set_font(fnt:Font) : Font {
-        //todo check size here
-        return _font = fnt;
+        _font = fnt;
+        _setSize();
+        return _font;
+    }
+
+    function get_text() : String {
+        return _text;
+    }
+
+    function set_text(text:String) : String {
+        _text = text;
+        _setSize();
+        return _text;
+    }
+
+    function get_fontSize() : Int {
+        return _fontSize;
+    }
+
+    function set_fontSize(v:Int) : Int {
+        _fontSize = v;
+        _setSize();
+        return _fontSize;
+    }
+
+    private inline function _setSize() {
+        if(_font != null){
+            size.set(
+                _font.width(_fontSize, _text), 
+                _font.height(_fontSize)
+            );
+        }
     }
 }

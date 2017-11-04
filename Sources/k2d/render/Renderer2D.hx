@@ -79,6 +79,14 @@ class Renderer2D extends Renderer {
 		graphics.drawString(text, x, y);
 	}
 
+    @:extern public inline function drawAlignedString(text:String, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
+        GraphicsExtension.drawAlignedString(graphics, text, x, y, horAlign, verAlign);
+    }
+
+    @:extern public inline function drawAlignedCharacters(text:Array<Int>, start:Int, end:Int, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
+        GraphicsExtension.drawAlignedCharacters(graphics, text, start, end, x, y, horAlign, verAlign);
+    }
+
     @:extern public inline function drawRect(x:Float, y:Float, width:Float, height:Float, ?strength:Float) : Void {
 		graphics.drawRect(x, y, width, height, strength);
 	}
