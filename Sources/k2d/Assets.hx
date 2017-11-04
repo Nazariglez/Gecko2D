@@ -6,6 +6,7 @@ import k2d.resources.Video;
 import k2d.resources.Blob;
 import k2d.resources.Sound;
 import k2d.resources.Font;
+import k2d.utils.Chain;
 
 class Assets {
     static public var images:Map<String, Image> = new Map<String, Image>();

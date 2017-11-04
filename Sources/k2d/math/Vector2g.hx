@@ -1,6 +1,6 @@
 package k2d.math;
 
-class VectorG<T> {
+class Vector2g<T> {
     public var x:T;
     public var y:T;
 
@@ -14,15 +14,15 @@ class VectorG<T> {
 		this.y = (y == null) ? x : y;
     }
 
-    @:extern public inline function clone(vec:VectorG<T>) : VectorG<T> {
-        return new VectorG<T>(x, y);
+    @:extern public inline function clone(vec:Vector2g<T>) : Vector2g<T> {
+        return new Vector2g<T>(x, y);
     }
 
-    @:extern public inline function copy(vec:VectorG<T>) : Void {
+    @:extern public inline function copy(vec:Vector2g<T>) : Void {
 		set(vec.x, vec.y);
 	}
 
-    @:extern public inline function isEqual(vec:VectorG<T>) : Bool {
+    @:extern public inline function isEqual(vec:Vector2g<T>) : Bool {
 		return (x == vec.x && y == vec.y);
 	}
 }

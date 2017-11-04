@@ -1,6 +1,6 @@
-package k2d;
+package k2d.math;
 
-import k2d.math.Matrix;
+import k2d.Entity;
 
 class MatrixTransform {
     public var local:Matrix = Matrix.identity();

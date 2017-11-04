@@ -1,4 +1,4 @@
-package k2d;
+package k2d.utils;
 
 class Chain {
     @:generic static public function each<T>(arr:Array<T>, cb:T->(?String->Void)->Void, done:?String -> Void){

@@ -1,7 +1,8 @@
 package k2d;
 
 import k2d.math.Point;
-import k2d.math.VectorG;
+import k2d.math.Vector2g;
+import k2d.math.MatrixTransform;
 import k2d.render.Renderer2D;
 
 class Entity {
@@ -15,7 +16,7 @@ class Entity {
     public var pivot:Point = new Point(0.5, 0.5);
     public var anchor:Point = new Point(0.5, 0.5);
     public var size:Point = new Point(1,1);
-    public var flip:VectorG<Bool> = new VectorG<Bool>(false, false);
+    public var flip:Vector2g<Bool> = new Vector2g<Bool>(false, false);
 
     public var visible:Bool = true;
     public var alpha:Float = 1;
