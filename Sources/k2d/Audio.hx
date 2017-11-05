@@ -1,6 +1,7 @@
 package k2d;
 
 import k2d.resources.Sound;
+import k2d.utils.EventEmitter;
 import kha.audio1.AudioChannel;
 import kha.audio1.Audio in KAudio;
 
@@ -19,6 +20,8 @@ class Audio {
 
     public var isPaused(get, null):Bool;
     private var _isPaused:Bool = false;
+
+    private var _eventEmitter:EventEmitter = new EventEmitter();
 
     static public function fromSound(snd:Sound) : Audio {
         var a = new Audio();
