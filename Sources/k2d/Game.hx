@@ -5,7 +5,6 @@ import k2d.i.IRenderer;
 import k2d.render.Renderer2D;
 import k2d.render.Renderer;
 import k2d.render.Framebuffer;
-import k2d.Movie;
 
 typedef RenderAction<T:IRenderer> = {
     public var id:String;
@@ -15,7 +14,7 @@ typedef RenderAction<T:IRenderer> = {
 
 class Game {
     #if debug
-    public var stats = new GameStats();
+    public var debugStats = new GameStats();
     #end
 
     public var title:String;
@@ -56,6 +55,7 @@ class Game {
             height: height
         }, function onRun() {
             kha.System.notifyOnRender(_render);
+            System.subscribeOnSystemUpdate(_systemUpdate);
             _loop.onTick(_update);
         });
     }
@@ -112,6 +112,7 @@ class Game {
 
         Movie.unpauseAll();
         _loop.start();
+        System.start();
     }
 
     public function stop() {
@@ -120,6 +121,7 @@ class Game {
 
         Movie.pauseAll();
         _loop.stop();
+        System.stop();
     }
 
     #if kha_js 
@@ -132,9 +134,15 @@ class Game {
     }
     #end
 
+    private function _systemUpdate() {
+        #if debug
+        debugStats.system.tick();
+        #end
+    }
+
     private function _update(delta:Float) {
         #if debug
-        stats.update.tick();
+        debugStats.update.tick();
         #end
 
         onPreUpdate(delta);
@@ -144,16 +152,17 @@ class Game {
 
     private function _render(framebuffer:Framebuffer) {
         #if debug
-        stats.renderer.tick();
+        debugStats.renderer.tick();
         #end
 
-        _init(framebuffer);
+        _init();
 
         if(!isRunning){
             return;
         }
 
         for(rAction in renderers){
+            rAction.renderer.framebuffer = framebuffer;
             rAction.action(rAction.renderer);
         }
     }
@@ -162,7 +171,7 @@ class Game {
         r.begin();
         _renderSceneGraph(r);
         r.end();
-        r.clear();
+        r.reset();
     }
 
     private inline function _renderSceneGraph(r:Renderer2D) {
@@ -170,14 +179,10 @@ class Game {
         onRender(r);
     }
 
-    private inline function _init(frb:Framebuffer) {
+    private inline function _init() {
         if(_initiated || renderers.length == 0){ return; }
 
         _initiated = true;
-
-        for(rAction in renderers){
-            rAction.renderer.setFramebuffer(frb);
-        }
 
         onInit();
         start();

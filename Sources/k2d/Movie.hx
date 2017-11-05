@@ -63,7 +63,7 @@ class Movie extends Entity {
 
     static public function unpauseAll() {
         for(mov in Movie.playing){
-            mov.unpause();
+            mov.resume();
         }
     }
 
@@ -116,7 +116,7 @@ class Movie extends Entity {
         video.pause();
     }
 
-    public function unpause() {
+    public function resume() {
         if(!_isPlaying){
             return;
         }
