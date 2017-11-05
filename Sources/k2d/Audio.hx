@@ -6,6 +6,12 @@ import kha.audio1.AudioChannel;
 import kha.audio1.Audio in KAudio;
 
 class Audio {
+    static private var EVENT_FINISH = "finish";
+    static private var EVENT_PLAY = "play";
+    static private var EVENT_STOP = "stop";
+    static private var EVENT_PAUSE = "pause";
+    static private var EVENT_RESUME = "resume"; 
+
     public var sound(get, set):Sound;
     private var _sound:Sound;
 
@@ -20,6 +26,12 @@ class Audio {
 
     public var isPaused(get, null):Bool;
     private var _isPaused:Bool = false;
+
+    public var position(get, null):Float;
+    public var length(get, null):Float;
+
+    public var volume(get, set):Float;
+    private var _volume:Float = 1;
 
     private var _eventEmitter:EventEmitter = new EventEmitter();
 
@@ -49,8 +61,12 @@ class Audio {
             _channel = KAudio.play(sound, loop);
         }
 
+        _channel.volume = _volume;
         _lastLoop = loop;
         _isPlaying = true;
+
+        System.subscribeOnSystemUpdate(update);
+        _eventEmitter.emit(EVENT_PLAY);
     }
 
     public function stop() {
@@ -60,6 +76,9 @@ class Audio {
 
         _channel.stop();
         _isPlaying = false;
+
+        System.unsubscribeOnSystemUpdate(update);
+        _eventEmitter.emit(EVENT_STOP);
     }
 
     public function pause() {
@@ -69,15 +88,98 @@ class Audio {
 
         _channel.pause();
         _isPaused = true;
+        System.unsubscribeOnSystemUpdate(update);
+        _eventEmitter.emit(EVENT_PAUSE);
     }
 
-    public function unpause() {
+    public function resume() {
         if(!_isPlaying || !_isPaused){
             return;
         }
 
         _channel.play();
         _isPaused = false;
+        System.subscribeOnSystemUpdate(update);
+        _eventEmitter.emit(EVENT_RESUME);
+    }
+
+    private function _finish() {
+        _channel.stop();
+        _isPlaying = false;
+
+        System.unsubscribeOnSystemUpdate(update);
+        _eventEmitter.emit(EVENT_FINISH);
+    }
+
+    public function update() {
+        if(_isPlaying && _channel.finished){
+            _finish();
+        }
+    }
+
+    public function subscribeOnPlay(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_PLAY, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_PLAY, cb);
+    }
+
+    public function unsubscribeOnPlay(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_PLAY, cb);
+    }
+
+    public function subscribeOnStop(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_STOP, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_STOP, cb);
+    }
+
+    public function unsubscribeOnStop(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_STOP, cb);
+    }
+
+    public function subscribeOnPause(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_PAUSE, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_PAUSE, cb);
+    }
+
+    public function unsubscribeOnPause(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_PAUSE, cb);
+    }
+
+    public function subscribeOnResume(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_RESUME, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_RESUME, cb);
+    }
+
+    public function unsubscribeOnResume(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_RESUME, cb);
+    }
+
+    public function subscribeOnFinish(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_FINISH, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_FINISH, cb);
+    }
+
+    public function unsubscribeOnFinish(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_FINISH, cb);
     }
 
     public inline function copy() : Audio {
@@ -107,6 +209,9 @@ class Audio {
 	}
 
 	function set_sound(snd:Sound) : Sound {
+        _channel = KAudio.play(snd); //init channel
+        _channel.stop();
+
 		return _sound = snd;
 	}
 
@@ -116,6 +221,34 @@ class Audio {
 
     function get_isPaused() : Bool {
         return _isPaused;
+    }
+
+    function get_position() : Float {
+        if(_channel != null){
+            return _channel.position;
+        }
+
+        return 0;
+    }
+
+    function get_length() : Float {
+        if(_channel != null){
+            return _channel.length;
+        }
+
+        return 0;
+    }
+
+    function get_volume() : Float {
+        return _volume;
+    }
+
+    function set_volume(v:Float) : Float {
+        if(_channel != null){
+            _channel.volume = v;
+        }
+
+        return _volume = v;
     }
 }
 
