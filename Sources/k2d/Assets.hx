@@ -81,8 +81,10 @@ class Assets {
     static public function loadSound(name:String, done:?String->Void){
         var parsedName = Assets._parseAssetName(name);
         kha.Assets.loadSound(parsedName, function(sound:Sound){
-            Assets.sounds[name] = sound;
-            done();
+            sound.uncompress(function(){
+                Assets.sounds[name] = sound;
+                done();
+            });
         });
     }
 
