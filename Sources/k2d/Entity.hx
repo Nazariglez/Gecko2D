@@ -31,12 +31,12 @@ class Entity {
     private var _rotation:Float = 0;
 
     public var width(get, set):Float;
-    private var _width:Float = 1;
+    private var _width:Float = 10;
 
     public var height(get, set):Float;
-    private var _height:Float = 1;
+    private var _height:Float = 10;
 
-    public function new(){
+    public function new(sizeX:Float = 10, sizeY:Float = 10){
         _entityID = Entity.entityID++;
         skew.setObserver(_observSkewPoint);
     }
@@ -58,7 +58,7 @@ class Entity {
 
     public function update(dt:Float) {}
     public function render(r:Renderer2D) {
-        if(!visible || worldAlpha <= 0){ 
+        if(!isVisible() || worldAlpha <= 0){ 
             return; 
         }
 
@@ -66,6 +66,10 @@ class Entity {
         r.color = tint;
         r.alpha = worldAlpha;
         r.matrix = matrixTransform.world;
+    }
+
+    public function isVisible() : Bool {
+        return visible && scale.x != 0 && scale.y != 0 && alpha > 0;
     }
 
     function get_rotation() : Float {
