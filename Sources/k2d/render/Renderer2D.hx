@@ -10,7 +10,6 @@ import k2d.math.Vec2Pool;
 import k2d.math.Point;
 import k2d.math.Matrix;
 import k2d.utils.Color;
-import k2d.i.IRenderer;
 
 
 class Renderer2D extends Renderer {
@@ -41,11 +40,11 @@ class Renderer2D extends Renderer {
     }
 
     override public function begin() {
-        framebuffer.g2.begin();
+        g2.begin();
     }
 
     override public function end() {
-        framebuffer.g2.end();
+        g2.end();
     }
 
     override public function reset() {
@@ -55,57 +54,57 @@ class Renderer2D extends Renderer {
     }
 
     @:extern public inline function drawLine(x1:Float, y1:Float, x2:Float, y2:Float, ?strength:Float) : Void {
-		framebuffer.g2.drawLine(x1, y1, x2, y2, strength);
+		g2.drawLine(x1, y1, x2, y2, strength);
 	}
 
     @:extern public inline function drawImage(img:Image, x:FastFloat, y:FastFloat) : Void {
-		framebuffer.g2.drawImage(img, x, y);
+		g2.drawImage(img, x, y);
 	}
 
 	@:extern public inline function drawVideo(video:Video, x:Float, y:Float, width:Float, height:Float) : Void {
-		framebuffer.g2.drawVideo(video, x, y, width, height);
+		g2.drawVideo(video, x, y, width, height);
 	}
 
     @:extern public inline function drawString(text:String, x:Float, y:Float) : Void {
-		framebuffer.g2.drawString(text, x, y);
+		g2.drawString(text, x, y);
 	}
 
     @:extern public inline function drawAlignedString(text:String, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
-        GraphicsExtension.drawAlignedString(framebuffer.g2, text, x, y, horAlign, verAlign);
+        GraphicsExtension.drawAlignedString(g2, text, x, y, horAlign, verAlign);
     }
 
     @:extern public inline function drawAlignedCharacters(text:Array<Int>, start:Int, end:Int, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
-        GraphicsExtension.drawAlignedCharacters(framebuffer.g2, text, start, end, x, y, horAlign, verAlign);
+        GraphicsExtension.drawAlignedCharacters(g2, text, start, end, x, y, horAlign, verAlign);
     }
 
     @:extern public inline function drawRect(x:Float, y:Float, width:Float, height:Float, ?strength:Float) : Void {
-		framebuffer.g2.drawRect(x, y, width, height, strength);
+		g2.drawRect(x, y, width, height, strength);
 	}
 
     @:extern public inline function fillRect(x:Float, y:Float, width:Float, height:Float) : Void {
-		framebuffer.g2.fillRect(x, y, width, height);
+		g2.fillRect(x, y, width, height);
 	}
 
     @:extern public inline function fillTriangle(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float) : Void {
-		framebuffer.g2.fillTriangle(x1, y1, x2, y2, x3, y3);
+		g2.fillTriangle(x1, y1, x2, y2, x3, y3);
 	}
 
     @:extern public inline function drawCircle(cx:Float, cy:Float, radius:Float, ?strength:Float, ?segments:Int) : Void {
-		GraphicsExtension.drawCircle(framebuffer.g2, cx, cy, radius, strength, segments);
+		GraphicsExtension.drawCircle(g2, cx, cy, radius, strength, segments);
 	}
 
     @:extern public inline function drawCubicBezier(x:Array<Float>, y:Array<Float>, ?segments:Int, ?strength:Float) : Void {
-		GraphicsExtension.drawCubicBezier(framebuffer.g2, x, y, segments, strength);
+		GraphicsExtension.drawCubicBezier(g2, x, y, segments, strength);
 	}
 
 	@:extern public inline function drawCubicBezierPath(x:Array<Float>, y:Array<Float>, ?segments:Int, ?strength:Float) : Void {
-		GraphicsExtension.drawCubicBezierPath(framebuffer.g2, x, y, segments, strength);
+		GraphicsExtension.drawCubicBezierPath(g2, x, y, segments, strength);
 	}
 
 	//todo change Vector2 for Point and use a pool of vector2 to pass to the drawPolygon.
 	@:extern public inline function drawPolygon(x:Float, y:Float, vertices:Array<Point>, ?strength:Float) : Void {
         var _pointVerts = Renderer2D._pointsToVec2(vertices);
-		GraphicsExtension.drawPolygon(framebuffer.g2, x, y, _pointVerts, strength);
+		GraphicsExtension.drawPolygon(g2, x, y, _pointVerts, strength);
         
         for(p in _pointVerts){ 
             Vec2Pool.put(p);
@@ -113,12 +112,12 @@ class Renderer2D extends Renderer {
 	}
 
 	@:extern public inline function fillCircle(cx:Float, cy:Float, radius:Float, ?segments:Int) : Void {
-		GraphicsExtension.fillCircle(framebuffer.g2, cx, cy, radius, segments);
+		GraphicsExtension.fillCircle(g2, cx, cy, radius, segments);
 	}
 
 	@:extern public inline function fillPolygon(x:Float, y:Float, vertices:Array<Point>) : Void {
         var _pointVerts = Renderer2D._pointsToVec2(vertices);
-		GraphicsExtension.fillPolygon(framebuffer.g2, x, y, _pointVerts);
+		GraphicsExtension.fillPolygon(g2, x, y, _pointVerts);
 
         for(p in _pointVerts){ 
             Vec2Pool.put(p);
@@ -131,7 +130,7 @@ class Renderer2D extends Renderer {
 	}
 
 	public function set_color(value:Int) : Int {
-		framebuffer.g2.color = value + 0xff000000;
+		g2.color = value + 0xff000000;
 		return _color = value;
 	}
 
@@ -140,17 +139,17 @@ class Renderer2D extends Renderer {
 	}
 
 	public function set_alpha(value:Float) : Float {
-		framebuffer.g2.opacity = value;
+		g2.opacity = value;
 		return _alpha = value;
     }
 
     public function get_matrix() : Matrix {
-		return framebuffer.g2.transformation;
+		return g2.transformation;
 	}
 
 	public function set_matrix(matrix:Matrix) : Matrix {
-        framebuffer.g2.transformation.setFrom(matrix);
-		return framebuffer.g2.transformation;
+        g2.transformation.setFrom(matrix);
+		return g2.transformation;
     }
 
     public function get_font() : Font {
@@ -158,7 +157,7 @@ class Renderer2D extends Renderer {
 	}
 
 	public function set_font(value:Font) : Font {
-		framebuffer.g2.font = value;
+		g2.font = value;
 		return _font = value;
 	}	
 
@@ -167,7 +166,7 @@ class Renderer2D extends Renderer {
 	}
 
 	public function set_fontSize(value:Int) : Int {
-		framebuffer.g2.fontSize = value;
+		g2.fontSize = value;
 		return _fontSize = value;
 	}	
 }

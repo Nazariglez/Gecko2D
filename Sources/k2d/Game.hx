@@ -1,7 +1,7 @@
 package k2d;
 
 import k2d.utils.GameStats;
-import k2d.i.IRenderer;
+import k2d.render.IRenderer;
 import k2d.render.Renderer2D;
 import k2d.render.Renderer;
 import k2d.render.Framebuffer;
@@ -40,6 +40,8 @@ class Game {
     public function onRender(renderer:Renderer2D) { trace("on game render"); }
     public function onInit() { trace("on game init."); }
 
+    private var _backbuffer:kha.Image;
+
     public function new(title:String, width:Int = 0, height:Int = 0) {
         this.title = title;
         this.width = width;
@@ -54,6 +56,7 @@ class Game {
             width: width,
             height: height
         }, function onRun() {
+            _backbuffer = kha.Image.createRenderTarget(width, height);
             kha.System.notifyOnRender(_render);
             System.subscribeOnSystemUpdate(_systemUpdate);
             _loop.onTick(_update);
@@ -155,6 +158,8 @@ class Game {
         debugStats.renderer.tick();
         #end
 
+        //todo draw in backbuffer and put in the framebuffer later?
+
         _init();
 
         if(!isRunning){
@@ -162,9 +167,14 @@ class Game {
         }
 
         for(rAction in renderers){
-            rAction.renderer.framebuffer = framebuffer;
+            rAction.renderer.g2 = _backbuffer.g2;
+            rAction.renderer.g4 = _backbuffer.g4;
             rAction.action(rAction.renderer);
         }
+
+        framebuffer.g2.begin();
+        kha.Scaler.scale(_backbuffer, framebuffer, kha.System.screenRotation);
+        framebuffer.g2.end();
     }
 
     private function _render2D(r:Renderer2D) {

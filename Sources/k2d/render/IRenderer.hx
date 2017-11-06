@@ -1,9 +1,8 @@
-package k2d.i;
-
-import k2d.render.Framebuffer;
+package k2d.render;
 
 interface IRenderer {
-    public var framebuffer:Framebuffer;
+    public var g2:kha.graphics2.Graphics;
+    public var g4:kha.graphics4.Graphics;
     public function begin():Void;
     public function end():Void;
     public function reset():Void;
