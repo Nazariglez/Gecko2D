@@ -1,9 +1,10 @@
 package k2d;
 
+import k2d.math.FastFloat;
 import k2d.resources.Video;
 import k2d.render.Renderer2D;
 
-class Movie extends Entity {
+class Movie extends Container {
     static public var playing:Array<Movie> = new Array<Movie>();
 
     public var video(get, set):Video;
@@ -81,6 +82,15 @@ class Movie extends Entity {
         super();
         if(vidName != null){
             this.videoName = vidName;
+        }
+    }
+
+    private override inline function _setSize(width:FastFloat, height:FastFloat) {
+        if(_video != null){
+            size.x = _video.width() > width ? _video.width() : width;
+            size.y = _video.height() > height ? _video.height() : height;
+        } else {
+            size.set(width, height);
         }
     }
 

@@ -1,9 +1,10 @@
 package k2d;
 
+import k2d.math.FastFloat;
 import k2d.resources.Image;
 import k2d.render.Renderer2D;
 
-class Sprite extends Entity {
+class Sprite extends Container {
     public var image(get, set):Image;
     private var _image:Image;
 
@@ -20,6 +21,15 @@ class Sprite extends Entity {
         super();
         if(imgName != null){
             this.imageName = imgName;
+        }
+    }
+
+    private override inline function _setSize(width:FastFloat, height:FastFloat) {
+        if(_image != null){
+            size.x = _image.width > width ? _image.width : width;
+            size.y = _image.height > height ? _image.height : height;
+        } else {
+            size.set(width, height);
         }
     }
 

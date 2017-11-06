@@ -53,9 +53,14 @@ class Container extends Entity {
                 if(_cMaxY > _maxY)_maxY = _cMaxY;
             }
 
-            size.x = _maxX - _minX;
-            size.y = _maxY - _minY;
+            _setSize(_maxX - _minX, _maxY - _minY);
         }
+    }
+
+    private function _setSize(width:FastFloat, height:FastFloat) {
+        //override in some entites like sprite
+        size.x = width;
+        size.y = height;
     }
 
     public override function render(r:Renderer2D) {
