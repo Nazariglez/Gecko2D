@@ -26,7 +26,7 @@ class Sprite extends Entity {
     public override function render(r:Renderer2D) {
         super.render(r);
         if(image != null){
-            r.drawImage(image, -size.x*0.5, -size.y*0.5);
+            r.drawImage(image, 0,0);
         }
     }
 

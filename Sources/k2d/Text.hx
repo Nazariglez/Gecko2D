@@ -42,7 +42,7 @@ class Text extends Entity {
         if(font != null){
             r.font = _font;
             r.fontSize = fontSize;
-            r.drawAlignedString(text, 0, 0, HorizontalTextAlign.TextCenter, VerticalTextAlign.TextMiddle);
+            r.drawAlignedString(text, 0, 0, HorizontalTextAlign.TextLeft, VerticalTextAlign.TextTop);
         }
     }
 

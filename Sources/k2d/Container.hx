@@ -27,9 +27,9 @@ class Container extends Entity {
             child.update(dt);
 
             var cMinX:FastFloat = child.position.x - child.width * child.anchor.x;
-            var cMaxX:FastFloat = child.position.x + child.width * child.anchor.x;
+            var cMaxX:FastFloat = child.position.x + child.width * (1-child.anchor.x);
             var cMinY:FastFloat = child.position.y - child.height * child.anchor.y;
-            var cMaxY:FastFloat = child.position.y + child.height * child.anchor.y;
+            var cMaxY:FastFloat = child.position.y + child.height * (1-child.anchor.y);
 
             if(cMinX < minX)minX = cMinX;
             if(cMinY < minY)minY = cMinY;

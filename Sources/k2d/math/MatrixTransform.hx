@@ -42,18 +42,16 @@ class MatrixTransform {
 		_anY = entity.flip.y ? 1-entity.anchor.y : entity.anchor.y;
 		_piX = entity.flip.x ? 1-entity.pivot.x : entity.pivot.x;
 		_piY = entity.flip.y ? 1-entity.pivot.y : entity.pivot.y;
-		_midSizeX = entity.size.x*0.5;
-		_midSizeY = entity.size.y*0.5;
 
 		local._00 = _cx * _scX;
 		local._01 = _sx * _scX;
 		local._10 = _cy * _scY;
 		local._11 = _sy * _scY;
 
-		_aW = _anX * entity.size.x - _midSizeX;
-		_aH = _anY * entity.size.y - _midSizeY;
-		_pW = _piX * entity.size.x - _midSizeX;
-		_pH = _piY * entity.size.y - _midSizeY;
+		_aW = _anX * entity.size.x;
+		_aH = _anY * entity.size.y;
+		_pW = _piX * entity.size.x;
+		_pH = _piY * entity.size.y;
 
 		local._20 = entity.position.x - _aW * _scX + _pW * _scX;
 		local._21 = entity.position.y - _aH * _scY + _pH * _scY;

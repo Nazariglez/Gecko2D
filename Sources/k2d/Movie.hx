@@ -89,7 +89,7 @@ class Movie extends Entity {
     public override function render(r:Renderer2D) {
         super.render(r);
         if(video != null){
-            r.drawVideo(video, -size.x*0.5, -size.y*0.5, video.width(), video.height());
+            r.drawVideo(video, 0, 0, video.width(), video.height());
         }
     }
 
