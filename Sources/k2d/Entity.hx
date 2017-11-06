@@ -3,6 +3,7 @@ package k2d;
 import k2d.math.Point;
 import k2d.math.Vector2g;
 import k2d.math.MatrixTransform;
+import k2d.math.FastFloat;
 import k2d.render.Renderer2D;
 
 class Entity {
@@ -19,24 +20,24 @@ class Entity {
     public var flip:Vector2g<Bool> = new Vector2g<Bool>(false, false);
 
     public var visible:Bool = true;
-    public var alpha:Float = 1;
-    public var worldAlpha:Float = 1;
+    public var alpha:FastFloat = 1;
+    public var worldAlpha:FastFloat = 1;
     public var tint:Int = 0xffffff;
 
     public var parent:Entity = null;
 
     public var matrixTransform:MatrixTransform = new MatrixTransform();
 
-    public var rotation(get, set):Float;
-    private var _rotation:Float = 0;
+    public var rotation(get, set):FastFloat;
+    private var _rotation:FastFloat = 0;
 
-    public var width(get, set):Float;
-    private var _width:Float = 10;
+    public var width(get, set):FastFloat;
+    private var _width:FastFloat = 10;
 
-    public var height(get, set):Float;
-    private var _height:Float = 10;
+    public var height(get, set):FastFloat;
+    private var _height:FastFloat = 10;
 
-    public function new(sizeX:Float = 10, sizeY:Float = 10){
+    public function new(sizeX:FastFloat = 10, sizeY:FastFloat = 10){
         _entityID = Entity.entityID++;
         skew.setObserver(_observSkewPoint);
     }
@@ -56,7 +57,7 @@ class Entity {
         }
     }
 
-    public function update(dt:Float) {}
+    public function update(dt:FastFloat) {}
     public function render(r:Renderer2D) {
         if(!isVisible() || worldAlpha <= 0){ 
             return; 
@@ -72,31 +73,31 @@ class Entity {
         return visible && scale.x != 0 && scale.y != 0 && alpha > 0;
     }
 
-    function get_rotation() : Float {
+    function get_rotation() : FastFloat {
 		return _rotation;
 	}
 
-	function set_rotation(value:Float) : Float {
+	function set_rotation(value:FastFloat) : FastFloat {
 		_rotation = value;
 		matrixTransform.updateSkew(this);
 		return _rotation;
 	}
 
-    function get_width() : Float {
+    function get_width() : FastFloat {
 		return scale.x * size.x;
 	}
 
-	function set_width(value:Float) : Float {
-		scale.x = scale.x * value / size.x;
+	function set_width(value:FastFloat) : FastFloat {
+		scale.x = value / size.x;
 		return _width = value;
 	}
 
-	function get_height() : Float {
+	function get_height() : FastFloat {
 		return scale.y * size.y;
 	}
 
-	function set_height(value:Float) : Float {
-		scale.y = scale.y * value / size.y;
+	function set_height(value:FastFloat) : FastFloat {
+		scale.y = value / size.y;
 		return _height = value;
 	}
     

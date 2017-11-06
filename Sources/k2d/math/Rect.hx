@@ -3,17 +3,17 @@ package k2d.math;
 import kha.math.Vector2;
 
 class Rect {
-	public var x: Float;
-	public var y: Float;
-	public var width: Float;
-	public var height: Float;
+	public var x: FastFloat;
+	public var y: FastFloat;
+	public var width: FastFloat;
+	public var height: FastFloat;
 
-	public var top(get, null): Float;
-	public var bottom(get, null): Float;
-	public var left(get, null): Float;
-	public var right(get, null): Float;
+	public var top(get, null): FastFloat;
+	public var bottom(get, null): FastFloat;
+	public var left(get, null): FastFloat;
+	public var right(get, null): FastFloat;
 
-	public function new(x: Float = 0, y: Float = 0, width: Float = 0, height: Float = 0) {
+	public function new(x: FastFloat = 0, y: FastFloat = 0, width: FastFloat = 0, height: FastFloat = 0) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -21,24 +21,24 @@ class Rect {
 	}
 
 	// Getters
-	public function get_top() : Float {
+	public function get_top() : FastFloat {
 		return y;
 	}
 
-	public function get_bottom() : Float {
+	public function get_bottom() : FastFloat {
 		return y + height;
 	}
 
-	public function get_left() : Float {
+	public function get_left() : FastFloat {
 		return x;
 	}
 
-	public function get_right() : Float {
+	public function get_right() : FastFloat {
 		return x + width;
 	}
 
 	// Methods
-	public function set(x: Float, y: Float, width: Float, height: Float): Rect {
+	public function set(x: FastFloat, y: FastFloat, width: FastFloat, height: FastFloat): Rect {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -65,7 +65,7 @@ class Rect {
 		return new Rect(this.x, this.y, this.width, this.height);
 	}
 
-	public function contains(x: Float, y: Float) : Bool {
+	public function contains(x: FastFloat, y: FastFloat) : Bool {
 		if(this.width <= 0 || this.height <= 0){
 			return false;
 		}

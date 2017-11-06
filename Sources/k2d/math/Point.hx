@@ -1,18 +1,18 @@
 package k2d.math;
 
-//todo move floats to fastFloats? do the compiler the automatic conversion?
+//todo move FastFloats to fastFastFloats? do the compiler the automatic conversion?
 class Point {
-	private var _x:Float = 0;
-	private var _y:Float = 0;
+	private var _x:FastFloat = 0;
+	private var _y:FastFloat = 0;
 	
-	public var x(get, set):Float;
-	public var y(get, set):Float;
+	public var x(get, set):FastFloat;
+	public var y(get, set):FastFloat;
 
 	private var _observer:Point -> Void = function(point:Point) : Void {};
 	private var _isObserved:Bool = false;
 	public var isObserved(get, null):Bool;
 
-	public inline function new(x:Float = 0, y:Float = 0) {
+	public inline function new(x:FastFloat = 0, y:FastFloat = 0) {
 		set(x,y);
 	}
 
@@ -25,7 +25,7 @@ class Point {
 		_isObserved = false;
 	}
 
-	@:extern public inline function set(x:Float, ?y:Float) {
+	@:extern public inline function set(x:FastFloat, ?y:FastFloat) {
 		this.x = x;
 		this.y = (y == null) ? x : y;
 	}
@@ -50,33 +50,33 @@ class Point {
         set(x - point.x, y - point.y);
     }
 
-    @:extern public inline function mult(value:Float) : Void {
+    @:extern public inline function mult(value:FastFloat) : Void {
         set(x * value, y * value);
     }
 
-    @:extern public inline function div(value:Float) : Void {
+    @:extern public inline function div(value:FastFloat) : Void {
         mult(1 / value);
     }
 
-    @:extern public inline function dot(point:Point) : Float {
+    @:extern public inline function dot(point:Point) : FastFloat {
         return x * point.x + y * point.y;
     }
 
-	function get_x() : Float {
+	function get_x() : FastFloat {
 		return _x;
 	}
 
-	function set_x(value:Float) : Float {
+	function set_x(value:FastFloat) : FastFloat {
 		_x = value;
 		if(_isObserved)_observer(this);
 		return _x;
 	}
 
-	function get_y() : Float {
+	function get_y() : FastFloat {
 		return _y;
 	}
 
-	function set_y(value:Float) : Float {
+	function set_y(value:FastFloat) : FastFloat {
 		_y = value;
 		if(_isObserved)_observer(this);
 		return _y;

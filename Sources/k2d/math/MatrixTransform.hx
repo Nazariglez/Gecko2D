@@ -6,25 +6,25 @@ class MatrixTransform {
     public var local:Matrix = Matrix.identity();
     public var world:Matrix = Matrix.identity();
 
-    private var _cx:Float = 1;
-	private var _sx:Float = 0;
-	private var _cy:Float = 0;
-	private var _sy:Float = 1;
+    private var _cx:FastFloat = 1;
+	private var _sx:FastFloat = 0;
+	private var _cy:FastFloat = 0;
+	private var _sy:FastFloat = 1;
 
-	private var _aW:Float = 0;
-	private var _aH:Float = 0;
-	private var _pW:Float = 0;
-	private var _pH:Float = 0;
+	private var _aW:FastFloat = 0;
+	private var _aH:FastFloat = 0;
+	private var _pW:FastFloat = 0;
+	private var _pH:FastFloat = 0;
 
-	private var _scX:Float = 0;
-	private var _scY:Float = 0;
-	private var _anX:Float = 0;
-	private var _anY:Float = 0;
-	private var _piX:Float = 0;
-	private var _piY:Float = 0;
+	private var _scX:FastFloat = 0;
+	private var _scY:FastFloat = 0;
+	private var _anX:FastFloat = 0;
+	private var _anY:FastFloat = 0;
+	private var _piX:FastFloat = 0;
+	private var _piY:FastFloat = 0;
 
-	private var _midSizeX:Float = 0;
-	private var _midSizeY:Float = 0;
+	private var _midSizeX:FastFloat = 0;
+	private var _midSizeY:FastFloat = 0;
     
     public function new(){}
 
