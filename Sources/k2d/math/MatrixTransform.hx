@@ -71,9 +71,4 @@ class MatrixTransform {
 		world._20 = (local._20 * pm._00) + (local._21 * pm._10) + pm._20;
 		world._21 = (local._20 * pm._01) + (local._21 * pm._11) + pm._21;
 	}
-
-    @:extern public inline function update(entity:Entity, parentMatrix:Matrix) : Void {
-		updateLocal(entity);
-		updateWorld(parentMatrix);
-	}
 }

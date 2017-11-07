@@ -5,11 +5,10 @@ class Vector2g<T> {
     public var y:T;
 
     public function new(x:T, y:T) {
-        this.x = x;
-        this.y = y;
+        set(x, y);
     }
 
-    @:extern public inline function set(x:T, y:T) {
+    @:extern public inline function set(x:T, ?y:T) {
         this.x = x;
 		this.y = (y == null) ? x : y;
     }

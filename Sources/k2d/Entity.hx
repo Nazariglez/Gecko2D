@@ -46,24 +46,22 @@ class Entity {
         matrixTransform.updateSkew(this);
     }
 
-    private inline function _updateMatrixTransform() {
+    public function update(dt:FastFloat) {
+        matrixTransform.updateLocal(this);
         if(parent == null){
-            matrixTransform.updateLocal(this);
             matrixTransform.world.setFrom(matrixTransform.local);
             worldAlpha = alpha;
         }else{
-            matrixTransform.update(this, parent.matrixTransform.world);
+            matrixTransform.updateWorld(parent.matrixTransform.world);
             worldAlpha = parent.worldAlpha * alpha;
         }
     }
-
-    public function update(dt:FastFloat) {}
+    
     public function render(r:Renderer2D) {
         if(!isVisible() || worldAlpha <= 0){ 
             return; 
         }
 
-        _updateMatrixTransform();
         r.color = tint;
         r.alpha = worldAlpha;
         r.matrix = matrixTransform.world;
@@ -73,7 +71,7 @@ class Entity {
         
     }
 
-    public function isVisible() : Bool {
+    public inline function isVisible() : Bool {
         return visible && scale.x != 0 && scale.y != 0 && alpha > 0;
     }
 

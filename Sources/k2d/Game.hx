@@ -113,7 +113,7 @@ class Game {
         if(!_initiated){ return; }
         if(isRunning){ return; }
 
-        Movie.unpauseAll();
+        //Movie.unpauseAll();
         _loop.start();
         System.start();
     }
@@ -122,7 +122,7 @@ class Game {
         if(!_initiated){ return; }
         if(!isRunning){ return; }
 
-        Movie.pauseAll();
+        //Movie.pauseAll();
         _loop.stop();
         System.stop();
     }
@@ -148,9 +148,9 @@ class Game {
         debugStats.update.tick();
         #end
 
-        onPreUpdate(delta);
+        //onPreUpdate(delta);
         onUpdate(delta);
-        onPostUpdate(delta);
+        //onPostUpdate(delta);
     }
 
     private function _render(framebuffer:Framebuffer) {
@@ -158,25 +158,21 @@ class Game {
         debugStats.renderer.tick();
         #end
 
-        //todo draw in backbuffer and put in the framebuffer later?
-
         _init();
 
         if(!isRunning){
             return;
         }
 
-        //draw the last frame backbuffer to framebuffer
-        framebuffer.g2.begin();
-        kha.Scaler.scale(_backbuffer, framebuffer, kha.System.screenRotation);
-        framebuffer.g2.end();
-
-        //draw the actual frame to the backbuffer
         for(rAction in renderers){
             rAction.renderer.g2 = _backbuffer.g2;
             rAction.renderer.g4 = _backbuffer.g4;
             rAction.action(rAction.renderer);
         }
+
+        framebuffer.g2.begin();
+        kha.Scaler.scale(_backbuffer, framebuffer, kha.System.screenRotation);
+        framebuffer.g2.end();
     }
 
     private function _render2D(r:Renderer2D) {
