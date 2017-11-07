@@ -166,15 +166,17 @@ class Game {
             return;
         }
 
+        //draw the last frame backbuffer to framebuffer
+        framebuffer.g2.begin();
+        kha.Scaler.scale(_backbuffer, framebuffer, kha.System.screenRotation);
+        framebuffer.g2.end();
+
+        //draw the actual frame to the backbuffer
         for(rAction in renderers){
             rAction.renderer.g2 = _backbuffer.g2;
             rAction.renderer.g4 = _backbuffer.g4;
             rAction.action(rAction.renderer);
         }
-
-        framebuffer.g2.begin();
-        kha.Scaler.scale(_backbuffer, framebuffer, kha.System.screenRotation);
-        framebuffer.g2.end();
     }
 
     private function _render2D(r:Renderer2D) {
