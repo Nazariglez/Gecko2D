@@ -60,6 +60,8 @@ class Game extends k2d.Game {
 
     private function _addBunny(){
         var b = _bunnyPool.length > 0 ? _bunnyPool.pop() : new Bunny();
+        b.anchor.set(0,0);
+        b.pivot.set(0,0);
         b.speed.set(Math.random() * 5, Math.random() * 5 - 2.5);
         _container.addChild(b);
 
