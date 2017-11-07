@@ -68,6 +68,10 @@ class Container extends Entity {
         for(child in children){
             if(child.isVisible()){
                 child.render(r);
+
+                #if debug 
+                child.debugRender(r);
+                #end
             }
         }
     }

@@ -69,6 +69,10 @@ class Entity {
         r.matrix = matrixTransform.world;
     }
 
+    public function debugRender(r:Renderer2D) {
+        
+    }
+
     public function isVisible() : Bool {
         return visible && scale.x != 0 && scale.y != 0 && alpha > 0;
     }
