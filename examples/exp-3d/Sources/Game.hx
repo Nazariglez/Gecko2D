@@ -194,26 +194,26 @@ class Game extends k2d.Game {
 
     private function _render3d(r:Renderer3D) {
         // Begin rendering
-        r.graphics.begin();
+        r.g4.begin();
 
         // Clear screen
-		r.graphics.clear(Color.fromFloats(0.0, 0.0, 0.3), 1.0);
+		r.g4.clear(Color.fromFloats(0.0, 0.0, 0.3), 1.0);
 
 		// Bind data we want to draw
-		r.graphics.setVertexBuffer(vertexBuffer);
-		r.graphics.setIndexBuffer(indexBuffer);
+		r.g4.setVertexBuffer(vertexBuffer);
+		r.g4.setIndexBuffer(indexBuffer);
 
 		// Bind state we want to draw with
-		r.graphics.setPipeline(pipeline);
+		r.g4.setPipeline(pipeline);
 
 		// Set our transformation to the currently bound shader, in the "MVP" uniform
-		r.graphics.setMatrix(mvpID, mvp);
+		r.g4.setMatrix(mvpID, mvp);
 
 		// Draw!
-		r.graphics.drawIndexedVertices();
+		r.g4.drawIndexedVertices();
 
 		// End rendering
-		r.graphics.end();
+		r.g4.end();
     }
     
     public override function onUpdate(delta:Float) {

@@ -1,24 +1,15 @@
 package;
 
-import k2d.render.Renderer;
+import k2d.render.IRenderer;
 import kha.graphics4.Graphics;
 import k2d.render.Framebuffer;
 
-class Renderer3D extends Renderer {
-    public var graphics:Graphics;
+class Renderer3D implements IRenderer {
+    public var g2:kha.graphics2.Graphics;
+    public var g4:kha.graphics4.Graphics;
 
     public function new(){}
-
-    override public function begin() {}
-
-    override public function end() {}
-
-    override public function clear() {}
-
-    override public function setFramebuffer(framebuffer:Framebuffer) {
-        _framebuffer = framebuffer;
-        graphics = framebuffer.g4;
-    }
-
-
+    public function begin() {}
+    public function end() {}
+    public function reset() {}
 }
