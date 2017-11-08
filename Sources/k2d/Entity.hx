@@ -4,7 +4,7 @@ import k2d.math.Point;
 import k2d.math.Vector2g;
 import k2d.math.MatrixTransform;
 import k2d.math.FastFloat;
-import k2d.render.Renderer2D;
+import k2d.render.Renderer;
 
 class Entity {
     public static var entityID:Int = 0;
@@ -57,7 +57,7 @@ class Entity {
         }
     }
     
-    public function render(r:Renderer2D) {
+    public function render(r:Renderer) {
         if(!isVisible() || worldAlpha <= 0){ 
             return; 
         }
@@ -67,7 +67,7 @@ class Entity {
         r.matrix = matrixTransform.world;
     }
 
-    public function debugRender(r:Renderer2D) {
+    public function debugRender(r:Renderer) {
         
     }
 

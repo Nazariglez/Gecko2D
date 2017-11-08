@@ -1,6 +1,6 @@
 package k2d;
 
-import k2d.render.Renderer2D;
+import k2d.render.Renderer;
 import k2d.math.FastFloat;
 
 class Container extends Entity {
@@ -63,7 +63,7 @@ class Container extends Entity {
         size.y = height;
     }
 
-    public override function render(r:Renderer2D) {
+    public override function render(r:Renderer) {
         super.render(r);
         for(child in children){
             if(child.isVisible()){

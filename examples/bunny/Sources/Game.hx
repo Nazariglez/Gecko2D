@@ -1,6 +1,6 @@
 package;
 
-import k2d.render.Renderer2D;
+import k2d.render.Renderer;
 import k2d.math.FastFloat;
 import k2d.Container;
 import k2d.Sprite;
@@ -47,7 +47,7 @@ class Game extends k2d.Game {
             Mouse.get().notify(_onMouseDown, null, null, null);
 
             for(i in 0...100000){
-                //_bunnies.push(new Bunny());
+            //    _bunnies.push(new Bunny());
             }
         }).start();
     }
@@ -77,7 +77,7 @@ class Game extends k2d.Game {
         _container.update(delta);
     }
 
-    public override function onRender(r:Renderer2D) {
+    public override function onRender(r:Renderer) {
         _fpsCounter.tick();
         if(_container == null){
             return;

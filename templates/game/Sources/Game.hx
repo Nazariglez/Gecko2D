@@ -1,6 +1,6 @@
 package;
 
-import k2d.render.Renderer2D;
+import k2d.render.Renderer;
 
 class Game extends k2d.Game {
 
@@ -12,7 +12,7 @@ class Game extends k2d.Game {
         trace("u:", delta);
     }
 
-    public override function onRender(renderer:Renderer2D) {
+    public override function onRender(renderer:Renderer) {
         trace("rendeeeer");
     }
 }

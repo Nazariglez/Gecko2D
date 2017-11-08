@@ -2,7 +2,7 @@ package k2d;
 
 import k2d.utils.GameStats;
 import k2d.render.IRenderer;
-import k2d.render.Renderer2D;
+import k2d.render.Renderer;
 import k2d.render.Renderer;
 import k2d.render.Framebuffer;
 
@@ -37,7 +37,7 @@ class Game {
 	public function onUpdate(delta: Float)      { trace("on game update"); }
 	public function onPostUpdate(delta: Float)  { /*throw new NotImplementedException();*/ }
 
-    public function onRender(renderer:Renderer2D) { trace("on game render"); }
+    public function onRender(renderer:Renderer) { trace("on game render"); }
     public function onInit() { trace("on game init."); }
 
     private var _backbuffer:kha.Image;
@@ -47,7 +47,7 @@ class Game {
         this.width = width;
         this.height = height;
         
-        addRenderer("2d", new Renderer2D(), _render2D);
+        addRenderer("2d", new Renderer(), _render2D);
     }
     
     public function run() {
@@ -175,14 +175,14 @@ class Game {
         framebuffer.g2.end();
     }
 
-    private function _render2D(r:Renderer2D) {
+    private function _render2D(r:Renderer) {
         r.begin();
         _renderSceneGraph(r);
         r.end();
         r.reset();
     }
 
-    private inline function _renderSceneGraph(r:Renderer2D) {
+    private inline function _renderSceneGraph(r:Renderer) {
         //todo render sceneGraph
         onRender(r);
     }

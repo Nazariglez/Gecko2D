@@ -1,7 +1,7 @@
 package k2d;
 
 import k2d.resources.Font;
-import k2d.render.Renderer2D;
+import k2d.render.Renderer;
 import k2d.render.HorizontalTextAlign;
 import k2d.render.VerticalTextAlign;
 
@@ -37,7 +37,7 @@ class Text extends Entity {
         }
     }
 
-    public override function render(r:Renderer2D) {
+    public override function render(r:Renderer) {
         super.render(r);
         if(font != null){
             r.font = _font;
