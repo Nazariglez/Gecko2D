@@ -36,6 +36,7 @@ class MatrixTransform {
 	}
 
     public inline function updateLocal(entity:Entity) : Void {
+		//TODO check the methods in kha graphics to rotate, opacity and push transform, maybe will be faster?
 		_scX = entity.scale.x * (entity.flip.x ? -1 : 1);
 		_scY = entity.scale.y * (entity.flip.y ? -1 : 1);
 		_anX = entity.flip.x ? 1-entity.anchor.x : entity.anchor.x;

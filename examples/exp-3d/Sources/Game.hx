@@ -104,7 +104,6 @@ class Game extends k2d.Game {
 
     override public function new(title:String, width:Int, height:Int) {
         super(title, width, height);
-        //renderers = []; //clear the 2d renderer
 
         //add the 3d renderer
         addRenderer("3d", new Renderer3D(), _render3d);
@@ -214,9 +213,5 @@ class Game extends k2d.Game {
 
 		// End rendering
 		r.g4.end();
-    }
-    
-    public override function onUpdate(delta:Float) {
-        //trace("u:", delta);
     }
 }

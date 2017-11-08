@@ -1,5 +1,7 @@
 .idea
 node_modules
 build
+kha_temp
 *.log
 examples/**/Libraries/k2d
+examples/**/korefile.js

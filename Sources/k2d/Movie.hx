@@ -4,6 +4,8 @@ import k2d.math.FastFloat;
 import k2d.resources.Video;
 import k2d.render.Renderer;
 
+
+//fixme not work well in native targets, maybe could crash
 class Movie extends Container {
     static public var playing:Array<Movie> = new Array<Movie>();
 

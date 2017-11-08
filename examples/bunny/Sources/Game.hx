@@ -18,12 +18,8 @@ class Game extends k2d.Game {
     private var _gravity:FastFloat = 0.5;
 
     private var _count:Int = 0;
-
     private var _font:k2d.resources.Font;
-    private var _container:Container;
-
     private var _fpsCounter = new k2d.utils.FPSCounter();
-    private var _bunnyPool:Array<Bunny> = new Array<Bunny>();
 
     public override function onInit() {
         Assets.load([
@@ -36,8 +32,6 @@ class Game extends k2d.Game {
             }
 
             _font = Assets.fonts["mainfont.ttf"];
-            _container = new Container(this.width, this.height);
-            _container.sizeByChildren = false;
 
             Game.MIN_X = 0;
             Game.MAX_X = this.width;
@@ -46,9 +40,6 @@ class Game extends k2d.Game {
 
             Mouse.get().notify(_onMouseDown, null, null, null);
 
-            for(i in 0...100000){
-            //    _bunnies.push(new Bunny());
-            }
         }).start();
     }
 
@@ -59,32 +50,20 @@ class Game extends k2d.Game {
     }
 
     private function _addBunny(){
-        var b = _bunnyPool.length > 0 ? _bunnyPool.pop() : new Bunny();
+        var b = new Bunny();
         b.anchor.set(0,0);
         b.pivot.set(0,0);
         b.speed.set(Math.random() * 5, Math.random() * 5 - 2.5);
-        _container.addChild(b);
+        scene.addChild(b);
 
         _bunnies.push(b);
         _count++;
     }
-    
-    public override function onUpdate(delta:Float) {
-        if(_container == null){
-            return;
-        }
 
-        _container.update(delta);
-    }
+    public override function render(r:Renderer) {
+        super.render(r);
 
-    public override function onRender(r:Renderer) {
         _fpsCounter.tick();
-        if(_container == null){
-            return;
-        }
-
-        _container.render(r);
-        r.reset();
 
         r.color = 0xffffff;
         r.fillRect(0, 0, 190, 50);

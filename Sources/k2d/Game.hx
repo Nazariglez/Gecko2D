@@ -25,20 +25,17 @@ class Game {
     public var height(get, set):Int;
     private var _height:Int = 0;
 
-
     public var renderers:Array<RenderAction<Dynamic>> = [];
+
+    public var sceneManager:SceneManager;
+    public var scene(get, set):Scene;
 
     public var isRunning(get, null):Bool;
 
     private var _loop:Loop = new Loop();
     private var _initiated:Bool = false;
 
-	public function onPreUpdate(delta: Float)   { /*throw new NotImplementedException();*/ }
-	public function onUpdate(delta: Float)      { trace("on game update"); }
-	public function onPostUpdate(delta: Float)  { /*throw new NotImplementedException();*/ }
-
-    public function onRender(renderer:Renderer) { trace("on game render"); }
-    public function onInit() { trace("on game init."); }
+    public function onInit() { }
 
     private var _backbuffer:kha.Image;
 
@@ -47,6 +44,8 @@ class Game {
         this.width = width;
         this.height = height;
         
+        sceneManager = new SceneManager(this);
+
         addRenderer("2d", new Renderer(), _render2D);
     }
     
@@ -59,7 +58,7 @@ class Game {
             _backbuffer = kha.Image.createRenderTarget(width, height);
             kha.System.notifyOnRender(_render);
             System.subscribeOnSystemUpdate(_systemUpdate);
-            _loop.onTick(_update);
+            _loop.onTick(update);
         });
     }
 
@@ -143,14 +142,12 @@ class Game {
         #end
     }
 
-    private function _update(delta:Float) {
+    public function update(delta:Float) {
         #if debug
         debugStats.update.tick();
         #end
 
-        //onPreUpdate(delta);
-        onUpdate(delta);
-        //onPostUpdate(delta);
+        sceneManager.update(delta);
     }
 
     private function _render(framebuffer:Framebuffer) {
@@ -177,14 +174,13 @@ class Game {
 
     private function _render2D(r:Renderer) {
         r.begin();
-        _renderSceneGraph(r);
+        render(r);
         r.end();
-        r.reset();
     }
 
-    private inline function _renderSceneGraph(r:Renderer) {
-        //todo render sceneGraph
-        onRender(r);
+    public function render(renderer:Renderer){
+        sceneManager.render(renderer);
+        renderer.reset();
     }
 
     private inline function _init() {
@@ -223,6 +219,15 @@ class Game {
             #end
         }
         return _width = v;
+    }
+
+    function get_scene() : Scene {
+        return sceneManager.scene;
+    }
+
+    function set_scene(scene:Scene) : Scene {
+        sceneManager.scene = scene;
+        return scene;
     }
 
     function get_height() : Int {

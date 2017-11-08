@@ -11,7 +11,6 @@ import k2d.math.Point;
 import k2d.math.Matrix;
 import k2d.utils.Color;
 
-
 class Renderer implements IRenderer {
 	public var g2:kha.graphics2.Graphics;
     public var g4:kha.graphics4.Graphics;
