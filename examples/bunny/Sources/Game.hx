@@ -47,7 +47,7 @@ class Game extends k2d.Game {
             Mouse.get().notify(_onMouseDown, null, null, null);
 
             for(i in 0...100000){
-                _bunnies.push(new Bunny());
+                //_bunnies.push(new Bunny());
             }
         }).start();
     }
