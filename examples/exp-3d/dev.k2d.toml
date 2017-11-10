@@ -18,8 +18,13 @@ html_file = ""              #inject the script in a custom html
 disable = true
 graphics = "opengl"         #mac graphics [opengl | metal]
 
+[windows]
+disable = true
+graphics = "direct3d11"         #windows graphics [direct3d11 | direct3d9 | direct3d12 | opengl]
+
 [core]
 clean_temp = true               #clean temporal files after compile
+compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at ./kha_temp
 flags = []                      #custom compiler flags (ex: "debug_collisions")
 compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
 haxe = ""

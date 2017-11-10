@@ -16,7 +16,7 @@ export const platform = {
 
 export const graphics = {
     osx : ["opengl", "metal"],
-    windows: [/*todo*/]
+    windows: ["direct3d11", "direct3d9", "direct3d12", "opengl"]
 }
 
 export const defaultConfig = `# development ${C.ENGINE_NAME} config.
@@ -38,8 +38,13 @@ html_file = ""              #inject the script in a custom html
 disable = true
 graphics = "${graphics.osx[0]}"         #mac graphics [${graphics.osx.join(" | ")}]
 
+[windows]
+disable = true
+graphics = "${graphics.windows[0]}"         #windows graphics [${graphics.windows.join(" | ")}]
+
 [core]
-clean_temp = true               #clean temporal files after compile
+clean_temp = false              #clean temporal files after compile
+compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at ./kha_temp
 flags = []                      #custom compiler flags (ex: "debug_collisions")
 compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
 ffmpeg = ""                     #ffmpeg drivers path (could be absolute)
@@ -99,6 +104,7 @@ interface ConfigCore {
     ffmpeg?:string
     haxe:string
     kha:string
+    compile:boolean
     khafile?:string //add extra opts to include in khafile as plain text -> "$project.addAssets("assets");";
 }
 
@@ -114,6 +120,11 @@ export function parseConfig(input:string) : Config {
     if(config){
         config.core.haxe = config.core.haxe ? path.resolve(config.core.haxe) : C.HAXE_PATH;
         config.core.kha = config.core.kha ? path.resolve(config.core.kha) : C.KHA_PATH;
+        
+        if(!config.core.compile){
+            //disable clean temp when the user wants compile himself
+            config.core.clean_temp = false;
+        }
 
         config.libraries.unshift(C.ENGINE_NAME);
 

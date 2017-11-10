@@ -230,7 +230,11 @@ interface KhaMakeConfig {
 async function _runKhaMake(config:KhaMakeConfig, cb) {
     console.log(colors.cyan(`Compiling ${config.target}...`));
 
-    let cmd = `${C.KHA_MAKE_PATH} ${config.target} --compile`;
+    let cmd = `${C.KHA_MAKE_PATH} ${config.target}`;
+
+    if(config.engineConfig.core.compile){
+        cmd += ` --compile`;
+    }
     
     if(config.graphics){
         cmd += ` -g ${config.graphics}`;
