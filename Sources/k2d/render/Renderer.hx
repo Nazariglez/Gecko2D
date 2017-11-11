@@ -63,6 +63,18 @@ class Renderer implements IRenderer {
 		g2.drawImage(img, x, y);
 	}
 
+	@:extern public inline function drawSubImage(img: Image, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
+		g2.drawSubImage(img, x, y, sx, sy, sw, sh);
+	}
+
+	@:extern public inline function drawScaledImage(img: Image, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
+		g2.drawScaledImage(img, dx, dy, dw, dh);
+	}
+
+	@:extern public inline function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
+		g2.drawScaledSubImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+	}
+
 	@:extern public inline function drawVideo(video:Video, x:Float, y:Float, width:Float, height:Float) : Void {
 		g2.drawVideo(video, x, y, width, height);
 	}

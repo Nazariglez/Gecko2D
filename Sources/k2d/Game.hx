@@ -168,7 +168,7 @@ class Game {
         }
 
         framebuffer.g2.begin();
-        kha.Scaler.scale(_backbuffer, framebuffer, kha.System.screenRotation);
+        framebuffer.g2.drawImage(_backbuffer, 0, 0);
         framebuffer.g2.end();
     }
 

@@ -67,8 +67,8 @@ class Entity {
         r.matrix = matrixTransform.world;
     }
 
-    public function debugRender(r:Renderer) {
-        
+    dynamic public function debugRender(r:Renderer) {
+        //can be overwrited dynamicaly
     }
 
     public inline function isVisible() : Bool {
