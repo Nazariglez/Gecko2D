@@ -99,10 +99,11 @@ class Movie extends Container {
     //todo use the update to reproduce the video, not the render loop, because the render loop never stops
 
     public override function render(r:Renderer) {
-        super.render(r);
+        r.applyTransform(matrixTransform);
         if(video != null){
             r.drawVideo(video, 0, 0, video.width(), video.height());
         }
+        super.render(r);
     }
 
     public function play(loop:Bool = false) {

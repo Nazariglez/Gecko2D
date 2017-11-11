@@ -38,12 +38,15 @@ class Text extends Entity {
     }
 
     public override function render(r:Renderer) {
-        super.render(r);
+        r.applyTransform(matrixTransform);
+
         if(font != null){
             r.font = _font;
             r.fontSize = fontSize;
             r.drawAlignedString(text, 0, 0, HorizontalTextAlign.TextLeft, VerticalTextAlign.TextTop);
         }
+
+        super.render(r);
     }
 
     function get_fontName() : String {

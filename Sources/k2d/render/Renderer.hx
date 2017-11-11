@@ -55,6 +55,12 @@ class Renderer implements IRenderer {
         matrix = _emptyMatrix;
     }
 
+	public function applyTransform(transform:k2d.math.MatrixTransform) {
+		color = transform.tint;
+		alpha = transform.alpha;
+		matrix = transform.world;
+	}
+
     @:extern public inline function drawLine(x1:Float, y1:Float, x2:Float, y2:Float, ?strength:Float) : Void {
 		g2.drawLine(x1, y1, x2, y2, strength);
 	}

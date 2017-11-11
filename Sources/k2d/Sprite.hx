@@ -34,10 +34,13 @@ class Sprite extends Container {
     }
 
     public override function render(r:Renderer) {
-        super.render(r);
+        r.applyTransform(matrixTransform);
+
         if(image != null){
             r.drawImage(image, 0,0);
         }
+
+        super.render(r);
     }
 
     function get_imageName() : String {

@@ -1,10 +1,13 @@
 package k2d.math;
 
 import k2d.Entity;
+import k2d.utils.Color;
 
 class MatrixTransform {
     public var local:Matrix = Matrix.identity();
     public var world:Matrix = Matrix.identity();
+	public var tint:Int = Color.WHITE;
+	public var alpha:FastFloat = 1;
 
     private var _cx:FastFloat = 1;
 	private var _sx:FastFloat = 0;

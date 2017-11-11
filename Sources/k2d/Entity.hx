@@ -50,10 +50,14 @@ class Entity {
         matrixTransform.updateLocal(this);
         if(parent == null){
             matrixTransform.world.setFrom(matrixTransform.local);
-            worldAlpha = alpha;
+            matrixTransform.alpha = alpha;
+            matrixTransform.tint = tint;
+            //worldAlpha = alpha;
         }else{
             matrixTransform.updateWorld(parent.matrixTransform.world);
-            worldAlpha = parent.worldAlpha * alpha;
+            matrixTransform.alpha = parent.matrixTransform.alpha * alpha;
+            matrixTransform.tint = tint;
+            //worldAlpha = parent.worldAlpha * alpha;
         }
     }
     
@@ -62,9 +66,7 @@ class Entity {
             return; 
         }
 
-        r.color = tint;
-        r.alpha = worldAlpha;
-        r.matrix = matrixTransform.world;
+        r.applyTransform(matrixTransform);
     }
 
     dynamic public function debugRender(r:Renderer) {

@@ -5,7 +5,7 @@ import k2d.math.FastFloat;
 
 class Container extends Entity {
     public var children:Array<Entity> = new Array<Entity>();
-    public var sizeByChildren:Bool = true;
+    public var sizeByChildren:Bool = false;
 
     private var _minX:FastFloat;
     private var _maxX:FastFloat;
@@ -65,6 +65,7 @@ class Container extends Entity {
 
     public override function render(r:Renderer) {
         super.render(r);
+
         for(child in children){
             if(child.isVisible()){
                 child.render(r);
@@ -74,5 +75,7 @@ class Container extends Entity {
                 #end
             }
         }
+
+        r.applyTransform(matrixTransform);
     }
 }
