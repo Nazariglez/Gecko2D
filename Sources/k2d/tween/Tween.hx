@@ -140,14 +140,13 @@ class Tween {
             return;
         }
 
-        trace("isStrated", isStarted);
         if(!isStarted){
             _parseTweenData();
             isStarted = true;
             _eventEmitter.emit(EVENT_INIT);
         }
 
-        time = yoyo ? time/2 : time;
+        var time = yoyo ? this.time/2 : this.time;
         if(time > _elapsedTime){
             var t = _elapsedTime+ms;
             var ended = (t >= time);
@@ -205,7 +204,7 @@ class Tween {
     }
 
     public function _apply(time:FastFloat) {
-        _recurseApplyTween();
+        _recurseApplyTween(time);
         //todo path
     }
 
@@ -215,21 +214,18 @@ class Tween {
             _from = new Map<String, FastFloat>();
         }
 
-        trace(_from);
         _parseRecursiveData();
-        trace(_from);
 
         //todo path
     }
 
-    private function _recurseApplyTween(){
+    private function _recurseApplyTween(time:FastFloat){
         for(k in _to.keys()){
             if(!Reflect.isObject(_to[k])){
                 var b = _from[k];
                 var c = _to[k] - b;
                 var d = time;
                 var t = _elapsedTime/d;
-                trace(k,b,c,d,t,b+(c*easing(t)));
                 Reflect.setProperty(target, k, b+(c*easing(t)));
             }else{
                 //todo recursive
