@@ -26,8 +26,8 @@ class Tween {
     public var isStarted:Bool = false;
     public var isEnded:Bool = false;
 
-    private var _to:Map<String, FastFloat>;
-    private var _from:Map<String, FastFloat>;
+    private var _to:Map<String, FastFloat> = null;
+    private var _from:Map<String, FastFloat> = null;
     private var _delayTime:FastFloat = 0;
     private var _elapsedTime:FastFloat = 0;
     private var _repeat:Int = 0;
@@ -140,6 +140,7 @@ class Tween {
             return;
         }
 
+        trace("isStrated", isStarted);
         if(!isStarted){
             _parseTweenData();
             isStarted = true;
@@ -152,7 +153,6 @@ class Tween {
             var ended = (t >= time);
 
             _elapsedTime = ended ? time : t;
-            trace(_to);
             _apply(time);
 
             var realElapsed = _yoyo ? time + _elapsedTime : _elapsedTime;
@@ -205,31 +205,30 @@ class Tween {
     }
 
     public function _apply(time:FastFloat) {
-        _recurseApplyTween(_to, _from, target, time, _elapsedTime, easing);
+        _recurseApplyTween();
         //todo path
     }
 
     private function _parseTweenData() {
-        if(!isStarted) return;
+        if(isStarted) return;
         if(_from == null){
             _from = new Map<String, FastFloat>();
         }
 
-        _parseRecursiveData(_to, _from, target);
+        trace(_from);
+        _parseRecursiveData();
+        trace(_from);
 
         //todo path
     }
 
-    private function _recurseApplyTween(to:Map<String, FastFloat>, from:Map<String, FastFloat>, target:Dynamic, time:FastFloat, elapsed:FastFloat, easing:FastFloat->FastFloat){
-        for(k in to.keys()){
-            if(!Reflect.isObject(to[k])){
-                if(from == null){
-                    from = new Map<String, FastFloat>();
-                }
-                var b = from[k];
-                var c = to[k] - from[k];
+    private function _recurseApplyTween(){
+        for(k in _to.keys()){
+            if(!Reflect.isObject(_to[k])){
+                var b = _from[k];
+                var c = _to[k] - b;
                 var d = time;
-                var t = elapsed/d;
+                var t = _elapsedTime/d;
                 trace(k,b,c,d,t,b+(c*easing(t)));
                 Reflect.setProperty(target, k, b+(c*easing(t)));
             }else{
@@ -238,9 +237,9 @@ class Tween {
         }
     }
 
-    private function _parseRecursiveData(to:Map<String, FastFloat>, from:Map<String, FastFloat>, target:Dynamic) {
-        for(k in to.keys()){
-            from[k] = Reflect.field(target, k);
+    private function _parseRecursiveData() {
+        for(k in _to.keys()){
+            _from[k] = Reflect.getProperty(target, k);
         }
 
         //todo parse recursive
