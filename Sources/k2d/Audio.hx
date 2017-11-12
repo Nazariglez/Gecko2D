@@ -6,11 +6,11 @@ import kha.audio1.AudioChannel;
 import kha.audio1.Audio in KAudio;
 
 class Audio {
-    static private var EVENT_FINISH = "finish";
-    static private var EVENT_PLAY = "play";
-    static private var EVENT_STOP = "stop";
-    static private var EVENT_PAUSE = "pause";
-    static private var EVENT_RESUME = "resume"; 
+    static private inline var EVENT_FINISH = "finish";
+    static private inline var EVENT_PLAY = "play";
+    static private inline var EVENT_STOP = "stop";
+    static private inline var EVENT_PAUSE = "pause";
+    static private inline var EVENT_RESUME = "resume"; 
 
     public var sound(get, set):Sound;
     private var _sound:Sound;
