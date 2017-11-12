@@ -7,6 +7,9 @@ class Camera extends Entity {
 
     override public function render(r:Renderer) {
         super.render(r);
-        
+
+        if(watch != null){
+            watch.renderToCamera(this, r);
+        }
     }
 }

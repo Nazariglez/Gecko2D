@@ -37,6 +37,8 @@ class Entity {
     public var height(get, set):FastFloat;
     private var _height:FastFloat = 10;
 
+    private var _toCamera:Camera;
+
     public function new(sizeX:FastFloat = 10, sizeY:FastFloat = 10){
         _entityID = Entity.entityID++;
         skew.setObserver(_observSkewPoint);
@@ -46,27 +48,39 @@ class Entity {
         matrixTransform.updateSkew(this);
     }
 
-    public function update(dt:FastFloat) {
+    public function updateTransform() {
         matrixTransform.updateLocal(this);
         if(parent == null){
             matrixTransform.world.setFrom(matrixTransform.local);
             matrixTransform.alpha = alpha;
-            matrixTransform.tint = tint;
-            //worldAlpha = alpha;
+        }else if(_toCamera != null){
+            matrixTransform.updateWorld(_toCamera.matrixTransform.world);
+            matrixTransform.alpha = _toCamera.matrixTransform.alpha * alpha;
         }else{
             matrixTransform.updateWorld(parent.matrixTransform.world);
             matrixTransform.alpha = parent.matrixTransform.alpha * alpha;
-            matrixTransform.tint = tint;
-            //worldAlpha = parent.worldAlpha * alpha;
         }
+        matrixTransform.tint = tint;
+    }
+
+    public function update(dt:FastFloat) {
+        
     }
     
     public function render(r:Renderer) {
+        updateTransform();
+
         if(!isVisible() || worldAlpha <= 0){ 
             return; 
         }
 
         r.applyTransform(matrixTransform);
+    }
+
+    public function renderToCamera(camera:Camera, r:Renderer) {
+        _toCamera = camera;
+        render(r);
+        _toCamera = null;
     }
 
     dynamic public function debugRender(r:Renderer) {
