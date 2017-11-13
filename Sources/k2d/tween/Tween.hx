@@ -26,8 +26,8 @@ class Tween {
     public var isStarted:Bool = false;
     public var isEnded:Bool = false;
 
-    private var _to:Map<String, FastFloat> = null;
-    private var _from:Map<String, FastFloat> = null;
+    private var _to:Map<String, Dynamic> = null;
+    private var _from:Map<String, Dynamic> = null;
     private var _delayTime:FastFloat = 0;
     private var _elapsedTime:FastFloat = 0;
     private var _repeat:Int = 0;
@@ -158,8 +158,8 @@ class Tween {
             _eventEmitter.emit(EVENT_UPDATE, realElapsed);
 
             if(ended){
-                var _toCache:Map<String, FastFloat>;
-                var _fromCache:Map<String, FastFloat>;
+                var _toCache:Map<String, Dynamic>;
+                var _fromCache:Map<String, Dynamic>;
 
                 if(yoyo && !_yoyo){
                     _yoyo = true;
@@ -204,14 +204,14 @@ class Tween {
     }
 
     public function _apply(time:FastFloat) {
-        _recurseApplyTween(time);
+        _recursiveApplyTween(time);
         //todo path
     }
 
     private function _parseTweenData() {
         if(isStarted) return;
         if(_from == null){
-            _from = new Map<String, FastFloat>();
+            _from = new Map<String, Dynamic>();
         }
 
         _parseRecursiveData();
@@ -219,7 +219,7 @@ class Tween {
         //todo path
     }
 
-    private function _recurseApplyTween(time:FastFloat){
+    private function _recursiveApplyTween(time:FastFloat){
         for(k in _to.keys()){
             if(!Reflect.isObject(_to[k])){
                 var b = _from[k];
@@ -229,6 +229,7 @@ class Tween {
                 Reflect.setProperty(target, k, b+(c*easing(t)));
             }else{
                 //todo recursive
+                _recursiveApplyTween(time);
             }
         }
     }
