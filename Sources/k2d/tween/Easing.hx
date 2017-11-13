@@ -114,6 +114,12 @@ class Easing {
 
     static public function inExpo() : Ease {
         return function(t:FastFloat) : FastFloat {
+            return t == 0 ? 0 : Math.pow( 1024, t - 1 );
+        }
+    }
+
+    static public function outExpo() : Ease {
+        return function(t:FastFloat) : FastFloat {
             return t == 1 ? 1 : 1 - Math.pow( 2, - 10 * t );
         }
     }
