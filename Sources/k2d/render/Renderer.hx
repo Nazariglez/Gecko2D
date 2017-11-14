@@ -12,6 +12,8 @@ import k2d.math.Matrix;
 import k2d.utils.Color;
 
 class Renderer implements IRenderer {
+	static public var helperRenderer:Renderer = new Renderer();
+
 	public var g2:kha.graphics2.Graphics;
     public var g4:kha.graphics4.Graphics;
 	
@@ -41,8 +43,8 @@ class Renderer implements IRenderer {
         return vecs;
     }
 
-    public function begin() {
-        g2.begin();
+    public function begin(clear: Bool = true) {
+        g2.begin(clear);
     }
 
     public function end() {

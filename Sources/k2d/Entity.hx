@@ -5,6 +5,7 @@ import k2d.math.Vector2g;
 import k2d.math.MatrixTransform;
 import k2d.math.FastFloat;
 import k2d.render.Renderer;
+import k2d.resources.Image;
 
 class Entity {
     public static var entityID:Int = 0;
@@ -81,6 +82,18 @@ class Entity {
         _toCamera = camera;
         render(r);
         _toCamera = null;
+    }
+
+    public function generateTexture() : Image {
+        //todo sprites with custom drawings before super.render are displayed in the wrong position when a texture is generated
+        var texture = Image.createRenderTarget(Std.int(Math.ceil(size.x)), Std.int(Math.ceil(size.y)));
+        Renderer.helperRenderer.g2 = texture.g2;
+        Renderer.helperRenderer.g4 = texture.g4;
+        //Renderer.helperRenderer.color = 0xff0000;
+        Renderer.helperRenderer.begin(false);
+        render(Renderer.helperRenderer);
+        Renderer.helperRenderer.end();
+        return texture;
     }
 
     dynamic public function debugRender(r:Renderer) {
