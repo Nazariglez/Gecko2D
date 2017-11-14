@@ -26,8 +26,13 @@ class Tween {
     public var isStarted:Bool = false;
     public var isEnded:Bool = false;
 
-    private var _to:Map<String, Dynamic> = null;
-    private var _from:Map<String, Dynamic> = null;
+    private var _to:Dynamic = {};
+    private var _from:Dynamic = {};
+
+    private var _subtargetTo:Array<Map<String, Dynamic>> = [];
+    private var _subtargetFrom:Array<Map<String, Dynamic>> = [];
+    private var _subtarget:Array<Dynamic> = [];
+
     private var _delayTime:FastFloat = 0;
     private var _elapsedTime:FastFloat = 0;
     private var _repeat:Int = 0;
@@ -54,12 +59,15 @@ class Tween {
         _eventEmitter.emit(EVENT_STOP);
     }
 
+    //todo add chainable tweens, like utils.Chain, parallel, eachSeries, etc...
+
     public function setTo(data:Dynamic){
-        _to = parseDynamicStruct(data);
+        //todo add arrays with some values to go in order, like {x: [100, 250, 500]}
+        _to = data;
     }
 
     public function setFrom(data:Dynamic){
-        _from = parseDynamicStruct(data);
+        _from = data;
     }
 
     public function parseDynamicStruct(d:Dynamic) : Map<String, FastFloat> {
@@ -119,10 +127,7 @@ class Tween {
         isEnded = false;
 
         if(yoyo && _yoyo){
-            var _to = this._to;
-            var _from = this._from;
-            this._to = _from;
-            this._from = _to;
+            _swapFromTo();
 
             _yoyo = false;
         }
@@ -146,27 +151,30 @@ class Tween {
             _eventEmitter.emit(EVENT_INIT);
         }
 
+        if(_subtarget.length <= 0){
+            stop();
+            reset();
+            return;
+        }
+
         var time = yoyo ? this.time/2 : this.time;
         if(time > _elapsedTime){
             var t = _elapsedTime+ms;
             var ended = (t >= time);
 
             _elapsedTime = ended ? time : t;
-            _apply(time);
+
+            for(i in 0..._subtarget.length){
+                _apply(_subtargetTo[i], _subtargetFrom[i], time, _subtarget[i]);
+            }
 
             var realElapsed = _yoyo ? time + _elapsedTime : _elapsedTime;
             _eventEmitter.emit(EVENT_UPDATE, realElapsed);
 
             if(ended){
-                var _toCache:Map<String, Dynamic>;
-                var _fromCache:Map<String, Dynamic>;
-
                 if(yoyo && !_yoyo){
                     _yoyo = true;
-                    _toCache = _to;
-                    _fromCache = _from;
-                    _from = _toCache;
-                    _to = _fromCache;
+                    _swapFromTo();
 
                     //todo path
 
@@ -181,10 +189,7 @@ class Tween {
                     _elapsedTime = 0;
 
                     if(yoyo && _yoyo){
-                        _toCache = _to;
-                        _fromCache = _from;
-                        _to = _fromCache;
-                        _from = _toCache;
+                        _swapFromTo();
 
                         //todo path
 
@@ -203,42 +208,151 @@ class Tween {
         }
     }
 
-    public function _apply(time:FastFloat) {
-        _recursiveApplyTween(time);
+    private inline function _swapFromTo() {
+        var _toCache = _subtargetTo;
+        var _fromCache = _subtargetFrom;
+        _subtargetFrom = _toCache;
+        _subtargetTo = _fromCache;
+    }
+
+    public function _apply(to:Map<String, Dynamic>, from:Map<String, Dynamic>, time:FastFloat, targ:Dynamic) {
+        for(k in to.keys()){
+            var b = from[k];
+            var c = to[k] - b;
+            var d = time;
+            var t = _elapsedTime/d;
+            Reflect.setProperty(targ, k, b+(c*easing(t)));
+        }
+
         //todo path
+    }
+
+    public function subscribeOnStart(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_START, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_START, cb);
+    }
+
+    public function unsubscribeOnStart(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_START, cb);
+    }
+
+    public function subscribeOnStop(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_STOP, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_STOP, cb);
+    }
+
+    public function unsubscribeOnStop(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_STOP, cb);
+    }
+
+    public function subscribeOnInit(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_INIT, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_INIT, cb);
+    }
+
+    public function unsubscribeOnInit(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_INIT, cb);
+    }
+
+    public function subscribeOnEnd(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_END, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_END, cb);
+    }
+
+    public function unsubscribeOnEnd(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_END, cb);
+    }
+
+    public function subscribeOnUpdate(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_UPDATE, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_UPDATE, cb);
+    }
+
+    public function unsubscribeOnUpdate(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_UPDATE, cb);
+    }
+
+    public function subscribeOnYoyo(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_YOYO, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_YOYO, cb);
+    }
+
+    public function unsubscribeOnYoyo(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_YOYO, cb);
+    }
+
+    public function subscribeOnRepeat(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_REPEAT, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_REPEAT, cb);
+    }
+
+    public function unsubscribeOnRepeat(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_REPEAT, cb);
     }
 
     private function _parseTweenData() {
         if(isStarted) return;
-        if(_from == null){
-            _from = new Map<String, Dynamic>();
-        }
-
-        _parseRecursiveData();
+        _parse(_to, _from, target);
 
         //todo path
     }
 
-    private function _recursiveApplyTween(time:FastFloat){
-        for(k in _to.keys()){
-            if(!Reflect.isObject(_to[k])){
-                var b = _from[k];
-                var c = _to[k] - b;
-                var d = time;
-                var t = _elapsedTime/d;
-                Reflect.setProperty(target, k, b+(c*easing(t)));
+    private function _parse(to:Dynamic, from:Dynamic, targ:Dynamic) {
+        var _target1:Dynamic = null;
+        var _to1:Map<String, Dynamic> = null;
+        var _from1:Map<String, Dynamic> = null;
+
+        for(k in Reflect.fields(to)){
+            var toVal = Reflect.getProperty(to, k);
+            var fromVal = Reflect.getProperty(from, k);
+            var targetVal = Reflect.getProperty(targ, k);
+
+            if(Reflect.isObject(toVal)){
+                _parse(toVal, fromVal, targetVal);
             }else{
-                //todo recursive
-                _recursiveApplyTween(time);
+               if(_target1 == null){
+                   _target1 = targ;
+                   _to1 = new Map<String, Dynamic>();
+                   _from1 = new Map<String, Dynamic>();
+               } 
+
+                _to1[k] = toVal;
+                _from1[k] = fromVal == null ? targetVal : fromVal;
             }
         }
-    }
 
-    private function _parseRecursiveData() {
-        for(k in _to.keys()){
-            _from[k] = Reflect.getProperty(target, k);
+        if(_target1 != null){
+            _subtarget.push(_target1);
+            _subtargetTo.push(_to1);
+            _subtargetFrom.push(_from1);
         }
-
-        //todo parse recursive
     }
 }
