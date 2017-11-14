@@ -16,7 +16,7 @@ class TweenManager {
         _ms = dt*1000;
 
         for(tween in tweens){
-            if(tween.active){
+            if(tween.isActive){
                 tween.update(dt, _ms);
                 if(tween.isEnded && tween.expire){
                     tween.remove();

@@ -6,6 +6,8 @@ import k2d.utils.EventEmitter;
 class Tween {
     static private inline var EVENT_START = "start";
     static private inline var EVENT_STOP = "stop";
+    static private inline var EVENT_PAUSE = "pause";
+    static private inline var EVENT_RESUME = "resume";
     static private inline var EVENT_UPDATE = "update";
     static private inline var EVENT_YOYO = "yoyo";
     static private inline var EVENT_INIT = "init";
@@ -16,7 +18,7 @@ class Tween {
     public var manager:TweenManager;
 
     public var time:FastFloat = 0;
-    public var active:Bool = false;
+    public var isActive:Bool = false;
     public var easing:FastFloat -> FastFloat = Easing.linear();
     public var expire:Bool = false;
     public var repeat:Int = 0;
@@ -25,6 +27,7 @@ class Tween {
     public var yoyo:Bool = false;
     public var isStarted:Bool = false;
     public var isEnded:Bool = false;
+    public var isPaused:Bool = false;
 
     private var _to:Dynamic = {};
     private var _from:Dynamic = {};
@@ -39,6 +42,7 @@ class Tween {
     private var _yoyo:Bool = false;
 
     private var _eventEmitter:EventEmitter = new EventEmitter();
+    private var _group:TweenGroup;
 
     public function new(target:Dynamic, ?manager:TweenManager) {
         if(manager == null){
@@ -49,14 +53,46 @@ class Tween {
         clear();
     }
 
+    public function setGroup(group:TweenGroup) {
+        _group = group;
+    }
+
     public function start() {
-        active = true;
+        if(isActive){
+            return;
+        }
+
+        isActive = true;
         _eventEmitter.emit(EVENT_START);
     }
 
     public function stop() {
-        active = false;
+        if(!isActive){
+            return;
+        }
+
+        isActive = false;
+        
+        reset();
         _eventEmitter.emit(EVENT_STOP);
+    }
+
+    public function pause() {
+        if(!isActive || isPaused){
+            return;
+        }
+
+        isPaused = true;
+        _eventEmitter.emit(EVENT_PAUSE);
+    }
+
+    public function resume() {
+        if(!isActive || !isPaused){
+            return;
+        }
+
+        isPaused = false;
+        _eventEmitter.emit(EVENT_RESUME);
     }
 
     //todo add chainable tweens, like utils.Chain, parallel, eachSeries, etc...
@@ -99,7 +135,7 @@ class Tween {
 
     public function clear() {
         time = 0;
-        active = false;
+        isActive = false;
         easing = Easing.linear();
         expire = false;
         repeat = 0;
@@ -134,7 +170,7 @@ class Tween {
     }
 
     private inline function _canUpdate() : Bool {
-        return time > 0 && active && target != null;
+        return time > 0 && isActive && !isPaused && target != null;
     }
 
     public function update(dt:FastFloat, ms:FastFloat){
@@ -199,7 +235,7 @@ class Tween {
                 }
 
                 isEnded = true;
-                active = false;
+                isActive = false;
                 _eventEmitter.emit(EVENT_END);
 
                 //todo chain
@@ -316,6 +352,32 @@ class Tween {
 
     public function unsubscribeOnRepeat(cb:Void->Void){
         _eventEmitter.addListener(EVENT_REPEAT, cb);
+    }
+
+    public function subscribeOnPause(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_PAUSE, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_PAUSE, cb);
+    }
+
+    public function unsubscribeOnPause(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_PAUSE, cb);
+    }
+
+    public function subscribeOnResume(cb:Void->Void, once:Bool = false){
+        if(once){
+            _eventEmitter.addListenerOnce(EVENT_RESUME, cb);
+            return;
+        }
+
+        _eventEmitter.addListener(EVENT_RESUME, cb);
+    }
+
+    public function unsubscribeOnResume(cb:Void->Void){
+        _eventEmitter.addListener(EVENT_RESUME, cb);
     }
 
     private function _parseTweenData() {
