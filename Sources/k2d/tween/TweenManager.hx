@@ -36,6 +36,10 @@ class TweenManager {
         return new Tween(target, this);
     }
 
+    public inline function createGroup(tweens:Array<Tween>) : TweenGroup {
+        return new TweenGroup(tweens);
+    }
+
     public function addTween(tween:Tween) {
         tween.manager = this;
         tweens.push(tween);
