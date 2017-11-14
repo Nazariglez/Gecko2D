@@ -1,6 +1,5 @@
 package k2d.math;
 
-//todo move FastFloats to fastFastFloats? do the compiler the automatic conversion?
 class Point {
 	private var _x:FastFloat = 0;
 	private var _y:FastFloat = 0;

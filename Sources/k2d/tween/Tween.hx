@@ -95,8 +95,6 @@ class Tween {
         _eventEmitter.emit(EVENT_RESUME);
     }
 
-    //todo add chainable tweens, like utils.Chain, parallel, eachSeries, etc...
-
     public function setTo(data:Dynamic){
         //todo add arrays with some values to go in order, like {x: [100, 250, 500]}
         _to = data;
