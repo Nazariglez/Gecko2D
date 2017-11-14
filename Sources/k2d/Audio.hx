@@ -127,7 +127,7 @@ class Audio {
     }
 
     public function unsubscribeOnPlay(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_PLAY, cb);
+        _eventEmitter.removeListener(EVENT_PLAY, cb);
     }
 
     public function subscribeOnStop(cb:Void->Void, once:Bool = false){
@@ -140,7 +140,7 @@ class Audio {
     }
 
     public function unsubscribeOnStop(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_STOP, cb);
+        _eventEmitter.removeListener(EVENT_STOP, cb);
     }
 
     public function subscribeOnPause(cb:Void->Void, once:Bool = false){
@@ -153,7 +153,7 @@ class Audio {
     }
 
     public function unsubscribeOnPause(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_PAUSE, cb);
+        _eventEmitter.removeListener(EVENT_PAUSE, cb);
     }
 
     public function subscribeOnResume(cb:Void->Void, once:Bool = false){
@@ -166,7 +166,7 @@ class Audio {
     }
 
     public function unsubscribeOnResume(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_RESUME, cb);
+        _eventEmitter.removeListener(EVENT_RESUME, cb);
     }
 
     public function subscribeOnFinish(cb:Void->Void, once:Bool = false){
@@ -179,7 +179,7 @@ class Audio {
     }
 
     public function unsubscribeOnFinish(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_FINISH, cb);
+        _eventEmitter.removeListener(EVENT_FINISH, cb);
     }
 
     public inline function copy() : Audio {

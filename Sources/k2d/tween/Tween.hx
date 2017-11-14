@@ -273,7 +273,7 @@ class Tween {
     }
 
     public function unsubscribeOnStart(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_START, cb);
+        _eventEmitter.removeListener(EVENT_START, cb);
     }
 
     public function subscribeOnStop(cb:Void->Void, once:Bool = false){
@@ -286,7 +286,7 @@ class Tween {
     }
 
     public function unsubscribeOnStop(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_STOP, cb);
+        _eventEmitter.removeListener(EVENT_STOP, cb);
     }
 
     public function subscribeOnInit(cb:Void->Void, once:Bool = false){
@@ -299,7 +299,7 @@ class Tween {
     }
 
     public function unsubscribeOnInit(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_INIT, cb);
+        _eventEmitter.removeListener(EVENT_INIT, cb);
     }
 
     public function subscribeOnEnd(cb:Void->Void, once:Bool = false){
@@ -312,7 +312,7 @@ class Tween {
     }
 
     public function unsubscribeOnEnd(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_END, cb);
+        _eventEmitter.removeListener(EVENT_END, cb);
     }
 
     public function subscribeOnUpdate(cb:Void->Void, once:Bool = false){
@@ -325,7 +325,7 @@ class Tween {
     }
 
     public function unsubscribeOnUpdate(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_UPDATE, cb);
+        _eventEmitter.removeListener(EVENT_UPDATE, cb);
     }
 
     public function subscribeOnYoyo(cb:Void->Void, once:Bool = false){
@@ -338,7 +338,7 @@ class Tween {
     }
 
     public function unsubscribeOnYoyo(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_YOYO, cb);
+        _eventEmitter.removeListener(EVENT_YOYO, cb);
     }
 
     public function subscribeOnRepeat(cb:Void->Void, once:Bool = false){
@@ -351,7 +351,7 @@ class Tween {
     }
 
     public function unsubscribeOnRepeat(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_REPEAT, cb);
+        _eventEmitter.removeListener(EVENT_REPEAT, cb);
     }
 
     public function subscribeOnPause(cb:Void->Void, once:Bool = false){
@@ -364,7 +364,7 @@ class Tween {
     }
 
     public function unsubscribeOnPause(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_PAUSE, cb);
+        _eventEmitter.removeListener(EVENT_PAUSE, cb);
     }
 
     public function subscribeOnResume(cb:Void->Void, once:Bool = false){
@@ -377,7 +377,7 @@ class Tween {
     }
 
     public function unsubscribeOnResume(cb:Void->Void){
-        _eventEmitter.addListener(EVENT_RESUME, cb);
+        _eventEmitter.removeListener(EVENT_RESUME, cb);
     }
 
     private function _parseTweenData() {
