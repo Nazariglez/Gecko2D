@@ -16,6 +16,8 @@ class Renderer implements IRenderer {
 
 	public var g2:kha.graphics2.Graphics;
     public var g4:kha.graphics4.Graphics;
+	private var _g2Cache:kha.graphics2.Graphics;
+    private var _g4Cache:kha.graphics4.Graphics;
 	
     public var color(get, set):Int;
     private var _color:Int = Color.WHITE;
@@ -42,6 +44,22 @@ class Renderer implements IRenderer {
 
         return vecs;
     }
+
+	public function beginTexture(img:Image) {
+		_g2Cache = g2;
+		_g4Cache = g4;
+		g2 = img.g2;
+		g4 = img.g4;
+		g2.begin(false);
+	}
+
+	public function endTexture() {
+		g2.end();
+		g2 = _g2Cache;
+		g4 = _g4Cache;
+		_g2Cache = null;
+		_g4Cache = null;
+	}
 
     public function begin(clear: Bool = true) {
         g2.begin(clear);

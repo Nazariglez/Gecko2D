@@ -4,6 +4,7 @@ import k2d.math.FastFloat;
 import k2d.resources.Image;
 import k2d.render.Renderer;
 
+//crop method
 class Sprite extends Container {
     public var image(get, set):Image;
     private var _image:Image;
@@ -35,7 +36,6 @@ class Sprite extends Container {
 
     public override function render(r:Renderer) {
         r.applyTransform(matrixTransform);
-
         if(image != null){
             r.drawImage(image, 0,0);
         }

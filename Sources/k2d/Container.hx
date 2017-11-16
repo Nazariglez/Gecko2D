@@ -65,7 +65,11 @@ class Container extends Entity {
 
     public override function render(r:Renderer) {
         super.render(r);
+        _renderChildren(r);
+        r.applyTransform(matrixTransform);
+    }
 
+    private inline function _renderChildren(r:Renderer) {
         for(child in children){
             if(child.isVisible()){
                 child.render(r);
@@ -75,7 +79,5 @@ class Container extends Entity {
                 #end
             }
         }
-
-        r.applyTransform(matrixTransform);
     }
 }

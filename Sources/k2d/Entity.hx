@@ -65,12 +65,10 @@ class Entity {
     }
 
     public function update(dt:FastFloat) {
-        
+        updateTransform();
     }
     
     public function render(r:Renderer) {
-        updateTransform();
-
         if(!isVisible() || worldAlpha <= 0){ 
             return; 
         }
@@ -85,14 +83,19 @@ class Entity {
     }
 
     public function generateTexture() : Image {
-        //todo sprites with custom drawings before super.render are displayed in the wrong position when a texture is generated
+        //todo wrong position with anchors and rotations
+        //todo avoid extra allocations and improve/simplify this method
         var texture = Image.createRenderTarget(Std.int(Math.ceil(size.x)), Std.int(Math.ceil(size.y)));
-        Renderer.helperRenderer.g2 = texture.g2;
-        Renderer.helperRenderer.g4 = texture.g4;
-        //Renderer.helperRenderer.color = 0xff0000;
-        Renderer.helperRenderer.begin(false);
+        Renderer.helperRenderer.beginTexture(texture);
+        updateTransform();
+        var xx = matrixTransform.world._20;
+        var yy = matrixTransform.world._21;
+        matrixTransform.world._20 = 0;
+        matrixTransform.world._21 = 0;
         render(Renderer.helperRenderer);
-        Renderer.helperRenderer.end();
+        matrixTransform.world._20 = xx;
+        matrixTransform.world._21 = yy;
+        Renderer.helperRenderer.endTexture();
         return texture;
     }
 
