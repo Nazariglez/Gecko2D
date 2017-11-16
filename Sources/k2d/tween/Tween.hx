@@ -32,8 +32,8 @@ class Tween {
     private var _to:Dynamic = {};
     private var _from:Dynamic = {};
 
-    private var _subtargetTo:Array<Map<String, Dynamic>> = [];
-    private var _subtargetFrom:Array<Map<String, Dynamic>> = [];
+    private var _subtargetTo:Array<Map<String, FastFloat>> = [];
+    private var _subtargetFrom:Array<Map<String, FastFloat>> = [];
     private var _subtarget:Array<Dynamic> = [];
 
     private var _delayTime:FastFloat = 0;
@@ -235,8 +235,6 @@ class Tween {
                 isEnded = true;
                 isActive = false;
                 _eventEmitter.emit(EVENT_END);
-
-                //todo chain
             }
             return;
         }
@@ -249,7 +247,7 @@ class Tween {
         _subtargetTo = _fromCache;
     }
 
-    public function _apply(to:Map<String, Dynamic>, from:Map<String, Dynamic>, time:FastFloat, targ:Dynamic) {
+    public function _apply(to:Map<String, FastFloat>, from:Map<String, FastFloat>, time:FastFloat, targ:Dynamic) {
         for(k in to.keys()){
             var b = from[k];
             var c = to[k] - b;
@@ -387,8 +385,8 @@ class Tween {
 
     private function _parse(to:Dynamic, from:Dynamic, targ:Dynamic) {
         var _target1:Dynamic = null;
-        var _to1:Map<String, Dynamic> = null;
-        var _from1:Map<String, Dynamic> = null;
+        var _to1:Map<String, FastFloat> = null;
+        var _from1:Map<String, FastFloat> = null;
 
         for(k in Reflect.fields(to)){
             var toVal = Reflect.getProperty(to, k);
@@ -400,8 +398,8 @@ class Tween {
             }else{
                if(_target1 == null){
                    _target1 = targ;
-                   _to1 = new Map<String, Dynamic>();
-                   _from1 = new Map<String, Dynamic>();
+                   _to1 = new Map<String, FastFloat>();
+                   _from1 = new Map<String, FastFloat>();
                } 
 
                 _to1[k] = toVal;

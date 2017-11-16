@@ -84,7 +84,7 @@ class Entity {
 
     public function generateTexture() : Image {
         //todo wrong position with anchors and rotations
-        //todo avoid extra allocations and improve/simplify this method
+        //todo refactor avoid extra allocations and improve/simplify this method
         var texture = Image.createRenderTarget(Std.int(Math.ceil(size.x)), Std.int(Math.ceil(size.y)));
         Renderer.helperRenderer.beginTexture(texture);
         updateTransform();
