@@ -66,11 +66,16 @@ class Pool<T> {
         return obj;
     }
 
-    public function put(obj:T) {
+    public function safePut(obj:T) {
+        //check array before add (slower than put)
         if(_objects.indexOf(obj) != -1){
             return;
         }
 
+        put(obj);
+    }
+
+    public function put(obj:T) {
         if(_reset != null){
             _reset(obj);
         }
