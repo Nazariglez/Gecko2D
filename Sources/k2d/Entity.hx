@@ -99,6 +99,10 @@ class Entity {
         return texture;
     }
 
+    public inline function addTo(parent:Container) {
+        parent.addChild(this);
+    }
+
     dynamic public function debugRender(r:Renderer) {
         //can be overwrited dynamicaly
     }
