@@ -389,8 +389,8 @@ class Tween {
         var _from1:Map<String, FastFloat> = null;
 
         for(k in Reflect.fields(to)){
-            var toVal = Reflect.getProperty(to, k);
-            var fromVal = Reflect.getProperty(from, k);
+            var toVal:Null<FastFloat> = Reflect.getProperty(to, k);
+            var fromVal:Null<FastFloat> = Reflect.getProperty(from, k);
             var targetVal = Reflect.getProperty(targ, k);
 
             if(Reflect.isObject(toVal)){
