@@ -5,6 +5,8 @@ import k2d.render.IRenderer;
 import k2d.render.Renderer;
 import k2d.render.Renderer;
 import k2d.render.Framebuffer;
+import k2d.tween.TweenManager;
+import k2d.timer.TimerManager;
 
 typedef RenderAction<T:IRenderer> = {
     public var id:String;
@@ -147,6 +149,8 @@ class Game {
         debugStats.update.tick();
         #end
 
+        TimerManager.Global.update(delta);
+        TweenManager.Global.update(delta);
         sceneManager.update(delta);
     }
 

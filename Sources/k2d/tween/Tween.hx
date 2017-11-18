@@ -141,6 +141,7 @@ class Tween {
         delay = 0;
         yoyo = false;
         isStarted = false;
+        isPaused = false;
         isEnded = false;
 
         _to = null;
@@ -158,6 +159,7 @@ class Tween {
         _repeat = 0;
         _delayTime = 0;
         isStarted = false;
+        isPaused = false;
         isEnded = false;
 
         if(yoyo && _yoyo){
@@ -172,7 +174,9 @@ class Tween {
     }
 
     public function update(dt:FastFloat, ms:FastFloat){
-        if(!_canUpdate()) return;
+        if(!_canUpdate()) {
+            return;
+        }
 
         if(delay > _delayTime){
             _delayTime += ms;
@@ -203,7 +207,7 @@ class Tween {
             }
 
             var realElapsed = _yoyo ? time + _elapsedTime : _elapsedTime;
-            _eventEmitter.emit(EVENT_UPDATE, realElapsed);
+            _eventEmitter.emit(EVENT_UPDATE, [realElapsed]);
 
             if(ended){
                 if(yoyo && !_yoyo){
@@ -219,7 +223,7 @@ class Tween {
 
                 if(loop || repeat > _repeat){
                     _repeat++;
-                    _eventEmitter.emit(EVENT_REPEAT, _repeat);
+                    _eventEmitter.emit(EVENT_REPEAT, [_repeat]);
                     _elapsedTime = 0;
 
                     if(yoyo && _yoyo){

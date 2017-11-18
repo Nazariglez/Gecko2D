@@ -1,50 +1,76 @@
-package k2d.tween;
+package k2d.timer;
 
 import k2d.utils.EventEmitter;
 import k2d.utils.Chain;
 
-class TweenGroup {
+class TimerGroup {
     static private inline var EVENT_PROGRESS = "progress";
     static private inline var EVENT_REPEAT = "repeat";
-    static private inline var EVENT_YOYO = "yoyo";
     static private inline var EVENT_END = "end";
     static private inline var EVENT_PAUSE = "pause";
     static private inline var EVENT_RESUME = "resume";
+    
+    public var timers:Array<Timer> = new Array<Timer>();
 
-    public var tweens:Array<Tween> = new Array<Tween>();
-    public var yoyo:Bool = false;
     public var repeat:Int = 0;
     public var loop:Bool = false;
 
     private var _repeat:Int = 0;
-    private var _yoyo:Bool = false;
-
+    
     public var isActive:Bool = false;
     public var isPaused:Bool = false;
+
+    private var _isParallelActive:Bool = false;
 
     private var _eventEmitter:EventEmitter = new EventEmitter();
     private var _unsubscribeAll:Array<Void->Void> = new Array<Void->Void>();
 
-    private var _isParallelActive:Bool = false;
-
-    public function new(?tweens:Array<Tween>){
-        if(tweens != null){
-            this.tweens = tweens;
+    public function new(?timers:Array<Timer>) {
+        if(timers != null) {
+            this.timers = timers;
         }
     }
 
-    public function addTween(t:Tween) {
+    public function addTween(t:Timer) {
         if(isActive){
-            trace("Error: tweens can't be added after the group start.");
+            trace("Error: timers can't be added after the group start.");
             return;
         }
 
         if(t.isActive){
-            trace("Error: tweens can't be active before added to a group");
+            trace("Error: timers can't be active before added to a group");
             return;
         }
 
-        tweens.push(t);
+        timers.push(t);
+    }
+
+    public function pause() {
+        if(!isActive || isPaused){
+            return;
+        }
+
+        for(t in timers){
+            t.pause();
+        }
+
+        isPaused = true;
+
+        _eventEmitter.emit(EVENT_PAUSE);
+    }
+
+    public function resume() {
+        if(!isActive || !isPaused){
+            return;
+        }
+
+        for(t in timers){
+            t.resume();    
+        }
+
+        isPaused = false;
+
+        _eventEmitter.emit(EVENT_RESUME);
     }
 
     public function start(inParallel:Bool = false) {
@@ -55,25 +81,20 @@ class TweenGroup {
         _start(inParallel);
     }
 
-    private function _start(inParallel:Bool, applyYoyo:Bool = false){
+    private function _start(inParallel:Bool) {
         isActive = true;
         _isParallelActive = inParallel;
         _unsubscribeAll = [];
 
-        var tweens = applyYoyo ? this.tweens.copy() : this.tweens;
-        if(applyYoyo){
-            tweens.reverse();
-        }
-
         if(inParallel){
-            Chain.each(tweens, _tweenEndCallback, _onEnd);
-            for(t in tweens){
+            Chain.each(timers, _timerEndCallback, _onEnd);
+            for(t in timers){
                 t.reset();
                 t.start();
             }
         }else{
-            Chain.eachSeries(tweens, function(t:Tween, next:?String->Void){
-                _tweenEndCallback(t, next);
+            Chain.eachSeries(timers, function(t:Timer, next:?String->Void){
+                _timerEndCallback(t, next);
                 t.reset();
                 t.start();
             }, _onEnd);
@@ -89,7 +110,7 @@ class TweenGroup {
     }
 
     private function _stop(reset:Bool = false){
-        for(t in tweens){
+        for(t in timers){
             t.stop();
             t.reset();
         }
@@ -97,7 +118,6 @@ class TweenGroup {
         isActive = false;
         if(reset){
             _repeat = 0;
-            _yoyo = false;
         }
 
         for(fn in _unsubscribeAll){
@@ -105,35 +125,7 @@ class TweenGroup {
         }
     }
 
-    public function pause() {
-        if(!isActive || isPaused){
-            return;
-        }
-
-        for(t in tweens){
-            t.pause();
-        }
-
-        isPaused = true;
-
-        _eventEmitter.emit(EVENT_PAUSE);
-    }
-
-    public function resume() {
-        if(!isActive || !isPaused){
-            return;
-        }
-
-        for(t in tweens){
-            t.resume();    
-        }
-
-        isPaused = false;
-
-        _eventEmitter.emit(EVENT_RESUME);
-    }
-
-    public function subscribeOnProgress(cb:Tween->Void, once:Bool = false){
+    public function subscribeOnProgress(cb:Timer->Void, once:Bool = false){
         if(once){
             _eventEmitter.addListenerOnce(EVENT_PROGRESS, cb);
             return;
@@ -142,7 +134,7 @@ class TweenGroup {
         _eventEmitter.addListener(EVENT_PROGRESS, cb);
     }
 
-    public function unsubscribeOnProgress(cb:Tween->Void){
+    public function unsubscribeOnProgress(cb:Timer->Void){
         _eventEmitter.removeListener(EVENT_PROGRESS, cb);
     }
 
@@ -172,19 +164,6 @@ class TweenGroup {
         _eventEmitter.removeListener(EVENT_END, cb);
     }
 
-    public function subscribeOnYoyo(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_YOYO, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_YOYO, cb);
-    }
-
-    public function unsubscribeOnYoyo(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_YOYO, cb);
-    }
-
     public function subscribeOnPause(cb:Void->Void, once:Bool = false){
         if(once){
             _eventEmitter.addListenerOnce(EVENT_PAUSE, cb);
@@ -211,7 +190,11 @@ class TweenGroup {
         _eventEmitter.removeListener(EVENT_RESUME, cb);
     }
 
-    private function _tweenEndCallback(t:Tween, next:?String->Void){
+    private function _onProgress(timer:Timer) {
+        _eventEmitter.emit(EVENT_PROGRESS, [timer]);
+    }
+
+    private function _timerEndCallback(t:Timer, next:?String->Void){
         var fn = function(){
             _onProgress(t);
             next();
@@ -224,24 +207,14 @@ class TweenGroup {
         t.subscribeOnEnd(fn, true);
     }
 
-    private function _onProgress(tween:Tween) {
-        _eventEmitter.emit(EVENT_PROGRESS, [tween]);
-    }
-
     private function _onEnd(?err:String){
         if(err != null){
             trace("Error:", err);
             return;
         }
 
-        if(yoyo && !_yoyo){
-            _yoyo = true;
-            _stop();
-            _start(_isParallelActive, true);
-            _eventEmitter.emit(EVENT_YOYO);
-        }else if(loop || repeat > _repeat){
+        if(loop || repeat > _repeat){
             _repeat++;
-            _yoyo = false;
             _stop();
             start(_isParallelActive);
             _eventEmitter.emit(EVENT_REPEAT, [_repeat]);
@@ -250,5 +223,4 @@ class TweenGroup {
             _eventEmitter.emit(EVENT_END);
         }
     }
-
 }

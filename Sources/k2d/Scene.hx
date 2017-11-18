@@ -3,6 +3,7 @@ package k2d;
 import k2d.utils.Color;
 import k2d.render.Renderer;
 import k2d.tween.TweenManager;
+import k2d.timer.TimerManager;
 import k2d.math.FastFloat;
 
 class Scene extends Container {
@@ -11,6 +12,7 @@ class Scene extends Container {
     public var backgroundColor:Color = Color.BLACK;
 
     public var tweenManager:TweenManager = new TweenManager();
+    public var timerManager:TimerManager = new TimerManager();
 
     public var isPaused(get, null):Bool;
     private var _isPaused:Bool = false;
@@ -48,6 +50,7 @@ class Scene extends Container {
         }
         
         super.update(dt);
+        timerManager.update(dt);
         tweenManager.update(dt);
     }
 

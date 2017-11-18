@@ -53,5 +53,4 @@ class TweenManager {
         tweens.remove(tween);
     }
 
-
 }
