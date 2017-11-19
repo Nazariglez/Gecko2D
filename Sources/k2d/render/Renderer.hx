@@ -3,6 +3,7 @@ package k2d.render;
 import kha.graphics2.GraphicsExtension;
 import kha.math.Vector2;
 import k2d.resources.Image;
+import k2d.resources.Texture;
 import k2d.resources.Video;
 import k2d.resources.Font;
 import k2d.math.FastFloat;
@@ -81,68 +82,76 @@ class Renderer implements IRenderer {
 		matrix = transform.world;
 	}
 
-    @:extern public inline function drawLine(x1:Float, y1:Float, x2:Float, y2:Float, ?strength:Float) : Void {
+    public inline function drawLine(x1:Float, y1:Float, x2:Float, y2:Float, ?strength:Float) : Void {
 		g2.drawLine(x1, y1, x2, y2, strength);
 	}
 
-    @:extern public inline function drawImage(img:Image, x:FastFloat, y:FastFloat) : Void {
+    public inline function drawImage(img:Image, x:FastFloat, y:FastFloat) : Void {
 		g2.drawImage(img, x, y);
 	}
 
-	@:extern public inline function drawSubImage(img: Image, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
+	public inline function drawTexture(texture:Texture, x:FastFloat, y:FastFloat) : Void {
+		g2.drawSubImage(texture.image, x, y, texture.trim.x, texture.trim.y, texture.trim.width, texture.trim.height);
+	}
+
+	public inline function drawSubImage(img: Image, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
 		g2.drawSubImage(img, x, y, sx, sy, sw, sh);
 	}
 
-	@:extern public inline function drawScaledImage(img: Image, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
+	public inline function drawSubTexture(texture: Texture, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
+		g2.drawSubImage(texture.image, x, y, texture.trim.x + sx, texture.trim.y + sy, sw > texture.trim.width ? texture.trim.width : sw, sh > texture.trim.height ? texture.trim.height : sh);
+	}
+
+	public inline function drawScaledImage(img: Image, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		g2.drawScaledImage(img, dx, dy, dw, dh);
 	}
 
-	@:extern public inline function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
+	public inline function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		g2.drawScaledSubImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
 	}
 
-	@:extern public inline function drawVideo(video:Video, x:Float, y:Float, width:Float, height:Float) : Void {
+	public inline function drawVideo(video:Video, x:Float, y:Float, width:Float, height:Float) : Void {
 		g2.drawVideo(video, x, y, width, height);
 	}
 
-    @:extern public inline function drawString(text:String, x:Float, y:Float) : Void {
+    public inline function drawString(text:String, x:Float, y:Float) : Void {
 		g2.drawString(text, x, y);
 	}
 
-    @:extern public inline function drawAlignedString(text:String, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
+    public inline function drawAlignedString(text:String, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
         GraphicsExtension.drawAlignedString(g2, text, x, y, horAlign, verAlign);
     }
 
-    @:extern public inline function drawAlignedCharacters(text:Array<Int>, start:Int, end:Int, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
+    public inline function drawAlignedCharacters(text:Array<Int>, start:Int, end:Int, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
         GraphicsExtension.drawAlignedCharacters(g2, text, start, end, x, y, horAlign, verAlign);
     }
 
-    @:extern public inline function drawRect(x:Float, y:Float, width:Float, height:Float, ?strength:Float) : Void {
+    public inline function drawRect(x:Float, y:Float, width:Float, height:Float, ?strength:Float) : Void {
 		g2.drawRect(x, y, width, height, strength);
 	}
 
-    @:extern public inline function fillRect(x:Float, y:Float, width:Float, height:Float) : Void {
+    public inline function fillRect(x:Float, y:Float, width:Float, height:Float) : Void {
 		g2.fillRect(x, y, width, height);
 	}
 
-    @:extern public inline function fillTriangle(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float) : Void {
+    public inline function fillTriangle(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float) : Void {
 		g2.fillTriangle(x1, y1, x2, y2, x3, y3);
 	}
 
-    @:extern public inline function drawCircle(cx:Float, cy:Float, radius:Float, ?strength:Float, ?segments:Int) : Void {
+    public inline function drawCircle(cx:Float, cy:Float, radius:Float, ?strength:Float, ?segments:Int) : Void {
 		GraphicsExtension.drawCircle(g2, cx, cy, radius, strength, segments);
 	}
 
-    @:extern public inline function drawCubicBezier(x:Array<Float>, y:Array<Float>, ?segments:Int, ?strength:Float) : Void {
+    public inline function drawCubicBezier(x:Array<Float>, y:Array<Float>, ?segments:Int, ?strength:Float) : Void {
 		GraphicsExtension.drawCubicBezier(g2, x, y, segments, strength);
 	}
 
-	@:extern public inline function drawCubicBezierPath(x:Array<Float>, y:Array<Float>, ?segments:Int, ?strength:Float) : Void {
+	public inline function drawCubicBezierPath(x:Array<Float>, y:Array<Float>, ?segments:Int, ?strength:Float) : Void {
 		GraphicsExtension.drawCubicBezierPath(g2, x, y, segments, strength);
 	}
 
 	//todo change Vector2 for Point and use a pool of vector2 to pass to the drawPolygon.
-	@:extern public inline function drawPolygon(x:Float, y:Float, vertices:Array<Point>, ?strength:Float) : Void {
+	public inline function drawPolygon(x:Float, y:Float, vertices:Array<Point>, ?strength:Float) : Void {
         var _pointVerts = Renderer._pointsToVec2(vertices);
 		GraphicsExtension.drawPolygon(g2, x, y, _pointVerts, strength);
         
@@ -151,11 +160,11 @@ class Renderer implements IRenderer {
         }
 	}
 
-	@:extern public inline function fillCircle(cx:Float, cy:Float, radius:Float, ?segments:Int) : Void {
+	public inline function fillCircle(cx:Float, cy:Float, radius:Float, ?segments:Int) : Void {
 		GraphicsExtension.fillCircle(g2, cx, cy, radius, segments);
 	}
 
-	@:extern public inline function fillPolygon(x:Float, y:Float, vertices:Array<Point>) : Void {
+	public inline function fillPolygon(x:Float, y:Float, vertices:Array<Point>) : Void {
         var _pointVerts = Renderer._pointsToVec2(vertices);
 		GraphicsExtension.fillPolygon(g2, x, y, _pointVerts);
 
