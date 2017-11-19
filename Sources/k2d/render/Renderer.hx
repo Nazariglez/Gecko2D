@@ -35,6 +35,9 @@ class Renderer implements IRenderer {
     private var _emptyMatrix:Matrix = Matrix.identity();
     public var matrix(get, set):Matrix;
 
+	private var _swtTemp:FastFloat;
+	private var _shtTemp:FastFloat;
+
     public function new(){}
 
     private static function _pointsToVec2(points:Array<Point>) : Array<Vector2> {
@@ -91,7 +94,11 @@ class Renderer implements IRenderer {
 	}
 
 	public inline function drawTexture(texture:Texture, x:FastFloat, y:FastFloat) : Void {
-		g2.drawSubImage(texture.image, x, y, texture.trim.x, texture.trim.y, texture.trim.width, texture.trim.height);
+		if(texture.trimmed){
+			g2.drawSubImage(texture.image, x, y, texture.frame.x-texture.trim.x, texture.frame.y-texture.trim.y, texture.trim.width+texture.trim.x, texture.trim.height+texture.trim.y);
+		}else{
+			g2.drawSubImage(texture.image, x, y, texture.frame.x, texture.frame.y, texture.frame.width, texture.frame.height);
+		}
 	}
 
 	public inline function drawSubImage(img: Image, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
@@ -99,11 +106,27 @@ class Renderer implements IRenderer {
 	}
 
 	public inline function drawSubTexture(texture: Texture, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
-		g2.drawSubImage(texture.image, x, y, texture.trim.x + sx, texture.trim.y + sy, sw > texture.trim.width ? texture.trim.width : sw, sh > texture.trim.height ? texture.trim.height : sh);
+		if(texture.trimmed){
+			_swtTemp = texture.trim.width+texture.trim.x;
+			_shtTemp = texture.trim.height+texture.trim.y;
+			g2.drawSubImage(texture.image, x, y, texture.frame.x-texture.trim.x + sx, texture.frame.y-texture.trim.y + sy, sw < _swtTemp ? sw : _swtTemp, sh < _shtTemp ? sh : _shtTemp);
+		}else{
+			g2.drawSubImage(texture.image, x, y, texture.frame.x + sx, texture.frame.y + sy, sw > texture.frame.width ? texture.frame.width : sw, sh > texture.frame.height ? texture.frame.height : sh);
+		}
 	}
 
 	public inline function drawScaledImage(img: Image, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		g2.drawScaledImage(img, dx, dy, dw, dh);
+	}
+
+	public inline function drawScaledTexture(texture: Texture, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
+		if(texture.trimmed){
+			_swtTemp = texture.trim.width+texture.trim.x;
+			_shtTemp = texture.trim.height+texture.trim.y;
+			g2.drawScaledSubImage(texture.image, texture.frame.x-texture.trim.x, texture.frame.y-texture.trim.y, texture.trim.width+texture.trim.x, texture.trim.height+texture.trim.y, texture.trim.x + dx, texture.trim.y + dy, dw, dh);
+		}else{
+			g2.drawScaledSubImage(texture.image, texture.frame.x, texture.frame.y, texture.frame.width, texture.frame.height, texture.frame.x + dx, texture.frame.y + dy, dw, dh);
+		}
 	}
 
 	public inline function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {

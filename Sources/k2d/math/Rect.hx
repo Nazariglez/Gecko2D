@@ -97,10 +97,6 @@ class Rect {
 			|| contains(rect.x + rect.width, rect.y + rect.height);
 	}
 
-	function toString() : String {
-		return "Rectangle(${x}, ${y}, ${width}, ${height})";
-	}
-
 	// Static Constructors
 	public static function fromSquare(side): Rect {
 		return Rect.fromRectangle(side, side);
