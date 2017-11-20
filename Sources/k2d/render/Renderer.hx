@@ -121,9 +121,17 @@ class Renderer implements IRenderer {
 
 	public inline function drawScaledTexture(texture: Texture, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		if(texture.trimmed){
-			_swtTemp = texture.trim.width+texture.trim.x;
-			_shtTemp = texture.trim.height+texture.trim.y;
-			g2.drawScaledSubImage(texture.image, texture.frame.x-texture.trim.x, texture.frame.y-texture.trim.y, texture.trim.width+texture.trim.x, texture.trim.height+texture.trim.y, texture.trim.x + dx, texture.trim.y + dy, dw, dh);
+			g2.drawScaledSubImage(
+				texture.image, 
+				texture.frame.x-texture.trim.x, 
+				texture.frame.y-texture.trim.y, 
+				texture.trim.width+texture.trim.x, 
+				texture.trim.height+texture.trim.y, 
+				dx, 
+				dy, 
+				dw - texture.trim.x, 
+				dh - texture.trim.y
+			);
 		}else{
 			g2.drawScaledSubImage(texture.image, texture.frame.x, texture.frame.y, texture.frame.width, texture.frame.height, texture.frame.x + dx, texture.frame.y + dy, dw, dh);
 		}
@@ -131,6 +139,14 @@ class Renderer implements IRenderer {
 
 	public inline function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		g2.drawScaledSubImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+	}
+
+	public inline function drawScaledSubTexture(texture: Texture, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
+		if(texture.trimmed){
+
+		}else{ //todo
+			g2.drawScaledSubImage(texture.image, sx, sy, sw, sh, dx, dy, dw, dh);
+		}
 	}
 
 	public inline function drawVideo(video:Video, x:Float, y:Float, width:Float, height:Float) : Void {
