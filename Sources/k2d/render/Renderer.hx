@@ -37,6 +37,8 @@ class Renderer implements IRenderer {
 
 	private var _swtTemp:FastFloat;
 	private var _shtTemp:FastFloat;
+	private var _dwTemp:FastFloat;
+	private var _dhTemp:FastFloat;
 
     public function new(){}
 
@@ -143,9 +145,30 @@ class Renderer implements IRenderer {
 
 	public inline function drawScaledSubTexture(texture: Texture, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		if(texture.trimmed){
+			_swtTemp = texture.trim.width+texture.trim.x;
+			_swtTemp = sw < _swtTemp ? sw : _swtTemp;
 
-		}else{ //todo
-			g2.drawScaledSubImage(texture.image, sx, sy, sw, sh, dx, dy, dw, dh);
+			_shtTemp = texture.trim.height+texture.trim.y;
+			_shtTemp = sh < _shtTemp ? sh : _shtTemp;
+
+			_dwTemp = dw-texture.trim.x;
+			_dhTemp = dh-texture.trim.y;
+
+			//trace(_swtTemp, _shtTemp);
+
+			g2.drawScaledSubImage( //todo fix
+				texture.image, 
+				texture.frame.x - texture.trim.x + sx, 
+				texture.frame.y - texture.trim.y + sy, 
+				_swtTemp, 
+				_shtTemp, 
+				texture.frame.x + dx,
+				texture.frame.y + dy,
+				dw, //_swtTemp < texture.trim.width ? dw : _dwTemp,
+				dh //_shtTemp < texture.trim.height ? dh : _dhTemp
+			);
+		}else{
+			g2.drawScaledSubImage(texture.image, texture.frame.x + sx, texture.frame.y + sy, sw < texture.frame.width ? sw : texture.frame.width, sh < texture.frame.height ? sh : texture.frame.height, texture.frame.x + dx, texture.frame.y + dy, dw, dh);
 		}
 	}
 
