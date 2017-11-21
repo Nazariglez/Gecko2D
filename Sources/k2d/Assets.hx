@@ -6,6 +6,8 @@ import k2d.resources.Video;
 import k2d.resources.Blob;
 import k2d.resources.Sound;
 import k2d.resources.Font;
+import k2d.resources.Texture;
+//import k2d.resources.TexturePacker;
 import k2d.utils.Chain;
 
 class Assets {
@@ -14,6 +16,8 @@ class Assets {
     static public var blobs:Map<String, Blob> = new Map<String, Blob>();
     static public var sounds:Map<String, Sound> = new Map<String, Sound>();
     static public var fonts:Map<String, Font> = new Map<String, Font>();
+    static public var textures:Map<String, Texture> = new Map<String, Texture>();
+    static public var json:Map<String, Dynamic> = new Map<String, Dynamic>();
     //todo parse json, and toml
 
     static private var _imageExtensions = ["hdr", "jpg", "png"];
@@ -22,8 +26,12 @@ class Assets {
     static private var _videoExtensions = ["mp4"];
 
     //todo compare in compilation time with macros the load and unload params with kha.Assets.*.names to check if exists
-    static private function _parseAssetName(name:String) : String {
-        return (~/[\/\.]/gi).replace(Path.normalize(Path.withoutExtension(name)), "_");
+    static private function _parseAssetName(name:String, ext:Bool = false) : String {
+        if(!ext){
+            return (~/[\/\.]/gi).replace(Path.normalize(Path.withoutExtension(name)), "_");
+        }else{
+            return (~/[\/\.]/gi).replace(Path.normalize(name), "_");
+        }
     }
 
     static public function load(arr:Array<String>, done:?String->Void) : Assets {
@@ -46,12 +54,43 @@ class Assets {
                 Assets.loadFont(name, next);
             case e if (Assets._soundExtensions.indexOf(e) >= 0):
                 Assets.loadSound(name, next);
+            case "json":
+                Assets.loadJson(name, next);
             default:
                 Assets.loadBlob(name, next);
         }
 
         //todo admit to extend with new extensions and parsers (maybe with macros to make the asset list?)
         //todo maybe add a "addParser(ext[], loadCb, unloadCb)" and find un "custom" or something similar
+    }
+
+    static public function loadJson(name:String, done:?String->Void){
+        var parsedName = Assets._parseAssetName(name, true);
+        trace(parsedName);
+        kha.Assets.loadBlob(parsedName, function(blob:Blob){
+            Assets.json[name] = haxe.Json.parse(blob.toString());
+            if(Assets.json[name].frames != null && Assets.json[name].meta != null && Assets.json[name].meta.image != null){
+                trace("its a texture packer file");
+                var json:TexturePacker = haxe.Json.parse(blob.toString());
+                Assets.loadImage(json.meta.image, function(?err:String){
+                    if(err != null){
+                        done(err);
+                        return;
+                    }
+
+                    trace(json, Type.typeof(json.frames));
+
+                    for(frame in Reflect.fields(json.frames)){
+                        trace("added", frame, Assets.textures, Type.typeof(frame));
+                        Assets.textures[frame] = Texture.fromTexturePacker(Assets.images[json.meta.image], Reflect.field(json.frames, frame));
+                    }
+                    untyped js.Browser.window.a = Assets;
+                    done();
+                });
+            }else{
+                done();
+            }            
+        });
     }
 
     static public function loadImage(name:String, done:?String->Void){
@@ -148,6 +187,12 @@ class Assets {
     static public function unloadBlob(name:String, done:?String->Void){
         Assets.blobs[name].unload();
         Assets.blobs.remove(name);
+        done();
+    }
+
+    static public function unloadJson(name:String, done:?String->Void){
+        //Assets.blobs[name].unload();
+        Assets.json.remove(name);
         done();
     }
 

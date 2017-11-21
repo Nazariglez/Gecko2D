@@ -3,8 +3,33 @@ package k2d.resources;
 import k2d.math.Rect;
 import k2d.math.Point;
 
-typedef TexturePackerData = {
+typedef TexturePackerPoint = {
+    var x:Int;
+    var y:Int;
+};
 
+typedef TexturePackerSize = {
+    var w:Int;
+    var h:Int;
+};
+
+typedef TexturePackerRect = {
+    > TexturePackerPoint,
+    > TexturePackerSize,
+};
+
+typedef TexturePackerData = {
+    var frame:TexturePackerRect;
+    var rotated:Bool;
+    var trimmed:Bool;
+    var spriteSourceSize:TexturePackerRect;
+    var pivot:Point;
+    var sourceSize:TexturePackerSize;
+};
+
+typedef TexturePacker = {
+    var frames:Map<String, TexturePackerData>;
+    var meta:Dynamic;
 };
 
 class Texture {
@@ -24,8 +49,18 @@ class Texture {
     public var height(get, null):Int;
     private var _height:Int;
 
-    static public function fromTexturePacker(img:Image, data:TexturePackerData){
-        //todo
+    static public function fromTexturePacker(img:Image, data:TexturePackerData) : Texture {
+        var frame = new Rect(data.frame.x, data.frame.y, data.frame.w, data.frame.h);
+        var texture = new Texture(img, frame, data.sourceSize.w, data.sourceSize.h);
+        
+        if(data.trimmed){
+            texture.trim = new Rect(data.spriteSourceSize.x, data.spriteSourceSize.y, data.spriteSourceSize.w, data.spriteSourceSize.h);
+        }
+
+        //texture.rotated = data.rotated;
+        //texture.pivot = new Point(data.pivot.x, data.pivot.y);
+
+        return texture;
     }
 
     public function new(img:Image, ?frame:Rect, ?width:Null<Int>, ?height:Null<Int>, ?trim:Rect) {
