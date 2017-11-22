@@ -109,11 +109,13 @@ class Renderer implements IRenderer {
 
 	public inline function drawSubTexture(texture: Texture, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
 		if(texture.trimmed){
-			_swtTemp = texture.trim.width+texture.trim.x;
-			_shtTemp = texture.trim.height+texture.trim.y;
+			_swtTemp = texture.trim.width+texture.trim.x-sx;
+			_shtTemp = texture.trim.height+texture.trim.y-sy;
 			g2.drawSubImage(texture.image, x, y, texture.frame.x-texture.trim.x + sx, texture.frame.y-texture.trim.y + sy, sw < _swtTemp ? sw : _swtTemp, sh < _shtTemp ? sh : _shtTemp);
 		}else{
-			g2.drawSubImage(texture.image, x, y, texture.frame.x + sx, texture.frame.y + sy, sw > texture.frame.width ? texture.frame.width : sw, sh > texture.frame.height ? texture.frame.height : sh);
+			_swtTemp = texture.frame.width-sx;
+			_shtTemp = texture.frame.height-sy;
+			g2.drawSubImage(texture.image, x, y, texture.frame.x + sx, texture.frame.y + sy, sw > _swtTemp ? _swtTemp : sw, sh > _shtTemp ? _shtTemp : sh);
 		}
 	}
 
@@ -145,16 +147,14 @@ class Renderer implements IRenderer {
 
 	public inline function drawScaledSubTexture(texture: Texture, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		if(texture.trimmed){
-			_swtTemp = texture.trim.width+texture.trim.x;
+			_swtTemp = texture.trim.width+texture.trim.x-sx;
 			_swtTemp = sw < _swtTemp ? sw : _swtTemp;
 
-			_shtTemp = texture.trim.height+texture.trim.y;
+			_shtTemp = texture.trim.height+texture.trim.y-sy;
 			_shtTemp = sh < _shtTemp ? sh : _shtTemp;
 
 			_dwTemp = dw-texture.trim.x;
 			_dhTemp = dh-texture.trim.y;
-
-			//trace(_swtTemp, _shtTemp);
 
 			g2.drawScaledSubImage( //todo fix
 				texture.image, 
@@ -162,13 +162,23 @@ class Renderer implements IRenderer {
 				texture.frame.y - texture.trim.y + sy, 
 				_swtTemp, 
 				_shtTemp, 
-				texture.frame.x + dx,
-				texture.frame.y + dy,
-				dw, //_swtTemp < texture.trim.width ? dw : _dwTemp,
-				dh //_shtTemp < texture.trim.height ? dh : _dhTemp
+				dx,
+				dy,
+				dw,
+				dh
 			);
 		}else{
-			g2.drawScaledSubImage(texture.image, texture.frame.x + sx, texture.frame.y + sy, sw < texture.frame.width ? sw : texture.frame.width, sh < texture.frame.height ? sh : texture.frame.height, texture.frame.x + dx, texture.frame.y + dy, dw, dh);
+			g2.drawScaledSubImage(
+				texture.image, 
+				texture.frame.x + sx, 
+				texture.frame.y + sy, 
+				sw < texture.frame.width ? sw : texture.frame.width, 
+				sh < texture.frame.height ? sh : texture.frame.height, 
+				dx, 
+				dy, 
+				dw, 
+				dh
+			);
 		}
 	}
 
