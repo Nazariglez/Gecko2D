@@ -23,7 +23,7 @@ typedef TexturePackerData = {
     var rotated:Bool;
     var trimmed:Bool;
     var spriteSourceSize:TexturePackerRect;
-    var pivot:Point;
+    var pivot:TexturePackerPoint;
     var sourceSize:TexturePackerSize;
 };
 
@@ -50,15 +50,15 @@ class Texture {
     private var _height:Int;
 
     static public function fromTexturePacker(img:Image, data:TexturePackerData) : Texture {
-        var frame = new Rect(data.frame.x, data.frame.y, data.frame.w, data.frame.h);
+        var frame = new Rect(data.frame.x, data.frame.y, data.frame.w, data.frame.h); //todo if rotated check the correct frame coords
         var texture = new Texture(img, frame, data.sourceSize.w, data.sourceSize.h);
         
         if(data.trimmed){
             texture.trim = new Rect(data.spriteSourceSize.x, data.spriteSourceSize.y, data.spriteSourceSize.w, data.spriteSourceSize.h);
         }
 
-        //texture.rotated = data.rotated;
-        //texture.pivot = new Point(data.pivot.x, data.pivot.y);
+        texture.rotated = data.rotated;
+        texture.pivot = new Point(data.pivot.x, data.pivot.y);
 
         return texture;
     }
