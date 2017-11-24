@@ -50,12 +50,22 @@ class Texture {
     private var _height:Int;
 
     static public function fromTexturePacker(img:Image, data:TexturePackerData) : Texture {
-        var frame = new Rect(data.frame.x, data.frame.y, data.frame.w, data.frame.h); //todo if rotated check the correct frame coords
-        var texture = new Texture(img, frame, data.sourceSize.w, data.sourceSize.h);
+        var frame = null;
+        var trim = null;
         
-        if(data.trimmed){
-            texture.trim = new Rect(data.spriteSourceSize.x, data.spriteSourceSize.y, data.spriteSourceSize.w, data.spriteSourceSize.h);
+        if(data.rotated) {
+            frame = new Rect(data.frame.x, data.frame.y, data.frame.h, data.frame.w);
+            if(data.trimmed){
+                trim = new Rect(data.spriteSourceSize.x, data.spriteSourceSize.y, data.spriteSourceSize.w, data.spriteSourceSize.h);
+            }
+        }else{
+            frame = new Rect(data.frame.x, data.frame.y, data.frame.w, data.frame.h);
+            if(data.trimmed){
+                trim = new Rect(data.spriteSourceSize.x, data.spriteSourceSize.y, data.spriteSourceSize.w, data.spriteSourceSize.h);
+            }
         }
+
+        var texture = new Texture(img, frame, data.sourceSize.w, data.sourceSize.h, trim);
 
         texture.rotated = data.rotated;
         texture.pivot = new Point(data.pivot.x, data.pivot.y);

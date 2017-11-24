@@ -97,18 +97,24 @@ class Renderer implements IRenderer {
 
 	public inline function drawTexture(texture:Texture, x:FastFloat, y:FastFloat) : Void {
 		if(texture.rotated){
-			g2.pushTransformation(kha.math.FastMatrix3.translation(-texture.width*texture.pivot.x, -texture.height*texture.pivot.y));
+			_swtTemp = texture.frame.width*texture.pivot.x;
+			_shtTemp = texture.frame.height*texture.pivot.y;
+			g2.pushTransformation(kha.math.FastMatrix3.translation(-_swtTemp, -_shtTemp));
 			g2.rotate(-0.5*Math.PI, x, y);
-		} //todo rotated texture (better check in frame)
 
-		if(texture.trimmed){
-			g2.drawSubImage(texture.image, x, y, texture.frame.x-texture.trim.x, texture.frame.y-texture.trim.y, texture.trim.width+texture.trim.x, texture.trim.height+texture.trim.y);
-		}else{
-			g2.drawSubImage(texture.image, x, y, texture.frame.x, texture.frame.y, texture.frame.width, texture.frame.height);
-		}
+			if(texture.trimmed){
+				g2.drawSubImage(texture.image, x-_swtTemp-texture.trim.x, y+_shtTemp+texture.trim.y, texture.frame.x, texture.frame.y, texture.trim.width, texture.trim.height);
+			}else{
+				g2.drawSubImage(texture.image, x-_swtTemp, y+_shtTemp, texture.frame.x, texture.frame.y, texture.frame.width, texture.frame.height);
+			}
 
-		if(texture.rotated){
 			g2.popTransformation();
+		}else{
+			if(texture.trimmed){
+				g2.drawSubImage(texture.image, x+texture.trim.x, y+texture.trim.y, texture.frame.x, texture.frame.y, texture.trim.width, texture.trim.height);
+			}else{
+				g2.drawSubImage(texture.image, x, y, texture.frame.x, texture.frame.y, texture.frame.width, texture.frame.height);
+			}
 		}
 	}
 
@@ -118,9 +124,17 @@ class Renderer implements IRenderer {
 
 	public inline function drawSubTexture(texture: Texture, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
 		if(texture.trimmed){
-			_swtTemp = texture.trim.width+texture.trim.x-sx;
-			_shtTemp = texture.trim.height+texture.trim.y-sy;
-			g2.drawSubImage(texture.image, x, y, texture.frame.x-texture.trim.x + sx, texture.frame.y-texture.trim.y + sy, sw < _swtTemp ? sw : _swtTemp, sh < _shtTemp ? sh : _shtTemp);
+			_swtTemp = (sx > texture.trim.x ? sx-texture.trim.x : 0);//texture.trim.width-sx;
+			_shtTemp = texture.trim.height-sy;
+			g2.drawSubImage(
+				texture.image, 
+				x+texture.trim.x, 
+				y+texture.trim.y, 
+				texture.frame.x + _swtTemp,
+				texture.frame.y + sy, 
+				sw - texture.trim.x,//sw < _swtTemp ? sw : _swtTemp, 
+				sh - texture.trim.y//sh < _shtTemp ? sh : _shtTemp
+			);
 		}else{
 			_swtTemp = texture.frame.width-sx;
 			_shtTemp = texture.frame.height-sy;
