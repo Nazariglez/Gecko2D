@@ -40,6 +40,11 @@ class Renderer implements IRenderer {
 	private var _dwTemp:FastFloat;
 	private var _dhTemp:FastFloat;
 
+	private var _temp1:FastFloat;
+	private var _temp2:FastFloat;
+	private var _temp3:FastFloat;
+	private var _temp4:FastFloat;
+
     public function new(){}
 
     private static function _pointsToVec2(points:Array<Point>) : Array<Vector2> {
@@ -122,19 +127,45 @@ class Renderer implements IRenderer {
 		g2.drawSubImage(img, x, y, sx, sy, sw, sh);
 	}
 
+	var b:Bool = false;
 	public inline function drawSubTexture(texture: Texture, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
 		if(texture.trimmed){
-			_swtTemp = (sx > texture.trim.x ? sx-texture.trim.x : 0);//texture.trim.width-sx;
-			_shtTemp = texture.trim.height-sy;
-			g2.drawSubImage(
-				texture.image, 
-				x+texture.trim.x, 
-				y+texture.trim.y, 
-				texture.frame.x + _swtTemp,
-				texture.frame.y + sy, 
-				sw - texture.trim.x,//sw < _swtTemp ? sw : _swtTemp, 
-				sh - texture.trim.y//sh < _shtTemp ? sh : _shtTemp
-			);
+			_swtTemp = (sx > texture.trim.x ? sx-texture.trim.x : 0);
+			_temp1 = texture.trim.x-sx;
+			_temp1 = _temp1 < 0 ? 0 : _temp1;
+
+			_shtTemp = (sy > texture.trim.y ? sy-texture.trim.y : 0);
+			_temp2 = texture.trim.y-sy;
+			_temp2 = _temp2 < 0 ? 0 : _temp2;
+
+			if(texture.rotated){
+				_temp3 = texture.frame.width*texture.pivot.x;
+				_temp4 = texture.frame.height*texture.pivot.y;
+				g2.pushTransformation(kha.math.FastMatrix3.translation(-_temp3, -_temp4));
+				g2.rotate(-0.5*Math.PI, x, y);
+
+				g2.drawSubImage(
+					texture.image, 
+					x+_temp1,
+					y+_temp2, 
+					texture.frame.x + _swtTemp,
+					texture.frame.y + _shtTemp, 
+					sw-_temp1,
+					sh-_temp2
+				);
+
+				g2.popTransformation();
+			}else{
+				g2.drawSubImage(
+					texture.image, 
+					x+_temp1, 
+					y+_temp2, 
+					texture.frame.x + _swtTemp,
+					texture.frame.y + _shtTemp, 
+					sw-_temp1,
+					sh-_temp2
+				);
+			}
 		}else{
 			_swtTemp = texture.frame.width-sx;
 			_shtTemp = texture.frame.height-sy;
