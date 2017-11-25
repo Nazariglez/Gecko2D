@@ -50,19 +50,17 @@ class Texture {
     private var _height:Int;
 
     static public function fromTexturePacker(img:Image, data:TexturePackerData) : Texture {
-        var frame = null;
-        var trim = null;
+        var frame:Rect = null;
+        var trim:Rect = null;
         
         if(data.rotated) {
             frame = new Rect(data.frame.x, data.frame.y, data.frame.h, data.frame.w);
-            if(data.trimmed){
-                trim = new Rect(data.spriteSourceSize.x, data.spriteSourceSize.y, data.spriteSourceSize.w, data.spriteSourceSize.h);
-            }
         }else{
             frame = new Rect(data.frame.x, data.frame.y, data.frame.w, data.frame.h);
-            if(data.trimmed){
-                trim = new Rect(data.spriteSourceSize.x, data.spriteSourceSize.y, data.spriteSourceSize.w, data.spriteSourceSize.h);
-            }
+        }
+
+        if(data.trimmed){
+            trim = new Rect(data.spriteSourceSize.x, data.spriteSourceSize.y, data.spriteSourceSize.w, data.spriteSourceSize.h);
         }
 
         var texture = new Texture(img, frame, data.sourceSize.w, data.sourceSize.h, trim);

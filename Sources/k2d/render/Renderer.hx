@@ -44,6 +44,8 @@ class Renderer implements IRenderer {
 	private var _temp2:FastFloat;
 	private var _temp3:FastFloat;
 	private var _temp4:FastFloat;
+	private var _temp5:FastFloat;
+	private var _temp6:FastFloat;
 
     public function new(){}
 
@@ -129,8 +131,14 @@ class Renderer implements IRenderer {
 		g2.drawSubImage(img, x, y, sx, sy, sw, sh);
 	}
 
-	var b:Bool = false;
-	public inline function drawSubTexture(texture: Texture, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
+	private inline function _drawSubTextureRotated(texture: Texture, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat) : Void {
+		_temp3 = texture.frame.width*texture.pivot.x;
+		_temp4 = texture.frame.height*texture.pivot.y;
+		g2.pushTransformation(kha.math.FastMatrix3.translation(-_temp3, -_temp4));
+		g2.rotate(-0.5*Math.PI, x, y);
+		g2.transformation._20 += _temp4;
+		g2.transformation._21 += _temp3;
+		
 		if(texture.trimmed){
 			_swtTemp = (sx > texture.trim.x ? sx-texture.trim.x : 0);
 			_temp1 = texture.trim.x-sx;
@@ -140,38 +148,83 @@ class Renderer implements IRenderer {
 			_temp2 = texture.trim.y-sy;
 			_temp2 = _temp2 < 0 ? 0 : _temp2;
 
-			if(texture.rotated){
-				_temp3 = texture.frame.width*texture.pivot.x;
-				_temp4 = texture.frame.height*texture.pivot.y;
-				g2.pushTransformation(kha.math.FastMatrix3.translation(-_temp3, -_temp4));
-				g2.rotate(-0.5*Math.PI, x, y);
+			_temp5 = sw - _temp1;
+			_temp5 = _temp5 > texture.trim.width ? texture.trim.width : _temp5;
+
+			_temp6 = sh - _temp2;
+			_temp6 = _temp6 > texture.trim.height ? texture.trim.height : _temp6;
+
+			g2.drawSubImage(
+				texture.image, 
+				x-_temp2,
+				y+_temp1, 
+				texture.frame.x - _shtTemp,
+				texture.frame.y + _swtTemp, 
+				_temp6,
+				_temp5
+			);
+		}else{
+			g2.drawSubImage(
+				texture.image, 
+				x,
+				y,
+				texture.frame.x - sy, 
+				texture.frame.y + sx, 
+				sh, //(sw > _swtTemp ? _swtTemp : sw) + _temp3, 
+				sw //(sh > _shtTemp ? _shtTemp : sh)
+			);
+		}
+
+		g2.popTransformation();
+	}
+
+	private inline function _drawSubTexture(texture:Texture, x:FastFloat, y:FastFloat, sx:FastFloat, sy:FastFloat, sw:FastFloat, sh:FastFloat) {
+		if(texture.trimmed){
+				_swtTemp = (sx > texture.trim.x ? sx-texture.trim.x : 0);
+				_shtTemp = (sy > texture.trim.y ? sy-texture.trim.y : 0);
+
+				_temp1 = texture.trim.x-sx;
+				_temp1 = _temp1 < 0 ? 0 : _temp1;
+
+				_temp2 = texture.trim.y-sy;
+				_temp2 = _temp2 < 0 ? 0 : _temp2;
+
+				_temp3 = sw - _temp1;
+				_temp3 = _temp3 > texture.trim.width ? texture.trim.width : _temp3;
+
+				_temp4 = sh - _temp2;
+				_temp4 = _temp4 > texture.trim.height ? texture.trim.height : _temp4;
 
 				g2.drawSubImage(
 					texture.image, 
-					x+_temp1,
-					y+_temp2, 
+					x + _temp1, 
+					y + _temp2, 
 					texture.frame.x + _swtTemp,
 					texture.frame.y + _shtTemp, 
-					sw-_temp1,
-					sh-_temp2
+					_temp3,
+					_temp4
 				);
-
-				g2.popTransformation();
 			}else{
+				_swtTemp = texture.frame.width-sx;
+				_shtTemp = texture.frame.height-sy;
+
 				g2.drawSubImage(
 					texture.image, 
-					x+_temp1, 
-					y+_temp2, 
-					texture.frame.x + _swtTemp,
-					texture.frame.y + _shtTemp, 
-					sw-_temp1,
-					sh-_temp2
+					x, 
+					y, 
+					texture.frame.x + sx, 
+					texture.frame.y + sy, 
+					sw > _swtTemp ? _swtTemp : sw, 
+					sh > _shtTemp ? _shtTemp : sh
 				);
 			}
+	}
+
+	public inline function drawSubTexture(texture: Texture, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
+		if(texture.rotated){
+			_drawSubTextureRotated(texture, x, y, sx, sy, sw, sh);
 		}else{
-			_swtTemp = texture.frame.width-sx;
-			_shtTemp = texture.frame.height-sy;
-			g2.drawSubImage(texture.image, x, y, texture.frame.x + sx, texture.frame.y + sy, sw > _swtTemp ? _swtTemp : sw, sh > _shtTemp ? _shtTemp : sh);
+			_drawSubTexture(texture, x, y, sx, sy, sw, sh);
 		}
 	}
 
