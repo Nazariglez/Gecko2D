@@ -3,6 +3,7 @@ package k2d.math;
 import kha.math.Vector2;
 
 class Rect {
+	//todo add observer
 	public var x: FastFloat;
 	public var y: FastFloat;
 	public var width: FastFloat;
@@ -18,23 +19,6 @@ class Rect {
 		this.y = y;
 		this.width = width;
 		this.height = height;
-	}
-
-	// Getters
-	public function get_top() : FastFloat {
-		return y;
-	}
-
-	public function get_bottom() : FastFloat {
-		return y + height;
-	}
-
-	public function get_left() : FastFloat {
-		return x;
-	}
-
-	public function get_right() : FastFloat {
-		return x + width;
 	}
 
 	// Methods
@@ -104,5 +88,21 @@ class Rect {
 
 	public static function fromRectangle(width, height): Rect {
 		return new Rect(0, 0, width, height);
+	}
+
+	function get_top() : FastFloat {
+		return y;
+	}
+
+	function get_bottom() : FastFloat {
+		return y + height;
+	}
+
+	function get_left() : FastFloat {
+		return x;
+	}
+
+	function get_right() : FastFloat {
+		return x + width;
 	}
 }

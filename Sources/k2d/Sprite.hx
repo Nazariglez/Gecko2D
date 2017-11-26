@@ -4,6 +4,7 @@ import k2d.math.FastFloat;
 import k2d.resources.Image;
 import k2d.render.Renderer;
 import k2d.resources.Texture;
+import k2d.math.Rect;
 
 //crop method
 class Sprite extends Container {
@@ -12,6 +13,8 @@ class Sprite extends Container {
 
     public var textureName(get, set):String;
     private var _textureName:String = "";
+
+    public var trim:Rect = null;
 
     static public function fromTexture(texture:Texture) : Sprite {
         var s = new Sprite();
@@ -44,7 +47,11 @@ class Sprite extends Container {
     public override function render(r:Renderer) {
         r.applyTransform(matrixTransform);
         if(_texture != null){
-            r.drawTexture(_texture, 0,0);
+            if(trim != null){
+                r.drawSubTexture(_texture, 0, 0, trim.x, trim.y, trim.width, trim.height);
+            }else{
+                r.drawTexture(_texture, 0,0);
+            }
         }
 
         super.render(r);
@@ -56,7 +63,7 @@ class Sprite extends Container {
 
     function set_textureName(name:String) : String {
         if(!Assets.textures.exists(name)){
-            trace('Image $name not loaded...');
+            trace('Texture $name not loaded...');
             return "";
         }
 
@@ -74,4 +81,6 @@ class Sprite extends Container {
         }
 		return _texture = texture;
 	}
+
+    //todo set size by trim if exists. (needs set an observer in rect)
 }
