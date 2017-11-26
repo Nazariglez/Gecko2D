@@ -146,7 +146,7 @@ class Renderer implements IRenderer {
 
 			_shtTemp = (sy > texture.trim.y ? sy-texture.trim.y : 0);
 			_temp2 = texture.trim.y-sy;
-			//_temp2 = _temp2 < 0 ? 0 : _temp2;
+			_temp2 = _temp2 < 0 ? 0 : _temp2;
 
 			_temp5 = sw - _temp1;
 			_temp5 = _temp5 > texture.trim.width ? texture.trim.width : _temp5;
@@ -157,7 +157,7 @@ class Renderer implements IRenderer {
 			g2.drawSubImage(
 				texture.image, 
 				x-(_temp2 < 0 ? 0 : _temp2),//_temp2,
-				y+_temp1, 
+				y+(_temp1 < 0 ? 0 : _temp1), 
 				texture.frame.x - _shtTemp,
 				texture.frame.y + _swtTemp, 
 				_temp6,

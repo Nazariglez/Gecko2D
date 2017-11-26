@@ -66,11 +66,9 @@ class Assets {
 
     static public function loadJson(name:String, done:?String->Void){
         var parsedName = Assets._parseAssetName(name, true);
-        trace(parsedName);
         kha.Assets.loadBlob(parsedName, function(blob:Blob){
             Assets.json[name] = haxe.Json.parse(blob.toString());
             if(Assets.json[name].frames != null && Assets.json[name].meta != null && Assets.json[name].meta.image != null){
-                trace("its a texture packer file");
                 var json:TexturePacker = haxe.Json.parse(blob.toString());
                 Assets.loadImage(json.meta.image, function(?err:String){
                     if(err != null){
@@ -78,10 +76,7 @@ class Assets {
                         return;
                     }
 
-                    trace(json, Type.typeof(json.frames));
-
                     for(frame in Reflect.fields(json.frames)){
-                        trace("added", frame, Assets.textures, Type.typeof(frame));
                         Assets.textures[frame] = Texture.fromTexturePacker(Assets.images[json.meta.image], Reflect.field(json.frames, frame));
                     }
                     untyped js.Browser.window.a = Assets;
