@@ -92,6 +92,7 @@ class Assets {
         var parsedName = Assets._parseAssetName(name);
         kha.Assets.loadImage(parsedName, function(img:Image){
             Assets.images[name] = img;
+            Assets.textures[name] = new Texture(img);
             done();
         });
     }
