@@ -18,6 +18,9 @@ class Entity {
     public var pivot:Point = new Point(0.5, 0.5);
     public var anchor:Point = new Point(0.5, 0.5);
     public var size:Point = new Point(1,1);
+    public var speed:Point = new Point(0, 0);
+    
+    public var rotationSpeed:FastFloat = 0;
     public var flip:Vector2g<Bool> = new Vector2g<Bool>(false, false);
 
     public var visible:Bool = true;
@@ -42,6 +45,7 @@ class Entity {
 
     public function new(sizeX:FastFloat = 10, sizeY:FastFloat = 10){
         _entityID = Entity.entityID++;
+        size.set(sizeX, sizeY);
         skew.setObserver(_observSkewPoint);
     }
 
@@ -66,7 +70,20 @@ class Entity {
 
     public function update(dt:FastFloat) {
         updateTransform();
+        if(speed.x != 0){
+            position.x += speed.x*dt;
+        }
+
+        if(speed.y != 0){
+            position.y += speed.y*dt;
+        }
+
+        if(rotationSpeed != 0){
+            rotation += rotationSpeed*dt;
+        }
     }
+
+    //todo get movementSpeed (cos sin speedX speedY) and direction as methods
     
     public function render(r:Renderer) {
         if(!isVisible() || worldAlpha <= 0){ 
