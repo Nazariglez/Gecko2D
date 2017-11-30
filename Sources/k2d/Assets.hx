@@ -79,7 +79,6 @@ class Assets {
                     for(frame in Reflect.fields(json.frames)){
                         Assets.textures[frame] = Texture.fromTexturePacker(Assets.images[json.meta.image], Reflect.field(json.frames, frame));
                     }
-                    untyped js.Browser.window.a = Assets;
                     done();
                 });
             }else{
