@@ -9,6 +9,7 @@ import k2d.render.Renderer;
 class ScrollingSprite extends Sprite {
     public var scrollScale:Point = new Point(1,1);
     public var scrollPosition:Point = new Point(0,0);
+    public var scrollSpeed:Point = new Point(0, 0);
 
     private var _scrollX:FastFloat = 0;
     private var _scrollY:FastFloat = 0;
@@ -23,6 +24,11 @@ class ScrollingSprite extends Sprite {
     private var _sy:FastFloat = 0;
     private var _sw:FastFloat = 0;
     private var _sh:FastFloat = 0;
+    private var _dw:FastFloat = 0;
+    private var _dh:FastFloat = 0;
+
+    private var _sizeScrollX:FastFloat = 0;
+    private var _sizeScrollY:FastFloat = 0;
 
     public override function new(textureName:String, width:FastFloat, height:FastFloat){
         super(textureName);
@@ -31,21 +37,33 @@ class ScrollingSprite extends Sprite {
 
     public override function update(dt:FastFloat) {
         super.update(dt);
+        
+        if(scrollSpeed.x != 0){
+            scrollPosition.x += scrollSpeed.x*dt;
+        }
+        
+        if(scrollSpeed.y != 0){
+            scrollPosition.y += scrollSpeed.y*dt;
+        }
+
         _updateScrollingInfo();
     }
 
     private function _updateScrollingInfo() {
+        _sizeScrollX = size.x/scrollScale.x;
+        _sizeScrollY = size.y/scrollScale.y;
+
         _scrollX = scrollPosition.x%_texture.width;
         _scrollX = _scrollX < 0 ? _texture.width+_scrollX : _scrollX;
 
         _scrollY = scrollPosition.y%_texture.height;
         _scrollY = _scrollY < 0 ? _texture.height+_scrollY : _scrollY;
         
-        _lenX = Math.ceil((size.x + _scrollX)/_texture.width);
-        _lenY = Math.ceil((size.y + _scrollY)/_texture.height);
+        _lenX = Math.ceil((_sizeScrollX + _scrollX)/_texture.width);
+        _lenY = Math.ceil((_sizeScrollY + _scrollY)/_texture.height);
 
-        _offsetX = size.x-((_lenX*_texture.width)-_scrollX);
-        _offsetY = size.y-((_lenY*_texture.height)-_scrollY);
+        _offsetX = _sizeScrollX-((_lenX*_texture.width)-_scrollX);
+        _offsetY = _sizeScrollY-((_lenY*_texture.height)-_scrollY);
     }
 
     public override function render(r:Renderer) {
@@ -74,6 +92,8 @@ class ScrollingSprite extends Sprite {
                     _sh = _texture.height-_sy;
                 }
 
+                _dh = _sh*scrollScale.y;
+
                 for(x in 0..._lenX){
                     if(_xx >= size.x){
                         continue;
@@ -85,21 +105,25 @@ class ScrollingSprite extends Sprite {
                         _sw = _texture.width-_sx;
                     }
 
-                    r.drawSubTexture(
+                    _dw = _sw*scrollScale.x;
+
+                    r.drawScaledSubTexture(
                         _texture,
-                        _xx, 
-                        _yy,
                         _sx, 
                         _sy,
                         _sw, 
-                        _sh
+                        _sh,
+                        _xx, 
+                        _yy,
+                        _dw,
+                        _dh
                     );
 
-                    _xx += _sw;
+                    _xx += _dw;
                     _sx = 0;
                 }
 
-                _yy += _sh;
+                _yy += _dh;
             }
 
         }
