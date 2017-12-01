@@ -2,6 +2,7 @@ package k2d.timer;
 
 import k2d.math.FastFloat;
 import k2d.utils.EventEmitter;
+import k2d.utils.Event;
 
 class Timer {
     static private inline var EVENT_START = "start";
@@ -12,6 +13,42 @@ class Timer {
     static private inline var EVENT_END = "end";
     static private inline var EVENT_REPEAT = "repeat";
     static private inline var EVENT_UPDATE = "update";
+
+    public var onStart:Event;
+    public var onStartOnce:Event;
+    public var onStop:Event;
+    public var onStopOnce:Event;
+    public var onPause:Event;
+    public var onPauseOnce:Event;
+    public var onResume:Event;
+    public var onResumeOnce:Event;
+    public var onInit:Event;
+    public var onInitOnce:Event;
+    public var onEnd:Event;
+    public var onEndOnce:Event;
+    public var onRepeat:Event;
+    public var onRepeatOnce:Event;
+    public var onUpdate:Event;
+    public var onUpdateOnce:Event;
+
+    inline private function _bindEvents() {
+        onStart = _eventEmitter.bind(EVENT_START);
+        onStartOnce = _eventEmitter.bind(EVENT_START, true);
+        onStop = _eventEmitter.bind(EVENT_STOP);
+        onStopOnce = _eventEmitter.bind(EVENT_STOP, true);
+        onPause = _eventEmitter.bind(EVENT_PAUSE);
+        onPauseOnce = _eventEmitter.bind(EVENT_PAUSE, true);
+        onResume = _eventEmitter.bind(EVENT_RESUME);
+        onResumeOnce = _eventEmitter.bind(EVENT_RESUME, true);
+        onInit = _eventEmitter.bind(EVENT_INIT);
+        onInitOnce = _eventEmitter.bind(EVENT_INIT, true);
+        onEnd = _eventEmitter.bind(EVENT_END);
+        onEndOnce = _eventEmitter.bind(EVENT_END, true);
+        onRepeat = _eventEmitter.bind(EVENT_REPEAT);
+        onRepeatOnce = _eventEmitter.bind(EVENT_REPEAT, true);
+        onUpdate = _eventEmitter.bind(EVENT_UPDATE);
+        onUpdateOnce = _eventEmitter.bind(EVENT_UPDATE, true);
+    }
 
     public var manager:TimerManager;
 
@@ -41,6 +78,8 @@ class Timer {
         if(manager == null){
             manager = TimerManager.Global;
         }
+
+        _bindEvents();
 
         addTo(manager);
         clear();
@@ -158,7 +197,6 @@ class Timer {
         isEnded = false;
         isEnded = false;
     }
-
 
     public function subscribeOnStart(cb:Void->Void, once:Bool = false){
         if(once){
