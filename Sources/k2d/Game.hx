@@ -9,10 +9,11 @@ import k2d.render.Framebuffer;
 import k2d.tween.TweenManager;
 import k2d.timer.TimerManager;
 
-typedef RenderAction<T:IRenderer> = {
-    public var id:String;
-    public var renderer:IRenderer;
-    public var action:T->Void;
+//todo functional game options
+typedef GameOptions = {
+    @:optional var randomSeed:Null<Int>;
+    @:optional var transparent:Null<Bool>;
+    @:optional var backgroundColor:Color;
 }
 
 class Game {
@@ -42,12 +43,20 @@ class Game {
 
     private var _backbuffer:kha.Image;
 
-    public function new(title:String, width:Int = 0, height:Int = 0) {
+    public function new(title:String, width:Int = 0, height:Int = 0, ?options:GameOptions) {
         this.title = title;
         this.width = width;
         this.height = height;
 
-        Random.init(1000); //todo pass a seed in the game config (release seed must be "random" or use time?)
+        if(options != null && options.randomSeed != null){
+            Random.init(options.randomSeed);
+        }else{
+            #if debug 
+            Random.init(1);
+            #else
+            Random.init(Std.int(Date.now().getTime()));
+            #end
+        }
         
         sceneManager = new SceneManager(this);
 

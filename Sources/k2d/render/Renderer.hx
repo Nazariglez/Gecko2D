@@ -12,6 +12,12 @@ import k2d.math.Point;
 import k2d.math.Matrix;
 import k2d.Color;
 
+typedef RenderAction<T:IRenderer> = {
+    public var id:String;
+    public var renderer:IRenderer;
+    public var action:T->Void;
+}
+
 class Renderer implements IRenderer {
 	static public var helperRenderer:Renderer = new Renderer();
 
