@@ -9,6 +9,31 @@ class TimerGroup {
     static private inline var EVENT_END = "end";
     static private inline var EVENT_PAUSE = "pause";
     static private inline var EVENT_RESUME = "resume";
+
+    public var onProgress:Event<Timer->Void>;
+    public var onProgressOnce:Event<Timer->Void>;
+    public var onRepeat:Event<Int->Void>;
+    public var onRepeatOnce:Event<Int->Void>;
+    public var onEnd:Event<Void->Void>;
+    public var onEndOnce:Event<Void->Void>;
+    public var onPause:Event<Void->Void>;
+    public var onPauseOnce:Event<Void->Void>;
+    public var onResume:Event<Void->Void>;
+    public var onResumeOnce:Event<Void->Void>;
+
+    private function _bindEvents() {
+        onProgress = _eventEmitter.bind(new Event(EVENT_PROGRESS));
+        onProgressOnce = _eventEmitter.bind(new Event(EVENT_PROGRESS, true));
+        onRepeat = _eventEmitter.bind(new Event(EVENT_REPEAT));
+        onRepeatOnce = _eventEmitter.bind(new Event(EVENT_REPEAT, true));
+        onEnd = _eventEmitter.bind(new Event(EVENT_END));
+        onEndOnce = _eventEmitter.bind(new Event(EVENT_END, true));
+        onPause = _eventEmitter.bind(new Event(EVENT_PAUSE));
+        onPauseOnce = _eventEmitter.bind(new Event(EVENT_PAUSE, true));
+        onResume = _eventEmitter.bind(new Event(EVENT_RESUME));
+        onResumeOnce = _eventEmitter.bind(new Event(EVENT_RESUME, true));
+
+    }
     
     public var timers:Array<Timer> = new Array<Timer>();
 
@@ -29,6 +54,8 @@ class TimerGroup {
         if(timers != null) {
             this.timers = timers;
         }
+
+        _bindEvents();
     }
 
     public function addTween(t:Timer) {
@@ -125,71 +152,6 @@ class TimerGroup {
         }
     }
 
-    public function subscribeOnProgress(cb:Timer->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_PROGRESS, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_PROGRESS, cb);
-    }
-
-    public function unsubscribeOnProgress(cb:Timer->Void){
-        _eventEmitter.removeListener(EVENT_PROGRESS, cb);
-    }
-
-    public function subscribeOnRepeat(cb:Int->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_REPEAT, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_REPEAT, cb);
-    }
-
-    public function unsubscribeOnRepeat(cb:Int->Void){
-        _eventEmitter.removeListener(EVENT_REPEAT, cb);
-    }
-
-    public function subscribeOnEnd(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_END, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_END, cb);
-    }
-
-    public function unsubscribeOnEnd(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_END, cb);
-    }
-
-    public function subscribeOnPause(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_PAUSE, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_PAUSE, cb);
-    }
-
-    public function unsubscribeOnPause(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_PAUSE, cb);
-    }
-
-    public function subscribeOnResume(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_RESUME, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_RESUME, cb);
-    }
-
-    public function unsubscribeOnResume(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_RESUME, cb);
-    }
-
     private function _onProgress(timer:Timer) {
         _eventEmitter.emit(EVENT_PROGRESS, [timer]);
     }
@@ -201,10 +163,10 @@ class TimerGroup {
         }
 
         _unsubscribeAll.push(function(){
-            t.unsubscribeOnEnd(fn);
+            t.onEnd -= fn;
         });
 
-        t.subscribeOnEnd(fn, true);
+        t.onEndOnce += fn;
     }
 
     private function _onEnd(?err:String){

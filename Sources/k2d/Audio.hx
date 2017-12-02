@@ -2,6 +2,7 @@ package k2d;
 
 import k2d.resources.Sound;
 import k2d.utils.EventEmitter;
+import k2d.utils.Event;
 import kha.audio1.AudioChannel;
 import kha.audio1.Audio in KAudio;
 
@@ -11,6 +12,31 @@ class Audio {
     static private inline var EVENT_STOP = "stop";
     static private inline var EVENT_PAUSE = "pause";
     static private inline var EVENT_RESUME = "resume"; 
+
+    public var onFinish:Event<Void->Void>;
+    public var onFinishOnce:Event<Void->Void>;
+    public var onPlay:Event<Void->Void>;
+    public var onPlayOnce:Event<Void->Void>;
+    public var onStop:Event<Void->Void>;
+    public var onStopOnce:Event<Void->Void>;
+    public var onPause:Event<Void->Void>;
+    public var onPauseOnce:Event<Void->Void>;
+    public var onResume:Event<Void->Void>;
+    public var onResumeOnce:Event<Void->Void>;
+
+    private function _bindEvents() {
+        onFinish = _eventEmitter.bind(new Event(EVENT_FINISH));
+        onFinishOnce = _eventEmitter.bind(new Event(EVENT_FINISH, true));
+        onPlay = _eventEmitter.bind(new Event(EVENT_PLAY));
+        onPlayOnce = _eventEmitter.bind(new Event(EVENT_PLAY, true));
+        onStop = _eventEmitter.bind(new Event(EVENT_STOP));
+        onStopOnce = _eventEmitter.bind(new Event(EVENT_STOP, true));
+        onPause = _eventEmitter.bind(new Event(EVENT_PAUSE));
+        onPauseOnce = _eventEmitter.bind(new Event(EVENT_PAUSE, true));
+        onResume = _eventEmitter.bind(new Event(EVENT_RESUME));
+        onResumeOnce = _eventEmitter.bind(new Event(EVENT_RESUME, true));
+
+    }
 
     public var sound(get, set):Sound;
     private var _sound:Sound;
@@ -45,6 +71,8 @@ class Audio {
         if(sndName != null){
             this.soundName = sndName;
         }
+
+        _bindEvents();
     }
 
 
@@ -115,71 +143,6 @@ class Audio {
         if(_isPlaying && _channel.finished){
             _finish();
         }
-    }
-
-    public function subscribeOnPlay(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_PLAY, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_PLAY, cb);
-    }
-
-    public function unsubscribeOnPlay(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_PLAY, cb);
-    }
-
-    public function subscribeOnStop(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_STOP, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_STOP, cb);
-    }
-
-    public function unsubscribeOnStop(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_STOP, cb);
-    }
-
-    public function subscribeOnPause(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_PAUSE, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_PAUSE, cb);
-    }
-
-    public function unsubscribeOnPause(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_PAUSE, cb);
-    }
-
-    public function subscribeOnResume(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_RESUME, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_RESUME, cb);
-    }
-
-    public function unsubscribeOnResume(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_RESUME, cb);
-    }
-
-    public function subscribeOnFinish(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_FINISH, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_FINISH, cb);
-    }
-
-    public function unsubscribeOnFinish(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_FINISH, cb);
     }
 
     public inline function copy() : Audio {

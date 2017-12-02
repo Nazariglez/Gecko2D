@@ -2,7 +2,6 @@ package k2d.timer;
 
 import k2d.math.FastFloat;
 import k2d.utils.EventEmitter;
-import k2d.utils.Event;
 
 class Timer {
     static private inline var EVENT_START = "start";
@@ -14,40 +13,40 @@ class Timer {
     static private inline var EVENT_REPEAT = "repeat";
     static private inline var EVENT_UPDATE = "update";
 
-    public var onStart:Event;
-    public var onStartOnce:Event;
-    public var onStop:Event;
-    public var onStopOnce:Event;
-    public var onPause:Event;
-    public var onPauseOnce:Event;
-    public var onResume:Event;
-    public var onResumeOnce:Event;
-    public var onInit:Event;
-    public var onInitOnce:Event;
-    public var onEnd:Event;
-    public var onEndOnce:Event;
-    public var onRepeat:Event;
-    public var onRepeatOnce:Event;
-    public var onUpdate:Event;
-    public var onUpdateOnce:Event;
+    public var onStart:Event<Void->Void>;
+    public var onStartOnce:Event<Void->Void>;
+    public var onStop:Event<Void->Void>;
+    public var onStopOnce:Event<Void->Void>;
+    public var onPause:Event<Void->Void>;
+    public var onPauseOnce:Event<Void->Void>;
+    public var onResume:Event<Void->Void>;
+    public var onResumeOnce:Event<Void->Void>;
+    public var onInit:Event<Void->Void>;
+    public var onInitOnce:Event<Void->Void>;
+    public var onEnd:Event<Void->Void>;
+    public var onEndOnce:Event<Void->Void>;
+    public var onRepeat:Event<Int->Void>;
+    public var onRepeatOnce:Event<Int->Void>;
+    public var onUpdate:Event<FastFloat->Void>;
+    public var onUpdateOnce:Event<FastFloat->Void>;
 
-    inline private function _bindEvents() {
-        onStart = _eventEmitter.bind(EVENT_START);
-        onStartOnce = _eventEmitter.bind(EVENT_START, true);
-        onStop = _eventEmitter.bind(EVENT_STOP);
-        onStopOnce = _eventEmitter.bind(EVENT_STOP, true);
-        onPause = _eventEmitter.bind(EVENT_PAUSE);
-        onPauseOnce = _eventEmitter.bind(EVENT_PAUSE, true);
-        onResume = _eventEmitter.bind(EVENT_RESUME);
-        onResumeOnce = _eventEmitter.bind(EVENT_RESUME, true);
-        onInit = _eventEmitter.bind(EVENT_INIT);
-        onInitOnce = _eventEmitter.bind(EVENT_INIT, true);
-        onEnd = _eventEmitter.bind(EVENT_END);
-        onEndOnce = _eventEmitter.bind(EVENT_END, true);
-        onRepeat = _eventEmitter.bind(EVENT_REPEAT);
-        onRepeatOnce = _eventEmitter.bind(EVENT_REPEAT, true);
-        onUpdate = _eventEmitter.bind(EVENT_UPDATE);
-        onUpdateOnce = _eventEmitter.bind(EVENT_UPDATE, true);
+    private function _bindEvents() {
+        onStart = _eventEmitter.bind(new Event(EVENT_START));
+        onStartOnce = _eventEmitter.bind(new Event(EVENT_START, true));
+        onStop = _eventEmitter.bind(new Event(EVENT_STOP));
+        onStopOnce = _eventEmitter.bind(new Event(EVENT_STOP, true));
+        onPause = _eventEmitter.bind(new Event(EVENT_PAUSE));
+        onPauseOnce = _eventEmitter.bind(new Event(EVENT_PAUSE, true));
+        onResume = _eventEmitter.bind(new Event(EVENT_RESUME));
+        onResumeOnce = _eventEmitter.bind(new Event(EVENT_RESUME, true));
+        onInit = _eventEmitter.bind(new Event(EVENT_INIT));
+        onInitOnce = _eventEmitter.bind(new Event(EVENT_INIT, true));
+        onEnd = _eventEmitter.bind(new Event(EVENT_END));
+        onEndOnce = _eventEmitter.bind(new Event(EVENT_END, true));
+        onRepeat = _eventEmitter.bind(new Event(EVENT_REPEAT));
+        onRepeatOnce = _eventEmitter.bind(new Event(EVENT_REPEAT, true));
+        onUpdate = _eventEmitter.bind(new Event(EVENT_UPDATE));
+        onUpdateOnce = _eventEmitter.bind(new Event(EVENT_UPDATE, true));
     }
 
     public var manager:TimerManager;
@@ -196,109 +195,5 @@ class Timer {
         isStarted = false;
         isEnded = false;
         isEnded = false;
-    }
-
-    public function subscribeOnStart(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_START, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_START, cb);
-    }
-
-    public function unsubscribeOnStart(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_START, cb);
-    }
-
-    public function subscribeOnStop(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_STOP, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_STOP, cb);
-    }
-
-    public function unsubscribeOnStop(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_STOP, cb);
-    }
-
-    public function subscribeOnPause(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_PAUSE, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_PAUSE, cb);
-    }
-
-    public function unsubscribeOnPause(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_PAUSE, cb);
-    }
-
-    public function subscribeOnResume(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_RESUME, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_RESUME, cb);
-    }
-
-    public function unsubscribeOnResume(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_RESUME, cb);
-    }
-
-    public function subscribeOnUpdate(cb:FastFloat->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_UPDATE, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_UPDATE, cb);
-    }
-
-    public function unsubscribeOnUpdate(cb:FastFloat->Void){
-        _eventEmitter.removeListener(EVENT_UPDATE, cb);
-    }
-
-    public function subscribeOnInit(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_INIT, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_INIT, cb);
-    }
-
-    public function unsubscribeOnInit(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_INIT, cb);
-    }
-
-    public function subscribeOnEnd(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_END, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_END, cb);
-    }
-
-    public function unsubscribeOnEnd(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_END, cb);
-    }
-
-    public function subscribeOnRepeat(cb:Int->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_REPEAT, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_REPEAT, cb);
-    }
-
-    public function unsubscribeOnRepeat(cb:Int->Void){
-        _eventEmitter.removeListener(EVENT_REPEAT, cb);
     }
 }

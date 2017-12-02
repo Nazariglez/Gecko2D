@@ -1,20 +1,23 @@
 package k2d.utils;
 
-typedef EventPointer = {
+private typedef EventPointer = {
     var name:String;
     var emitter:EventEmitter;
     var once:Bool;
 };
 
-abstract Event(EventPointer) from EventPointer to Event {
+abstract Event<T>(EventPointer) from EventPointer to Event<T> {
     public var name(get, never):String;
     inline function get_name() : String {
         return this.name;
     }
 
-    public var emitter(get, never):EventEmitter;
+    public var emitter(get, set):EventEmitter;
     inline function get_emitter() : EventEmitter {
         return this.emitter;
+    }
+    inline function set_emitter(emitter:EventEmitter) : EventEmitter {
+        return this.emitter = emitter;
     }
 
     public var once(get, never):Bool;
@@ -22,20 +25,22 @@ abstract Event(EventPointer) from EventPointer to Event {
         return this.once;
     }
 
-    @:op(A += B) inline static function addListener(a:Event, b:Dynamic) {
-        if(a.once){
-            a.emitter.addListenerOnce(a.name, b);
-        }else{
-            a.emitter.addListener(a.name, b);
-        }
+    inline public function new(event:String, once:Bool = false, ?emitter:EventEmitter) {
+        this = {
+            name:event,
+            once:once,
+            emitter:emitter
+        };
     }
 
-    @:op(A -= B) inline static function removeListener(a:Event, b:Dynamic) {
-        a.emitter.removeListener(a.name, b);
+    @:op(A += B) inline function addListener(b:T) {
+        this.emitter.addListener(this.name, b, this.once);
+    }
+
+    @:op(A -= B) inline function removeListener(b:T) {
+        this.emitter.removeListener(this.name, b);
     }
 }
-
-
 
 class EventEmitter {
     public var eventsOnce:Map<String, Array<Dynamic>> = new Map<String, Array<Dynamic>>();
@@ -58,36 +63,29 @@ class EventEmitter {
         }
     }
 
-    public function bind(event:String, once:Bool = false) : Event {
-        return {
-            name:event,
-            emitter:this,
-            once:once
-        };
+    public function bind<T>(event:Event<T>) : Event<T> {
+        event.emitter = this;
+        return event;
     }
 
-    public function addListener(event:String, handler:Dynamic){
+    public function addListener(event:String, handler:Dynamic, once:Bool = false){
         if(handler == null){
             return;
         }
 
-        if(!events.exists(event)){
-            events[event] = [];
+        if(!once){
+            if(!events.exists(event)){
+                events[event] = [];
+            }
+
+            events[event].push(handler);
+        }else{
+            if(!eventsOnce.exists(event)){
+                eventsOnce[event] = [];
+            }
+
+            eventsOnce[event].push(handler);
         }
-
-        events[event].push(handler);
-    }
-
-    public function addListenerOnce(event:String, handler:Dynamic){
-        if(handler == null){
-            return;
-        }
-
-        if(!eventsOnce.exists(event)){
-            eventsOnce[event] = [];
-        }
-
-        eventsOnce[event].push(handler);
     }
 
     public function removeListener(event:String, handler:Dynamic){

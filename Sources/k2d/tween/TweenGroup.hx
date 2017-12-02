@@ -11,6 +11,34 @@ class TweenGroup {
     static private inline var EVENT_PAUSE = "pause";
     static private inline var EVENT_RESUME = "resume";
 
+    public var onProgress:Event<Tween->Void>;
+    public var onProgressOnce:Event<Tween->Void>;
+    public var onRepeat:Event<Int->Void>;
+    public var onRepeatOnce:Event<Int->Void>;
+    public var onYoyo:Event<Void->Void>;
+    public var onYoyoOnce:Event<Void->Void>;
+    public var onEnd:Event<Void->Void>;
+    public var onEndOnce:Event<Void->Void>;
+    public var onPause:Event<Void->Void>;
+    public var onPauseOnce:Event<Void->Void>;
+    public var onResume:Event<Void->Void>;
+    public var onResumeOnce:Event<Void->Void>;
+
+    private function _bindEvents() {
+        onProgress = _eventEmitter.bind(new Event(EVENT_PROGRESS));
+        onProgressOnce = _eventEmitter.bind(new Event(EVENT_PROGRESS, true));
+        onRepeat = _eventEmitter.bind(new Event(EVENT_REPEAT));
+        onRepeatOnce = _eventEmitter.bind(new Event(EVENT_REPEAT, true));
+        onYoyo = _eventEmitter.bind(new Event(EVENT_YOYO));
+        onYoyoOnce = _eventEmitter.bind(new Event(EVENT_YOYO, true));
+        onEnd = _eventEmitter.bind(new Event(EVENT_END));
+        onEndOnce = _eventEmitter.bind(new Event(EVENT_END, true));
+        onPause = _eventEmitter.bind(new Event(EVENT_PAUSE));
+        onPauseOnce = _eventEmitter.bind(new Event(EVENT_PAUSE, true));
+        onResume = _eventEmitter.bind(new Event(EVENT_RESUME));
+        onResumeOnce = _eventEmitter.bind(new Event(EVENT_RESUME, true));
+    }
+
     public var tweens:Array<Tween> = new Array<Tween>();
     public var yoyo:Bool = false;
     public var repeat:Int = 0;
@@ -31,6 +59,7 @@ class TweenGroup {
         if(tweens != null){
             this.tweens = tweens;
         }
+        _bindEvents();
     }
 
     public function addTween(t:Tween) {
@@ -133,84 +162,6 @@ class TweenGroup {
         _eventEmitter.emit(EVENT_RESUME);
     }
 
-    public function subscribeOnProgress(cb:Tween->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_PROGRESS, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_PROGRESS, cb);
-    }
-
-    public function unsubscribeOnProgress(cb:Tween->Void){
-        _eventEmitter.removeListener(EVENT_PROGRESS, cb);
-    }
-
-    public function subscribeOnRepeat(cb:Int->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_REPEAT, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_REPEAT, cb);
-    }
-
-    public function unsubscribeOnRepeat(cb:Int->Void){
-        _eventEmitter.removeListener(EVENT_REPEAT, cb);
-    }
-
-    public function subscribeOnEnd(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_END, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_END, cb);
-    }
-
-    public function unsubscribeOnEnd(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_END, cb);
-    }
-
-    public function subscribeOnYoyo(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_YOYO, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_YOYO, cb);
-    }
-
-    public function unsubscribeOnYoyo(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_YOYO, cb);
-    }
-
-    public function subscribeOnPause(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_PAUSE, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_PAUSE, cb);
-    }
-
-    public function unsubscribeOnPause(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_PAUSE, cb);
-    }
-
-    public function subscribeOnResume(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_RESUME, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_RESUME, cb);
-    }
-
-    public function unsubscribeOnResume(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_RESUME, cb);
-    }
-
     private function _tweenEndCallback(t:Tween, next:?String->Void){
         var fn = function(){
             _onProgress(t);
@@ -218,10 +169,10 @@ class TweenGroup {
         }
 
         _unsubscribeAll.push(function(){
-            t.unsubscribeOnEnd(fn);
+            t.onEnd -= fn;
         });
 
-        t.subscribeOnEnd(fn, true);
+        t.onEnd += fn;
     }
 
     private function _onProgress(tween:Tween) {

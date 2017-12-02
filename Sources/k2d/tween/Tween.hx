@@ -14,6 +14,46 @@ class Tween {
     static private inline var EVENT_END = "end";
     static private inline var EVENT_REPEAT = "repeat";
 
+    public var onStart:Event<Void->Void>;
+    public var onStartOnce:Event<Void->Void>;
+    public var onStop:Event<Void->Void>;
+    public var onStopOnce:Event<Void->Void>;
+    public var onInit:Event<Void->Void>;
+    public var onInitOnce:Event<Void->Void>;
+    public var onEnd:Event<Void->Void>;
+    public var onEndOnce:Event<Void->Void>;
+    public var onUpdate:Event<FastFloat->Void>;
+    public var onUpdateOnce:Event<FastFloat->Void>;
+    public var onYoyo:Event<Void->Void>;
+    public var onYoyoOnce:Event<Void->Void>;
+    public var onRepeat:Event<Int->Void>;
+    public var onRepeatOnce:Event<Int->Void>;
+    public var onPause:Event<Void->Void>;
+    public var onPauseOnce:Event<Void->Void>;
+    public var onResume:Event<Void->Void>;
+    public var onResumeOnce:Event<Void->Void>;
+
+    private function _bindEvents() {
+        onStart = _eventEmitter.bind(new Event(EVENT_START));
+        onStartOnce = _eventEmitter.bind(new Event(EVENT_START, true));
+        onStop = _eventEmitter.bind(new Event(EVENT_STOP));
+        onStopOnce = _eventEmitter.bind(new Event(EVENT_STOP, true));
+        onInit = _eventEmitter.bind(new Event(EVENT_INIT));
+        onInitOnce = _eventEmitter.bind(new Event(EVENT_INIT, true));
+        onEnd = _eventEmitter.bind(new Event(EVENT_END));
+        onEndOnce = _eventEmitter.bind(new Event(EVENT_END, true));
+        onUpdate = _eventEmitter.bind(new Event(EVENT_UPDATE));
+        onUpdateOnce = _eventEmitter.bind(new Event(EVENT_UPDATE, true));
+        onYoyo = _eventEmitter.bind(new Event(EVENT_YOYO));
+        onYoyoOnce = _eventEmitter.bind(new Event(EVENT_YOYO, true));
+        onRepeat = _eventEmitter.bind(new Event(EVENT_REPEAT));
+        onRepeatOnce = _eventEmitter.bind(new Event(EVENT_REPEAT, true));
+        onPause = _eventEmitter.bind(new Event(EVENT_PAUSE));
+        onPauseOnce = _eventEmitter.bind(new Event(EVENT_PAUSE, true));
+        onResume = _eventEmitter.bind(new Event(EVENT_RESUME));
+        onResumeOnce = _eventEmitter.bind(new Event(EVENT_RESUME, true));
+    }
+
     public var target:Dynamic;
     public var manager:TweenManager;
 
@@ -48,6 +88,8 @@ class Tween {
         if(manager == null){
             manager = TweenManager.Global;
         }
+        _bindEvents();
+
         this.target = target;
         addTo(manager);
         clear();
@@ -102,21 +144,6 @@ class Tween {
 
     public function setFrom(data:Dynamic){
         _from = data;
-    }
-
-    public function parseDynamicStruct(d:Dynamic) : Map<String, FastFloat> {
-        var map = new Map<String, FastFloat>();
-        
-        if(!Reflect.isObject(d)){
-            trace("invalid tween object.", d);
-            return map;
-        }
-
-        for(key in Reflect.fields(d)){
-            map[key] = Reflect.field(d, key);
-        }
-
-        return map;
     }
 
     public function remove(){
@@ -261,123 +288,6 @@ class Tween {
         }
 
         //todo path
-    }
-
-    public function subscribeOnStart(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_START, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_START, cb);
-    }
-
-    public function unsubscribeOnStart(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_START, cb);
-    }
-
-    public function subscribeOnStop(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_STOP, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_STOP, cb);
-    }
-
-    public function unsubscribeOnStop(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_STOP, cb);
-    }
-
-    public function subscribeOnInit(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_INIT, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_INIT, cb);
-    }
-
-    public function unsubscribeOnInit(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_INIT, cb);
-    }
-
-    public function subscribeOnEnd(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_END, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_END, cb);
-    }
-
-    public function unsubscribeOnEnd(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_END, cb);
-    }
-
-    public function subscribeOnUpdate(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_UPDATE, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_UPDATE, cb);
-    }
-
-    public function unsubscribeOnUpdate(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_UPDATE, cb);
-    }
-
-    public function subscribeOnYoyo(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_YOYO, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_YOYO, cb);
-    }
-
-    public function unsubscribeOnYoyo(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_YOYO, cb);
-    }
-
-    public function subscribeOnRepeat(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_REPEAT, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_REPEAT, cb);
-    }
-
-    public function unsubscribeOnRepeat(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_REPEAT, cb);
-    }
-
-    public function subscribeOnPause(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_PAUSE, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_PAUSE, cb);
-    }
-
-    public function unsubscribeOnPause(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_PAUSE, cb);
-    }
-
-    public function subscribeOnResume(cb:Void->Void, once:Bool = false){
-        if(once){
-            _eventEmitter.addListenerOnce(EVENT_RESUME, cb);
-            return;
-        }
-
-        _eventEmitter.addListener(EVENT_RESUME, cb);
-    }
-
-    public function unsubscribeOnResume(cb:Void->Void){
-        _eventEmitter.removeListener(EVENT_RESUME, cb);
     }
 
     private function _parseTweenData() {
