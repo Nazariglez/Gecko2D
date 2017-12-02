@@ -10,7 +10,7 @@ import k2d.math.FastFloat;
 import k2d.math.Vec2Pool;
 import k2d.math.Point;
 import k2d.math.Matrix;
-import k2d.utils.Color;
+import k2d.Color;
 
 class Renderer implements IRenderer {
 	static public var helperRenderer:Renderer = new Renderer();
@@ -20,8 +20,8 @@ class Renderer implements IRenderer {
 	private var _g2Cache:kha.graphics2.Graphics;
     private var _g4Cache:kha.graphics4.Graphics;
 	
-    public var color(get, set):Int;
-    private var _color:Int = Color.WHITE;
+    public var color(get, set):Color;
+    private var _color:Color = Color.WHITE;
 
     public var alpha(get, set):Float;
     private var _alpha:Float = 1;
@@ -355,12 +355,12 @@ class Renderer implements IRenderer {
 	}
 
 
-    public function get_color() : Int {
+    public function get_color() : Color {
 		return _color;
 	}
 
-	public function set_color(value:Int) : Int {
-		g2.color = value + 0xff000000;
+	public function set_color(value:Color) : Color {
+		g2.color = value;
 		return _color = value;
 	}
 

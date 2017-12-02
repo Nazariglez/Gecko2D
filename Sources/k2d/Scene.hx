@@ -1,6 +1,6 @@
 package k2d;
 
-import k2d.utils.Color;
+import k2d.Color;
 import k2d.render.Renderer;
 import k2d.tween.TweenManager;
 import k2d.timer.TimerManager;

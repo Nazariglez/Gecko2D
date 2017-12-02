@@ -1,7 +1,7 @@
 package k2d.math;
 
 import k2d.Entity;
-import k2d.utils.Color;
+import k2d.Color;
 
 class MatrixTransform {
     public var local:Matrix = Matrix.identity();
