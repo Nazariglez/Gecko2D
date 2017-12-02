@@ -54,6 +54,10 @@ class Tween {
         onResumeOnce = _eventEmitter.bind(new Event(EVENT_RESUME, true));
     }
 
+    static public function interpolate(from:FastFloat, to:FastFloat, totalTime:FastFloat, elapsedTime:FastFloat, easing:FastFloat -> FastFloat) : FastFloat {
+        return from + ((to - from) * easing(elapsedTime/totalTime));
+    }
+
     public var target:Dynamic;
     public var manager:TweenManager;
 
