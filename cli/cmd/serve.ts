@@ -15,7 +15,7 @@ const usage = `serve the html5 build
 
 export const cmd:Command = {
     name: "serve",
-    alias: ["-s", "--serve"],
+    alias: ["s"],
     usage: usage,
     action: _action
 };

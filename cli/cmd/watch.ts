@@ -17,7 +17,7 @@ const usage = `watch the project and serve the changes
 
 export const cmd:Command = {
     name: "watch",
-    alias: ["-w", "--watch"],
+    alias: ["w"],
     usage: usage,
     action: _action
 };

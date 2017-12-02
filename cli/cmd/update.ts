@@ -6,7 +6,7 @@ import * as C from '../const';
 
 export const cmd:Command = {
     name: "update",
-    alias: ["-u", "--update"],
+    alias: ["u"],
     usage: `update ${C.ENGINE_NAME} in the current project`,
     action: _action
 };

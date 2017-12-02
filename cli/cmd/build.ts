@@ -20,7 +20,7 @@ const usage = `compile the current project
 
 export const cmd:Command = {
     name: "build",
-    alias: ["-b", "--build"],
+    alias: ["b"],
     usage: usage,
     action: _action
 }

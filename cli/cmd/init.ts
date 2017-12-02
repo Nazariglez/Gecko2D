@@ -8,7 +8,7 @@ import * as colors from 'colors';
 
 export const cmd:Command = {
     name: "init",
-    alias: ["-i", "--init"],
+    alias: ["i"],
     usage: "initialize a new project",
     action: _action
 }
