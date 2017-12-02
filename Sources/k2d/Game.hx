@@ -1,6 +1,7 @@
 package k2d;
 
 import k2d.utils.GameStats;
+import k2d.math.Random;
 import k2d.render.IRenderer;
 import k2d.render.Renderer;
 import k2d.render.Renderer;
@@ -45,6 +46,8 @@ class Game {
         this.title = title;
         this.width = width;
         this.height = height;
+
+        Random.init(1000); //todo pass a seed in the game config (release seed must be "random" or use time?)
         
         sceneManager = new SceneManager(this);
 
