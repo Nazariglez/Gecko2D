@@ -1,9 +1,10 @@
 package k2d;
 
+import k2d.input.Keyboard;
 import k2d.utils.GameStats;
 import k2d.math.Random;
+import k2d.math.FastFloat;
 import k2d.render.IRenderer;
-import k2d.render.Renderer;
 import k2d.render.Renderer;
 import k2d.render.Framebuffer;
 import k2d.tween.TweenManager;
@@ -69,10 +70,10 @@ class Game {
             width: width,
             height: height
         }, function onRun() {
-            _backbuffer = kha.Image.createRenderTarget(width, height);
+            _backbuffer = k2d.resources.Image.createRenderTarget(width, height);
             kha.System.notifyOnRender(_render);
             System.subscribeOnSystemUpdate(_systemUpdate);
-            _loop.onTick(update);
+            _loop.onTick(_update);
         });
     }
 
@@ -156,13 +157,22 @@ class Game {
         #end
     }
 
-    public function update(delta:Float) {
+    private function _update(delta:FastFloat) {
+        update(delta);
+
+        if(Keyboard.isEnabled){
+            Keyboard.update();
+        }
+    }
+
+    public function update(delta:FastFloat) {
         #if debug
         debugStats.update.tick();
         #end
 
         TimerManager.Global.update(delta);
         TweenManager.Global.update(delta);
+        
         sceneManager.update(delta);
     }
 
