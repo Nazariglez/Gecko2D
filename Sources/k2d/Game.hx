@@ -158,18 +158,18 @@ class Game {
     }
 
     private function _update(delta:FastFloat) {
+        #if debug
+        debugStats.update.tick();
+        #end
+        
         update(delta);
 
         if(Keyboard.isEnabled){
-            Keyboard.update();
+            Keyboard.update(delta);
         }
     }
 
     public function update(delta:FastFloat) {
-        #if debug
-        debugStats.update.tick();
-        #end
-
         TimerManager.Global.update(delta);
         TweenManager.Global.update(delta);
         

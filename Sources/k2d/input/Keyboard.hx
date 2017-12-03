@@ -1,5 +1,6 @@
 package k2d.input;
 
+import k2d.math.FastFloat;
 import k2d.utils.EventEmitter;
 import kha.input.Keyboard as KhaKeyboard;
 
@@ -12,8 +13,8 @@ class Keyboard {
     static public var onPressedOnce:Event<KeyCode->Void>;
     static public var onReleased:Event<KeyCode->Void>;
     static public var onReleasedOnce:Event<KeyCode->Void>;
-    static public var onDown:Event<KeyCode->Void>;
-    static public var onDownOnce:Event<KeyCode->Void>;
+    static public var onDown:Event<KeyCode->FastFloat->Void>;
+    static public var onDownOnce:Event<KeyCode->FastFloat->Void>;
 
     static private function _bindEvents() {
         if(_eventEmitter == null){
@@ -33,13 +34,13 @@ class Keyboard {
     static private var _eventEmitter:EventEmitter;
     static private var _pressedKeys:Map<KeyCode, Bool>;
     static private var _releasedKeys:Map<KeyCode, Bool>;
-    static private var _downKeys:Map<KeyCode, Bool>;
+    static private var _downKeys:Map<KeyCode, FastFloat>;
 
     //todo allow combos -> https://craig.is/killing/mice
     static public function enable() {
         _bindEvents();
         _pressedKeys = new Map<KeyCode, Bool>();
-        _downKeys = new Map<KeyCode, Bool>();
+        _downKeys = new Map<KeyCode, FastFloat>();
         _releasedKeys = new Map<KeyCode, Bool>();
 
         KhaKeyboard.get().notify(_keyDownHandler, _keyUpHandler, null);
@@ -51,9 +52,10 @@ class Keyboard {
         KhaKeyboard.get().remove(_keyDownHandler, _keyUpHandler, null);
     }
 
-    static public function update(){
+    static public function update(dt:FastFloat){
         for(key in _downKeys.keys()){
-            _eventEmitter.emit(EVENT_DOWN, [key]);
+            _downKeys[key] += dt*1000;
+            _eventEmitter.emit(EVENT_DOWN, [key, _downKeys[key]]);
         }
 
         for(key in _pressedKeys.keys()){
@@ -67,7 +69,7 @@ class Keyboard {
 
     static private function _keyDownHandler(key:KeyCode) {
         _pressedKeys.set(key, true);
-        _downKeys.set(key, true);
+        _downKeys.set(key, 0);
 
         _eventEmitter.emit(EVENT_PRESSED, [key]);
     }
@@ -89,7 +91,10 @@ class Keyboard {
         return _releasedKeys.exists(key);
     }
 
-    static public function isDown(key:KeyCode) : Bool {
+    static public function isDown(key:KeyCode, duration:FastFloat = -1) : Bool {
+        if(duration != -1){
+            return _downKeys.exists(key) && _downKeys[key] <= duration;
+        }
         return _downKeys.exists(key);
     }
 
