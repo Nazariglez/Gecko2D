@@ -36,6 +36,8 @@ class Keyboard {
     static private var _releasedKeys:Map<KeyCode, Bool>;
     static private var _downKeys:Map<KeyCode, FastFloat>;
 
+    static private var _hotKeys:Map<KeyCode, HotKey> = new Map<KeyCode, HotKey>();
+
     //todo allow combos -> https://craig.is/killing/mice
     static public function enable() {
         _bindEvents();
@@ -50,6 +52,16 @@ class Keyboard {
     static public function disable() {
         _isEnabled = false;
         KhaKeyboard.get().remove(_keyDownHandler, _keyUpHandler, null);
+    }
+
+    static public function getHotKey(key:KeyCode) : HotKey {
+        if(_hotKeys.exists(key)){
+            return _hotKeys[key];
+        }
+
+        var k = new HotKey(key);
+        _hotKeys.set(key, k);
+        return k;
     }
 
     static public function update(dt:FastFloat){
@@ -96,6 +108,10 @@ class Keyboard {
             return _downKeys.exists(key) && _downKeys[key] <= duration;
         }
         return _downKeys.exists(key);
+    }
+
+    static public function downDuration(key:KeyCode) : FastFloat {
+        return _downKeys.exists(key) ? _downKeys[key] : -1;
     }
 
     static private function get_isEnabled() : Bool {
