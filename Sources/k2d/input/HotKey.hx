@@ -10,9 +10,9 @@ class HotKey {
     public var isDown(get, null):Bool;
     public var downDuration(get, null):FastFloat;
 
-    public var control(get, null):Bool;
-    public var alt(get, null):Bool;
-    public var shift(get, null):Bool;
+    public var isControlDown(get, null):Bool;
+    public var isAltDown(get, null):Bool;
+    public var isShiftDown(get, null):Bool;
 
     public function new(key:KeyCode) {
         this.key = key;
@@ -34,15 +34,15 @@ class HotKey {
         return Keyboard.isDown(key);
     }
 
-    inline function get_control() : Bool {
+    inline function get_isControlDown() : Bool {
         return Keyboard.isDown(KeyCode.Control);
     }
 
-    inline function get_shift() : Bool {
+    inline function get_isShiftDown() : Bool {
         return Keyboard.isDown(KeyCode.Shift);
     }
 
-    inline function get_alt() : Bool {
+    inline function get_isAltDown() : Bool {
         return Keyboard.isDown(KeyCode.Alt);
     }
 }
