@@ -4,6 +4,7 @@ import k2d.math.FastFloat;
 import k2d.utils.EventEmitter;
 import kha.input.Keyboard as KhaKeyboard;
 
+#if !macro @:build(k2d.input.KeyboardBuilder.build()) #end
 class Keyboard {
     static private inline var EVENT_PRESSED = "pressed";
     static private inline var EVENT_RELEASED = "released";
@@ -37,7 +38,7 @@ class Keyboard {
     static private var _downKeys:Map<KeyCode, FastFloat>;
 
     static private var _hotKeys:Map<KeyCode, HotKey> = new Map<KeyCode, HotKey>();
-
+    
     //todo allow combos -> https://craig.is/killing/mice
     static public function enable() {
         _bindEvents();
