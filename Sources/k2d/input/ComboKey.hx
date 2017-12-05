@@ -110,7 +110,9 @@ class ComboKey {
     }
 
     private function _fire() {
-        trace("fire!!!");
+        for(fn in _listeners){
+            fn();
+        }
         _restart();
     }
 
