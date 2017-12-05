@@ -38,8 +38,8 @@ class Keyboard {
     static private var _downKeys:Map<KeyCode, FastFloat>;
 
     static private var _hotKeys:Map<KeyCode, HotKey> = new Map<KeyCode, HotKey>();
+    static private var _combos:Map<String, ComboKey> = new Map<String, ComboKey>();
     
-    //todo allow combos -> https://craig.is/killing/mice
     static public function enable() {
         _bindEvents();
         _pressedKeys = new Map<KeyCode, Bool>();
@@ -63,6 +63,24 @@ class Keyboard {
         var k = new HotKey(key);
         _hotKeys.set(key, k);
         return k;
+    }
+
+    static public function bindCombo(combo:String, listener:Void->Void, timeTreshold:Float = 750){
+        if(!_combos.exists(combo)){
+            _combos[combo] = new ComboKey(combo, timeTreshold);
+        }
+        
+        _combos[combo].addListener(listener);
+    }
+
+    static public function unbindCombo(combo:String, listener:Void->Void) {
+        if(_combos.exists(combo)){
+            _combos[combo].removeListener(listener);
+            if(_combos[combo].length == 0){
+                _combos[combo].destroy();
+                _combos.remove(combo);
+            }
+        }
     }
 
     static public function update(dt:FastFloat){

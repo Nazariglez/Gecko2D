@@ -4,7 +4,6 @@ package k2d.input;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 using haxe.macro.Tools;
-#end
 
 class KeyboardBuilder {
   public static macro function build():Array<Field> {
@@ -71,3 +70,4 @@ class KeyboardBuilder {
         }
     }
 }
+#end
