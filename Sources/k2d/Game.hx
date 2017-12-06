@@ -1,6 +1,7 @@
 package k2d;
 
 import k2d.input.Keyboard;
+import k2d.input.Mouse;
 import k2d.utils.GameStats;
 import k2d.math.Random;
 import k2d.math.FastFloat;
@@ -166,6 +167,10 @@ class Game {
 
         if(Keyboard.isEnabled){
             Keyboard.update(delta);
+        }
+
+        if(Mouse.isEnabled){
+            Mouse.update(delta);
         }
     }
 

@@ -83,17 +83,20 @@ class Keyboard {
         }
     }
 
-    static public function update(dt:FastFloat){
-        for(key in _downKeys.keys()){
-            _downKeys[key] += dt*1000;
-            _eventEmitter.emit(EVENT_DOWN, [key, _downKeys[key]]);
-        }
-
+    static public function update(delta:FastFloat){
         for(key in _pressedKeys.keys()){
+            _eventEmitter.emit(EVENT_PRESSED, [key]);
             _pressedKeys.remove(key);
         }
 
+        var dtms = delta*1000;
+        for(key in _downKeys.keys()){
+            _downKeys[key] += dtms;
+            _eventEmitter.emit(EVENT_DOWN, [key, _downKeys[key]]);
+        }
+
         for(key in _releasedKeys.keys()){
+            _eventEmitter.emit(EVENT_RELEASED, [key]);
             _releasedKeys.remove(key);
         }
     }
@@ -102,7 +105,7 @@ class Keyboard {
         _pressedKeys.set(key, true);
         _downKeys.set(key, 0);
 
-        _eventEmitter.emit(EVENT_PRESSED, [key]);
+        //_eventEmitter.emit(EVENT_PRESSED, [key]);
     }
 
     static private function _keyUpHandler(key:KeyCode) {
@@ -111,7 +114,7 @@ class Keyboard {
 
         _releasedKeys.set(key, true);
 
-        _eventEmitter.emit(EVENT_RELEASED, [key]);
+        //_eventEmitter.emit(EVENT_RELEASED, [key]);
     }
 
     static public function wasPressed(key:KeyCode) : Bool {

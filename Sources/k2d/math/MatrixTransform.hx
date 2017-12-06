@@ -75,4 +75,16 @@ class MatrixTransform {
 		world._20 = (local._20 * pm._00) + (local._21 * pm._10) + pm._20;
 		world._21 = (local._20 * pm._01) + (local._21 * pm._11) + pm._21;
 	}
+
+	public function applyInverse(point:Point, newPoint:Point = null) : Point {
+		if(newPoint == null){
+			newPoint = new Point(0,0);
+		}
+
+		var id = 1 / ((world._00 * world._11) + (world._10 * -world._01));
+		newPoint.x = (world._11 * id * point.x) + (-world._10 * id * point.y) + (((world._21 * world._10) - (world._20 * world._11)) * id);
+		newPoint.y = (world._00 * id * point.y) + (-world._01 * id * point.x) + (((-world._21 * world._00) + (world._20 * world._01)) * id);
+
+		return newPoint;
+	}
 }

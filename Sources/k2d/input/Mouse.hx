@@ -5,7 +5,7 @@ import k2d.math.Point;
 import k2d.math.FastFloat;
 import k2d.utils.EventEmitter;
 
-@:enum abstract MouseButton(Int) {
+@:enum abstract MouseButton(Int) from Int to Int {
     var LEFT = 0;
     var RIGHT = 1;
     var CENTER = 2;
@@ -98,8 +98,18 @@ class Mouse {
     static public var movementX:Int = 0;
     static public var movementY:Int = 0;
 
+    static private var _pressedButtons:Map<MouseButton, Bool>;
+    static private var _releasedButtons:Map<MouseButton, Bool>;
+    static private var _downButtons:Map<MouseButton, FastFloat>;
+
     static public function enable() {
+        //todo html5 mouseEnter and MouseLeave
+
         _bindEvents();
+        _pressedButtons = [MouseButton.LEFT => false, MouseButton.CENTER => false, MouseButton.RIGHT => false];
+        _downButtons = [MouseButton.LEFT => -1, MouseButton.CENTER => -1, MouseButton.RIGHT => -1];
+        _releasedButtons = [MouseButton.LEFT => false, MouseButton.CENTER => false, MouseButton.RIGHT => false];
+        
         KhaMouse.get().notify(_buttonDownHandler, _buttonUpHandler, _moveHandler, _wheelHandler, _leaveHandler);
         _isEnabled = true;
     }
@@ -110,7 +120,39 @@ class Mouse {
     }
 
     static public function update(delta:FastFloat) {
-        
+        for(btn in _pressedButtons.keys()) {
+            if(_pressedButtons[btn]){
+                switch(btn){
+                    case MouseButton.LEFT: _eventEmitter.emit(EVENT_LEFT_PRESSED, [x, y]);
+                    case MouseButton.CENTER: _eventEmitter.emit(EVENT_CENTER_PRESSED, [x, y]);
+                    case MouseButton.RIGHT: _eventEmitter.emit(EVENT_RIGHT_PRESSED, [x, y]);
+                }
+                _pressedButtons[btn] = false;
+            }
+        }
+
+        var dtms = delta*1000;
+        for(btn in _downButtons.keys()) {
+            if(_downButtons[btn] != -1){
+                _downButtons[btn] += dtms;
+                switch(btn){
+                    case MouseButton.LEFT: _eventEmitter.emit(EVENT_LEFT_DOWN, [x, y]);
+                    case MouseButton.CENTER: _eventEmitter.emit(EVENT_CENTER_DOWN, [x, y]);
+                    case MouseButton.RIGHT: _eventEmitter.emit(EVENT_RIGHT_DOWN, [x, y]);
+                }
+            }
+        }
+
+        for(btn in _releasedButtons.keys()) {
+            if(_releasedButtons[btn]){
+                switch(btn){
+                    case MouseButton.LEFT: _eventEmitter.emit(EVENT_LEFT_RELEASED, [x, y]);
+                    case MouseButton.CENTER: _eventEmitter.emit(EVENT_CENTER_RELEASED, [x, y]);
+                    case MouseButton.RIGHT: _eventEmitter.emit(EVENT_RIGHT_RELEASED, [x, y]);
+                }
+                _releasedButtons[btn] = false;
+            }
+        }
     }
 
     static public function lock() {
@@ -121,12 +163,51 @@ class Mouse {
         KhaMouse.get().unlock();
     }
 
+    static public function wasPressed(button:MouseButton) : Bool {
+        return _pressedButtons[button];
+    }
+
+    static public function wasReleased(button:MouseButton) : Bool {
+        return _releasedButtons[button];
+    }
+
+    static public function isDown(button:MouseButton, duration:FastFloat = -1) : Bool {
+        if(duration != -1){
+            return _downButtons[button] != -1 && _downButtons[button] <= duration;
+        }
+        return _downButtons[button] != -1;
+    }
+
+    static public function downDuration(button:MouseButton) : FastFloat {
+        return _downButtons[button];
+    }
+
+    static public function isOverEntity(entity:Entity, pos:Point = null) : Bool {
+        if(pos == null){
+            pos = Mouse.position;
+        }
+        var point = entity.matrixTransform.applyInverse(pos); //todo pass a temp point
+        if(point.x > 0 && point.x < entity.size.x){
+            if(point.y > 0 && point.y < entity.size.y){
+                return true;
+            }
+        }
+        return false;
+    }
+
     static private function _buttonDownHandler(button:Int, x:Int, y:Int) {
-        trace("down", button, x, y);
+        position.x = x;
+        position.y = y;
+        _pressedButtons.set(button, true);
+        _downButtons.set(button, 0);
     }
 
     static private function _buttonUpHandler(button:Int, x:Int, y:Int) {
-        trace("up", button, x, y);
+        position.x = x;
+        position.y = y;
+        _pressedButtons.set(button, false);
+        _downButtons.set(button, -1);
+        _releasedButtons.set(button, true);
     }
 
     static private function _moveHandler(x:Int, y:Int, movementX:Int, movementY:Int) {
@@ -134,14 +215,18 @@ class Mouse {
         position.y = y;
         Mouse.movementX = movementX;
         Mouse.movementY = movementY;
+        _eventEmitter.emit(EVENT_MOVE, [x, y]);
     }
 
     static private function _wheelHandler(delta:Int) {
-        trace("wheel", delta);
+        _eventEmitter.emit(EVENT_WHEEL_MOVE, [delta]);
     }
 
     static private function _leaveHandler() {
-        trace("leave");
+        //trace("leave");
+        //#if kha_js
+        //_eventEmitter.emit(EVENT_CANVAS_LEAVE);
+        //#end
     }
 
     static private function get_isEnabled() : Bool {
