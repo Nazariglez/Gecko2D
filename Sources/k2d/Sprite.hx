@@ -15,6 +15,7 @@ class Sprite extends Container {
     private var _textureName:String = "";
 
     public var trim:Rect = null;
+    public var animations:AnimationManager;
 
     static public function fromTexture(texture:Texture) : Sprite {
         var s = new Sprite();
@@ -33,6 +34,7 @@ class Sprite extends Container {
         if(textureName != null){
             this.textureName = textureName;
         }
+        animations = new AnimationManager(this);
     }
 
     private override inline function _setSize(width:FastFloat, height:FastFloat) {
@@ -42,6 +44,11 @@ class Sprite extends Container {
         } else {
             size.set(width, height);
         }
+    }
+
+    override public function update(dt:FastFloat) {
+        super.update(dt);
+        animations.update(dt);
     }
 
     public override function render(r:Renderer) {
