@@ -32,8 +32,10 @@ class AnimationManager {
         return anim;
     }
 
-    public function setTexture(anim:String, frameIndex:Int) {
-        sprite.texture = getByID(anim).getTexture(frameIndex);
+    public function setTexture(anim:String, frameIndex:Int = 0) {
+        var anim = getByID(anim);
+        anim.frameIndex = frameIndex;
+        sprite.texture = anim.getCurrentTexture();
     } 
 
     public function addFromGrid(id:String, opts:AnimationGridOptions) : Animation {
@@ -63,13 +65,34 @@ class AnimationManager {
 
     public function stop(?id:String) {
         if(id != null){
-            _animationIndex = _getIndexByID(id);
-            animations[_animationIndex].play();
+            getByID(id).stop();
             return;
         }
 
         if(_animationIndex != -1){
             animations[_animationIndex].stop();
+        }
+    }
+
+    public function pause(?id:String) {
+        if(id != null){
+            getByID(id).pause();
+            return;
+        }
+
+        if(_animationIndex != -1){
+            animations[_animationIndex].stop();
+        }
+    }
+
+    public function resume(?id:String) {
+        if(id != null){
+            getByID(id).resume();
+            return;
+        }
+
+        if(_animationIndex != -1){
+            animations[_animationIndex].resume();
         }
     }
 

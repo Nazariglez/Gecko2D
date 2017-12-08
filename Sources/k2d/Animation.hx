@@ -23,6 +23,45 @@ typedef AnimationFramesOptions = {
 };
 
 class Animation {
+    static private inline var EVENT_PLAY = "play";
+    static private inline var EVENT_STOP = "stop";
+    static private inline var EVENT_START = "start";
+    static private inline var EVENT_END = "end";
+    static private inline var EVENT_REPEAT = "repeat";
+    static private inline var EVENT_PAUSE = "pause";
+    static private inline var EVENT_RESUME = "resume";
+
+    public var onPlay:Event<Animation->Void>;
+    public var onPlayOnce:Event<Animation->Void>;
+    public var onStop:Event<Animation->Void>;
+    public var onStopOnce:Event<Animation->Void>;
+    public var onStart:Event<Animation->Void>;
+    public var onStartOnce:Event<Animation->Void>;
+    public var onEnd:Event<Animation->Void>;
+    public var onEndOnce:Event<Animation->Void>;
+    public var onRepeat:Event<Animation->Int->Void>;
+    public var onRepeatOnce:Event<Animation->Int->Void>;
+    public var onPause:Event<Animation->Void>;
+    public var onPauseOnce:Event<Animation->Void>;
+    public var onResume:Event<Animation->Void>;
+    public var onResumeOnce:Event<Animation->Void>;
+
+    private function _bindEvents() {
+        onPlay = _eventEmitter.bind(new Event(EVENT_PLAY));
+        onPlayOnce = _eventEmitter.bind(new Event(EVENT_PLAY, true));
+        onStop = _eventEmitter.bind(new Event(EVENT_STOP));
+        onStopOnce = _eventEmitter.bind(new Event(EVENT_STOP, true));
+        onStart = _eventEmitter.bind(new Event(EVENT_START));
+        onStartOnce = _eventEmitter.bind(new Event(EVENT_START, true));
+        onEnd = _eventEmitter.bind(new Event(EVENT_END));
+        onEndOnce = _eventEmitter.bind(new Event(EVENT_END, true));
+        onRepeat = _eventEmitter.bind(new Event(EVENT_REPEAT));
+        onRepeatOnce = _eventEmitter.bind(new Event(EVENT_REPEAT, true));
+        onPause = _eventEmitter.bind(new Event(EVENT_PAUSE));
+        onPauseOnce = _eventEmitter.bind(new Event(EVENT_PAUSE, true));
+        onResume = _eventEmitter.bind(new Event(EVENT_RESUME));
+        onResumeOnce = _eventEmitter.bind(new Event(EVENT_RESUME, true));
+    }
 
     public var id:String;
     public var isPlaying:Bool = false;
@@ -36,11 +75,13 @@ class Animation {
     private var _frames:Array<Texture>;
     private var _elapsedTime:FastFloat = 0;
     private var _repeat:Int = 0;
+    private var _isStarted:Bool = false;
 
     private var _eventEmitter:EventEmitter = new EventEmitter();
 
     public function new(id:String) {
         this.id = id;
+        _bindEvents();
     }
 
     public function getTexture(index:Int) : Texture {
@@ -108,19 +149,27 @@ class Animation {
     }
 
     public function update(dt:FastFloat) {
-        if(!isPlaying || _frames.length == 0){
+        if(!isPlaying || isPaused || _frames.length == 0){
             return;
         }
 
-        _elapsedTime += dt*1000;
+        if(!_isStarted){
+            _isStarted = true;
+            _eventEmitter.emit(EVENT_START, [this]);
+        }
+
+        _elapsedTime += dt*1000; //todo move all the time data to seconds isntead ms?
         if(_elapsedTime >= time){
             _elapsedTime = 0;
             if(!loop){
                 frameIndex = 0;
-                stop();
+                isPlaying = false;
+                _isStarted = false;
+                _eventEmitter.emit(EVENT_END, [this]);
                 return;
             }else{
                 _repeat++;
+                _eventEmitter.emit(EVENT_REPEAT, [this, _repeat]);
             }
         }
 
@@ -131,12 +180,39 @@ class Animation {
     }
 
     public function play() {
+        if(isPlaying){
+            return;
+        }
+
         isPlaying = true;
+        _eventEmitter.emit(EVENT_PLAY, [this]);
     }
 
     public function stop() {
+        if(!isPlaying){
+            return;
+        }
+
         isPlaying = false;
+        _eventEmitter.emit(EVENT_STOP, [this]);
     }
 
+    public function pause() {
+        if(isPaused){
+            return;
+        }
+
+        isPaused = true;
+        _eventEmitter.emit(EVENT_PAUSE, [this]);
+    }
+
+    public function resume() {
+        if(!isPaused){
+            return;
+        }
+
+        isPaused = false;
+        _eventEmitter.emit(EVENT_RESUME, [this]);
+    }
 
 }
