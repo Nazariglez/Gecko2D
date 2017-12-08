@@ -27,11 +27,8 @@ class Assets {
 
     //todo compare in compilation time with macros the load and unload params with kha.Assets.*.names to check if exists
     static private function _parseAssetName(name:String, ext:Bool = false) : String {
-        if(!ext){
-            return (~/[\/\.]/gi).replace(Path.normalize(Path.withoutExtension(name)), "_");
-        }else{
-            return (~/[\/\.]/gi).replace(Path.normalize(name), "_");
-        }
+        name = ext ? name : Path.withoutExtension(name);
+        return (~/[\/\.-\s]/gi).replace(Path.normalize(name), "_");
     }
 
     static public function load(arr:Array<String>, done:?String->Void) : Assets {
@@ -89,6 +86,7 @@ class Assets {
 
     static public function loadImage(name:String, done:?String->Void){
         var parsedName = Assets._parseAssetName(name);
+        trace(parsedName);
         kha.Assets.loadImage(parsedName, function(img:Image){
             Assets.images[name] = img;
             Assets.textures[name] = new Texture(img);
