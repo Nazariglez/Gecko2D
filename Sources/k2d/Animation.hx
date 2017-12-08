@@ -1,5 +1,6 @@
 package k2d;
 
+import k2d.utils.EventEmitter;
 import k2d.resources.Texture;
 import k2d.math.FastFloat;
 import k2d.math.Rect;
@@ -22,6 +23,7 @@ typedef AnimationFramesOptions = {
 };
 
 class Animation {
+
     public var id:String;
     public var isPlaying:Bool = false;
     public var isPaused:Bool = false;
@@ -35,12 +37,35 @@ class Animation {
     private var _elapsedTime:FastFloat = 0;
     private var _repeat:Int = 0;
 
+    private var _eventEmitter:EventEmitter = new EventEmitter();
+
     public function new(id:String) {
         this.id = id;
     }
 
+    public function getTexture(index:Int) : Texture {
+        return _frames[index];
+    }
+
     public function getCurrentTexture() : Texture {
         return _frames[frameIndex];
+    }
+
+    public function initFromFrames(opts:AnimationFramesOptions) { 
+        _isGrid = false;
+        time = opts.time;
+        loop = opts.loop != null ? opts.loop : false;
+
+        var textures:Array<Texture> = [];
+        for(t in opts.frames){
+            if(!Assets.textures.exists(t)){
+                trace('Error: Invalid texture name $t');
+            }
+
+            textures.push(Assets.textures[t]);
+        }
+
+        _frames = textures;
     }
 
     public function initFromGrid(opts:AnimationGridOptions) {
@@ -103,10 +128,6 @@ class Animation {
         if(index != frameIndex){
             frameIndex = index;
         }
-    }
-
-    public function initFromFrames(opts:AnimationFramesOptions) { 
-        
     }
 
     public function play() {
