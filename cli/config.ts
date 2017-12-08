@@ -105,6 +105,7 @@ interface ConfigCore {
     haxe:string
     kha:string
     compile:boolean
+    engine?:string
     khafile?:string //add extra opts to include in khafile as plain text -> "$project.addAssets("assets");";
 }
 
@@ -120,13 +121,14 @@ export function parseConfig(input:string) : Config {
     if(config){
         config.core.haxe = config.core.haxe ? path.resolve(config.core.haxe) : C.HAXE_PATH;
         config.core.kha = config.core.kha ? path.resolve(config.core.kha) : C.KHA_PATH;
+        config.core.engine = config.core.engine ? path.resolve(config.core.engine) : C.ENGINE_SOURCE_PATH;
         
         if(!config.core.compile){
             //disable clean temp when the user wants compile himself
             config.core.clean_temp = false;
         }
 
-        config.libraries.unshift(C.ENGINE_NAME);
+        config.libraries.unshift(config.core.engine);
 
         if(graphics.osx.length && config[platform.OSX] && config[platform.OSX].graphics){
             if(graphics.osx.indexOf(config[platform.OSX].graphics) === -1){

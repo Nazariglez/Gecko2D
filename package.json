@@ -33,7 +33,7 @@
     "async": "^2.5.0",
     "colors": "^1.1.2",
     "fs-extra": "^4.0.2",
-    "khamake": "Sources/Kha/Tools/khamake",
+    "khamake": "Kha/Tools/khamake",
     "node-static": "^0.7.10",
     "node-watch": "^0.5.5",
     "toml": "^2.3.3",

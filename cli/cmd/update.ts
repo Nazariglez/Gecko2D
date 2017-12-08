@@ -18,7 +18,7 @@ function _action(args:string[], cb:ActionCallback) {
     }
 
     console.log(colors.blue(`Updating ${C.ENGINE_NAME} at '${colors.magenta(`/Libraries/${C.ENGINE_NAME}`)}'...`));    
-    let err = removeEngineFromLibraries();
+    /*let err = removeEngineFromLibraries();
     if(err){
         cb(err);
         return;
@@ -30,6 +30,7 @@ function _action(args:string[], cb:ActionCallback) {
         return;
     }
 
-    console.log(colors.green(colors.bold("Done.")));
+    console.log(colors.green(colors.bold("Done.")));*/
+    console.log("Update it's deprecated"); //todo remove this command
     cb(null, args);
 }

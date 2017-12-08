@@ -112,7 +112,7 @@ function _action(args:string[], cb:ActionCallback) {
         watchList.push(configFile + "." + C.ENGINE_NAME + ".toml");
 
         if(config.libraries.length){
-            watchList = watchList.concat(config.libraries.map(l => path.join("Libraries", l)));
+            watchList = watchList.concat(config.libraries.map(l => path.isAbsolute(l) ? l : path.join("Libraries", l)));
         }
 
         if(config.sources.length){
@@ -120,6 +120,7 @@ function _action(args:string[], cb:ActionCallback) {
         }
 
         watchList.push("Assets");
+        watchList.push(C.ENGINE_SOURCE_PATH);
 
         let dirty = false;
         setInterval(()=>{

@@ -62,5 +62,5 @@ function _copyGameTemplate() : Error {
         return err;
     }
 
-    return copyEngineToProject();
+    return null;
 }
