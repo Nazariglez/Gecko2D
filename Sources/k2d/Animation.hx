@@ -57,7 +57,7 @@ class Animation {
         var textures:Array<Texture> = [];
         for(y in 0...opts.rows){
             for(x in 0...opts.cols){
-                textures.push(new Texture(texture.image, new Rect(xx+x*ww, yy+y*hh, ww, hh), cast(ww, Null<Int>), cast(hh, Null<Int>)));
+                textures.push(new Texture(texture.image, new Rect(xx+x*ww, yy+y*hh, ww, hh), Std.int(ww), Std.int(hh)));
             }
         }
 

@@ -2,6 +2,7 @@ package k2d;
 
 import k2d.resources.Texture;
 import k2d.math.FastFloat;
+import k2d.Animation;
 
 class AnimationManager {
     public var sprite:Sprite;
@@ -13,7 +14,7 @@ class AnimationManager {
         this.sprite = sprite;
     }
 
-    public function addFromGrid(id:String, opts:Dynamic){
+    public function addFromGrid(id:String, opts:AnimationGridOptions){
         var anim = new Animation(id);
         anim.initFromGrid(opts);
         animations.push(anim);
