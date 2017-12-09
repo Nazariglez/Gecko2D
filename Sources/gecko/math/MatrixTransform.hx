@@ -6,7 +6,7 @@ import gecko.Color;
 class MatrixTransform {
     public var local:Matrix = Matrix.identity();
     public var world:Matrix = Matrix.identity();
-	public var tint:Int = Color.WHITE;
+	public var tint:Int = Color.White;
 	public var alpha:FastFloat = 1;
 
     private var _cx:FastFloat = 1;

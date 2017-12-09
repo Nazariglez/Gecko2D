@@ -27,7 +27,7 @@ class Renderer implements IRenderer {
     private var _g4Cache:kha.graphics4.Graphics;
 	
     public var color(get, set):Color;
-    private var _color:Color = Color.WHITE;
+    private var _color:Color = Color.White;
 
     public var alpha(get, set):Float;
     private var _alpha:Float = 1;

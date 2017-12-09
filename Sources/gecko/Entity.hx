@@ -26,7 +26,7 @@ class Entity {
     public var visible:Bool = true;
     public var alpha:FastFloat = 1;
     public var worldAlpha:FastFloat = 1;
-    public var tint:Color = Color.WHITE;
+    public var tint:Color = Color.White;
 
     public var parent:Entity = null;
 

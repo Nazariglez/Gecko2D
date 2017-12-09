@@ -9,7 +9,7 @@ import gecko.math.FastFloat;
 class Scene extends Container {
     public var id:String = "";
     public var transparent:Bool = true;
-    public var backgroundColor:Color = Color.BLACK;
+    public var backgroundColor:Color = Color.Black;
 
     public var tweenManager:TweenManager = new TweenManager();
     public var timerManager:TimerManager = new TimerManager();
