@@ -20,7 +20,7 @@ export const graphics = {
 }
 
 export const defaultConfig = `# development ${C.ENGINE_NAME} config.
-name = "My ${C.ENGINE_NAME} Game"
+name = "Gecko2D-Game"
 sources = ["Sources"]
 shaders = ["Sources/Shaders/**"]    #shaders directory
 libraries = []                      #libs at Libraries folder or haxelib
@@ -44,7 +44,7 @@ graphics = "${graphics.windows[0]}"         #windows graphics [${graphics.window
 
 [core]
 clean_temp = false              #clean temporal files after compile
-compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at ./kha_temp
+compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at ./kha_build
 flags = []                      #custom compiler flags (ex: "debug_collisions")
 compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
 ffmpeg = ""                     #ffmpeg drivers path (could be absolute)

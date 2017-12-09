@@ -1,7 +1,7 @@
 package;
 
-import k2d.math.Point;
-import k2d.math.FastFloat;
+import gecko.math.Point;
+import gecko.math.FastFloat;
 
 class Bunny extends k2d.Sprite {
     public var speed:Point = new Point();

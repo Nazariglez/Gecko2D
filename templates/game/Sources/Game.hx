@@ -1,6 +1,6 @@
 package;
 
-class Game extends k2d.Game {
+class Game extends gecko.Game {
     public override function onInit() {
         trace("on init");
     }

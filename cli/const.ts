@@ -1,6 +1,6 @@
 import * as path from "path";
 
-export const ENGINE_NAME = "k2d";
+export const ENGINE_NAME = "gecko";
 export const CURRENT_PATH = process.cwd();
 export const TEMP_RELATIVE_PATH = "./kha_build";
 export const TEMP_PATH = path.join(CURRENT_PATH, TEMP_RELATIVE_PATH);

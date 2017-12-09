@@ -1,11 +1,11 @@
 {
-  "name": "k2d",
+  "name": "gecko2d",
   "version": "0.1.0",
   "description": "",
   "main": "main.js",
   "preferGlobal": true,
   "bin": {
-    "k2d": "main.js"
+    "gecko": "main.js"
   },
   "scripts": {
     "update-kha": "git submodule foreach --recursive git pull origin master",

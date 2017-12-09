@@ -1,8 +1,8 @@
 package;
 
-import k2d.render.IRenderer;
+import gecko.render.IRenderer;
 import kha.graphics4.Graphics;
-import k2d.render.Framebuffer;
+import gecko.render.Framebuffer;
 
 class Renderer3D implements IRenderer {
     public var g2:kha.graphics2.Graphics;

@@ -1,4 +1,4 @@
-# development k2d config.
+# development gecko config.
 name = "bunnymark"
 sources = ["Sources"]
 shaders = ["Sources/Shaders/**"]    #shaders directory
@@ -10,7 +10,7 @@ debug = false                      #compile in debug mode
 webgl = true
 canvas = "kanvas"           #canvas id
 script = "game"             #script name
-serve_port = 8080           #port to serve the build with k2d serve
+serve_port = 8080           #port to serve the build with gecko serve
 html_file = ""              #inject the script in a custom html
 
 [osx]

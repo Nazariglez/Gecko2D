@@ -1,5 +1,5 @@
-# development k2d config.
-name = "My k2d Game"
+# development gecko config.
+name = "My gecko Game"
 version = "0.1.0"               #game version
 sources = ["Sources"]
 shaders = ["Sources/Shaders/**"]
@@ -11,7 +11,7 @@ debug = true                    #compile in debug mode
 webgl = true
 canvas = "kanvas"           #canvas id
 script = "game"             #script name
-serve_port = 8080           #port to serve the build with k2d serve
+serve_port = 8080           #port to serve the build with gecko serve
 html_file = ""              #inject the script in a custom html
 
 [osx]

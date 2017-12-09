@@ -343,7 +343,7 @@ function _moveHTML5Build(from:string, to:string, debug:boolean, config:Config) :
 
             try {
                 fs.ensureDirSync(to);
-                fs.writeFileSync(path.join(to, `${scriptName}.js`), min, {encoding: "UTF-8", flags: "w"});
+                fs.writeFileSync(path.join(to, `${scriptName}.js`), min, {encoding: "UTF-8", flag: "w"});
             }catch(e){
                 return e;
             }

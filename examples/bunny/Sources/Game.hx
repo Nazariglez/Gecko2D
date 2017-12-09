@@ -1,11 +1,11 @@
 package;
 
-import k2d.render.Renderer;
-import k2d.math.FastFloat;
-import k2d.Container;
-import k2d.Sprite;
+import gecko.render.Renderer;
+import gecko.math.FastFloat;
+import gecko.Container;
+import gecko.Sprite;
 import kha.input.Mouse;
-import k2d.Assets;
+import gecko.Assets;
 
 class Game extends k2d.Game {
     public static var MIN_X:FastFloat = 0;
