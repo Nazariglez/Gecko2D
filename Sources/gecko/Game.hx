@@ -41,8 +41,6 @@ class Game {
     private var _loop:Loop = new Loop();
     private var _initiated:Bool = false;
 
-    public function onInit() { }
-
     private var _backbuffer:kha.Image;
 
     public function new(title:String, width:Int = 0, height:Int = 0, ?options:GameOptions) {
@@ -64,6 +62,8 @@ class Game {
 
         addRenderer("2d", new Renderer(), _render2D);
     }
+
+    public function init(){}
     
     public function run() {
         kha.System.init({
@@ -80,7 +80,7 @@ class Game {
 
     @:generic public function addRenderer<T:IRenderer>(id:String, renderer:T, action:T->Void){
         if(_initiated){
-            throw new Error("Renderers must be added before onInit.");
+            throw new Error("Renderers must be added before init.");
             return;
         }
 
@@ -219,7 +219,7 @@ class Game {
 
         _initiated = true;
 
-        onInit();
+        init();
         start();
     }
 

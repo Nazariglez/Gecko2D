@@ -19,6 +19,7 @@ class Container extends Entity {
 
     public function addChild(child:Entity) {
         child.parent = this;
+        child.updateTransform();
         children.push(child);
     }
 
