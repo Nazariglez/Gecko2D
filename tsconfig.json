@@ -10,7 +10,6 @@
     "exclude": [
       "node_modules/**/*",
       "Kha/**/*",
-      "prime/**/*",
       "examples/**/*"
     ]
   }

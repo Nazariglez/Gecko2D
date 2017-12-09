@@ -1,3 +1,3 @@
-gecko engine
+Gecko2D - Multiplatform Game Framework
 ==========
 

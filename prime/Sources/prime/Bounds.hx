@@ -1,5 +1,0 @@
-package prime;
-
-class Bounds {
-	
-}

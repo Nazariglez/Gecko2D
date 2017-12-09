@@ -1,1 +1,0 @@
-- npm run update-kha to update kha modules, and to exit use ESC and :wq (vim)
