@@ -130,11 +130,10 @@ class Mouse {
                 _pressedButtons[btn] = false;
             }
         }
-
-        var dtms = delta*1000;
+        
         for(btn in _downButtons.keys()) {
             if(_downButtons[btn] != -1){
-                _downButtons[btn] += dtms;
+                _downButtons[btn] += delta;
                 switch(btn){
                     case MouseButton.LEFT: _eventEmitter.emit(EVENT_LEFT_DOWN, [x, y]);
                     case MouseButton.CENTER: _eventEmitter.emit(EVENT_CENTER_DOWN, [x, y]);

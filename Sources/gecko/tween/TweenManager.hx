@@ -8,16 +8,12 @@ class TweenManager {
     public var tweens:Array<Tween> = new Array<Tween>();
     private var _toDelete:Array<Tween> = new Array<Tween>();
 
-    private var _ms:FastFloat = 0;
-
     public function new(){}
 
     public function update(dt:FastFloat) {
-        _ms = dt*1000;
-
         for(tween in tweens){
             if(tween.isActive){
-                tween.update(dt, _ms);
+                tween.update(dt);
                 if(tween.isEnded && tween.expire){
                     tween.remove();
                 }

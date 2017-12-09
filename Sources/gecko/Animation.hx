@@ -158,7 +158,7 @@ class Animation {
             _eventEmitter.emit(EVENT_START, [this]);
         }
 
-        _elapsedTime += dt*1000; //todo move all the time data to seconds isntead ms?
+        _elapsedTime += dt;
         if(_elapsedTime >= time){
             _elapsedTime = 0;
             if(!loop){

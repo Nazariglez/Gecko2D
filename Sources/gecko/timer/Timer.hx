@@ -73,7 +73,7 @@ class Timer {
 
     private var _eventEmitter:EventEmitter = new EventEmitter();
 
-    public function new(time:FastFloat = 16, ?manager:TimerManager) {
+    public function new(time:FastFloat = 0.016, ?manager:TimerManager) {
         if(manager == null){
             manager = TimerManager.Global;
         }
@@ -85,13 +85,13 @@ class Timer {
         this.time = time;        
     }
 
-    public function update(dt:FastFloat, ms:FastFloat) {
+    public function update(dt:FastFloat) {
         if(!(time > 0 && isActive && !isPaused)){
             return;
         }
 
         if(delay > _delayTime){
-            _delayTime += ms;
+            _delayTime += dt;
             return;
         }
 
@@ -101,7 +101,7 @@ class Timer {
         }
 
         if(time > _elapsedTime) {
-            var t = _elapsedTime+ms;
+            var t = _elapsedTime+dt;
             var ended = (t >= time);
 
             _elapsedTime = ended ? time : t;

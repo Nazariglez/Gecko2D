@@ -204,13 +204,13 @@ class Tween {
         return time > 0 && isActive && !isPaused && target != null;
     }
 
-    public function update(dt:FastFloat, ms:FastFloat){
+    public function update(dt:FastFloat){
         if(!_canUpdate()) {
             return;
         }
 
         if(delay > _delayTime){
-            _delayTime += ms;
+            _delayTime += dt;
             return;
         }
 
@@ -228,7 +228,7 @@ class Tween {
 
         var time = yoyo ? this.time/2 : this.time;
         if(time > _elapsedTime){
-            var t = _elapsedTime+ms;
+            var t = _elapsedTime+dt;
             var ended = (t >= time);
 
             _elapsedTime = ended ? time : t;

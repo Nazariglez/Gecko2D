@@ -89,9 +89,8 @@ class Keyboard {
             _pressedKeys.remove(key);
         }
 
-        var dtms = delta*1000;
         for(key in _downKeys.keys()){
-            _downKeys[key] += dtms;
+            _downKeys[key] += delta;
             _eventEmitter.emit(EVENT_DOWN, [key, _downKeys[key]]);
         }
 

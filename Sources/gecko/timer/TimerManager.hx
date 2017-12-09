@@ -8,16 +8,12 @@ class TimerManager {
     public var timers:Array<Timer> = new Array<Timer>();
     private var _toDelete:Array<Timer> = new Array<Timer>();
 
-    private var _ms:FastFloat = 0;
-
     public function new(){}
 
     public function update(dt:FastFloat) {
-        _ms = dt*1000;
-
         for(timer in timers){
             if(timer.isActive){
-                timer.update(dt, _ms);
+                timer.update(dt);
                 if(timer.isEnded && timer.expire){
                     timer.remove();
                 }
