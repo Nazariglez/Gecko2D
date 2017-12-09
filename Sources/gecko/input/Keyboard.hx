@@ -6,6 +6,8 @@ import kha.input.Keyboard as KhaKeyboard;
 
 #if !macro @:build(gecko.input.KeyboardBuilder.build()) #end
 class Keyboard {
+    static private var _instance:Keyboard = new Keyboard();
+
     static private inline var EVENT_PRESSED = "pressed";
     static private inline var EVENT_RELEASED = "released";
     static private inline var EVENT_DOWN = "down";
@@ -29,19 +31,22 @@ class Keyboard {
         }
     }
 
+    private function new(){
+        Keyboard._bindEvents();
+    }
+
     static public var isEnabled(get, null):Bool;
     static private var _isEnabled:Bool = false;
 
     static private var _eventEmitter:EventEmitter;
-    static private var _pressedKeys:Map<KeyCode, Bool>;
-    static private var _releasedKeys:Map<KeyCode, Bool>;
-    static private var _downKeys:Map<KeyCode, FastFloat>;
+    static private var _pressedKeys:Map<KeyCode, Bool> = new Map<KeyCode, Bool>();
+    static private var _releasedKeys:Map<KeyCode, Bool> = new Map<KeyCode, Bool>();
+    static private var _downKeys:Map<KeyCode, FastFloat> = new Map<KeyCode, FastFloat>();
 
     static private var _hotKeys:Map<KeyCode, HotKey> = new Map<KeyCode, HotKey>();
     static private var _combos:Map<String, ComboKey> = new Map<String, ComboKey>();
     
     static public function enable() {
-        _bindEvents();
         _pressedKeys = new Map<KeyCode, Bool>();
         _downKeys = new Map<KeyCode, FastFloat>();
         _releasedKeys = new Map<KeyCode, Bool>();

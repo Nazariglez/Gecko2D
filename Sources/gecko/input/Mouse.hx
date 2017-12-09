@@ -12,6 +12,8 @@ import gecko.utils.EventEmitter;
 }
 
 class Mouse {
+    static private var _instance:Mouse = new Mouse();
+
     static private inline var EVENT_RIGHT_PRESSED = "right_pressed";
     static private inline var EVENT_RIGHT_RELEASED = "right_released";
     static private inline var EVENT_RIGHT_DOWN = "right_down";
@@ -84,6 +86,10 @@ class Mouse {
         }
     }
 
+    private function new(){
+        Mouse._bindEvents();
+    }
+
     static private var _eventEmitter:EventEmitter;
 
     static public var isEnabled(get, null):Bool;
@@ -98,14 +104,13 @@ class Mouse {
     static public var movementX:Int = 0;
     static public var movementY:Int = 0;
 
-    static private var _pressedButtons:Map<MouseButton, Bool>;
-    static private var _releasedButtons:Map<MouseButton, Bool>;
-    static private var _downButtons:Map<MouseButton, FastFloat>;
+    static private var _pressedButtons:Map<MouseButton, Bool> = new Map<MouseButton, Bool>();
+    static private var _releasedButtons:Map<MouseButton, Bool> = new Map<MouseButton, Bool>();
+    static private var _downButtons:Map<MouseButton, FastFloat> = new Map<MouseButton, FastFloat>();
 
     static public function enable() {
         //todo html5 mouseEnter and MouseLeave
 
-        _bindEvents();
         _pressedButtons = [MouseButton.LEFT => false, MouseButton.CENTER => false, MouseButton.RIGHT => false];
         _downButtons = [MouseButton.LEFT => -1, MouseButton.CENTER => -1, MouseButton.RIGHT => -1];
         _releasedButtons = [MouseButton.LEFT => false, MouseButton.CENTER => false, MouseButton.RIGHT => false];
@@ -130,7 +135,7 @@ class Mouse {
                 _pressedButtons[btn] = false;
             }
         }
-        
+
         for(btn in _downButtons.keys()) {
             if(_downButtons[btn] != -1){
                 _downButtons[btn] += delta;
