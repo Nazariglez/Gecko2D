@@ -121,8 +121,6 @@ class Text extends Entity {
             _updateText();
         }
 
-        r.applyTransform(matrixTransform);
-
         if(font != null){
             r.font = _font;
             r.fontSize = _fontSize;

@@ -86,7 +86,6 @@ class Assets {
 
     static public function loadImage(name:String, done:?String->Void){
         var parsedName = Assets._parseAssetName(name);
-        trace(parsedName);
         kha.Assets.loadImage(parsedName, function(img:Image){
             Assets.images[name] = img;
             Assets.textures[name] = new Texture(img);

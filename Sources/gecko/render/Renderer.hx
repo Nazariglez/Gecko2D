@@ -1,7 +1,9 @@
 package gecko.render;
 
+import kha.graphics4.PipelineState;
 import kha.graphics2.GraphicsExtension;
 import kha.math.Vector2;
+import gecko.render.BlendMode;
 import gecko.resources.Image;
 import gecko.resources.Texture;
 import gecko.resources.Video;
@@ -12,14 +14,8 @@ import gecko.math.Point;
 import gecko.math.Matrix;
 import gecko.Color;
 
-typedef RenderAction<T:IRenderer> = {
-    public var id:String;
-    public var renderer:IRenderer;
-    public var action:T->Void;
-}
-
 class Renderer implements IRenderer {
-	static public var helperRenderer:Renderer = new Renderer();
+	static public var helperRenderer:Renderer;// = new Renderer();
 
 	public var g2:kha.graphics2.Graphics;
     public var g4:kha.graphics4.Graphics;
@@ -37,6 +33,11 @@ class Renderer implements IRenderer {
 
     public var fontSize(get, set):Int;
     private var _fontSize:Int = 1;
+
+	public var blendMode(get, set):BlendMode;
+	private var _blendMode:BlendMode;
+
+	private var _blendPipeline:PipelineState;
 
     private var _emptyMatrix:Matrix = Matrix.identity();
     public var matrix(get, set):Matrix;
@@ -404,5 +405,18 @@ class Renderer implements IRenderer {
 	public function set_fontSize(value:Int) : Int {
 		g2.fontSize = value;
 		return _fontSize = value;
-	}	
+	}
+
+	public function set_blendMode(blend:BlendMode) : BlendMode {
+		if(blend != _blendMode){
+			_blendMode = blend;
+			g2.pipeline = blend != null ? blend.getPipeline() : null;
+		}
+
+		return _blendMode;
+	}
+
+	public function get_blendMode() : BlendMode {
+		return _blendMode;
+	}
 }

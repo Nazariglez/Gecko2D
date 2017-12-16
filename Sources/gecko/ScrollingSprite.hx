@@ -67,8 +67,6 @@ class ScrollingSprite extends Sprite {
     }
 
     public override function render(r:Renderer) {
-        r.applyTransform(matrixTransform);
-
         if(_texture != null) {
             
             _yy = 0;
@@ -129,7 +127,6 @@ class ScrollingSprite extends Sprite {
         }
 
         _renderChildren(r);
-        r.applyTransform(matrixTransform);
     }
 
     override function set_width(value:FastFloat) : FastFloat {

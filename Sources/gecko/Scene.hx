@@ -55,8 +55,6 @@ class Scene extends Container {
     }
 
     public override function render(r:Renderer) {
-        r.applyTransform(matrixTransform);
-        
         if(!transparent){
             //draw background color
             r.color = backgroundColor;

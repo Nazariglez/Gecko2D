@@ -39,7 +39,7 @@ class SceneManager {
     }
 
     public function render(r:Renderer) {
-        scene.render(r);
+        scene.processRender(r);
     }
 
     function get_scene() : Scene {

@@ -5,6 +5,7 @@ import gecko.math.Vector2g;
 import gecko.math.MatrixTransform;
 import gecko.math.FastFloat;
 import gecko.render.Renderer;
+import gecko.render.BlendMode;
 import gecko.resources.Image;
 
 class Entity {
@@ -19,13 +20,13 @@ class Entity {
     public var anchor:Point = new Point(0.5, 0.5);
     public var size:Point = new Point(1,1);
     public var speed:Point = new Point(0, 0);
+    public var blendMode:BlendMode = null;
     
     public var rotationSpeed:FastFloat = 0;
     public var flip:Vector2g<Bool> = new Vector2g<Bool>(false, false);
 
     public var visible:Bool = true;
     public var alpha:FastFloat = 1;
-    public var worldAlpha:FastFloat = 1;
     public var tint:Color = Color.White;
 
     public var parent:Entity = null;
@@ -58,9 +59,11 @@ class Entity {
         if(parent == null){
             matrixTransform.world.setFrom(matrixTransform.local);
             matrixTransform.alpha = alpha;
+
         }else if(_toCamera != null){
             matrixTransform.updateWorld(_toCamera.matrixTransform.world);
             matrixTransform.alpha = _toCamera.matrixTransform.alpha * alpha;
+
         }else{
             matrixTransform.updateWorld(parent.matrixTransform.world);
             matrixTransform.alpha = parent.matrixTransform.alpha * alpha;
@@ -69,7 +72,7 @@ class Entity {
     }
 
     public function update(dt:FastFloat) {
-        updateTransform();
+        //updateTransform();
         if(speed.x != 0){
             position.x += speed.x*dt;
         }
@@ -83,20 +86,42 @@ class Entity {
         }
     }
 
-    //todo get movementSpeed (cos sin speedX speedY) and direction as methods
-    
-    public function render(r:Renderer) {
-        if(!isVisible() || worldAlpha <= 0){ 
-            return; 
+    public function processRender(r:Renderer) {
+        if(!isVisible()){
+            return;
         }
 
+        updateTransform();
+        preRender(r);
+        render(r);
+        postRender(r);
+    }
+
+    public function preRender(r:Renderer) {
+        r.blendMode = blendMode;
         r.applyTransform(matrixTransform);
+    }
+    
+    public function render(r:Renderer) {}
+
+    public function postRender(r:Renderer) {
+        r.blendMode = null;
     }
 
     public function renderToCamera(camera:Camera, r:Renderer) {
         _toCamera = camera;
         render(r);
         _toCamera = null;
+    }
+
+    //todo get movementSpeed (cos sin speedX speedY) and direction as methods
+    public function getDirection() : FastFloat {
+        //todo
+        return 0;
+    }
+
+    public function setSpeedDirection(speed:FastFloat, direction:FastFloat) {
+        //todo
     }
 
     public function generateTexture() : Image {
@@ -125,7 +150,7 @@ class Entity {
     }
 
     public inline function isVisible() : Bool {
-        return visible && scale.x != 0 && scale.y != 0 && alpha > 0;
+        return visible && scale.x != 0 && scale.y != 0 && alpha > 0 && matrixTransform.alpha > 0;
     }
 
     function get_rotation() : FastFloat {

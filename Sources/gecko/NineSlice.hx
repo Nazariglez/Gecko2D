@@ -42,7 +42,6 @@ class NineSlice extends Sprite {
     }
 
     public override function render(r:Renderer) {
-        r.applyTransform(matrixTransform);
         if(_texture != null){
             if(_options != null){
                 _top = _options.top;
@@ -76,7 +75,6 @@ class NineSlice extends Sprite {
         }   
 
         _renderChildren(r);
-        r.applyTransform(matrixTransform);
     }
 
     override function set_width(value:FastFloat) : FastFloat {

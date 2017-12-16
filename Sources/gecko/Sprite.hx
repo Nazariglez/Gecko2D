@@ -52,7 +52,6 @@ class Sprite extends Container {
     }
 
     public override function render(r:Renderer) {
-        r.applyTransform(matrixTransform);
         if(_texture != null){
             if(trim != null){
                 r.drawSubTexture(_texture, 0, 0, trim.x, trim.y, trim.width, trim.height);

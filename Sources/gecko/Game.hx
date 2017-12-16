@@ -1,5 +1,7 @@
 package gecko;
 
+import gecko.render.BlendMode;
+import gecko.render.RenderAction;
 import gecko.input.Keyboard;
 import gecko.input.Mouse;
 import gecko.utils.GameStats;
@@ -59,11 +61,15 @@ class Game {
         }
         
         sceneManager = new SceneManager(this);
-
-        addRenderer("2d", new Renderer(), _render2D);
+        untyped js.Browser.window.game = this;
     }
 
     public function init(){}
+
+    public function preInit(){
+        BlendMode.compileAll();
+        addRenderer("2d", new Renderer(), _render2D);
+    }
     
     public function run() {
         kha.System.init({
@@ -71,6 +77,8 @@ class Game {
             width: width,
             height: height
         }, function onRun() {
+            preInit();
+
             _backbuffer = gecko.resources.Image.createRenderTarget(width, height);
             kha.System.notifyOnRender(_render);
             System.subscribeOnSystemUpdate(_systemUpdate);
@@ -140,6 +148,7 @@ class Game {
         //Movie.pauseAll();
         _loop.stop();
         System.stop();
+        kha.System.removeRenderListener(_render);
     }
 
     #if kha_js 
