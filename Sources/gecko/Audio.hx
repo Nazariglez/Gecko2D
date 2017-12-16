@@ -93,7 +93,7 @@ class Audio {
         _lastLoop = loop;
         _isPlaying = true;
 
-        System.subscribeOnSystemUpdate(update);
+        Gecko.subscribeOnSystemUpdate(update);
         _eventEmitter.emit(EVENT_PLAY);
     }
 
@@ -105,7 +105,7 @@ class Audio {
         _channel.stop();
         _isPlaying = false;
 
-        System.unsubscribeOnSystemUpdate(update);
+        Gecko.unsubscribeOnSystemUpdate(update);
         _eventEmitter.emit(EVENT_STOP);
     }
 
@@ -116,7 +116,7 @@ class Audio {
 
         _channel.pause();
         _isPaused = true;
-        System.unsubscribeOnSystemUpdate(update);
+        Gecko.unsubscribeOnSystemUpdate(update);
         _eventEmitter.emit(EVENT_PAUSE);
     }
 
@@ -127,7 +127,7 @@ class Audio {
 
         _channel.play();
         _isPaused = false;
-        System.subscribeOnSystemUpdate(update);
+        Gecko.subscribeOnSystemUpdate(update);
         _eventEmitter.emit(EVENT_RESUME);
     }
 
@@ -135,7 +135,7 @@ class Audio {
         _channel.stop();
         _isPlaying = false;
 
-        System.unsubscribeOnSystemUpdate(update);
+        Gecko.unsubscribeOnSystemUpdate(update);
         _eventEmitter.emit(EVENT_FINISH);
     }
 

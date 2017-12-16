@@ -1,8 +1,14 @@
 package;
 
+import gecko.Gecko;
+import gecko.GeckoOptions;
+
 class Main {
 	public static function main() {
-		var game = new Game("Gecko2D-Game", 800, 600);
-		game.run();
+		var options:GeckoOptions = {
+			width: 800,
+			height: 600
+		};
+		Gecko.init(Game, options);
 	}
 }

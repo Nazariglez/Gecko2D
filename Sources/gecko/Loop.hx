@@ -1,5 +1,6 @@
 package gecko;
 
+import gecko.math.FastFloat;
 import kha.Scheduler;
 
 class Loop {
@@ -15,7 +16,7 @@ class Loop {
 
 	private var _fps:Int = 60;
 	private var _fpsTimeMS:Int = 0;
-	private var _onTickCallback:Float->Void = function(delta:Float){};
+	private var _onTickCallback:Float->Void = function(delta:FastFloat){};
 	private var _rafId:Int = -1;
 
 	public function new(fps:Int = 60) {

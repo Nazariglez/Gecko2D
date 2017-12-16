@@ -224,6 +224,8 @@ export function generateKhafileContent(config:Config) : string {
         });
     }
 
+    kfile += `p.addDefine("game_name=${config.name}");\n`;
+
     if(config.core.flags.length){
         config.core.flags.forEach((s)=>{
             kfile += `p.addDefine("${s}");\n`;

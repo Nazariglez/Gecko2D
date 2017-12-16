@@ -1,17 +1,16 @@
 package gecko;
 
-import gecko.render.BlendMode;
 import gecko.render.RenderAction;
 import gecko.input.Keyboard;
 import gecko.input.Mouse;
 import gecko.utils.GameStats;
-import gecko.math.Random;
 import gecko.math.FastFloat;
 import gecko.render.IRenderer;
 import gecko.render.Renderer;
 import gecko.render.Framebuffer;
 import gecko.tween.TweenManager;
 import gecko.timer.TimerManager;
+import gecko.resources.Image;
 
 //todo functional game options
 typedef GameOptions = {
@@ -38,53 +37,32 @@ class Game {
     public var sceneManager:SceneManager;
     public var scene(get, set):Scene;
 
-    public var isRunning(get, null):Bool;
-
-    private var _loop:Loop = new Loop();
     private var _initiated:Bool = false;
 
     private var _backbuffer:kha.Image;
 
-    public function new(title:String, width:Int = 0, height:Int = 0, ?options:GameOptions) {
-        this.title = title;
-        this.width = width;
-        this.height = height;
+    public function new(opts:GeckoOptions) {
+        this.title = opts.title;
+        this.width = opts.width;
+        this.height = opts.height;
 
-        if(options != null && options.randomSeed != null){
-            Random.init(options.randomSeed);
-        }else{
-            #if debug 
-            Random.init(1);
-            #else
-            Random.init(Std.int(Date.now().getTime()));
-            #end
-        }
-        
+        addRenderer("2d", new Renderer(), _render2D);
+
         sceneManager = new SceneManager(this);
-        untyped js.Browser.window.game = this;
+        _backbuffer = Image.createRenderTarget(width, height);
+
+        Gecko.subscribeOnRender(_render);
+        Gecko.subscribeOnSystemUpdate(_systemUpdate);
+        Gecko.subscribeOnGameUpdate(_update);
+
+        _init();
+
+        #if ((kha_html5 ||kha_debug_html5) && debug)
+            untyped js.Browser.window.game = this;
+        #end
     }
 
     public function init(){}
-
-    public function preInit(){
-        BlendMode.compileAll();
-        addRenderer("2d", new Renderer(), _render2D);
-    }
-    
-    public function run() {
-        kha.System.init({
-            title: title,
-            width: width,
-            height: height
-        }, function onRun() {
-            preInit();
-
-            _backbuffer = gecko.resources.Image.createRenderTarget(width, height);
-            kha.System.notifyOnRender(_render);
-            System.subscribeOnSystemUpdate(_systemUpdate);
-            _loop.onTick(_update);
-        });
-    }
 
     @:generic public function addRenderer<T:IRenderer>(id:String, renderer:T, action:T->Void){
         if(_initiated){
@@ -134,21 +112,16 @@ class Game {
 
     public function start() {
         if(!_initiated){ return; }
-        if(isRunning){ return; }
 
         //Movie.unpauseAll();
-        _loop.start();
-        System.start();
+        Gecko.start();
     }
 
     public function stop() {
         if(!_initiated){ return; }
-        if(!isRunning){ return; }
 
         //Movie.pauseAll();
-        _loop.stop();
-        System.stop();
-        kha.System.removeRenderListener(_render);
+        Gecko.stop();
     }
 
     #if kha_js 
@@ -195,12 +168,6 @@ class Game {
         debugStats.renderer.tick();
         #end
 
-        _init();
-
-        if(!isRunning){
-            return;
-        }
-
         for(rAction in renderers){
             rAction.renderer.g2 = _backbuffer.g2;
             rAction.renderer.g4 = _backbuffer.g4;
@@ -231,10 +198,6 @@ class Game {
         init();
         start();
     }
-
-    function get_isRunning() : Bool {
-		return _loop.isRunning;
-	}
 
     function get_width() : Int {
         return _width;
