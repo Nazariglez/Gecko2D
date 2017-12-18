@@ -6,11 +6,12 @@ import gecko.math.FastFloat;
 import kha.WindowMode;
 import kha.Scheduler;
 import kha.System;
-import kha.CompilerDefines;
 
+#if !macro @:build(gecko.GeckoBuilder.build()) #end
 class Gecko {
     static public var game:Game;
     static public var delta:FastFloat;
+    static public var initiated:Bool = false;
 
     static private var _updateEvents:Array<Void -> Void> = new Array<Void -> Void>();
     static private var _renderEvents:Array<Framebuffer -> Void> = new Array<Framebuffer -> Void>();
@@ -24,6 +25,7 @@ class Gecko {
     @:generic static public function init<T:Game>(gameClass:Class<T>, ?opts:GeckoOptions) {
         var options:GeckoOptions = Gecko._parseOptions(opts != null ? opts : {});
         System.init(options.khaOptions, function _onKhaInit(){
+            initiated = true;
             BlendMode.compileAll();
 
             Gecko.game = Type.createInstance(gameClass, [options]);
@@ -37,14 +39,13 @@ class Gecko {
         Gecko.stop();
         System.requestShutdown();
         #end
-
     }
 
     static private function _parseOptions(opts:GeckoOptions) : GeckoOptions {
         var options:GeckoOptions = {};
         var khaOptions:SystemOptions = opts.khaOptions != null ? opts.khaOptions : {};
 
-        options.title = opts.title != null ? opts.title : CompilerDefines.game_name;
+        options.title = opts.title != null ? opts.title : Gecko.gameTitle;
         options.width = opts.width != null ? opts.width : 800;
         options.height = opts.height != null ? opts.height : 600;
         options.backgroundColor = opts.backgroundColor != null ? opts.backgroundColor : Color.Black;

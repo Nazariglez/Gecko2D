@@ -4,6 +4,7 @@ import kha.graphics4.VertexData;
 import kha.graphics4.VertexStructure;
 import kha.graphics4.PipelineState;
 import kha.Shaders;
+import gecko.Gecko;
 
 
 class BlendMode {
@@ -45,6 +46,15 @@ class BlendMode {
         this.destination = destination;
         this.operation = operation;
 
+        compile();
+    };
+
+    public function getPipeline() : PipelineState {
+        return _blendPipeline;
+    }
+    public function compile() {
+        if(_compiled || !Gecko.initiated)return;
+
         _blendPipeline = new PipelineState();
 
         var structure = new VertexStructure();
@@ -52,12 +62,7 @@ class BlendMode {
         structure.add("texPosition", VertexData.Float2);
         structure.add("vertexColor", VertexData.Float4);
         _blendPipeline.inputLayout = [structure];
-    };
 
-    public function getPipeline() : PipelineState {
-        return _blendPipeline;
-    }
-    public function compile() {
         _blendPipeline.fragmentShader = Shaders.painter_image_frag;
         _blendPipeline.vertexShader = Shaders.painter_image_vert;
 

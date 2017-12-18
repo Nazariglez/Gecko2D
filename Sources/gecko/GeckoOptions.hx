@@ -4,9 +4,9 @@ import kha.System.SystemOptions;
 
 typedef GeckoOptions = {
     ?title:String,
-    ?width:Null<Int>,
-    ?height:Null<Int>,
-    ?randomSeed:Null<Int>,
+    ?width:Int,
+    ?height:Int,
+    ?randomSeed:Int,
     ?fullScreen:Bool,
     ?transparent:Bool,
     ?backgroundColor:Color,
