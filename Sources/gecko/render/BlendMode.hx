@@ -19,21 +19,6 @@ class BlendMode {
         return new BlendMode(source, destination, operation != null ? operation : BlendingOperation.Add);
     }
 
-    static public function compileAll() {
-        var toCompile = [
-            //BlendMode.Normal,
-            BlendMode.Add,
-            BlendMode.Multiply,
-            BlendMode.Screen,
-            BlendMode.Subtract,
-            BlendMode.Lighten
-        ];
-
-        for(b in toCompile){
-            b.compile();
-        }
-    }
-
     public var source:BlendingFactor;
     public var destination:BlendingFactor;
     public var operation:BlendingOperation;
@@ -46,14 +31,22 @@ class BlendMode {
         this.destination = destination;
         this.operation = operation;
 
-        compile();
+        _compile();
     };
 
     public function getPipeline() : PipelineState {
         return _blendPipeline;
     }
-    public function compile() {
-        if(_compiled || !Gecko.initiated)return;
+
+    private function _compile() {
+        if(_compiled)return;
+
+        if(!Gecko.initiated){
+            Gecko.subscribeOnKhaInit(function(){
+                _compile();
+            });
+            return;
+        }
 
         _blendPipeline = new PipelineState();
 
@@ -61,8 +54,8 @@ class BlendMode {
         structure.add("vertexPosition", VertexData.Float3);
         structure.add("texPosition", VertexData.Float2);
         structure.add("vertexColor", VertexData.Float4);
-        _blendPipeline.inputLayout = [structure];
 
+        _blendPipeline.inputLayout = [structure];
         _blendPipeline.fragmentShader = Shaders.painter_image_frag;
         _blendPipeline.vertexShader = Shaders.painter_image_vert;
 

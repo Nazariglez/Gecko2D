@@ -13,10 +13,10 @@ class Gecko {
     static public var delta:FastFloat;
     static public var initiated:Bool = false;
 
+    static private var _initEvents:Array<Void->Void> = new Array<Void -> Void>();
     static private var _updateEvents:Array<Void -> Void> = new Array<Void -> Void>();
     static private var _renderEvents:Array<Framebuffer -> Void> = new Array<Framebuffer -> Void>();
     static private var _gameUpdateEvents:Array<FastFloat -> Void> = new Array<FastFloat -> Void>();
-
 
     static private var _timeTaskID:Int = -1;
 
@@ -26,7 +26,10 @@ class Gecko {
         var options:GeckoOptions = Gecko._parseOptions(opts != null ? opts : {});
         System.init(options.khaOptions, function _onKhaInit(){
             initiated = true;
-            BlendMode.compileAll();
+
+            for(fn in _initEvents){
+                fn();
+            }
 
             Gecko.game = Type.createInstance(gameClass, [options]);
 
@@ -90,6 +93,14 @@ class Gecko {
         Scheduler.removeTimeTask(_timeTaskID);
         System.removeRenderListener(_onRender);
         _gameLoop.stop();
+    }
+
+    static public function subscribeOnKhaInit(cb:Void->Void) {
+        Gecko._initEvents.push(cb);
+    }
+
+    static public function unsubscribeOnKhaInit(cb:Void->Void) {
+        Gecko._initEvents.remove(cb);
     }
 
     static public function subscribeOnSystemUpdate(cb:Void->Void) {
