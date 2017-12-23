@@ -54,16 +54,14 @@ class Entity {
         matrixTransform.updateSkew(this);
     }
 
-    public function updateTransform() {
+    public function updateTransform(?camera:Camera) {
         matrixTransform.updateLocal(this);
         if(parent == null){
             matrixTransform.world.setFrom(matrixTransform.local);
             matrixTransform.alpha = alpha;
-
-        }else if(_toCamera != null){
-            matrixTransform.updateWorld(_toCamera.matrixTransform.world);
-            matrixTransform.alpha = _toCamera.matrixTransform.alpha * alpha;
-
+        }else if(camera != null){
+            matrixTransform.updateWorld(camera.matrixTransform.world);
+            matrixTransform.alpha = camera.matrixTransform.alpha * alpha;
         }else{
             matrixTransform.updateWorld(parent.matrixTransform.world);
             matrixTransform.alpha = parent.matrixTransform.alpha * alpha;
@@ -86,12 +84,12 @@ class Entity {
         }
     }
 
-    public function processRender(r:Renderer) {
+    public function processRender(r:Renderer, ?camera:Camera) {
         if(!isVisible()){
             return;
         }
 
-        updateTransform();
+        updateTransform(camera);
         preRender(r);
         render(r);
         postRender(r);
@@ -106,12 +104,6 @@ class Entity {
 
     public function postRender(r:Renderer) {
         r.blendMode = null;
-    }
-
-    public function renderToCamera(camera:Camera, r:Renderer) {
-        _toCamera = camera;
-        render(r);
-        _toCamera = null;
     }
 
     //todo get movementSpeed (cos sin speedX speedY) and direction as methods

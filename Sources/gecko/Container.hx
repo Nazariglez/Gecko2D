@@ -68,10 +68,10 @@ class Container extends Entity {
         _renderChildren(r);
     }
 
-    private inline function _renderChildren(r:Renderer) {
+    private inline function _renderChildren(r:Renderer, ?camera:Camera) {
         for(child in children){
             if(child.isVisible()){
-                child.processRender(r);
+                child.processRender(r, camera);
 
                 #if debug 
                 child.debugRender(r);
