@@ -1,5 +1,6 @@
 package gecko;
 
+import gecko.resources.Image;
 import gecko.math.Matrix;
 import gecko.math.Point;
 import gecko.math.FastFloat;
@@ -11,6 +12,7 @@ class Camera extends Entity {
     public var lookPosition:Point = new Point(0,0);
     public var lookZoom:FastFloat = 1;
     public var lookRotation:FastFloat = 0;
+    public var lookPivot:Point = new Point(0,0);
 
     private var _rCos:FastFloat = 0;
     private var _rSin:FastFloat = 0;
@@ -28,7 +30,7 @@ class Camera extends Entity {
         //lookZoom = 0.5;
         //lookRotation = Math.PI;
         trace(matrixCamera);
-        //untyped js.Browser.window.camera = this;
+        untyped js.Browser.window.camera = this;
     }
 
     override public function updateTransform(?camera:Camera){
@@ -41,11 +43,11 @@ class Camera extends Entity {
         matrixCamera._10 = -_rSin * lookZoom;
         matrixCamera._11 = _rCos * lookZoom;
 
-        _pw = 0.5*size.x;
-        _ph = 0.5*size.y;
+        _pw = lookPivot.x*size.x;
+        _ph = lookPivot.y*size.y;
 
-        matrixCamera._20 = -lookPosition.x + _pw;
-        matrixCamera._21 = -lookPosition.y + _ph;
+        matrixCamera._20 = lookPosition.x + _pw;
+        matrixCamera._21 = lookPosition.y + _ph;
 
         matrixCamera._20 -= _pw * matrixCamera._00 + _ph * matrixCamera._10;
         matrixCamera._21 -= _pw * matrixCamera._01 + _ph * matrixCamera._11;
@@ -63,6 +65,7 @@ class Camera extends Entity {
         super.preRender(r);
 
         if(watch != null){
+            //todo check this coords 
             r.g2.scissor(Std.int(position.x), Std.int(position.y), Std.int(size.x), Std.int(size.y));
         }
     }

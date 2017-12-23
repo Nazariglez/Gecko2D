@@ -29,24 +29,14 @@ class Scene extends Container {
         pivot.set(0,0);
         sizeByChildren = false;
 
-        var camera = new Camera(this, 400, 300);
+        var camera = new Camera(this, 400, 600);
         //camera.lookZoom = 0.5;
         cameras.push(camera);
 
-        var camera2 = new Camera(this, 400, 300);
+        var camera2 = new Camera(this, 400, 600);
         camera2.position.set(400, 0);
         //camera2.lookZoom = 0.5;
         cameras.push(camera2);
-
-        var camera3 = new Camera(this, 400, 300);
-        //camera3.lookZoom = 0.5;
-        camera3.position.set(0, 300);
-        cameras.push(camera3);
-
-        var camera4 = new Camera(this, 400, 300);
-        //camera4.lookZoom = 0.5;
-        camera4.position.set(400, 300);
-        cameras.push(camera4);
     }
 
     public function pause() {
