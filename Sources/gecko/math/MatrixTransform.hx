@@ -76,6 +76,17 @@ class MatrixTransform {
 		world._21 = (local._20 * pm._01) + (local._21 * pm._11) + pm._21;
 	}
 
+	public function apply(point:Point, newPoint:Point = null) : Point {
+		if(newPoint == null){
+			newPoint = new Point(0,0);
+		}
+
+		newPoint.x = world._00 * point.x + world._10 * point.y + world._20;
+		newPoint.y = world._01 * point.x + world._11 * point.y + world._21;
+
+		return newPoint;
+	}
+
 	public function applyInverse(point:Point, newPoint:Point = null) : Point {
 		if(newPoint == null){
 			newPoint = new Point(0,0);

@@ -15,42 +15,6 @@ class Camera extends Container {
 
     private var _matrix:Matrix = Matrix.identity();
 
-    function get_lookPosition() : Point {
-        return _internalEntity.position;
-    }
-
-    function set_lookPosition(value:Point) : Point {
-        _internalEntity.position = value;
-        return _internalEntity.position;
-    }
-
-    function get_lookZoom() : FastFloat {
-        return _internalEntity.scale.x;
-    }
-
-    function set_lookZoom(value:FastFloat) : FastFloat {
-        _internalEntity.scale.set(value, value);
-        return _internalEntity.scale.x;
-    }
-
-    function get_lookRotation() : FastFloat {
-        return _internalEntity.rotation;
-    }
-
-    function set_lookRotation(value:FastFloat) : FastFloat {
-        _internalEntity.rotation = value;
-        return _internalEntity.rotation;
-    }
-
-    function get_lookPivot() : Point {
-        return _internalEntity.pivot;
-    }
-
-    function set_lookPivot(value:Point) : Point {
-        _internalEntity.pivot = value;
-        return _internalEntity.pivot;
-    }
-
     private var _internalEntity:Entity;
 
     override public function new(width:FastFloat, height:FastFloat, ?watch:Entity){
@@ -63,8 +27,6 @@ class Camera extends Container {
         _internalEntity.anchor.set(0,0);
         _internalEntity.pivot.set(0,0);
         _internalEntity.parent = this;
-
-        untyped js.Browser.window.camera = this;
     }
 
     override public function updateTransform(?camera:Camera){
@@ -105,5 +67,41 @@ class Camera extends Container {
 
     public function shake(intensisty:FastFloat, duration:FastFloat) {
         //todo
+    }
+
+    function get_lookPosition() : Point {
+        return _internalEntity.position;
+    }
+
+    function set_lookPosition(value:Point) : Point {
+        _internalEntity.position = value;
+        return _internalEntity.position;
+    }
+
+    function get_lookZoom() : FastFloat {
+        return _internalEntity.scale.x;
+    }
+
+    function set_lookZoom(value:FastFloat) : FastFloat {
+        _internalEntity.scale.set(value, value);
+        return _internalEntity.scale.x;
+    }
+
+    function get_lookRotation() : FastFloat {
+        return _internalEntity.rotation;
+    }
+
+    function set_lookRotation(value:FastFloat) : FastFloat {
+        _internalEntity.rotation = value;
+        return _internalEntity.rotation;
+    }
+
+    function get_lookPivot() : Point {
+        return _internalEntity.pivot;
+    }
+
+    function set_lookPivot(value:Point) : Point {
+        _internalEntity.pivot = value;
+        return _internalEntity.pivot;
     }
 }

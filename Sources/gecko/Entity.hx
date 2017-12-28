@@ -137,6 +137,19 @@ class Entity {
         return texture;
     }
 
+    public function toWorld(position:Point, ?point:Point) : Point {
+        //updateTransform();
+        return matrixTransform.apply(position, point);
+    }
+
+    public function toLocalFrom(position:Point, from:Entity, ?point:Point) : Point {
+        return matrixTransform.applyInverse(from.toWorld(position, point), point);
+    }
+
+    public function toLocal(position:Point, ?point:Point) : Point {
+        return matrixTransform.applyInverse(position, point);
+    }
+
     public inline function addTo(parent:Container) {
         parent.addChild(this);
     }
