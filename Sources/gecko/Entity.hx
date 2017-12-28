@@ -137,16 +137,17 @@ class Entity {
         return texture;
     }
 
-    public function toWorld(position:Point, ?point:Point) : Point {
-        //updateTransform();
+    public function toScreen(position:Point, ?point:Point) : Point {
+        updateTransform(); //todo improve or cache this
         return matrixTransform.apply(position, point);
     }
 
     public function toLocalFrom(position:Point, from:Entity, ?point:Point) : Point {
-        return matrixTransform.applyInverse(from.toWorld(position, point), point);
+        return matrixTransform.applyInverse(from.toScreen(position, point), point);
     }
 
     public function toLocal(position:Point, ?point:Point) : Point {
+        updateTransform(); //todo improve or cache this
         return matrixTransform.applyInverse(position, point);
     }
 

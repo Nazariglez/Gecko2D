@@ -16,6 +16,7 @@ class Camera extends Container {
     private var _matrix:Matrix = Matrix.identity();
 
     private var _internalEntity:Entity;
+    private var _tmpPoint:Point = new Point(0,0);
 
     override public function new(width:FastFloat, height:FastFloat, ?watch:Entity){
         super(width, height);
@@ -41,8 +42,9 @@ class Camera extends Container {
         super.preRender(r);
 
         if(watch != null){
-            //todo check this coords
-            r.g2.scissor(Std.int(position.x), Std.int(position.y), Std.int(size.x), Std.int(size.y));
+            parent.toScreen(position, _tmpPoint);
+            //todo cache the world coords
+            r.g2.scissor(Std.int(_tmpPoint.x), Std.int(_tmpPoint.y), Std.int(size.x), Std.int(size.y));
         }
     }
 
