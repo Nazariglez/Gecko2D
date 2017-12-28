@@ -1,92 +1,98 @@
 package gecko;
 
-import gecko.resources.Image;
 import gecko.math.Matrix;
 import gecko.math.Point;
 import gecko.math.FastFloat;
 import gecko.render.Renderer;
 
-class Camera extends Entity {
-    public var watch:Scene;
+class Camera extends Container {
+    public var watch:Entity;
 
-    public var lookPosition:Point = new Point(0,0);
-    public var lookZoom:FastFloat = 1;
-    public var lookRotation:FastFloat = 0;
-    public var lookPivot:Point = new Point(0,0);
+    public var lookPosition(get, set):Point;
+    public var lookZoom(get, set):FastFloat;
+    public var lookRotation(get, set):FastFloat;
+    public var lookPivot(get, set):Point;
 
-    private var _rCos:FastFloat = 0;
-    private var _rSin:FastFloat = 0;
-    private var _pw:FastFloat = 0;
-    private var _ph:FastFloat = 0;
+    private var _matrix:Matrix = Matrix.identity();
 
-    public var matrixCamera:Matrix = Matrix.identity();
+    function get_lookPosition() : Point {
+        return _internalEntity.position;
+    }
 
-    override public function new(scene:Scene, width:FastFloat, height:FastFloat){
+    function set_lookPosition(value:Point) : Point {
+        _internalEntity.position = value;
+        return _internalEntity.position;
+    }
+
+    function get_lookZoom() : FastFloat {
+        return _internalEntity.scale.x;
+    }
+
+    function set_lookZoom(value:FastFloat) : FastFloat {
+        _internalEntity.scale.set(value, value);
+        return _internalEntity.scale.x;
+    }
+
+    function get_lookRotation() : FastFloat {
+        return _internalEntity.rotation;
+    }
+
+    function set_lookRotation(value:FastFloat) : FastFloat {
+        _internalEntity.rotation = value;
+        return _internalEntity.rotation;
+    }
+
+    function get_lookPivot() : Point {
+        return _internalEntity.pivot;
+    }
+
+    function set_lookPivot(value:Point) : Point {
+        _internalEntity.pivot = value;
+        return _internalEntity.pivot;
+    }
+
+    private var _internalEntity:Entity;
+
+    override public function new(width:FastFloat, height:FastFloat, ?watch:Entity){
         super(width, height);
-        this.watch = scene;
+        this.watch = watch;
         anchor.set(0,0);
-        //position.set(100, 0);
-        //lookPosition.set(width*0.5, height*0.5);
-        //lookZoom = 0.5;
-        //lookRotation = Math.PI;
-        trace(matrixCamera);
+        pivot.set(0,0);
+
+        _internalEntity = new Entity(width, height);
+        _internalEntity.anchor.set(0,0);
+        _internalEntity.pivot.set(0,0);
+        _internalEntity.parent = this;
+
         untyped js.Browser.window.camera = this;
     }
 
     override public function updateTransform(?camera:Camera){
         super.updateTransform(camera);
-        _rCos = Math.cos(lookRotation);
-        _rSin = Math.sin(lookRotation);
 
-        matrixCamera._00 = _rCos * lookZoom;
-        matrixCamera._01 = _rSin * lookZoom;
-        matrixCamera._10 = -_rSin * lookZoom;
-        matrixCamera._11 = _rCos * lookZoom;
-
-        _pw = lookPivot.x*size.x;
-        _ph = lookPivot.y*size.y;
-
-        matrixCamera._20 = lookPosition.x + _pw;
-        matrixCamera._21 = lookPosition.y + _ph;
-
-        matrixCamera._20 -= _pw * matrixCamera._00 + _ph * matrixCamera._10;
-        matrixCamera._21 -= _pw * matrixCamera._01 + _ph * matrixCamera._11;
-
-        matrixTransform.world._00 = (matrixTransform.local._00 * matrixCamera._00) + (matrixTransform.local._01 * matrixCamera._10);
-        matrixTransform.world._01 = (matrixTransform.local._00 * matrixCamera._01) + (matrixTransform.local._01 * matrixCamera._11);
-        matrixTransform.world._10 = (matrixTransform.local._10 * matrixCamera._00) + (matrixTransform.local._11 * matrixCamera._10);
-        matrixTransform.world._11 = (matrixTransform.local._10 * matrixCamera._01) + (matrixTransform.local._11 * matrixCamera._11);
-
-        matrixTransform.world._20 = (matrixTransform.local._20 * matrixCamera._00) + (matrixTransform.local._21 * matrixCamera._10) + matrixCamera._20;
-        matrixTransform.world._21 = (matrixTransform.local._20 * matrixCamera._01) + (matrixTransform.local._21 * matrixCamera._11) + matrixCamera._21;
+        _matrix.setFrom(matrixTransform.world);
+        _internalEntity.updateTransform();
+        matrixTransform.world.setFrom(_internalEntity.matrixTransform.world);
     }
 
     override public function preRender(r:Renderer){
         super.preRender(r);
 
         if(watch != null){
-            //todo check this coords 
+            //todo check this coords
             r.g2.scissor(Std.int(position.x), Std.int(position.y), Std.int(size.x), Std.int(size.y));
         }
     }
 
     override public function render(r:Renderer) {
-        super.render(r);
-
-        r.color = Color.Aqua;
-        r.fillRect(0, 0, size.x, size.y);
-
         if(watch != null){
-            for(child in watch.children){
-                if(child.isVisible()){
-                    child.processRender(r, this);
-                }
-            }
-            r.applyTransform(matrixTransform);
+            watch.processRender(r, this);
         }
 
-        //lookRotation += 1*Math.PI/180;
-        //lookZoom -= 0.0005;
+        matrixTransform.world.setFrom(_matrix);
+        r.applyTransform(matrixTransform);
+
+        super.render(r);
     }
 
     override public function postRender(r:Renderer) {

@@ -42,7 +42,7 @@ class Entity {
     public var height(get, set):FastFloat;
     private var _height:FastFloat = 10;
 
-    private var _toCamera:Camera;
+    public var renderOnlyOnCamera:Bool = false;
 
     public function new(sizeX:FastFloat = 10, sizeY:FastFloat = 10){
         _entityID = Entity.entityID++;
@@ -86,6 +86,10 @@ class Entity {
 
     public function processRender(r:Renderer, ?camera:Camera) {
         if(!isVisible()){
+            return;
+        }
+
+        if(renderOnlyOnCamera && camera == null){
             return;
         }
 

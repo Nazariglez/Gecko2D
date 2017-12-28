@@ -17,8 +17,6 @@ class Scene extends Container {
     public var isPaused(get, null):Bool;
     private var _isPaused:Bool = false;
 
-    public var cameras:Array<Camera> = [];
-
     //todo add pause|resume
 
     public override function new(id:String){
@@ -28,15 +26,6 @@ class Scene extends Container {
         anchor.set(0,0);
         pivot.set(0,0);
         sizeByChildren = false;
-
-        var camera = new Camera(this, 400, 600);
-        //camera.lookZoom = 0.5;
-        cameras.push(camera);
-
-        var camera2 = new Camera(this, 400, 600);
-        camera2.position.set(400, 0);
-        //camera2.lookZoom = 0.5;
-        cameras.push(camera2);
     }
 
     public function pause() {
@@ -60,10 +49,6 @@ class Scene extends Container {
             return;
         }
 
-        /*for(camera in cameras){
-            camera.update(dt);
-        }*/
-
         super.update(dt);
         timerManager.update(dt);
         tweenManager.update(dt);
@@ -76,11 +61,7 @@ class Scene extends Container {
             r.fillRect(0, 0, this.size.x, this.size.y);
         }
 
-        //super.render(r);
-
-        for(camera in cameras){
-            camera.processRender(r);
-        }
+        super.render(r);
     }
 
     function get_isPaused() : Bool {
