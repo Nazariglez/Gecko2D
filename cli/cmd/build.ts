@@ -122,7 +122,7 @@ function _action(args:string[], cb:ActionCallback) {
 
     let kmakeBasic:KhaMakeConfig = {
         target: "",
-        projectfile: path.join(C.TEMP_RELATIVE_PATH, "khafile.js"),
+        projectfile: C.KHAFILE_RELATIVE_PATH,
         to: C.TEMP_BUILD_PATH,
         kha: config.core.kha,
         haxe: config.core.haxe,
@@ -203,7 +203,7 @@ function _generateKhafile(config:Config) : Error {
     }
 
     try {
-        fs.writeFileSync(path.join(C.TEMP_PATH, "khafile.js"), generateKhafileContent(config), {encoding: "UTF-8"});        
+        fs.writeFileSync(C.KHAFILE_PATH, generateKhafileContent(config), {encoding: "UTF-8"});        
     } catch(e){
         err = e
     }
