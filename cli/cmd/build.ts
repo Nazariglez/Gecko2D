@@ -104,16 +104,13 @@ function _action(args:string[], cb:ActionCallback) {
         return;
     }
 
-    if(parsed.target){
-        if(!config[parsed.target]){
-            cb(new Error(`Target ${parsed.target} not defined in the config file.`));
-            return;
-        }
+    if(!parsed.target){
+        parsed.target = "html5";
+    }
 
-        if(config[parsed.target].disable){
-            cb(new Error(`Target ${parsed.target} is disabled in the config file.`));
-            return;
-        }
+    if(!config[parsed.target]){
+        cb(new Error(`Target ${parsed.target} not defined in the config file.`));
+        return;
     }
 
     let platformList = Object.keys(platform);
@@ -135,10 +132,10 @@ function _action(args:string[], cb:ActionCallback) {
         ffmpeg: config.core.ffmpeg ? path.resolve(config.core.ffmpeg) : ""
     };
 
-    let existsTarget = false;
+    /*let existsTarget = false;
     for(let i = 0; i < platformList.length; i++){
         let target = platform[platformList[i]];
-        if(config[target] && !config[target].disable) {
+        if(config[target]) {
             existsTarget = true;
             break;
         }
@@ -147,14 +144,14 @@ function _action(args:string[], cb:ActionCallback) {
     if(!existsTarget){
         cb(new Error("No one platform it's defined as target in the config file."));
         return;
-    }
+    }*/
 
     let list = parsed.target ? [_getPlatformByValue(parsed.target)] : platformList;
 
     eachSeries(list, (key, next)=>{
         
         let target = platform[key];
-        if(!config[target] || config[target].disable){
+        if(!config[target]){
             next();
             return;
         }

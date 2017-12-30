@@ -35,11 +35,9 @@ serve_port = 8080           #port to serve the build with ${C.ENGINE_NAME} serve
 html_file = ""              #inject the script in a custom html
 
 [osx]
-disable = true
 graphics = "${graphics.osx[0]}"         #mac graphics [${graphics.osx.join(" | ")}]
 
 [windows]
-disable = true
 graphics = "${graphics.windows[0]}"         #windows graphics [${graphics.windows.join(" | ")}]
 
 [core]
@@ -70,11 +68,7 @@ export interface Config {
     core:ConfigCore
 }
 
-interface DisableInterface {
-    disable?:boolean
-}
-
-export interface ConfigHTML5 extends DisableInterface {
+export interface ConfigHTML5 {
     webgl:boolean
     canvas:string
     script:string
@@ -83,19 +77,19 @@ export interface ConfigHTML5 extends DisableInterface {
     uglify?:boolean
 }
 
-interface ConfigOSX  extends DisableInterface{
+interface ConfigOSX {
     graphics?:string
 }
 
-interface ConfigWin  extends DisableInterface{
+interface ConfigWin {
     graphics?:string
 }
 
-interface ConfigLinux extends DisableInterface{}
+interface ConfigLinux {}
 
-interface ConfigAndroid extends DisableInterface{}
+interface ConfigAndroid {}
 
-interface ConfigIOS extends DisableInterface{}
+interface ConfigIOS {}
 
 interface ConfigCore {
     clean_temp:boolean
@@ -144,7 +138,7 @@ export function parseConfig(input:string) : Config {
             }
         }
 
-        if(config.html5 && !config.html5.disable){
+        if(config.html5){
             if(config.debug){
                 config.html5.script += ".debug";
             }
@@ -210,7 +204,7 @@ export function generateKhafileContent(config:Config) : string {
 
     kfile += `p.addAssets('Assets/**', {nameBaseDir: 'Assets', destination: 'assets/{dir}/{name}', name: '{dir}/{name}'});\n`;
 
-    if(config.html5 && !config.html5.disable){
+    if(config.html5){
         kfile += `
         p.targetOptions.html5.canvasId = "${config.html5.canvas}";
         p.targetOptions.html5.scriptName = "${config.html5.script}";
