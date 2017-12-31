@@ -7,10 +7,15 @@ import gecko.resources.Blob;
 import gecko.resources.Sound;
 import gecko.resources.Font;
 import gecko.resources.Texture;
-//import gecko.resources.TexturePacker;
 import gecko.utils.Chain;
+import gecko.utils.EventEmitter;
 
 class Assets {
+    static private inline var EVENT_COMPLETE = "complete";
+    static private inline var EVENT_ERROR = "error";
+    static private inline var EVENT_PROGRESS_START = "progress-start";
+    static private inline var EVENT_PROGRESS_END = "progress-end";
+
     static public var images:Map<String, Image> = new Map<String, Image>();
     static public var videos:Map<String, Video> = new Map<String, Video>();
     static public var blobs:Map<String, Blob> = new Map<String, Blob>();
@@ -31,10 +36,23 @@ class Assets {
         return (~/[\/\.-\s]/gi).replace(Path.normalize(name), "_");
     }
 
-    static public function load(arr:Array<String>, done:?String->Void) : Assets {
+    static public function load(arr:Array<String>, ?onComplete:Void->Void, ?onError:String->Void) : Assets {
         var loader = new Assets(arr.length);
+
+        if(onComplete != null){
+            loader.onComplete += onComplete;
+        }
+
+        if(onError != null){
+            loader.onError += onError;
+        }
+
         loader.setTask(function(){
-            Chain.eachSeries(arr, loader.observProgress(Assets._loadAsset), done);
+            Chain.eachSeries(arr, loader.observProgress(Assets._loadAsset), function(?err:String){
+                if(err != null){
+                    trace(err);
+                }
+            });
         });
         return loader;
     }
@@ -127,10 +145,21 @@ class Assets {
         });
     }
 
-    static public function unload(arr:Array<String>, done:?String->Void) : Assets {
+    static public function unload(arr:Array<String>, ?onComplete:Void->Void, ?onError:String->Void) : Assets {
         var loader = new Assets(arr.length);
+
+        if(onComplete != null){
+            loader.onComplete += onComplete;
+        }
+
+        if(onError != null){
+            loader.onError += onError;
+        }
+
         loader.setTask(function(){
-            Chain.eachSeries(arr, loader.observProgress(Assets._unloadAsset), done);
+            Chain.eachSeries(arr, loader.observProgress(Assets._unloadAsset), function(?err:String){
+                trace(err);
+            });
         });
         return loader;
     }
@@ -213,57 +242,58 @@ class Assets {
     public var len:Int = 0;
     public var loaded:Int = 0;
 
-    private var _onComplete:Void->Void = function(){};
-    private var _onProgressStart:Int->String->Void = function(progress:Int, asset:String){};
-    private var _onProgressEnd:Int->String->Void = function(progress:Int, asset:String){};
-
     private var _task:Void->Void = function(){};
+
+    public var onComplete:Event<Void->Void>;
+    public var onError:Event<String->Void>;
+    public var onProgressStart:Event<Int->String->Void>;
+    public var onProgressEnd:Event<Int->String->Void>;
+
+    private function _bindEvents() {
+        onComplete = _eventEmitter.bind(new Event(EVENT_COMPLETE));
+        onError = _eventEmitter.bind(new Event(EVENT_ERROR));
+        onProgressStart = _eventEmitter.bind(new Event(EVENT_PROGRESS_START));
+        onProgressEnd = _eventEmitter.bind(new Event(EVENT_PROGRESS_START));
+    }
+
+    private var _eventEmitter:EventEmitter = new EventEmitter();
 
     private function new(len:Int){
         this.len = len;
+        _bindEvents();
     }
 
     public function start() {
         this._task();
+        return this;
     }
 
     public function setTask(task:Void->Void){
         _task = task;
     }
 
-    public function observProgress(task:String->(?String->Void)->Void) : String->(?String->Void)->Void{
+    public function observProgress(task:String->(?String->Void)->Void) : String->(?String->Void)->Void {
         return function(name:String, next:?String->Void){
-            _onProgressStart(this.progress, name);
+            _eventEmitter.emit(EVENT_PROGRESS_START, [this.progress, name]);
 
             task(name, function(?err:String){
                 if(err != null){
+                    _eventEmitter.emit(EVENT_ERROR, [err]);
                     next(err);
                     return;
                 }
 
                 loaded += 1;
 
-                _onProgressEnd(this.progress, name);
+                _eventEmitter.emit(EVENT_PROGRESS_END, [this.progress, name]);
 
                 if(len != 0 && len == loaded){
-                    _onComplete();
+                    _eventEmitter.emit(EVENT_COMPLETE);
                 }
 
                 next();
             }); 
         }
-    }
-
-    public function notifyOnComplete(cb:Void->Void){
-        _onComplete = cb;
-    }
-
-    public function notifyOnProgressStart(cb:Int->String->Void){
-        _onProgressStart = cb;
-    }
-
-    public function notifyOnProgressEnd(cb:Int->String->Void){
-        _onProgressEnd = cb;
     }
 
     function get_progress() : Int {
