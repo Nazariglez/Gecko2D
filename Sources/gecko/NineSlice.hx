@@ -5,13 +5,6 @@ import gecko.render.Renderer;
 import gecko.resources.Image;
 import gecko.resources.Texture;
 
-typedef NineSliceOptions = {
-    var top:FastFloat;
-    var bottom:FastFloat;
-    var left:FastFloat;
-    var right:FastFloat;
-}
-
 class NineSlice extends Sprite {
     private var _options:NineSliceOptions;
 

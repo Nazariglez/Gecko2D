@@ -2,8 +2,6 @@ package gecko.tween;
 
 import gecko.math.FastFloat;
 
-typedef Ease = FastFloat -> FastFloat;
-
 class Easing {
     static public function linear() : Ease {
         return function(t:FastFloat) : FastFloat {

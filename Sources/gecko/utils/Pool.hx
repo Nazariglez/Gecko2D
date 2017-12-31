@@ -1,12 +1,5 @@
 package gecko.utils;
 
-typedef PoolOptions<T> = {
-    @:optional var args:Array<Dynamic>;
-    @:optional var num:Int;
-    @:optional var init:T->Void;
-    @:optional var reset:T->Void;
-}
-
 class Pool<T> {
     static private var _emptyArgs:Array<Dynamic> = new Array<Dynamic>();
 
