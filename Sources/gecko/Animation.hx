@@ -6,22 +6,6 @@ import gecko.math.FastFloat;
 import gecko.math.Rect;
 import gecko.Assets;
 
-typedef AnimationGridOptions = {
-    var rows:Int;
-    var cols:Int;
-    var time:FastFloat;
-    var texture:String;
-    @:optional var loop:Bool;
-    @:optional var total:Null<Int>; //total frames ex: 4x4, total=10. Use just the first 10 frames
-    @:optional var frames:Array<Int>; //set the frames manually [0,1,2,3,4]
-};
-
-typedef AnimationFramesOptions = {
-    var time:FastFloat;
-    var frames:Array<String>;
-    @:optional var loop:Bool;
-};
-
 class Animation {
     static private inline var EVENT_PLAY = "play";
     static private inline var EVENT_STOP = "stop";

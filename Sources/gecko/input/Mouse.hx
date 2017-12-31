@@ -5,12 +5,6 @@ import gecko.math.Point;
 import gecko.math.FastFloat;
 import gecko.utils.EventEmitter;
 
-@:enum abstract MouseButton(Int) from Int to Int {
-    var LEFT = 0;
-    var RIGHT = 1;
-    var CENTER = 2;
-}
-
 class Mouse {
     static private var _instance:Mouse = new Mouse();
 
