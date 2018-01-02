@@ -7,6 +7,8 @@ import gecko.timer.TimerManager;
 import gecko.math.FastFloat;
 
 class Scene extends Container {
+    private var SCENE_COUNT:Int = 0;
+
     public var id:String = "";
     public var transparent:Bool = true;
     public var backgroundColor:Color = Color.Black;
@@ -17,11 +19,10 @@ class Scene extends Container {
     public var isPaused(get, null):Bool;
     private var _isPaused:Bool = false;
 
-    //todo add pause|resume
-
-    public override function new(id:String){
+    public override function new(?id:String){
         super();
-        this.id = id;
+        this.id = id != null ? id : 'scene_${SCENE_COUNT}';
+        SCENE_COUNT++;
 
         anchor.set(0,0);
         pivot.set(0,0);

@@ -4,8 +4,6 @@ import gecko.math.FastFloat;
 import gecko.render.Renderer;
 
 class SceneManager {
-    static private var _sceneID:Int = 1;
-
     public var scenes:Array<Scene> = new Array<Scene>();
     public var game:Game;
 
@@ -19,10 +17,6 @@ class SceneManager {
     }
 
     public function createScene(?id:String) {
-        if(id == null){
-            id = 'scene${SceneManager._sceneID}';
-            SceneManager._sceneID++;
-        }
         return new Scene(id);
     }
 
@@ -32,6 +26,26 @@ class SceneManager {
 
     public function removeScene(scene:Scene) {
         scenes.remove(scene);
+    }
+
+    public function getSceneByID(id:string) : Scene {
+        for(sc in scenes){
+            if(sc.id == id){
+                return sc;
+            }
+        }
+
+        return null;
+    }
+
+    public function setSceneByID(id:string) {
+        var sc = getSceneByID(id);
+        if(sc == null){
+            throw Error('Invalid scene id: `$id`');
+            return;
+        }
+
+        this.scene = sc;
     }
 
     public function update(dt:FastFloat) {
