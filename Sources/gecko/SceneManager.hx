@@ -28,7 +28,7 @@ class SceneManager {
         scenes.remove(scene);
     }
 
-    public function getSceneByID(id:string) : Scene {
+    public function getSceneByID(id:String) : Scene {
         for(sc in scenes){
             if(sc.id == id){
                 return sc;
@@ -38,10 +38,10 @@ class SceneManager {
         return null;
     }
 
-    public function setSceneByID(id:string) {
+    public function setSceneByID(id:String) {
         var sc = getSceneByID(id);
         if(sc == null){
-            throw Error('Invalid scene id: `$id`');
+            throw new Error('Invalid scene id: `$id`');
             return;
         }
 

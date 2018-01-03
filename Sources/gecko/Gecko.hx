@@ -69,6 +69,7 @@ class Gecko {
         khaOptions.width = options.width;
         khaOptions.height = options.height;
         khaOptions.windowMode = khaOptions.windowMode != null ? khaOptions.windowMode : (options.fullScreen ? WindowMode.Fullscreen : WindowMode.Window);
+        khaOptions.samplesPerPixel = khaOptions.samplesPerPixel != null ? khaOptions.samplesPerPixel : (options.antialiasing != 0 ? options.antialiasing : 0);
 
         options.khaOptions = khaOptions;
 

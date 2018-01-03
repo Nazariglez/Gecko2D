@@ -21,7 +21,9 @@ class Scene extends Container {
 
     public override function new(?id:String){
         super();
-        this.id = id != null ? id : 'scene_${SCENE_COUNT}';
+        if(id != null){
+            this.id = id;
+        }
         SCENE_COUNT++;
 
         anchor.set(0,0);
