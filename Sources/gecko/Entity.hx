@@ -137,6 +137,23 @@ class Entity {
         return texture;
     }
 
+    public function scaleToFill(width:FastFloat, height:FastFloat) {
+        this.width = width;
+        this.height = height;
+    }
+
+    public function scaleToAspectFit(width:FastFloat, height:FastFloat) {
+        scale.set(Math.min(width/size.x, height/size.y));
+    }
+
+    public function scaleToVerticalAspectFill(width:FastFloat, height:FastFloat) {
+        scale.set(height/size.y);
+    }
+
+    public function scaleToHorizontalAspectFill(width:FastFloat, height:FastFloat) {
+        scale.set(width/size.x);
+    }
+
     public function toScreen(position:Point, ?point:Point) : Point {
         updateTransform(); //todo improve or cache this
         return matrixTransform.apply(position, point);
