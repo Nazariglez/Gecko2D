@@ -7,10 +7,16 @@ import {defaultConfig} from "../config";
 import * as colors from 'colors';
 import * as isUrl from 'is-url';
 
+const usage = `initialize a new project
+          ${C.ENGINE_NAME} init [ -t template ]
+
+          where [ -t template ] can be the name of a template. (by default 'basic').
+          For example: 'empty' to use  the template at 'templates/empty'`;
+
 export const cmd:Command = {
     name: "init",
     alias: ["i"],
-    usage: "initialize a new project",
+    usage: usage,
     action: _action
 }
 
