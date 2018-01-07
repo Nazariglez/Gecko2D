@@ -8,6 +8,7 @@ import gecko.render.Renderer;
 import gecko.render.BlendMode;
 import gecko.resources.Image;
 
+//todo @:autoBuild EntityBuilder where add static methds to pool with Entity.create and Entity.destroy
 class Entity {
     public static var entityID:Int = 0;
 

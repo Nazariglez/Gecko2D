@@ -1,5 +1,6 @@
 package gecko;
 
+import gecko.utils.Event;
 import gecko.utils.EventEmitter;
 import gecko.resources.Texture;
 import gecko.math.FastFloat;

@@ -1,5 +1,6 @@
 package gecko.input;
 
+import gecko.utils.Event;
 import kha.input.Mouse as KhaMouse;
 import gecko.math.Point;
 import gecko.math.FastFloat;

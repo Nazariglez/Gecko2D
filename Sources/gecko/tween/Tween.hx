@@ -1,5 +1,6 @@
 package gecko.tween;
 
+import gecko.utils.Event;
 import gecko.math.FastFloat;
 import gecko.utils.EventEmitter;
 

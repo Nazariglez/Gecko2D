@@ -1,5 +1,6 @@
 package gecko.input;
 
+import gecko.utils.Event;
 import gecko.math.FastFloat;
 import gecko.utils.EventEmitter;
 import kha.input.Keyboard as KhaKeyboard;

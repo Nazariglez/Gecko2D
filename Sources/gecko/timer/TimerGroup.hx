@@ -1,5 +1,6 @@
 package gecko.timer;
 
+import gecko.utils.Event;
 import gecko.utils.EventEmitter;
 import gecko.utils.Chain;
 

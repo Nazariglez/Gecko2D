@@ -1,5 +1,6 @@
 package gecko;
 
+import gecko.utils.Event;
 import haxe.io.Path;
 import gecko.resources.Image;
 import gecko.resources.Video;
