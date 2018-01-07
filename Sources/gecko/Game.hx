@@ -33,16 +33,18 @@ class Game {
     private var _initiated:Bool = false;
 
     private var _backbuffer:kha.Image;
+    private var _opts:GeckoOptions;
 
     public function new(opts:GeckoOptions) {
-        this.title = opts.title;
-        this.width = opts.width;
-        this.height = opts.height;
+        _opts = opts;
+        title = opts.title;
+        width = opts.width;
+        height = opts.height;
 
         addRenderer("2d", new Renderer(), _render2D);
 
         sceneManager = new SceneManager(this);
-        _backbuffer = Image.createRenderTarget(width, height);
+        _backbuffer = Image.createRenderTarget(opts.width, opts.height);
 
         Gecko.subscribeOnRender(_render);
         Gecko.subscribeOnSystemUpdate(_systemUpdate);
@@ -117,16 +119,6 @@ class Game {
         Gecko.stop();
     }
 
-    #if kha_js 
-    public function getCanvas() : js.html.CanvasElement {
-        return cast js.Browser.document.getElementById(kha.CompilerDefines.canvas_id);
-    }
-    #else
-    public function getCanvas() : Dynamic {
-        return null;
-    }
-    #end
-
     private function _systemUpdate() {
         #if debug
         debugStats.system.tick();
@@ -168,7 +160,16 @@ class Game {
         }
 
         framebuffer.g2.begin();
-        framebuffer.g2.drawImage(_backbuffer, 0, 0);
+        #if kha_js
+        if(_opts.html5CanvasMode == Html5CanvasMode.Fill){
+            var canvas = Gecko.getHtml5Canvas();
+            framebuffer.g2.drawScaledImage(_backbuffer, 0, 0, canvas.width, canvas.height);
+        }else{
+            kha.Scaler.scale(_backbuffer, framebuffer, kha.ScreenRotation.RotationNone);
+        }
+        #else
+        kha.Scaler.scale(_backbuffer, framebuffer, kha.ScreenRotation.RotationNone);
+        #end
         framebuffer.g2.end();
     }
 
@@ -192,31 +193,6 @@ class Game {
         start();
     }
 
-    function get_width() : Int {
-        return _width;
-    }
-
-    function set_width(v:Int) : Int {
-        //todo manage resize events in html and native
-        #if kha_js
-        if(v <= 0) {
-            //todo set screen size in desktop?
-            v = js.Browser.window.innerWidth;
-        }
-        #end
-
-        if(!_initiated){
-            #if kha_js
-            var canvas = getCanvas();
-            if(canvas != null){
-                canvas.width = v;
-                canvas.style.width = v + "px";
-            }
-            #end
-        }
-        return _width = v;
-    }
-
     function get_scene() : Scene {
         return sceneManager.scene;
     }
@@ -226,28 +202,21 @@ class Game {
         return scene;
     }
 
+    function get_width() : Int {
+        return _width;
+    }
+
+    function set_width(v:Int) : Int {
+        //todo manage resize events in html and native
+        return _width = v;
+    }
+
     function get_height() : Int {
         return _height;
     }
 
     function set_height(v:Int) : Int {
         //todo manage resize events in html and native
-        #if kha_js
-        if(v <= 0) {
-            //todo set screen size in desktop?
-            v = js.Browser.window.innerHeight;
-        }
-        #end
-
-        if(!_initiated){
-            #if kha_js
-            var canvas = getCanvas();
-            if(canvas != null){
-                canvas.height = v;
-                canvas.style.height = v + "px";
-            }
-            #end
-        }
         return _height = v;
     }
 }

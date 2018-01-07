@@ -27,6 +27,8 @@ class Gecko {
         System.init(options.khaOptions, function _onKhaInit(){
             initiated = true;
 
+            resize(opts.width, opts.height, opts.html5CanvasMode);
+
             for(fn in _initEvents){
                 fn();
             }
@@ -34,7 +36,19 @@ class Gecko {
             Gecko.game = Type.createInstance(gameClass, [options]);
 
             _gameLoop.onTick(Gecko._onGameUpdate);
+
+            //trace(kha.Display.width(0), kha.Display.height(0));
+
+            //todo read size in update and trigger resize events
         });
+    }
+
+    static public function getHtml5Canvas() : #if kha_js js.html.CanvasElement #else Dynamic #end {
+        #if kha_js
+        return cast js.Browser.document.getElementById(kha.CompilerDefines.canvas_id);
+        #else
+        return null
+        #end
     }
 
     static public function exit(){
@@ -43,6 +57,77 @@ class Gecko {
         System.requestShutdown();
         #end
     }
+
+    static public function resize(width:Int, height:Int, ?html5CanvasMode:Html5CanvasMode){
+        html5CanvasMode = html5CanvasMode != null ? html5CanvasMode : Html5CanvasMode.None;
+        #if kha_html5
+        width = width <= 0 ? js.Browser.window.innerWidth : width;
+        height = height <= 0 ? js.Browser.window.innerHeight : height;
+
+        switch(html5CanvasMode){
+            case Html5CanvasMode.Fill: _resizeHtml5CanvasFill(width, height);
+            case Html5CanvasMode.AspectFit: _resizeHtml5CanvasAspectFit(width, height);
+            case Html5CanvasMode.AspectFill: _resizeHtml5CanvasAspectFill(width, height);
+            default: _resizeHtml5Canvas(width, height);
+        }
+        #else
+        width = width <= 0 ? 800 : width; //todo screenSize
+        height = height <= 0 ? 600 : height;
+        System.changeResolution(width, height);
+        #end
+    }
+
+    #if kha_js
+    static private function _resizeHtml5Canvas(width:Int, height:Int) {
+        var canvas = getHtml5Canvas();
+        canvas.width = width;
+        canvas.style.width = width + "px";
+        canvas.height = height;
+        canvas.style.height = height + "px";
+    }
+
+    static private function _resizeHtml5CanvasFill(width:Int, height:Int) {
+        var innerWidth:Int = cast js.Browser.window.innerWidth;
+        var innerHeight:Int = cast js.Browser.window.innerHeight;
+        _resizeHtml5Canvas(innerWidth, innerHeight);
+    }
+
+    static private function _resizeHtml5CanvasAspectFit(width:Int, height:Int) {
+        var canvas = getHtml5Canvas();
+        canvas.width = width;
+        canvas.height = height;
+
+        var ww:Int = untyped __js__('parseInt({0}) || {1}', canvas.style.width, canvas.width);
+        var hh:Int = untyped __js__('parseInt({0}) || {1}', canvas.style.height, canvas.height);
+
+        var innerWidth:Int = cast js.Browser.window.innerWidth;
+        var innerHeight:Int = cast js.Browser.window.innerHeight;
+
+        if (innerWidth < ww || innerHeight < hh || innerWidth > ww || innerHeight > hh) {
+            var scale = Math.min(innerWidth/width, innerHeight/height);
+            canvas.style.width = width*scale + "px";
+            canvas.style.height = height*scale + "px";
+        }
+    }
+
+    static private function _resizeHtml5CanvasAspectFill(width:Int, height:Int) {
+        var canvas = getHtml5Canvas();
+        canvas.width = width;
+        canvas.height = height;
+
+        var ww:Int = untyped __js__('parseInt({0}) || {1}', canvas.style.width, canvas.width);
+        var hh:Int = untyped __js__('parseInt({0}) || {1}', canvas.style.height, canvas.height);
+
+        var innerWidth:Int = cast js.Browser.window.innerWidth;
+        var innerHeight:Int = cast js.Browser.window.innerHeight;
+
+        if (innerWidth < ww || innerHeight < hh || innerWidth > ww || innerHeight > hh) {
+            var scale = Math.max(innerWidth/width, innerHeight/height);
+            canvas.style.width = width*scale + "px";
+            canvas.style.height = height*scale + "px";
+        }
+    }
+    #end
 
     static private function _parseOptions(opts:GeckoOptions) : GeckoOptions {
         var options:GeckoOptions = {};
@@ -54,6 +139,8 @@ class Gecko {
         options.backgroundColor = opts.backgroundColor != null ? opts.backgroundColor : Color.Black;
         options.fullScreen = opts.fullScreen;
         options.transparent = opts.transparent;
+        options.maximizable = opts.maximizable;
+        options.html5CanvasMode = opts.html5CanvasMode != null ? opts.html5CanvasMode : Html5CanvasMode.None;
 
         if(opts.randomSeed == null){
             #if debug
@@ -70,6 +157,7 @@ class Gecko {
         khaOptions.height = options.height;
         khaOptions.windowMode = khaOptions.windowMode != null ? khaOptions.windowMode : (options.fullScreen ? WindowMode.Fullscreen : WindowMode.Window);
         khaOptions.samplesPerPixel = khaOptions.samplesPerPixel != null ? khaOptions.samplesPerPixel : (options.antialiasing != 0 ? options.antialiasing : 0);
+        khaOptions.maximizable = khaOptions.maximizable != null ? khaOptions.maximizable : options.maximizable;
 
         options.khaOptions = khaOptions;
 
