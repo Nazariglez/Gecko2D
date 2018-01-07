@@ -1,5 +1,6 @@
 package gecko;
 
+import gecko.input.Touch;
 import gecko.render.RenderAction;
 import gecko.input.Keyboard;
 import gecko.input.Mouse;
@@ -138,6 +139,10 @@ class Game {
 
         if(Mouse.isEnabled){
             Mouse.update(delta);
+        }
+
+        if(Touch.isEnabled){
+            Touch.update(delta);
         }
     }
 
