@@ -225,7 +225,15 @@ interface KhaMakeConfig {
 }
 
 async function _runKhaMake(config:KhaMakeConfig, cb) {
-    console.log(colors.cyan(`Compiling ${config.target}...`));
+    if(!Object.keys(config.engineConfig.flags).length){
+        console.log(colors.cyan(`Compiling ${config.engineConfig.name} to ${config.target}...`));
+    }else{
+        let txt = `Compiling ${config.engineConfig.name} to ${config.target} using:`;
+        for(let flag in config.engineConfig.flags){
+            txt += colors.gray(`\n- ${flag}: ${config.engineConfig.flags[flag]}`);
+        }
+        console.log(colors.cyan(txt));
+    }
 
     let cmd = `${C.KHA_MAKE_PATH} ${config.target}`;
 

@@ -40,10 +40,12 @@ graphics = "${graphics.osx[0]}"         #mac graphics [${graphics.osx.join(" | "
 [windows]
 graphics = "${graphics.windows[0]}"         #windows graphics [${graphics.windows.join(" | ")}]
 
+[flags]                         #custom compiler flags
+#debug_collisions = true
+
 [core]
 clean_temp = false              #clean temporal files after compile
 compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at ./kha_build
-flags = []                      #custom compiler flags (ex: "debug_collisions")
 compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
 ffmpeg = ""                     #ffmpeg drivers path (could be absolute)
 haxe = ""
@@ -64,6 +66,8 @@ export interface Config {
     linus?:ConfigLinux
     android?:ConfigAndroid
     ios?:ConfigIOS
+
+    flags:{}
 
     core:ConfigCore
 }
@@ -93,7 +97,6 @@ interface ConfigIOS {}
 
 interface ConfigCore {
     clean_temp:boolean
-    flags:string[]
     compiler_parameters:string[]
     ffmpeg?:string
     haxe:string
@@ -149,6 +152,16 @@ export function parseConfig(input:string) : Config {
 
             if(typeof config.html5.uglify === "undefined"){
                 config.html5.uglify = !config.debug; //uglify in !debug by default
+            }
+        }
+
+        config.flags = config.flags || {};
+        for(let key in config.flags) {
+            const validTypes = ["string", "boolean", "number"];
+            const flagType = typeof(config.flags[key]);
+            if(validTypes.indexOf(flagType) === -1){
+                console.error(colors.red(`Error: Invalid flag type ('${key}' type '${flagType}'). Flags must be ${validTypes.join(", ")}.`));
+                return null;
             }
         }
     }
@@ -220,10 +233,10 @@ export function generateKhafileContent(config:Config) : string {
 
     kfile += `p.addDefine("game_name=${config.name}");\n`;
 
-    if(config.core.flags.length){
-        config.core.flags.forEach((s)=>{
-            kfile += `p.addDefine("${s}");\n`;
-        });
+    if(Object.keys(config.flags).length){
+        for(let flag in config.flags){
+            kfile += `p.addDefine("${C.FLAG_PREFIX}${flag}=${config.flags[flag]}");\n`;
+        }
     }
 
     if(config.core.khafile){
