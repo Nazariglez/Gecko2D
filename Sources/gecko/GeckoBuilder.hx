@@ -13,14 +13,41 @@ class GeckoBuilder {
             title = defines["game_name"];
         }
 
-        fields.push({
-            name: "gameTitle",
-            access: [ APublic, AStatic ],
-            kind: FVar(macro : String, macro $v{title}),
-            pos: Context.currentPos()
-        });
+        _addField(fields, "gameTitle", title);
+        _createFlags(defines, fields);
 
         return fields;
+    }
+
+    private static function _addField(fields:Array<Field>, key:String, val:String) {
+        fields.push({
+            name: key,
+            access: [ APublic, AStatic ],
+            kind: FVar(macro : String, macro $v{val}),
+            pos: Context.currentPos()
+        });
+    }
+
+    private static function _createFlags(defines:Map<String, String>, fields:Array<Field>) {
+        var toAdd:Bool = false;
+
+        var flags:Array<Expr> = [macro $v{""} => $v{""}];
+
+        for (k in defines.keys()) {
+            var key = $v{k};
+            if(key.indexOf("flag_") == 0){
+                toAdd = true;
+                flags.push(macro $v{key.substr(5)} => $v{Std.string(defines.get(key))});
+            }
+        }
+
+        fields.push({
+            name: "Flags",
+            meta: null,
+            kind: FieldType.FVar(macro : Map<String, String>, macro $a{flags}),
+            access: [APublic, AStatic],
+            pos: Context.currentPos(),
+        });
     }
 
 }

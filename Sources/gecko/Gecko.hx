@@ -47,7 +47,7 @@ class Gecko {
         #if kha_js
         return cast js.Browser.document.getElementById(kha.CompilerDefines.canvas_id);
         #else
-        return null
+        return null;
         #end
     }
 
