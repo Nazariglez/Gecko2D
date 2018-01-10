@@ -8,6 +8,7 @@ import * as path from 'path';
 import * as nodeWatch from 'node-watch';
 import * as colors from 'colors';
 import * as C from '../const';
+import * as fs from 'fs-extra';
 
 const usage = `watch the project and serve the changes
           ${C.ENGINE_NAME} watch [ -c config ]
@@ -112,7 +113,19 @@ function _action(args:string[], cb:ActionCallback) {
         watchList.push(configFile + "." + C.ENGINE_NAME + ".toml");
 
         if(config.libraries.length){
-            watchList = watchList.concat(config.libraries.map(l => path.isAbsolute(l) ? l : path.join("Libraries", l)));
+            const libraries = config.libraries.map((l)=>{
+                if(path.isAbsolute(l)){
+                    return l;
+                }
+
+                const p = path.join("Libraries", l);
+                if(fs.pathExistsSync(p)){
+                    return p;
+                }
+
+                return null;
+            });
+            watchList = watchList.concat(libraries.filter(p => !!p));
         }
 
         if(config.sources.length){
