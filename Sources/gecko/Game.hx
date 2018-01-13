@@ -1,12 +1,10 @@
 package gecko;
 
 import gecko.input.Touch;
-import gecko.render.RenderAction;
 import gecko.input.Keyboard;
 import gecko.input.Mouse;
 import gecko.utils.GameStats;
 import gecko.math.FastFloat;
-import gecko.render.IRenderer;
 import gecko.render.Renderer;
 import gecko.render.Framebuffer;
 import gecko.tween.TweenManager;
@@ -26,7 +24,7 @@ class Game {
     public var height(get, set):Int;
     private var _height:Int = 0;
 
-    public var renderers:Array<RenderAction<Dynamic>> = [];
+    public var renderer:Renderer;
 
     public var sceneManager:SceneManager;
     public var scene(get, set):Scene;
@@ -42,7 +40,7 @@ class Game {
         width = opts.width;
         height = opts.height;
 
-        addRenderer("2d", new Renderer(), _render2D);
+        renderer = new Renderer();
 
         sceneManager = new SceneManager(this);
         _backbuffer = Image.createRenderTarget(opts.width, opts.height);
@@ -59,52 +57,6 @@ class Game {
     }
 
     public function init(){}
-
-    @:generic public function addRenderer<T:IRenderer>(id:String, renderer:T, action:T->Void){
-        if(_initiated){
-            throw new Error("Renderers must be added before init.");
-            return;
-        }
-
-        //TODO addRenderers could be added at compilation time by macros
-        var rAction:RenderAction<T> = {
-            id: id,
-            renderer: renderer,
-            action: action
-        };
-
-        var index = _getRendererIndex(id);
-        if(index == -1) {
-            renderers.push(rAction);
-            return;
-        }
-
-        renderers[index] = rAction;
-    }
-
-    private inline function _getRendererIndex(id:String) : Int {
-        var index = -1;
-        for(i in 0...renderers.length){
-            if(renderers[i].id == id){
-                index = i;
-                break;
-            }
-        }
-
-        return index;
-    }
-
-    @:generic public function getRenderer<T:IRenderer>(id:String, type:Class<T>) : T {
-        var r:T = null;
-        for(rAction in renderers){
-            if(rAction.id == id){
-                r = cast rAction.renderer;
-                break;
-            }
-        }
-
-        return r;
-    }
 
     public function start() {
         if(!_initiated){ return; }
@@ -158,11 +110,9 @@ class Game {
         debugStats.renderer.tick();
         #end
 
-        for(rAction in renderers){
-            rAction.renderer.g2 = _backbuffer.g2;
-            rAction.renderer.g4 = _backbuffer.g4;
-            rAction.action(rAction.renderer);
-        }
+        renderer.g2 = _backbuffer.g2;
+        renderer.g4 = _backbuffer.g4;
+        _render2D();
 
         framebuffer.g2.begin();
         #if kha_js
@@ -178,10 +128,10 @@ class Game {
         framebuffer.g2.end();
     }
 
-    private function _render2D(r:Renderer) {
-        r.begin();
-        render(r);
-        r.end();
+    private function _render2D() {
+        renderer.begin();
+        render(renderer);
+        renderer.end();
     }
 
     public function render(renderer:Renderer){
@@ -190,7 +140,7 @@ class Game {
     }
 
     private inline function _init() {
-        if(_initiated || renderers.length == 0){ return; }
+        if(_initiated){ return; }
 
         _initiated = true;
 

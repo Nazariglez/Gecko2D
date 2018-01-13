@@ -14,7 +14,7 @@ import gecko.math.Point;
 import gecko.math.Matrix;
 import gecko.Color;
 
-class Renderer implements IRenderer {
+class Renderer {
 	static public var helperRenderer:Renderer;// = new Renderer();
 
 	public var g2:kha.graphics2.Graphics;
@@ -88,6 +88,10 @@ class Renderer implements IRenderer {
     public function end() {
         g2.end();
     }
+
+	public function clear(color:Color = null) {
+		g2.clear(color);
+	}
 
     public function reset() {
         color = 0xffffff;
