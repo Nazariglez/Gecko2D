@@ -15,7 +15,7 @@ import gecko.math.Matrix;
 import gecko.Color;
 
 class Renderer {
-	static public var helperRenderer:Renderer;// = new Renderer();
+	static public var emptyMatrix:Matrix = Matrix.identity();
 
 	public var g2:kha.graphics2.Graphics;
     public var g4:kha.graphics4.Graphics;
@@ -39,7 +39,6 @@ class Renderer {
 
 	private var _blendPipeline:PipelineState;
 
-    private var _emptyMatrix:Matrix = Matrix.identity();
     public var matrix(get, set):Matrix;
 
 	private var _swtTemp:FastFloat;
@@ -65,20 +64,28 @@ class Renderer {
         return vecs;
     }
 
-	public function beginTexture(img:Image) {
+	public function beginRenderTarget(img:Image) {
+		g2.end();
+
 		_g2Cache = g2;
 		_g4Cache = g4;
+
 		g2 = img.g2;
 		g4 = img.g4;
+
 		g2.begin(false);
 	}
 
-	public function endTexture() {
+	public function endRenderTarget() {
 		g2.end();
+
 		g2 = _g2Cache;
 		g4 = _g4Cache;
+
 		_g2Cache = null;
 		_g4Cache = null;
+
+		g2.begin();
 	}
 
     public function begin(clear: Bool = true) {
@@ -96,7 +103,7 @@ class Renderer {
     public function reset() {
         color = 0xffffff;
         alpha = 1;
-        matrix = _emptyMatrix;
+        matrix = Renderer.emptyMatrix;
     }
 
 	public function applyTransform(transform:gecko.math.MatrixTransform) {

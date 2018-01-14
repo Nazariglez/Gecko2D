@@ -1,5 +1,7 @@
 package gecko;
 
+import gecko.resources.Texture;
+import gecko.math.Matrix;
 import gecko.math.Point;
 import gecko.math.Vector2g;
 import gecko.math.MatrixTransform;
@@ -100,6 +102,16 @@ class Entity {
         postRender(r);
     }
 
+    public function processRenderWithMatrix(r:Renderer, matrix:Matrix) {
+        var mm = matrixTransform.world;
+        matrixTransform.world = matrix;
+        matrixTransform.updateLocal(this);
+        preRender(r);
+        render(r);
+        postRender(r);
+        matrixTransform.world = mm;
+    }
+
     public function preRender(r:Renderer) {
         r.blendMode = blendMode;
         r.applyTransform(matrixTransform);
@@ -121,21 +133,13 @@ class Entity {
         //todo
     }
 
-    public function generateTexture() : Image {
-        //todo wrong position with anchors and rotations
-        //todo refactor avoid extra allocations and improve/simplify this method
-        var texture = Image.createRenderTarget(Std.int(Math.ceil(size.x)), Std.int(Math.ceil(size.y)));
-        Renderer.helperRenderer.beginTexture(texture);
-        updateTransform();
-        var xx = matrixTransform.world._20;
-        var yy = matrixTransform.world._21;
-        matrixTransform.world._20 = 0;
-        matrixTransform.world._21 = 0;
-        render(Renderer.helperRenderer);
-        matrixTransform.world._20 = xx;
-        matrixTransform.world._21 = yy;
-        Renderer.helperRenderer.endTexture();
-        return texture;
+    public function generateTexture() : Texture {
+        var buffer = Image.createRenderTarget(Std.int(Math.ceil(size.x)), Std.int(Math.ceil(size.y)));
+        var r = Gecko.renderer;
+        r.beginRenderTarget(buffer);
+        processRenderWithMatrix(r, Renderer.emptyMatrix);
+        r.endRenderTarget();
+        return new Texture(buffer);
     }
 
     public function scaleToFill(width:FastFloat, height:FastFloat) {

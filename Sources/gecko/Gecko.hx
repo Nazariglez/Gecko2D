@@ -1,5 +1,6 @@
 package gecko;
 
+import gecko.render.Renderer;
 import gecko.render.BlendMode;
 import gecko.render.Framebuffer;
 import gecko.math.FastFloat;
@@ -21,6 +22,8 @@ class Gecko {
     static private var _timeTaskID:Int = -1;
 
     static private var _gameLoop:Loop = new Loop();
+
+    static public var renderer(get, null):Renderer;
 
     @:generic static public function init<T:Game>(gameClass:Class<T>, ?opts:GeckoOptions) {
         var options:GeckoOptions = Gecko._parseOptions(opts != null ? opts : {});
@@ -234,6 +237,10 @@ class Gecko {
         for(fn in _gameUpdateEvents){
             fn(delta);
         }
+    }
+
+    static inline function get_renderer() : Renderer {
+        return game.renderer;
     }
 
     private function new(){}
