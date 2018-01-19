@@ -72,7 +72,7 @@ class Entity {
         matrixTransform.tint = tint;
     }
 
-    dynamic public function update(dt:FastFloat) {
+    public function update(dt:FastFloat) {
         //updateTransform();
         if(speed.x != 0){
             position.x += speed.x*dt;
@@ -117,7 +117,7 @@ class Entity {
         r.applyTransform(matrixTransform);
     }
     
-    dynamic public function render(r:Renderer) {}
+    public function render(r:Renderer) {}
 
     public function postRender(r:Renderer) {
         r.blendMode = null;
