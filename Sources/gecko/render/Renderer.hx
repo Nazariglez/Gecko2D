@@ -337,7 +337,15 @@ class Renderer {
 		g2.fillTriangle(x1, y1, x2, y2, x3, y3);
 	}
 
-    public inline function drawCircle(cx:Float, cy:Float, radius:Float, ?strength:Float, ?segments:Int) : Void {
+	public inline function drawArc(cx: Float, cy: Float, radius: Float, sAngle: Float, eAngle: Float, strength: Float = 1.0, ccw: Bool = false) {
+		GraphicsExtension.drawArc(g2, cx, cy, radius, sAngle, eAngle, strength, ccw);
+	}
+
+	public inline function fillArc(cx: Float, cy: Float, radius: Float, sAngle: Float, eAngle: Float, ccw: Bool = false) {
+		GraphicsExtension.fillArc(g2, cx, cy, radius, sAngle, eAngle, ccw);
+	}
+
+	public inline function drawCircle(cx:Float, cy:Float, radius:Float, ?strength:Float, ?segments:Int) : Void {
 		GraphicsExtension.drawCircle(g2, cx, cy, radius, strength, segments);
 	}
 
