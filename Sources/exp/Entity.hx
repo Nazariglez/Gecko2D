@@ -12,14 +12,18 @@ class Entity {
     }
 
     public function addComponent(component:Component) {
-        components.set(component.name, component);
+        components.set(component._typ, component);
     }
 
     public function removeComponent(componentClass:Class<Component>) {
         components.remove(Type.getClassName(componentClass));
     }
 
-    public function getComponent<T>(componentClass:Class<Component>) : T {
-        return components.get(Type.getClassName(componentClass));
+    public function getComponent<T:Component>(componentClass:Class<T>) : T {
+        return cast components.get(Type.getClassName(componentClass));
+    }
+
+    public function hasComponent(componentClass:Class<Component>) : Bool {
+        return components.exists(Type.getClassName(componentClass));
     }
 }
