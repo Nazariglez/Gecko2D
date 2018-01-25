@@ -14,4 +14,6 @@ class Component {
         this.id = id;
         this.name = name == "" ? _typ : name;
     }
+
+    public function reset(){}
 }

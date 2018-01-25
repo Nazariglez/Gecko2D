@@ -4,26 +4,35 @@ class Entity {
     public var id:String = "";
     public var name:String = "";
 
-    public var components:Map<String,Component> = new Map<String, Component>();
+    public var engine:SystemManager;
+
+    private var _components:Map<String,Component> = new Map<String, Component>();
 
     public function new(id:String = "", name:String = "") {
         this.id = id;
         this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
     }
 
-    public function addComponent(component:Component) {
-        components.set(component._typ, component);
+    public function addComponent(component:Component) : Entity {
+        _components.set(component._typ, component);
+        return this;
     }
 
-    public function removeComponent(componentClass:Class<Component>) {
-        components.remove(Type.getClassName(componentClass));
+    public function removeComponent<T:Component>(componentClass:Class<T>) : T {
+        var name = Type.getClassName(componentClass);
+        var c:T = cast _components.get(name);
+        if(c != null){
+            _components.remove(name);
+            return c;
+        }
+        return null;
     }
 
     public function getComponent<T:Component>(componentClass:Class<T>) : T {
-        return cast components.get(Type.getClassName(componentClass));
+        return cast _components.get(Type.getClassName(componentClass));
     }
 
     public function hasComponent(componentClass:Class<Component>) : Bool {
-        return components.exists(Type.getClassName(componentClass));
+        return _components.exists(Type.getClassName(componentClass));
     }
 }
