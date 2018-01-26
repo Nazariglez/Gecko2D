@@ -44,6 +44,12 @@ class EntityManager {
         }
     }
 
+    public function draw() {
+        for(s in systems){
+            s.draw();
+        }
+    }
+
     private function _onEntityAddComponent(entity:Entity, component:Component) {
         for(s in systems){
             if(!s.hasEntity(entity)){

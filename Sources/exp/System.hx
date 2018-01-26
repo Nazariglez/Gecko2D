@@ -1,28 +1,42 @@
 package exp;
 
+using Lambda;
+
 @:allow(exp.EntityManager)
 class System {
     public var priority:Int = 0;
-    public var componentList:Array<Class<Component>> = [];
+    public var requiredComponents:Array<Class<Component>> = [];
 
     private var _entities:Array<Entity> = [];
 
-    public function new(){
+    public function new(){}
 
-    }
-
-    public function update(){
-        for(e in _entities){
-            updateEntity(e);
-        }
-    }
-
-    public function updateEntity(entity:Entity) {
-
-    }
+    public function update(){}
+    public function draw(){}
 
     public inline function getEntities() : Array<Entity> {
         return _entities;
+    }
+
+    public inline function getEntitiesWithComponent(componentClass:Class<Component>) : Array<Entity> {
+        return _entities.filter(function(e) {
+            return e.hasComponent(componentClass);
+        }).array();
+    }
+
+    //override to check if an entity is valid for your system
+    public function isValidEntity(entity:Entity) : Bool {
+        for(c in requiredComponents){
+            if(!entity.hasComponent(c)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public inline function hasEntity(entity:Entity) : Bool {
+        return _entities.indexOf(entity) != -1;
     }
 
     private function _registerEntity(entity:Entity) {
@@ -33,7 +47,8 @@ class System {
     }
 
     private function _onEntityRemoveComponent(entity:Entity, component:Component) {
-        if(componentList.indexOf(Type.getClass(component)) != -1){
+        //if(componentList.indexOf(Type.getClass(component)) != -1){
+        if(!isValidEntity(entity)){
             _removeEntity(entity);
         }
     }
@@ -47,19 +62,5 @@ class System {
         for(e in _entities){
             _removeEntity(e);
         }
-    }
-
-    public function isValidEntity(entity:Entity) : Bool {
-        for(c in componentList){
-            if(!entity.hasComponent(c)){
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public inline function hasEntity(entity:Entity) : Bool {
-        return _entities.indexOf(entity) != -1;
     }
 }
