@@ -4,12 +4,18 @@ using Lambda;
 
 @:allow(exp.EntityManager)
 class System {
+    public var id:Int = -1;
+    public var name:String = "";
+
     public var priority:Int = 0;
     public var requiredComponents:Array<Class<Component>> = [];
 
     private var _entities:Array<Entity> = [];
 
-    public function new(){}
+    public function new(name:String = "") {
+        id = EntityManager.getUniqueID();
+        this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
+    }
 
     public function update(){}
     public function draw(){}

@@ -1,11 +1,20 @@
 package exp;
 
 class EntityManager {
+    static private var _countUniqueID:Int = 0;
+    static public function getUniqueID() : Int {
+        return _countUniqueID++;
+    }
+
+    public var id:Int = -1;
+    public var name:String = "";
+
     public var entities:Array<Entity> = [];
     public var systems:Array<System> = [];
 
-    public function new(){
-        //todo register in system to render or update via events?
+    public function new(name:String = ""){
+        id = EntityManager.getUniqueID();
+        this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
     }
 
     public function addEntity(entity:Entity) {

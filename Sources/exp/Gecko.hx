@@ -1,11 +1,12 @@
 package exp;
 
 import kha.Scheduler;
-import kha.FastFloat;
 import kha.Framebuffer;
 import kha.System;
 
 class Gecko {
+    static public var manager:EntityManager = new EntityManager();
+
     static public function init(
         onReady:Void->Void,
         onRender:Framebuffer->Void,
@@ -16,10 +17,19 @@ class Gecko {
             var canvas:js.html.CanvasElement = getHtml5Canvas();
             canvas.style.width = opts.width + "px";
             canvas.style.height = opts.height + "px";
+            System.notifyOnRender(_draw);
             System.notifyOnRender(onRender);
-            Scheduler.addTimeTask(onUpdate, 0, 1 / 60);
+            Scheduler.addTimeTask(_update, 0, 1 / 60);
             onReady();
         });
+    }
+
+    static private function _update() {
+        manager.update();
+    }
+
+    static private function _draw(f:Framebuffer) {
+        manager.draw();
     }
 
     static public function getHtml5Canvas() : #if kha_js js.html.CanvasElement #else Dynamic #end {

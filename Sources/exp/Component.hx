@@ -5,13 +5,13 @@ class Component {
     private var _typ:String = "";
     public var entity:Entity;
 
-    public var id:String = "";
+    public var id:Int = -1;
     public var name:String = "";
 
-    public function new(id:String = "", name:String = "") {
+    public function new(name:String = "") {
         _typ = Type.getClassName(Type.getClass(this));
 
-        this.id = id;
+        id = EntityManager.getUniqueID();
         this.name = name == "" ? _typ : name;
     }
 

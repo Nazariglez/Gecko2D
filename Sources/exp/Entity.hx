@@ -1,7 +1,7 @@
 package exp;
 
 class Entity {
-    public var id:String = "";
+    public var id:Int = -1;
     public var name:String = "";
     public var manager:EntityManager;
 
@@ -10,8 +10,8 @@ class Entity {
     private var _addHandlers:Array<Entity->Component->Void> = [];
     private var _removeHandlers:Array<Entity->Component->Void> = [];
 
-    public function new(id:String = "", name:String = "") {
-        this.id = id;
+    public function new(name:String = "") {
+        id = EntityManager.getUniqueID();
         this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
     }
 
@@ -23,6 +23,7 @@ class Entity {
 
     public function removeComponent<T:Component>(componentClass:Class<T>) : T {
         var name = Type.getClassName(componentClass);
+
         var c:T = cast _components.get(name);
         if(c != null){
             _components.remove(name);
@@ -30,6 +31,12 @@ class Entity {
             return c;
         }
         return null;
+    }
+
+    public function removeAllComponents() {
+        for(c in _components.keys()){
+            removeComponent(Type.resolveClass(c));
+        }
     }
 
     public function getComponent<T:Component>(componentClass:Class<T>) : T {
