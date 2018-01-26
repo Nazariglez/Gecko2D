@@ -1,7 +1,8 @@
 package exp;
 
-@:allow(exp.SystemManager)
+@:allow(exp.EntityManager)
 class System {
+    public var priority:Int = 0;
     public var componentList:Array<Class<Component>> = [];
 
     private var _entities:Array<Entity> = [];
@@ -20,13 +21,25 @@ class System {
 
     }
 
+    public inline function getEntities() : Array<Entity> {
+        return _entities;
+    }
+
     private function _registerEntity(entity:Entity) {
-        if(_isValidEntity(entity)){
+        if(isValidEntity(entity)){
             _entities.push(entity);
+            entity.onRemoveComponent(_onEntityRemoveComponent);
+        }
+    }
+
+    private function _onEntityRemoveComponent(entity:Entity, component:Component) {
+        if(componentList.indexOf(Type.getClass(component)) != -1){
+            _removeEntity(entity);
         }
     }
 
     private function _removeEntity(entity:Entity) {
+        entity.offRemoveComponent(_onEntityRemoveComponent);
         _entities.remove(entity);
     }
 
@@ -36,7 +49,7 @@ class System {
         }
     }
 
-    private function _isValidEntity(entity:Entity) : Bool {
+    public function isValidEntity(entity:Entity) : Bool {
         for(c in componentList){
             if(!entity.hasComponent(c)){
                 return false;
@@ -44,5 +57,9 @@ class System {
         }
 
         return true;
+    }
+
+    public inline function hasEntity(entity:Entity) : Bool {
+        return _entities.indexOf(entity) != -1;
     }
 }
