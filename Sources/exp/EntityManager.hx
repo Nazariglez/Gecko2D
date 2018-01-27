@@ -17,8 +17,6 @@ class EntityManager {
         this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
     }
 
-
-
     public function addEntity(entity:Entity) {
         entity.manager = this;
         entities.push(entity);
@@ -43,6 +41,13 @@ class EntityManager {
         for(e in entities){
             system._registerEntity(e);
         }
+        systems.sort(_sortSystems); //todo parallel threading with same priority?
+    }
+
+    private function _sortSystems(a:System, b:System) {
+        if (a.priority < b.priority) return -1;
+        if (a.priority > b.priority) return 1;
+        return 0;
     }
 
     public function removeSystem(system:System) {
@@ -50,15 +55,15 @@ class EntityManager {
         system._removeAllEntities();
     }
 
-    public function update() {
+    public function update(delta:Float32) {
         for(s in systems){
-            s.update();
+            s.update(delta);
         }
     }
 
-    public function draw() {
+    public function render(r:exp.render.Renderer) {
         for(s in systems){
-            s.draw();
+            s.render(r);
         }
     }
 

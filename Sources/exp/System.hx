@@ -17,8 +17,8 @@ class System {
         this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
     }
 
-    public function update(){}
-    public function draw(){}
+    public function update(delta:Float32){}
+    public function render(r:exp.render.Renderer){}
 
     public inline function getEntities() : Array<Entity> {
         return _entities;
