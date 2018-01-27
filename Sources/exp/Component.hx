@@ -15,5 +15,18 @@ class Component {
         this.name = name == "" ? _typ : name;
     }
 
+    public function init(){}
     public function reset(){}
+
+    public function destroy() {
+        reset();
+        if(entity != null){
+            entity.removeComponent(Type.getClass(this));
+        }
+        _toPool();
+    }
+
+    private function _toPool() {
+        //filled with macros
+    }
 }

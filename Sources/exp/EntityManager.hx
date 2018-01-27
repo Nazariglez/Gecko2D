@@ -17,6 +17,8 @@ class EntityManager {
         this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
     }
 
+
+
     public function addEntity(entity:Entity) {
         entity.manager = this;
         entities.push(entity);
@@ -29,11 +31,12 @@ class EntityManager {
     public function removeEntitiy(entity:Entity) {
         for(s in systems){
             entity.offAddComponent(_onEntityAddComponent);
-
+            entity.manager = null;
             s._removeEntity(entity);
         }
         entities.remove(entity);
     }
+
 
     public function addSystem(system:System) {
         systems.push(system);

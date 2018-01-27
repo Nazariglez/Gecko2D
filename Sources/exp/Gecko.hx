@@ -17,7 +17,7 @@ class Gecko {
             var canvas:js.html.CanvasElement = getHtml5Canvas();
             canvas.style.width = opts.width + "px";
             canvas.style.height = opts.height + "px";
-            System.notifyOnRender(_draw);
+            System.notifyOnRender(_render);
             System.notifyOnRender(onRender);
             Scheduler.addTimeTask(_update, 0, 1 / 60);
             onReady();
@@ -28,7 +28,7 @@ class Gecko {
         manager.update();
     }
 
-    static private function _draw(f:Framebuffer) {
+    static private function _render(f:Framebuffer) {
         manager.draw();
     }
 

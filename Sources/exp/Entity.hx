@@ -1,5 +1,6 @@
 package exp;
 
+//@:build(exp.macros.PoolBuilder.build())
 class Entity {
     public var id:Int = -1;
     public var name:String = "";
@@ -15,6 +16,27 @@ class Entity {
         this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
     }
 
+    public function init(){}
+    public function reset(){}
+
+    public function destroy() {
+        reset();
+        if(manager != null){
+            manager.removeEntitiy(this);
+        }
+        for(name in _components.keys()){
+            var component = _components.get(name);
+            _components.remove(name);
+            _dispatchRemoveComponent(this, component);
+            component.destroy();
+        }
+        _toPool();
+    }
+
+    private function _toPool() {
+        //filled with macros
+    }
+
     public function addComponent(component:Component) : Entity {
         _components.set(component._typ, component);
         _dispatchAddComponent(this, component);
@@ -26,6 +48,7 @@ class Entity {
 
         var c:T = cast _components.get(name);
         if(c != null){
+            c.entity = null;
             _components.remove(name);
             _dispatchRemoveComponent(this, c);
             return c;
