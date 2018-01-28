@@ -7,6 +7,7 @@ class Entity {
     public var manager:EntityManager;
 
     private var _components:Map<String,Component> = new Map<String, Component>();
+    private var _componentsList:Array<Component> = [];
 
     private var _addHandlers:Array<Entity->Component->Void> = [];
     private var _removeHandlers:Array<Entity->Component->Void> = [];
@@ -38,7 +39,9 @@ class Entity {
     }
 
     public function addComponent(component:Component) : Entity {
+        component.entity = this;
         _components.set(component._typ, component);
+        _componentsList.push(component);
         _dispatchAddComponent(this, component);
         return this;
     }
@@ -50,6 +53,7 @@ class Entity {
         if(c != null){
             c.entity = null;
             _components.remove(name);
+            _componentsList.remove(c);
             _dispatchRemoveComponent(this, c);
             return c;
         }
@@ -60,6 +64,10 @@ class Entity {
         for(c in _components.keys()){
             removeComponent(Type.resolveClass(c));
         }
+    }
+
+    public inline function getAllComponents() : Array<Component> {
+        return _componentsList;
     }
 
     public function getComponent<T:Component>(componentClass:Class<T>) : T {

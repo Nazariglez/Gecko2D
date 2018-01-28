@@ -1,5 +1,6 @@
 package exp;
 
+import exp.systems.RenderSystem;
 import exp.math.Random;
 import kha.WindowMode;
 import kha.Scheduler;
@@ -15,7 +16,7 @@ import exp.resources.Image;
 class Gecko {
     static public var isIniaited:Bool = false;
 
-    static public var manager:EntityManager = new EntityManager();
+    static public var manager:EntityManager;
 
     static private var _updateHandlers:Array<Float32->Void> = [];
     static private var _renderHandlers:Array<Renderer->Void> = [];
@@ -44,8 +45,7 @@ class Gecko {
 
         Random.init(opts.randomSeed);
 
-        onUpdate(manager.update);
-        onRender(manager.render);
+        _initEntityManager();
 
         isIniaited = true;
 
@@ -54,6 +54,13 @@ class Gecko {
         }
 
         onReady();
+    }
+
+    static private function _initEntityManager() {
+        manager = new EntityManager();
+        manager.addSystem(new RenderSystem());
+        onUpdate(manager.update);
+        onRender(manager.render);
     }
 
     static public function resize(width:Int, height:Int, ?html5CanvasMode:Html5CanvasMode){
