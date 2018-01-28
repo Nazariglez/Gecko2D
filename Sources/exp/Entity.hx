@@ -5,6 +5,10 @@ class Entity {
     public var id:Int = -1;
     public var name:String = "";
     public var manager:EntityManager;
+    public var enabled:Bool = true;
+
+    //todo hardcoded the renderComponent ref? and add it when addComponent Std.is(IRendereable) === true?
+    //public var renderComponent:IRendereable;
 
     private var _components:Map<String,Component> = new Map<String, Component>();
     private var _componentsList:Array<Component> = [];

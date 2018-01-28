@@ -7,6 +7,7 @@ class Component {
 
     public var id:Int = -1;
     public var name:String = "";
+    public var enabled:Bool = true;
 
     public function new(name:String = "") {
         _typ = Type.getClassName(Type.getClass(this));

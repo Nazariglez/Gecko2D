@@ -7,9 +7,16 @@ import exp.render.Renderer;
 class RenderSystem extends System {
     override public function render(r:Renderer) {
         for(e in getEntities()){
+            if(!e.enabled)continue;
+
             for(c in e.getAllComponents()){
+                if(!c.enabled)continue;
+
                 if(Std.is(c, IRendereable)){
-                    cast(c, IRendereable).render(r);
+                    var renderComponent:IRendereable = cast c;
+                    if(!renderComponent.visible)continue;
+
+                    renderComponent.render(r);
                 }
             }
         }
