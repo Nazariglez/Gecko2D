@@ -3,6 +3,7 @@ package exp;
 import exp.macros.IAutoPool;
 import exp.components.Component;
 
+@:autoPool(10)
 class Entity implements IAutoPool {
     public var id:Int = -1;
     public var name:String = "";
