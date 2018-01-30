@@ -1,7 +1,9 @@
-package exp;
+package exp.components;
+
+import exp.macros.IAutoPool;
 
 @:allow(exp.Entity)
-class Component {
+class Component implements IAutoPool {
     private var _typ:String = "";
     public var entity:Entity;
 
@@ -19,15 +21,13 @@ class Component {
     public function init(){}
     public function reset(){}
 
-    public function destroy() {
+    public function destroy(avoidPool:Bool = false) {
         reset();
         if(entity != null){
             entity.removeComponent(Type.getClass(this));
         }
-        _toPool();
+        if(!avoidPool)__toPool__();
     }
 
-    private function _toPool() {
-        //filled with macros
-    }
+    private inline function __toPool__() {} //macros
 }

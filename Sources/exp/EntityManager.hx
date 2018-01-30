@@ -1,5 +1,8 @@
 package exp;
 
+import exp.systems.System;
+import exp.components.Component;
+
 class EntityManager {
     static private var _countUniqueID:Int = 0;
     static public function getUniqueID() : Int {

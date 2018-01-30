@@ -1,7 +1,9 @@
 package exp;
 
-//@:build(exp.macros.PoolBuilder.build())
-class Entity {
+import exp.macros.IAutoPool;
+import exp.components.Component;
+
+class Entity implements IAutoPool {
     public var id:Int = -1;
     public var name:String = "";
     public var manager:EntityManager;
@@ -24,23 +26,24 @@ class Entity {
     public function init(){}
     public function reset(){}
 
-    public function destroy() {
+    public function destroy(avoidPool:Bool = false) {
         reset();
+
         if(manager != null){
             manager.removeEntitiy(this);
         }
+
         for(name in _components.keys()){
             var component = _components.get(name);
             _components.remove(name);
             _dispatchRemoveComponent(this, component);
             component.destroy();
         }
-        _toPool();
+
+        if(!avoidPool)__toPool__();
     }
 
-    private function _toPool() {
-        //filled with macros
-    }
+    private inline function __toPool__() {} //macro
 
     public function addComponent(component:Component) : Entity {
         component.entity = this;

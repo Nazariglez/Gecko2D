@@ -5,7 +5,7 @@ import exp.render.IRendereable;
 import exp.render.Renderer;
 import exp.Float32;
 
-class RenderComponent extends exp.Component implements IRendereable {
+class RenderComponent extends Component implements IRendereable {
     public var visible:Bool = true;
     public var alpha:Float32 = 1.0;
     public var color:Color = Color.White;

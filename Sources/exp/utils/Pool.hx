@@ -23,7 +23,7 @@ class Pool<T> {
             _reset = opts.reset;
         }
 
-        for(i in 0...opts.num){
+        for(i in 0...opts.amount){
             _objects.push(_create());
         }
     }
@@ -41,7 +41,7 @@ class Pool<T> {
             opts = {};
         }
         opts.args = opts.args != null ? opts.args : null; 
-        opts.num = opts.num != null ? opts.num : 10;
+        opts.amount = opts.amount != null ? opts.amount : 1;
         opts.init = opts.init != null ? opts.init : null; 
         opts.reset = opts.reset != null ? opts.reset : null;
         return opts;

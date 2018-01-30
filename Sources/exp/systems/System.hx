@@ -1,4 +1,6 @@
-package exp;
+package exp.systems;
+
+import exp.components.Component;
 
 using Lambda;
 
