@@ -3,7 +3,7 @@ package exp;
 import exp.macros.IAutoPool;
 import exp.components.Component;
 
-@:autoPool(10)
+@:poolAmount(10)
 class Entity implements IAutoPool {
     public var id:Int = -1;
     public var name:String = "";
@@ -24,7 +24,6 @@ class Entity implements IAutoPool {
         this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
     }
 
-    public function init(){}
     public function reset(){}
 
     public function destroy(avoidPool:Bool = false) {
@@ -44,7 +43,7 @@ class Entity implements IAutoPool {
         if(!avoidPool)__toPool__();
     }
 
-    private inline function __toPool__() {} //macro
+    private function __toPool__() {} //macro
 
     public function addComponent(component:Component) : Entity {
         component.entity = this;

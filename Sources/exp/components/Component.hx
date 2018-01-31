@@ -18,7 +18,6 @@ class Component implements IAutoPool {
         this.name = name == "" ? _typ : name;
     }
 
-    public function init(){}
     public function reset(){}
 
     public function destroy(avoidPool:Bool = false) {
@@ -29,5 +28,5 @@ class Component implements IAutoPool {
         if(!avoidPool)__toPool__();
     }
 
-    private inline function __toPool__() {} //macros
+    private function __toPool__() {} //macros
 }

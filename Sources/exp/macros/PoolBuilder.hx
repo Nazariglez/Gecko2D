@@ -8,7 +8,7 @@ import haxe.macro.Type;
 // todo allow override build(params)
 class PoolBuilder {
 
-    static private var poolOptions = ":autoPool";
+    static private var poolOptions = ":poolAmount";
 
     static public macro function build() : Array<Field> {
         var fields = Context.getBuildFields();
@@ -32,28 +32,69 @@ class PoolBuilder {
         var poolFields = (macro class {
             static var __pool__ = new exp.utils.Pool($p{path}, {amount: $v{amount}/*, args: $v{arguments}*/});
             static inline public function getPool() return __pool__;
-            static inline public function create() return __pool__.get();
+            //static inline public function create() return __pool__.get();
         }).fields;
+
+        //add create function
+        var initIndex = -1;
+        var existsInit = false;
+        for(f in fields){
+            initIndex++;
+            if(f.name == "init"){
+                existsInit = true;
+                break;
+            }
+        }
+
+        if(!existsInit){
+            fields.push((macro class {
+                static inline public function create() return __pool__.get();
+            }).fields[0]);
+        }else{
+            var createFn = (macro class {
+                static inline public function create(){
+                    var obj = __pool__.get();
+                    obj.init();
+                    return obj;
+                }
+            }).fields[0];
+
+
+            //add init args
+            var initArgs = switch(fields[initIndex].kind){
+                case FFun(fn): fn.args;
+                default: [];
+            };
+
+            switch(createFn.kind){
+                case FFun(fn):
+                    fn.args = initArgs;
+                    default:
+            }
+
+            fields.push(createFn);
+
+        }
 
         //add __toPool__ fn
         var i = -1;
+        var existsToPool = false;
         for(f in fields){
             i++;
             if(f.name == "__toPool__"){
+                existsToPool = true;
                 break;
             }
         }
 
         var toPoolField = (macro class {
-            private inline function __toPool__() __pool__.put(this);
+            override private function __toPool__() __pool__.put(this);
         }).fields[0];
 
-        if(i != -1){
+        if(existsToPool){
             switch (fields[i].kind) {
                 case FieldType.FFun(fn):
                     if (isEmptyFun(fn.expr)){
-                        var fname = fields[i].name;
-                        var args = [for (arg in fn.args) macro $i{arg.name}];
 
                         //change the body of the __toPool__
                         fn.expr = macro {
