@@ -4,14 +4,11 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
 
-//todo https://haxe.org/manual/macro-limitations-build-order.html
-// todo allow override build(params)
 class PoolBuilder {
 
     static private var _initFns:Map<String, Field> = new Map<String, Field>();
     static private var _poolOptions = ":poolAmount";
 
-    //todo check inheritance methods
     static public macro function build() : Array<Field> {
         var fields = Context.getBuildFields();
         var clazz = Context.getLocalClass().get();
@@ -79,21 +76,17 @@ class PoolBuilder {
                 default: [];
             };
 
-            var argsName:Array<Expr> = [for(arg in initArgs) macro $i{arg.name}];
-            trace("INIT",argsName);
+            //pass the same arguments to the call of init
+            var argsName = [for(arg in initArgs) macro $i{arg.name}];
+            var objInit = macro obj.init($a{argsName});
 
             var createFn = (macro class {
                 static inline public function create(){
                     var obj = __pool__.get();
-                    //trace($i{(for(n in argsName)n)});
-
-                    obj.init(${argsName[0]}, ${argsName[1]});
-                    //obj.init();
+                    $objInit;
                     return obj;
                 }
             }).fields[0];
-
-        trace(createFn);
 
             switch(createFn.kind){
                 case FFun(fn):

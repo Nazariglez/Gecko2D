@@ -1,11 +1,12 @@
 package exp.systems;
 
+import exp.macros.IAutoPool;
 import exp.components.Component;
 
 using Lambda;
 
 @:allow(exp.EntityManager)
-class System {
+class System implements IAutoPool {
     public var id:Int = -1;
     public var name:String = "";
 
@@ -21,6 +22,15 @@ class System {
 
     public function update(delta:Float32){}
     public function render(r:exp.render.Renderer){}
+    public function reset(){}
+
+    public function destroy(avoidPool:Bool = false) {
+        reset();
+        removeAllEntities();
+        if(!avoidPool)__toPool__();
+    }
+
+    private function __toPool__(){} //macro
 
     public inline function getEntities() : Array<Entity> {
         return _entities;
@@ -41,6 +51,12 @@ class System {
         }
 
         return true;
+    }
+
+    public function removeAllEntities() {
+        for(e in _entities){
+            _removeEntity(e);
+        }
     }
 
     public inline function hasEntity(entity:Entity) : Bool {

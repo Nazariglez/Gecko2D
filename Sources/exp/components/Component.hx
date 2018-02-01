@@ -17,7 +17,7 @@ class Component implements IAutoPool {
         id = EntityManager.getUniqueID();
         this.name = name == "" ? _typ : name;
     }
-    public function init(lel:Int = 200, f:String = "lel"){}
+
     public function reset(){}
 
     public function destroy(avoidPool:Bool = false) {
