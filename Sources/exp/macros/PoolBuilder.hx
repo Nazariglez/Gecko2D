@@ -8,8 +8,10 @@ import haxe.macro.Type;
 // todo allow override build(params)
 class PoolBuilder {
 
-    static private var poolOptions = ":poolAmount";
+    static private var _initFns:Map<String, Field> = new Map<String, Field>();
+    static private var _poolOptions = ":poolAmount";
 
+    //todo check inheritance methods
     static public macro function build() : Array<Field> {
         var fields = Context.getBuildFields();
         var clazz = Context.getLocalClass().get();
@@ -18,8 +20,8 @@ class PoolBuilder {
         //var arguments:Array<Dynamic> = null;
         var amount:Int = 1;
 
-        if(clazz.meta.has(poolOptions)){
-            var autoPool = clazz.meta.extract(poolOptions);
+        if(clazz.meta.has(_poolOptions)){
+            var autoPool = clazz.meta.extract(_poolOptions);
             var len = autoPool[0].params.length;
             if(len == 1){
                 amount = switch(autoPool[0].params[0].expr){
@@ -38,33 +40,60 @@ class PoolBuilder {
         //add create function
         var initIndex = -1;
         var existsInit = false;
+        var initFn:Field;
+
         for(f in fields){
-            initIndex++;
             if(f.name == "init"){
                 existsInit = true;
+                initFn = f;
+                _initFns.set(getClassId(clazz), f);
                 break;
             }
         }
+
+        //get the inherited init args
+        if(!existsInit && clazz.superClass != null){
+
+            var _cls = clazz;
+            while(_cls.superClass != null){
+                _cls = _cls.superClass.t.get();
+                var id = getClassId(_cls);
+                if(_initFns.exists(id)){
+                    initFn = _initFns.get(id);
+                    existsInit = true;
+                    break;
+                }
+            }
+
+        }
+
 
         if(!existsInit){
             fields.push((macro class {
                 static inline public function create() return __pool__.get();
             }).fields[0]);
         }else{
+            //add init args
+            var initArgs = switch(initFn.kind){
+                case FFun(fn): fn.args;
+                default: [];
+            };
+
+            var argsName:Array<Expr> = [for(arg in initArgs) macro $i{arg.name}];
+            trace("INIT",argsName);
+
             var createFn = (macro class {
                 static inline public function create(){
                     var obj = __pool__.get();
-                    obj.init();
+                    //trace($i{(for(n in argsName)n)});
+
+                    obj.init(${argsName[0]}, ${argsName[1]});
+                    //obj.init();
                     return obj;
                 }
             }).fields[0];
 
-
-            //add init args
-            var initArgs = switch(fields[initIndex].kind){
-                case FFun(fn): fn.args;
-                default: [];
-            };
+        trace(createFn);
 
             switch(createFn.kind){
                 case FFun(fn):
@@ -110,6 +139,10 @@ class PoolBuilder {
         }
 
         return fields.concat(poolFields);
+    }
+
+    static function getClassId(clazz:ClassType) : String {
+        return (clazz.pack.concat([clazz.name])).join("_");
     }
 
     //check if the functions has empty body

@@ -9,6 +9,9 @@ import kha.System;
 import exp.render.Renderer;
 import exp.resources.Image;
 
+//TODO gecko renderer must be Gecko.graphics and must be accesible
+    //TODO gecko render(r:Renderer) must be gecko draw() and use Gecko.graphics as global?
+
 #if ((kha_html5 ||kha_debug_html5) && debug)
 @:expose
 #end
@@ -54,6 +57,10 @@ class Gecko {
         }
 
         onReady();
+    }
+
+    static public function addSystems(systems:Array<System>) {
+        //todo
     }
 
     static private function _initEntityManager() {

@@ -1,5 +1,6 @@
 package exp.utils;
 
+//todo macro the emit http://www.mromecki.fr/blog/post/signals-haxe-macros-inline-dispatch
 class EventEmitter {
     public var eventsOnce:Map<String, Array<Dynamic>> = new Map<String, Array<Dynamic>>();
     public var events:Map<String, Array<Dynamic>> = new Map<String, Array<Dynamic>>();
