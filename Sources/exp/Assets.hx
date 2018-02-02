@@ -275,21 +275,21 @@ class Assets {
 
     public function observProgress(task:String->(?String->Void)->Void) : String->(?String->Void)->Void {
         return function(name:String, next:?String->Void){
-            _eventEmitter.emit(EVENT_PROGRESS_START, [this.progress, name]);
+            _eventEmitter.emit(EVENT_PROGRESS_START, this.progress, name);
 
             task(name, function(?err:String){
                 if(err != null){
-                    _eventEmitter.emit(EVENT_ERROR, [err]);
+                    _eventEmitter.emit(EVENT_ERROR, err);
                     next(err);
                     return;
                 }
 
                 loaded += 1;
 
-                _eventEmitter.emit(EVENT_PROGRESS_END, [this.progress, name]);
+                _eventEmitter.emit(EVENT_PROGRESS_END, this.progress, name);
 
                 if(len != 0 && len == loaded){
-                    _eventEmitter.emit(EVENT_COMPLETE);
+                   _eventEmitter.emit(EVENT_COMPLETE);
                 }
 
                 next();

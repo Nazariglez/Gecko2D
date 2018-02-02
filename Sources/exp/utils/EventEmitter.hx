@@ -1,17 +1,37 @@
 package exp.utils;
 
-//todo macro the emit http://www.mromecki.fr/blog/post/signals-haxe-macros-inline-dispatch
+import haxe.macro.Expr;
+import haxe.macro.Context;
+
 class EventEmitter {
     public var eventsOnce:Map<String, Array<Dynamic>> = new Map<String, Array<Dynamic>>();
     public var events:Map<String, Array<Dynamic>> = new Map<String, Array<Dynamic>>();
     
     public function new(){}
 
-    public function emit(event:String, args: Dynamic = null){
+    public macro function emit(e1:Expr, extra:Array<Expr>) {
+        var eventName = extra.shift();
+        var e = macro evt($a{extra});
+        return macro {
+            if($e1.eventsOnce.exists($eventName)){
+                for(evt in $e1.eventsOnce[$eventName]){
+                    $e;
+                }
+            }
+
+            if($e1.events.exists($eventName)){
+                for(evt in $e1.events[$eventName]){
+                    $e;
+                }
+            }
+        };
+    }
+
+    public function emitReflect(event:String, args: Dynamic = null){
         if(eventsOnce.exists(event)){
             for(evt in eventsOnce[event]){
                 Reflect.callMethod(null, evt, args);
-                removeListener(event, evt);
+                off(event, evt);
             }
         }
 
@@ -27,7 +47,7 @@ class EventEmitter {
         return event;
     }
 
-    public function addListener(event:String, handler:Dynamic, once:Bool = false){
+    public function on(event:String, handler:Dynamic, once:Bool = false){
         if(handler == null){
             return;
         }
@@ -47,7 +67,7 @@ class EventEmitter {
         }
     }
 
-    public function removeListener(event:String, handler:Dynamic){
+    public function off(event:String, handler:Dynamic){
         if(handler == null){
             return;
         }

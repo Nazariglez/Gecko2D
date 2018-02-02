@@ -34,10 +34,10 @@ abstract Event<T>(EventPointer) from EventPointer to Event<T> {
     }
 
     @:op(A += B) inline function addListener(b:T) {
-        this.emitter.addListener(this.name, b, this.once);
+        this.emitter.on(this.name, b, this.once);
     }
 
     @:op(A -= B) inline function removeListener(b:T) {
-        this.emitter.removeListener(this.name, b);
+        this.emitter.off(this.name, b);
     }
 }
