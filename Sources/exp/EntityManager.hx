@@ -15,6 +15,9 @@ class EntityManager {
     public var entities:Array<Entity> = [];
     public var systems:Array<System> = [];
 
+    private var _updateSystems:Array<System> = [];
+    private var _drawSystems:Array<System> = [];
+
     public function new(name:String = ""){
         id = EntityManager.getUniqueID();
         this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
@@ -44,7 +47,18 @@ class EntityManager {
         for(e in entities){
             system._registerEntity(e);
         }
+
+        if(Std.is(system, IDrawable)){
+            _drawSystems.push(system);
+        }
+
+        if(Std.is(system, IUpdatable)){
+            _updateSystems.push(system);
+        }
+
         systems.sort(_sortSystems); //todo parallel threading with same priority?
+        _drawSystems.sort(_sortSystems); //todo improve this? dont do three sorts...
+        _updateSystems.sort(_sortSystems); //improve this?
     }
 
     private function _sortSystems(a:System, b:System) {
@@ -55,18 +69,20 @@ class EntityManager {
 
     public function removeSystem(system:System) {
         systems.remove(system);
+        _updateSystems.remove(system);
+        _drawSystems.remove(system);
         system._removeAllEntities();
     }
 
     public function update(delta:Float32) {
-        for(s in systems){
-            s.update(delta);
+        for(sys in _updateSystems){
+            sys.update(delta);
         }
     }
 
-    public function render(r:exp.render.Renderer) {
-        for(s in systems){
-            s.render(r);
+    public function draw() {
+        for(sys in _drawSystems){
+            sys.draw();
         }
     }
 

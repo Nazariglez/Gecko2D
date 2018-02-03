@@ -6,7 +6,7 @@ import kha.WindowMode;
 import kha.Scheduler;
 import kha.Framebuffer;
 import kha.System;
-import exp.render.Renderer;
+import exp.render.Graphics;
 import exp.resources.Image;
 
 //TODO gecko renderer must be Gecko.graphics and must be accesible
@@ -22,10 +22,10 @@ class Gecko {
     static public var manager:EntityManager;
 
     static private var _updateHandlers:Array<Float32->Void> = [];
-    static private var _renderHandlers:Array<Renderer->Void> = [];
+    static private var _renderHandlers:Array<Void->Void> = [];
     static private var _khaInitHandlers:Array<Void->Void> = [];
 
-    static private var _renderer:Renderer;
+    static public var graphics:Graphics;
     static private var _backbuffer:Image;
     static private var _opts:GeckoOptions;
 
@@ -39,7 +39,11 @@ class Gecko {
 
     static private function _init(opts:GeckoOptions, onReady:Void->Void) {
         _opts = opts;
-        _renderer = new Renderer();
+
+        if(graphics == null){
+            graphics = new Graphics();
+        }
+
         _backbuffer = Image.createRenderTarget(opts.width, opts.height); //todo antialias
 
         System.notifyOnRender(_render);
@@ -67,7 +71,7 @@ class Gecko {
         manager = new EntityManager();
         manager.addSystem(new RenderSystem());
         onUpdate(manager.update);
-        onRender(manager.render);
+        onRender(manager.draw);
     }
 
     static public function resize(width:Int, height:Int, ?html5CanvasMode:Html5CanvasMode){
@@ -184,11 +188,11 @@ class Gecko {
         _updateHandlers.remove(handler);
     }
 
-    static public function onRender(handler:Renderer->Void) {
+    static public function onRender(handler:Void->Void) {
         _renderHandlers.push(handler);
     }
 
-    static public function offRender(handler:Renderer->Void) {
+    static public function offRender(handler:Void->Void) {
         _renderHandlers.remove(handler);
     }
 
@@ -208,14 +212,14 @@ class Gecko {
 
     static private function _render(f:Framebuffer) {
 
-        _renderer.g2 = _backbuffer.g2;
-        _renderer.g4 = _backbuffer.g4;
+        graphics.g2 = _backbuffer.g2;
+        graphics.g4 = _backbuffer.g4;
 
-        _renderer.begin();
+        graphics.begin();
         for(handler in _renderHandlers){
-            handler(_renderer);
+            handler();
         }
-        _renderer.end();
+        graphics.end();
 
         //todo background color
         f.g2.begin(); //todo html5 scale it's better with matrix transforms

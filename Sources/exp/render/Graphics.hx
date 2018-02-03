@@ -14,7 +14,7 @@ import kha.graphics2.GraphicsExtension;
 import kha.graphics4.PipelineState;
 import kha.math.Vector2;
 
-class Renderer {
+class Graphics {
 	static public var emptyMatrix:Matrix = Matrix.identity();
 
 	public var g2:kha.graphics2.Graphics;
@@ -103,7 +103,7 @@ class Renderer {
     public function reset() {
         color = 0xffffff;
         alpha = 1;
-        matrix = Renderer.emptyMatrix;
+        matrix = Graphics.emptyMatrix;
     }
 
 	public function applyTransform(transform:gecko.math.MatrixTransform) {
@@ -359,7 +359,7 @@ class Renderer {
 
 	//todo change Vector2 for Point and use a pool of vector2 to pass to the drawPolygon.
 	public inline function drawPolygon(x:Float, y:Float, vertices:Array<Point>, ?strength:Float) : Void {
-        var _pointVerts = Renderer._pointsToVec2(vertices);
+        var _pointVerts = Graphics._pointsToVec2(vertices);
 		GraphicsExtension.drawPolygon(g2, x, y, _pointVerts, strength);
         
         for(p in _pointVerts){ 
@@ -372,7 +372,7 @@ class Renderer {
 	}
 
 	public inline function fillPolygon(x:Float, y:Float, vertices:Array<Point>) : Void {
-        var _pointVerts = Renderer._pointsToVec2(vertices);
+        var _pointVerts = Graphics._pointsToVec2(vertices);
 		GraphicsExtension.fillPolygon(g2, x, y, _pointVerts);
 
         for(p in _pointVerts){ 

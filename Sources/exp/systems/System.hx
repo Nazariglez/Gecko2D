@@ -21,7 +21,7 @@ class System implements IAutoPool {
     }
 
     public function update(delta:Float32){}
-    public function render(r:exp.render.Renderer){}
+    public function draw(){}
     public function reset(){}
 
     public function destroy(avoidPool:Bool = false) {
