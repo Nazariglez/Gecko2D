@@ -8,14 +8,9 @@ import exp.resources.Texture;
 import exp.resources.Video;
 import exp.utils.Chain;
 import exp.utils.Event;
-import exp.utils.EventEmitter;
 import haxe.io.Path;
 
 class Assets {
-    static private inline var EVENT_COMPLETE = "complete";
-    static private inline var EVENT_ERROR = "error";
-    static private inline var EVENT_PROGRESS_START = "progress-start";
-    static private inline var EVENT_PROGRESS_END = "progress-end";
 
     static public var images:Map<String, Image> = new Map<String, Image>();
     static public var videos:Map<String, Video> = new Map<String, Video>();
@@ -245,23 +240,13 @@ class Assets {
 
     private var _task:Void->Void = function(){};
 
-    public var onComplete:Event<Void->Void>;
-    public var onError:Event<String->Void>;
-    public var onProgressStart:Event<Int->String->Void>;
-    public var onProgressEnd:Event<Int->String->Void>;
-
-    private function _bindEvents() {
-        onComplete = _eventEmitter.bind(new Event(EVENT_COMPLETE));
-        onError = _eventEmitter.bind(new Event(EVENT_ERROR));
-        onProgressStart = _eventEmitter.bind(new Event(EVENT_PROGRESS_START));
-        onProgressEnd = _eventEmitter.bind(new Event(EVENT_PROGRESS_START));
-    }
-
-    private var _eventEmitter:EventEmitter = new EventEmitter();
+    public var onComplete:Event<Void->Void> = Event.create();
+    public var onError:Event<String->Void> = Event.create();
+    public var onProgressStart:Event<Int->String->Void> = Event.create();
+    public var onProgressEnd:Event<Int->String->Void> = Event.create();
 
     private function new(len:Int){
         this.len = len;
-        _bindEvents();
     }
 
     public function start() {
@@ -275,21 +260,21 @@ class Assets {
 
     public function observProgress(task:String->(?String->Void)->Void) : String->(?String->Void)->Void {
         return function(name:String, next:?String->Void){
-            _eventEmitter.emit(EVENT_PROGRESS_START, this.progress, name);
+            onProgressStart.emit(this.progress, name);
 
             task(name, function(?err:String){
                 if(err != null){
-                    _eventEmitter.emit(EVENT_ERROR, err);
+                    onError.emit(err);
                     next(err);
                     return;
                 }
 
                 loaded += 1;
 
-                _eventEmitter.emit(EVENT_PROGRESS_END, this.progress, name);
+                onProgressEnd.emit(this.progress, name);
 
                 if(len != 0 && len == loaded){
-                   _eventEmitter.emit(EVENT_COMPLETE);
+                    onComplete.emit();
                 }
 
                 next();

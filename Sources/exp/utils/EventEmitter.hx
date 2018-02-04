@@ -42,11 +42,6 @@ class EventEmitter {
         }
     }
 
-    public function bind<T>(event:Event<T>) : Event<T> {
-        event.emitter = this;
-        return event;
-    }
-
     public function on(event:String, handler:Dynamic, once:Bool = false){
         if(handler == null){
             return;
