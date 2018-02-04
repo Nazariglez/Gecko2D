@@ -1,6 +1,6 @@
 package exp;
 
-import gecko.math.Random;
+import exp.math.Random;
 import kha.FastFloat;
 
 abstract Color(Int) from Int from UInt to Int to UInt {

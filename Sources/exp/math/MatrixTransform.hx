@@ -1,6 +1,6 @@
 package exp.math;
 
-import gecko.Color;
+import exp.Color;
 import gecko.Entity;
 
 class MatrixTransform {
