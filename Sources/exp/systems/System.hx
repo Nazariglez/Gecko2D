@@ -11,7 +11,7 @@ using Lambda;
 @:autoBuild(exp.macros.TypeInfoBuilder.buildSystem())
 #end
 class System implements IAutoPool {
-    public var id:Int = Scene.getUniqueID();
+    public var id:Int = Gecko.getUniqueID();
 
     public var name(get, set):String;
     private var _name:String = "";
@@ -20,12 +20,29 @@ class System implements IAutoPool {
     public var requiredComponents:Array<Class<Component>> = [];
 
     private var _entities:Array<Entity> = [];
+    private var _dirtySortEntities:Bool = false;
 
     public function new(){}
 
     public function init(name:String = "") {
         _name = name;
     }
+
+    public function process(delta:Float32){
+        if(_dirtySortEntities){
+            _entities.sort(_sortEntities);
+            _dirtySortEntities = false;
+        }
+
+        update(delta);
+    }
+
+    private function _sortEntities(a:Entity, b:Entity) {
+        if (a.depth < b.depth) return -1;
+        if (a.depth > b.depth) return 1;
+        return 0;
+    }
+
     public function update(delta:Float32){}
     public function draw(){}
     public function reset(){}
@@ -72,7 +89,8 @@ class System implements IAutoPool {
     private function _registerEntity(entity:Entity) {
         if(isValidEntity(entity)){
             _entities.push(entity);
-            entity.onRemovedComponent += _onEntityRemoveComponent;
+            entity.onComponentRemoved += _onEntityRemoveComponent;
+            _dirtySortEntities = true;
         }
     }
 
@@ -84,7 +102,7 @@ class System implements IAutoPool {
     }
 
     private function _removeEntity(entity:Entity) {
-        entity.onRemovedComponent -= _onEntityRemoveComponent;
+        entity.onComponentRemoved -= _onEntityRemoveComponent;
         _entities.remove(entity);
     }
 

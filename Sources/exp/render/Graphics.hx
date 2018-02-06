@@ -73,6 +73,7 @@ class Graphics {
 
 	public function setBuffer(buffer:Image) {
 		if(_isRendering){
+			Gecko.stop();
 			throw "You can't change the buffer while rendering";
 		}
 		_buffer = buffer;

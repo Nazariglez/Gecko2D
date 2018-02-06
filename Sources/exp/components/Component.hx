@@ -1,6 +1,7 @@
 package exp.components;
 
 import exp.macros.IAutoPool;
+import exp.utils.Event;
 
 //todo macro clone all fields to use with prefabs
 
@@ -10,15 +11,22 @@ import exp.macros.IAutoPool;
 @:autoBuild(exp.macros.TypeInfoBuilder.buildComponent())
 #end
 class Component implements IAutoPool {
-    public var entity:Entity;
+    public var entity(get, set):Entity;
+    private var _entity:Entity = null;
 
-    public var id:Int = Scene.getUniqueID();
+    public var id:Int = Gecko.getUniqueID();
     public var enabled:Bool = true;
 
     public var name(get, set):String;
     private var _name:String = "";
 
-    public function new(){}
+    public var onAddedToEntity:Event<Entity->Void>;
+    public var onRemovedFromEntity:Event<Entity->Void>;
+
+    public function new(){
+        onAddedToEntity = Event.create();
+        onRemovedFromEntity = Event.create();
+    }
 
     public function init(name:String = "") {
         _name = name;
@@ -41,5 +49,26 @@ class Component implements IAutoPool {
 
     inline function set_name(value:String):String {
         return this._name = value;
+    }
+
+    inline function get_entity():Entity {
+        return _entity;
+    }
+
+    function set_entity(value:Entity):Entity {
+        if(_entity == value)return _entity;
+
+        var e = _entity;
+        _entity = value;
+
+        if(e != null){
+            onRemovedFromEntity.emit(e);
+        }
+
+        if(_entity != null){
+            onAddedToEntity.emit(_entity);
+        }
+
+        return _entity;
     }
 }

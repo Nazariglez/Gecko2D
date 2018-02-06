@@ -4,7 +4,7 @@ import exp.components.DrawComponent;
 import exp.components.TransformComponent;
 
 @:expose
-class RenderSystem extends System implements IDrawable {
+class RenderSystem extends System {
     override public function draw() {
         for(e in getEntities()){
             if(!e.enabled)continue;

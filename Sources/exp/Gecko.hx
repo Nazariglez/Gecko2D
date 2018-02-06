@@ -36,6 +36,10 @@ class Gecko {
     static private var _updateTaskId:Int = -1;
     static public var updateTicker:FPSCounter;
 
+    static private var _countUniqueID:Int = 0;
+    static public function getUniqueID() : Int {
+        return _countUniqueID++;
+    }
 
     static public function init(onReady:Void->Void, opts:GeckoOptions) {
         var options = _parseOptions(opts != null ? opts : {});
@@ -78,6 +82,7 @@ class Gecko {
         if(_isRunning || !_isIniaited)return;
         System.notifyOnRender(_render);
         _updateTaskId = Scheduler.addTimeTask(_update, 0, 1 / 60);
+        _isRunning = true;
         onStart.emit();
     }
 
@@ -85,6 +90,7 @@ class Gecko {
         if(!_isRunning || !_isIniaited)return;
         System.removeRenderListener(_render);
         Scheduler.removeTimeTask(_updateTaskId);
+        _isRunning = false;
         onStop.emit();
     }
 

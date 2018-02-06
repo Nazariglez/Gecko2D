@@ -1,5 +1,6 @@
 package exp;
 
+import exp.utils.Event;
 import exp.systems.RenderSystem;
 import exp.macros.IAutoPool;
 import exp.systems.System;
@@ -10,19 +11,14 @@ import exp.components.Component;
 @:autoBuild(exp.macros.TypeInfoBuilder.buildScene())
 #end
 class Scene implements IAutoPool {
-    //todo dirty flags to sort entities in update
-
-    static private var _countUniqueID:Int = 0;
-    static public function getUniqueID() : Int {
-        return _countUniqueID++;
-    }
-
-    public var id:Int = Scene.getUniqueID();
+    public var id:Int = Gecko.getUniqueID();
 
     public var name(get, set):String;
     private var _name:String = "";
 
-    //todo loadAssets //unload assetsa automatically in the unload scene
+    private var _dirtySortSystems:Bool = false;
+
+    //todo loadAssets //unload assets automatically in the unload scene
 
     //todo findEntityByTag
     //todo findEntityByName
@@ -30,8 +26,11 @@ class Scene implements IAutoPool {
     public var entities:Array<Entity> = [];
     public var systems:Array<System> = [];
 
-    private var _updateSystems:Array<System> = [];
-    private var _drawSystems:Array<System> = [];
+    public var onEntityAdded:Event<Entity->Void> = Event.create();
+    public var onEntityRemoved:Event<Entity->Void> = Event.create();
+
+    public var onSystemAdded:Event<System->Void> = Event.create();
+    public var onSystemRemoved:Event<System->Void> = Event.create();
 
     public function new(){
         addSystem(RenderSystem.create());
@@ -58,23 +57,31 @@ class Scene implements IAutoPool {
     private function __toPool__() {} //macros
 
     public function addEntity(entity:Entity) {
-        entity.manager = this;
+        entity.scene = this;
         entities.push(entity);
         for(s in systems){
             s._registerEntity(entity);
-            entity.onAddedComponent += _onEntityAddComponent;
+            entity.onComponentAdded += _onEntityAddComponent;
         }
+        onEntityAdded.emit(entity);
     }
 
     public function removeEntitiy(entity:Entity) {
         for(s in systems){
-            entity.onAddedComponent -= _onEntityAddComponent;
-            entity.manager = null;
+            entity.onComponentAdded -= _onEntityAddComponent;
+            entity.scene = null;
             s._removeEntity(entity);
         }
         entities.remove(entity);
+        onEntityRemoved.emit(entity);
     }
 
+    @:allow(exp.systems.System)
+    public function depthChanged(entity:Entity) {
+        for(sys in systems){
+            sys._dirtySortEntities = true;
+        }
+    }
 
     public function addSystem(system:System) {
         systems.push(system);
@@ -82,17 +89,8 @@ class Scene implements IAutoPool {
             system._registerEntity(e);
         }
 
-        if(Std.is(system, IDrawable)){
-            _drawSystems.push(system);
-        }
-
-        if(Std.is(system, IUpdatable)){
-            _updateSystems.push(system);
-        }
-
-        systems.sort(_sortSystems); //todo parallel threading with same priority?
-        _drawSystems.sort(_sortSystems); //todo improve this? dont do three sorts...
-        _updateSystems.sort(_sortSystems); //improve this?
+        _dirtySortSystems = true;
+        onSystemAdded.emit(system);
     }
 
     private function _sortSystems(a:System, b:System) {
@@ -103,19 +101,24 @@ class Scene implements IAutoPool {
 
     public function removeSystem(system:System) {
         systems.remove(system);
-        _updateSystems.remove(system);
-        _drawSystems.remove(system);
         system._removeAllEntities();
+
+        onSystemRemoved.emit(system);
     }
 
     public function update(delta:Float32) {
-        for(sys in _updateSystems){
+        if(_dirtySortSystems){
+            systems.sort(_sortSystems);
+            _dirtySortSystems = false;
+        }
+
+        for(sys in systems){
             sys.update(delta);
         }
     }
 
     public function draw() {
-        for(sys in _drawSystems){
+        for(sys in systems){
             sys.draw();
         }
     }

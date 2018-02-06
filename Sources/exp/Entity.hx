@@ -13,12 +13,18 @@ import exp.components.Component;
 @:autoBuild(exp.macros.TypeInfoBuilder.buildEntity())
 #end
 class Entity implements IAutoPool {
-    public var id:Int = Scene.getUniqueID();
-    public var manager:Scene;
+    public var id:Int = Gecko.getUniqueID();
+
     public var enabled:Bool = true;
 
     public var name(get, set):String;
     private var _name:String = "";
+
+    public var scene(get, set):Scene;
+    private var _scene:Scene;
+
+    public var depth(get, set):Int;
+    private var _depth:Int = 0;
 
     //todo hardcoded the renderComponent ref? and add it when addComponent Std.is(IRendereable) === true?
     //public var renderComponent:IRendereable;
@@ -26,10 +32,17 @@ class Entity implements IAutoPool {
     private var _components:Map<String,Component> = new Map<String, Component>();
     private var _componentsList:Array<Component> = [];
 
-    public var onAddedComponent:Event<Entity->Component->Void> = Event.create();
-    public var onRemovedComponent:Event<Entity->Component->Void> = Event.create();
+    public var onComponentAdded:Event<Entity->Component->Void>;
+    public var onComponentRemoved:Event<Entity->Component->Void>;
+    public var onAddedToScene:Event<Entity->Scene->Void>;
+    public var onRemovedFromScene:Event<Entity->Scene->Void>;
 
-    public function new() {}
+    public function new() {
+        onComponentAdded = Event.create();
+        onComponentRemoved = Event.create();
+        onAddedToScene = Event.create();
+        onRemovedFromScene = Event.create();
+    }
 
     public function init(name:String = ""){
         _name = name;
@@ -40,14 +53,14 @@ class Entity implements IAutoPool {
     public function destroy(avoidPool:Bool = false) {
         reset();
 
-        if(manager != null){
-            manager.removeEntitiy(this);
+        if(scene != null){
+            scene.removeEntitiy(this);
         }
 
         for(name in _components.keys()){
             var component = _components.get(name);
             _components.remove(name);
-            onRemovedComponent.emit(this, component);
+            onComponentRemoved.emit(this, component);
             component.destroy();
         }
 
@@ -60,7 +73,7 @@ class Entity implements IAutoPool {
         component.entity = this;
         _components.set(component.__typeName__, component);
         _componentsList.push(component);
-        onAddedComponent.emit(this, component);
+        onComponentAdded.emit(this, component);
         return this;
     }
 
@@ -72,7 +85,7 @@ class Entity implements IAutoPool {
             c.entity = null;
             _components.remove(name);
             _componentsList.remove(c);
-            onRemovedComponent.emit(this, c);
+            onComponentRemoved.emit(this, c);
             return c;
         }
         return null;
@@ -102,5 +115,39 @@ class Entity implements IAutoPool {
 
     inline function set_name(value:String):String {
         return this._name = value;
+    }
+
+    inline function get_scene():Scene {
+        return _scene;
+    }
+
+    function set_scene(value:Scene):Scene {
+        if(value == _scene)return _scene;
+
+        var s = _scene;
+        _scene = value;
+
+        if(s != null){
+            onRemovedFromScene.emit(this, s);
+        }
+
+        if(_scene != null){
+            onAddedToScene.emit(this, _scene);
+        }
+
+        return _scene;
+    }
+
+    inline function get_depth():Int {
+        return _depth;
+    }
+
+    function set_depth(value:Int):Int {
+        if(value == _depth)return _depth;
+        _depth = value;
+        if(_scene != null){
+            _scene.depthChanged(this);
+        }
+        return _depth;
     }
 }
