@@ -46,9 +46,11 @@ class Scene implements IAutoPool {
         reset();
         for(sys in systems){
             removeSystem(sys);
+            sys.destroy();
         }
         for(e in entities){
             removeEntitiy(e);
+            e.destroy();
         }
         if(!avoidPool)__toPool__();
     }
