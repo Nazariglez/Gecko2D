@@ -9,9 +9,9 @@ typedef GeckoOptions = {
     ?antialiasing:Int,
     ?randomSeed:Int,
     ?fullScreen:Bool,
-    ?transparent:Bool,
-    ?backgroundColor:Color,
+    ?bgColor:Color,
     ?maximizable:Bool,
     ?html5CanvasMode:Html5CanvasMode,
+    ?screen:ScreenOptions,
     ?khaOptions:SystemOptions
 };

@@ -1,13 +1,16 @@
 package exp;
 
+import exp.math.Matrix;
 import exp.resources.Image;
-import exp.render.Framebuffer;
 
 class Screen {
-    static public var buffer:Framebuffer;
+    static public var buffer:Image;
+    static public var matrix:Matrix = Matrix.identity();
 
-    //todo _render screenbuffer to the global buffer
-    static public function init(width:Int, height:Int) {
-        buffer = Image.createRenderTarget(width, height); //todo antialias
+    static public function init(opts:ScreenOptions, antialiasing:Int = 0) {
+        buffer = Image.createRenderTarget(opts.width, opts.height, null, null, antialiasing);
+        //todo set scale matrix
     }
+
+    //todo center, width, height
 }

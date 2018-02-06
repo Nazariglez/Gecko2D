@@ -1,5 +1,6 @@
 package exp;
 
+import exp.utils.Event;
 import exp.systems.RenderSystem;
 import exp.math.Random;
 import kha.WindowMode;
@@ -9,25 +10,27 @@ import kha.System;
 import exp.render.Graphics;
 import exp.resources.Image;
 
-//TODO gecko renderer must be Gecko.graphics and must be accesible
-    //TODO gecko render(r:Renderer) must be gecko draw() and use Gecko.graphics as global?
-
 #if ((kha_html5 ||kha_debug_html5) && debug)
 @:expose
 #end
 #if !macro @:build(exp.macros.GeckoBuilder.build()) #end
 class Gecko {
-    static public var isIniaited:Bool = false;
+    static public var isIniaited(get, never):Bool;
+    static private var _isIniaited:Bool = false;
 
-    static public var manager:EntityManager;
-
-    static private var _updateHandlers:Array<Float32->Void> = [];
-    static private var _renderHandlers:Array<Void->Void> = [];
-    static private var _khaInitHandlers:Array<Void->Void> = [];
+    static public var world:World;
 
     static public var graphics:Graphics;
-    static private var _backbuffer:Image;
     static private var _opts:GeckoOptions;
+
+    static public var onUpdate:Event<Float32->Void> = Event.create();
+    static public var onDraw:Event<Void->Void> = Event.create();
+    static public var onKhaInit:Event<Void->Void> = Event.create();
+
+    static public var isRunning(get, null):Bool;
+    static private var _isRunning:Bool = false;
+
+    static private var _updateTaskId:Int = -1;
 
     static public function init(onReady:Void->Void, opts:GeckoOptions) {
         var options = _parseOptions(opts != null ? opts : {});
@@ -44,34 +47,42 @@ class Gecko {
             graphics = new Graphics();
         }
 
-        _backbuffer = Image.createRenderTarget(opts.width, opts.height); //todo antialias
+        Screen.init(opts.screen, opts.antialiasing);
 
-        System.notifyOnRender(_render);
-        Scheduler.addTimeTask(_update, 0, 1 / 60);
         resize(opts.width, opts.height, opts.html5CanvasMode);
 
         Random.init(opts.randomSeed);
 
         _initEntityManager();
 
-        isIniaited = true;
+        _isIniaited = true;
 
-        for(handler in _khaInitHandlers){
-            handler();
-        }
+        start();
+
+        onKhaInit.emit();
 
         onReady();
     }
 
-    static public function addSystems(systems:Array<System>) {
-        //todo
+    static public function start() {
+        if(_isRunning || !_isIniaited)return;
+        System.notifyOnRender(_render);
+        _updateTaskId = Scheduler.addTimeTask(_update, 0, 1 / 60);
     }
 
+    static public function stop() {
+        if(!_isRunning || !_isIniaited)return;
+        System.removeRenderListener(_render);
+        Scheduler.removeTimeTask(_updateTaskId);
+    }
+
+
     static private function _initEntityManager() {
-        manager = new EntityManager();
-        manager.addSystem(new RenderSystem());
-        onUpdate(manager.update);
-        onRender(manager.draw);
+        if(world == null){
+            world = new World();
+        }
+        onUpdate += world.update;
+        onDraw += world.draw;
     }
 
     static public function resize(width:Int, height:Int, ?html5CanvasMode:Html5CanvasMode){
@@ -152,17 +163,21 @@ class Gecko {
         options.title = opts.title != null ? opts.title : Gecko.gameTitle;
         options.width = opts.width != null ? opts.width : 800;
         options.height = opts.height != null ? opts.height : 600;
-        options.backgroundColor = opts.backgroundColor != null ? opts.backgroundColor : Color.Black;
+        options.bgColor = opts.bgColor != null ? opts.bgColor : Color.Black;
         options.fullScreen = opts.fullScreen;
-        options.transparent = opts.transparent;
         options.maximizable = opts.maximizable;
         options.html5CanvasMode = opts.html5CanvasMode != null ? opts.html5CanvasMode : Html5CanvasMode.None;
+
+        options.screen = opts.screen != null ? opts.screen : {width:opts.width, height:opts.height, mode:ScreenMode.None};
+        if(options.screen.mode == null){
+            options.screen.mode = ScreenMode.None;
+        }
 
         if(opts.randomSeed == null){
             #if debug
             options.randomSeed = 1;
             #else
-            options.randomSeed = Std.int(Date.now().getTime());
+            options.randomSeed = math.Random();
             #end
         }else{
             options.randomSeed = opts.randomSeed;
@@ -180,58 +195,28 @@ class Gecko {
         return options;
     }
 
-    static public function onUpdate(handler:Float32->Void) {
-        _updateHandlers.push(handler);
-    }
-
-    static public function offUpdate(handler:Float32->Void) {
-        _updateHandlers.remove(handler);
-    }
-
-    static public function onRender(handler:Void->Void) {
-        _renderHandlers.push(handler);
-    }
-
-    static public function offRender(handler:Void->Void) {
-        _renderHandlers.remove(handler);
-    }
-
-    static public function onKhaInit(handler:Void->Void) {
-        _khaInitHandlers.push(handler);
-    }
-
-    static public function offKhaInit(handler:Void->Void) {
-        _khaInitHandlers.remove(handler);
-    }
-
     static private function _update() {
-        for(handler in _updateHandlers){
-            handler(0.0);
-        }
+        onUpdate.emit(0.0);
     }
 
     static private function _render(f:Framebuffer) {
 
-        graphics.g2 = _backbuffer.g2;
-        graphics.g4 = _backbuffer.g4;
+        graphics.setBuffer(Screen.buffer);
 
         graphics.begin();
-        for(handler in _renderHandlers){
-            handler();
-        }
+        onDraw.emit();
         graphics.end();
 
-        //todo background color
-        f.g2.begin(); //todo html5 scale it's better with matrix transforms
+        f.g2.begin(true, _opts.bgColor); //todo html5 scale it's better with matrix transforms
         #if kha_js
         if(_opts.html5CanvasMode == Html5CanvasMode.Fill){
             var canvas = Gecko.getHtml5Canvas();
-            f.g2.drawScaledImage(_backbuffer, 0, 0, canvas.width, canvas.height);
+            f.g2.drawScaledImage(Screen.buffer, 0, 0, canvas.width, canvas.height);
         }else{
-            kha.Scaler.scale(_backbuffer, f, kha.ScreenRotation.RotationNone);
+            kha.Scaler.scale(Screen.buffer, f, kha.ScreenRotation.RotationNone);
         }
         #else
-        kha.Scaler.scale(_backbuffer, f, kha.ScreenRotation.RotationNone);
+        kha.Scaler.scale(Screen.buffer, f, kha.ScreenRotation.RotationNone);
         #end
         f.g2.end();
     }
@@ -242,5 +227,13 @@ class Gecko {
         #else
         return null;
         #end
+    }
+
+    static inline function get_isIniaited():Bool {
+        return _isIniaited;
+    }
+
+    static inline function get_isRunning():Bool {
+        return _isRunning;
     }
 }

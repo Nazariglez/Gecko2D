@@ -3,30 +3,39 @@ package exp.components;
 import exp.macros.IAutoPool;
 
 @:allow(exp.Entity)
+@:build(exp.macros.TypeInfoBuilder.buildComponent())
+@:autoBuild(exp.macros.TypeInfoBuilder.buildComponent())
 class Component implements IAutoPool {
-    private var _typ:String = "";
     public var entity:Entity;
 
-    public var id:Int = -1;
-    public var name:String = "";
+    public var id:Int = Scene.getUniqueID();
     public var enabled:Bool = true;
 
-    public function new(name:String = "") {
-        _typ = Type.getClassName(Type.getClass(this));
+    public var name(get, set):String;
+    private var _name:String = "";
 
-        id = EntityManager.getUniqueID();
-        this.name = name == "" ? _typ : name;
+    public function new(){}
+
+    public function init(name:String = "") {
+        _name = name;
     }
-
     public function reset(){}
 
     public function destroy(avoidPool:Bool = false) {
         reset();
         if(entity != null){
-            entity.removeComponent(Type.getClass(this));
+            entity.removeComponent(__type__);
         }
         if(!avoidPool)__toPool__();
     }
 
     private function __toPool__() {} //macros
+
+    inline function get_name():String {
+        return _name == "" ? __typeName__ : _name;
+    }
+
+    inline function set_name(value:String):String {
+        return this._name = value;
+    }
 }

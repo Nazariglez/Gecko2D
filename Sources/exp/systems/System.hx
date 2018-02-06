@@ -5,21 +5,25 @@ import exp.components.Component;
 
 using Lambda;
 
-@:allow(exp.EntityManager)
+@:allow(exp.Scene)
+@:build(exp.macros.TypeInfoBuilder.buildSystem())
+@:autoBuild(exp.macros.TypeInfoBuilder.buildSystem())
 class System implements IAutoPool {
-    public var id:Int = -1;
-    public var name:String = "";
+    public var id:Int = Scene.getUniqueID();
+
+    public var name(get, set):String;
+    private var _name:String = "";
 
     public var priority:Int = 0;
     public var requiredComponents:Array<Class<Component>> = [];
 
     private var _entities:Array<Entity> = [];
 
-    public function new(name:String = "") {
-        id = EntityManager.getUniqueID();
-        this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
-    }
+    public function new(){}
 
+    public function init(name:String = "") {
+        _name = name;
+    }
     public function update(delta:Float32){}
     public function draw(){}
     public function reset(){}
@@ -66,7 +70,7 @@ class System implements IAutoPool {
     private function _registerEntity(entity:Entity) {
         if(isValidEntity(entity)){
             _entities.push(entity);
-            entity.onRemoveComponent(_onEntityRemoveComponent);
+            entity.onRemoveComponent += _onEntityRemoveComponent;
         }
     }
 
@@ -78,7 +82,7 @@ class System implements IAutoPool {
     }
 
     private function _removeEntity(entity:Entity) {
-        entity.offRemoveComponent(_onEntityRemoveComponent);
+        entity.onRemoveComponent -= _onEntityRemoveComponent;
         _entities.remove(entity);
     }
 
@@ -86,5 +90,13 @@ class System implements IAutoPool {
         for(e in _entities){
             _removeEntity(e);
         }
+    }
+
+    inline function get_name():String {
+        return _name == "" ? __typeName__ : _name;
+    }
+
+    inline function set_name(value:String):String {
+        return this._name = value;
     }
 }

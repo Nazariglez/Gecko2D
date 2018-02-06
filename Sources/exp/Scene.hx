@@ -1,16 +1,29 @@
 package exp;
 
+import exp.systems.RenderSystem;
+import exp.macros.IAutoPool;
 import exp.systems.System;
 import exp.components.Component;
 
-class EntityManager {
+@:build(exp.macros.TypeInfoBuilder.buildScene())
+@:autoBuild(exp.macros.TypeInfoBuilder.buildScene())
+class Scene implements IAutoPool {
+    //todo dirty flags to sort entities in update
+
     static private var _countUniqueID:Int = 0;
     static public function getUniqueID() : Int {
         return _countUniqueID++;
     }
 
-    public var id:Int = -1;
-    public var name:String = "";
+    public var id:Int = Scene.getUniqueID();
+
+    public var name(get, set):String;
+    private var _name:String = "";
+
+    //todo loadAssets //unload assetsa automatically in the unload scene
+
+    //todo findEntityByTag
+    //todo findEntityByName
 
     public var entities:Array<Entity> = [];
     public var systems:Array<System> = [];
@@ -18,23 +31,40 @@ class EntityManager {
     private var _updateSystems:Array<System> = [];
     private var _drawSystems:Array<System> = [];
 
-    public function new(name:String = ""){
-        id = EntityManager.getUniqueID();
-        this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
+    public function new(){
+        addSystem(RenderSystem.create());
     }
+
+    public function init(name:String = ""){
+        _name = name;
+    }
+    public function reset(){}
+
+    public function destroy(avoidPool:Bool = false){
+        reset();
+        for(sys in systems){
+            removeSystem(sys);
+        }
+        for(e in entities){
+            removeEntitiy(e);
+        }
+        if(!avoidPool)__toPool__();
+    }
+
+    private function __toPool__() {} //macros
 
     public function addEntity(entity:Entity) {
         entity.manager = this;
         entities.push(entity);
         for(s in systems){
             s._registerEntity(entity);
-            entity.onAddComponent(_onEntityAddComponent);
+            entity.onAddComponent += _onEntityAddComponent;
         }
     }
 
     public function removeEntitiy(entity:Entity) {
         for(s in systems){
-            entity.offAddComponent(_onEntityAddComponent);
+            entity.onAddComponent -= _onEntityAddComponent;
             entity.manager = null;
             s._removeEntity(entity);
         }
@@ -92,6 +122,14 @@ class EntityManager {
                 s._registerEntity(entity);
             }
         }
+    }
+
+    inline function get_name():String {
+        return _name == "" ? __typeName__ : _name;
+    }
+
+    inline function set_name(value:String):String {
+        return this._name = value;
     }
 
 }

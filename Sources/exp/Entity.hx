@@ -1,14 +1,22 @@
 package exp;
 
+import exp.utils.Event;
 import exp.macros.IAutoPool;
 import exp.components.Component;
 
-@:poolAmount(10)
+//todo toString for debug
+//todo serialize && unserialize to save and load from text
+
+@:poolAmount(100)
+@:build(exp.macros.TypeInfoBuilder.buildEntity())
+@:autoBuild(exp.macros.TypeInfoBuilder.buildEntity())
 class Entity implements IAutoPool {
-    public var id:Int = -1;
-    public var name:String = "";
-    public var manager:EntityManager;
+    public var id:Int = Scene.getUniqueID();
+    public var manager:Scene;
     public var enabled:Bool = true;
+
+    public var name(get, set):String;
+    private var _name:String = "";
 
     //todo hardcoded the renderComponent ref? and add it when addComponent Std.is(IRendereable) === true?
     //public var renderComponent:IRendereable;
@@ -16,12 +24,13 @@ class Entity implements IAutoPool {
     private var _components:Map<String,Component> = new Map<String, Component>();
     private var _componentsList:Array<Component> = [];
 
-    private var _addHandlers:Array<Entity->Component->Void> = [];
-    private var _removeHandlers:Array<Entity->Component->Void> = [];
+    public var onAddComponent:Event<Entity->Component->Void> = Event.create();
+    public var onRemoveComponent:Event<Entity->Component->Void> = Event.create();
 
-    public function new(name:String = "") {
-        id = EntityManager.getUniqueID();
-        this.name = name == "" ? Type.getClassName(Type.getClass(this)) : name;
+    public function new() {}
+
+    public function init(name:String = ""){
+        _name = name;
     }
 
     public function reset(){}
@@ -36,7 +45,7 @@ class Entity implements IAutoPool {
         for(name in _components.keys()){
             var component = _components.get(name);
             _components.remove(name);
-            _dispatchRemoveComponent(this, component);
+            onRemoveComponent.emit(this, component);
             component.destroy();
         }
 
@@ -47,9 +56,9 @@ class Entity implements IAutoPool {
 
     public function addComponent(component:Component) : Entity {
         component.entity = this;
-        _components.set(component._typ, component);
+        _components.set(component.__typeName__, component);
         _componentsList.push(component);
-        _dispatchAddComponent(this, component);
+        onAddComponent.emit(this, component);
         return this;
     }
 
@@ -61,7 +70,7 @@ class Entity implements IAutoPool {
             c.entity = null;
             _components.remove(name);
             _componentsList.remove(c);
-            _dispatchRemoveComponent(this, c);
+            onRemoveComponent.emit(this, c);
             return c;
         }
         return null;
@@ -85,32 +94,11 @@ class Entity implements IAutoPool {
         return _components.exists(Type.getClassName(componentClass));
     }
 
-
-    public function onAddComponent(handler:Entity->Component->Void) {
-        _addHandlers.push(handler);
+    inline function get_name():String {
+        return _name == "" ? __typeName__ : _name;
     }
 
-    public function offAddComponent(handler:Entity->Component->Void) {
-        _addHandlers.remove(handler);
-    }
-
-    public function onRemoveComponent(handler:Entity->Component->Void) {
-        _removeHandlers.push(handler);
-    }
-
-    public function offRemoveComponent(handler:Entity->Component->Void) {
-        _removeHandlers.remove(handler);
-    }
-
-    private function _dispatchAddComponent(entity:Entity, component:Component) {
-        for(handler in _addHandlers){
-            handler(entity, component);
-        }
-    }
-
-    private function _dispatchRemoveComponent(entity:Entity, component:Component) {
-        for(handler in _removeHandlers){
-            handler(entity, component);
-        }
+    inline function set_name(value:String):String {
+        return this._name = value;
     }
 }

@@ -3,6 +3,7 @@ package exp.systems;
 import exp.components.DrawComponent;
 import exp.components.TransformComponent;
 
+@:expose
 class RenderSystem extends System implements IDrawable {
     override public function draw() {
         for(e in getEntities()){

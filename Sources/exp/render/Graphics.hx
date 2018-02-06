@@ -17,6 +17,19 @@ import kha.math.Vector2;
 class Graphics {
 	static public var emptyMatrix:Matrix = Matrix.identity();
 
+	public var buffer:Image;
+
+	public var isRendering(get, null):Bool;
+	private var _isRendering:Bool = false;
+
+
+	public function setBuffer(buffer:Image) {
+		if(_isRendering){
+			throw "You can't change the buffer while rendering";
+		}
+		this.buffer = buffer;
+	}
+
 	public var g2:kha.graphics2.Graphics;
     public var g4:kha.graphics4.Graphics;
 	private var _g2Cache:kha.graphics2.Graphics;
@@ -88,16 +101,18 @@ class Graphics {
 		g2.begin();
 	}
 
-    public function begin(clear: Bool = true) {
-        g2.begin(clear);
+    public function begin(clear: Bool = true, ?color:Color) {
+		_isRendering = true;
+        buffer.g2.begin(clear, color);
     }
 
     public function end() {
-        g2.end();
+        buffer.g2.end();
+		_isRendering = false;
     }
 
 	public function clear(color:Color = null) {
-		g2.clear(color);
+		buffer.g2.clear(color);
 	}
 
     public function reset() {
@@ -113,49 +128,49 @@ class Graphics {
 	}
 
     public inline function drawLine(x1:Float, y1:Float, x2:Float, y2:Float, ?strength:Float) : Void {
-		g2.drawLine(x1, y1, x2, y2, strength);
+		buffer.g2.drawLine(x1, y1, x2, y2, strength);
 	}
 
     public inline function drawImage(img:Image, x:FastFloat, y:FastFloat) : Void {
-		g2.drawImage(img, x, y);
+		buffer.g2.drawImage(img, x, y);
 	}
 
 	public inline function drawTexture(texture:Texture, x:FastFloat, y:FastFloat) : Void {
 		if(texture.rotated){
 			_swtTemp = texture.frame.width*texture.pivot.x;
 			_shtTemp = texture.frame.height*texture.pivot.y;
-			g2.pushTransformation(kha.math.FastMatrix3.translation(-_swtTemp, -_shtTemp));
-			g2.rotate(-0.5*Math.PI, x, y);
-			g2.transformation._20 += _shtTemp;
-            g2.transformation._21 += _swtTemp;
+			buffer.g2.pushTransformation(kha.math.FastMatrix3.translation(-_swtTemp, -_shtTemp));
+			buffer.g2.rotate(-0.5*Math.PI, x, y);
+			buffer.g2.transformation._20 += _shtTemp;
+            buffer.g2.transformation._21 += _swtTemp;
 
 			if(texture.trimmed){
-            	g2.drawSubImage(texture.image, x-texture.trim.x, y+texture.trim.y, texture.frame.x, texture.frame.y, texture.trim.width, texture.trim.height);
+            	buffer.g2.drawSubImage(texture.image, x-texture.trim.x, y+texture.trim.y, texture.frame.x, texture.frame.y, texture.trim.width, texture.trim.height);
 			}else{
-            	g2.drawSubImage(texture.image, x, y, texture.frame.x, texture.frame.y, texture.frame.width, texture.frame.height);
+            	buffer.g2.drawSubImage(texture.image, x, y, texture.frame.x, texture.frame.y, texture.frame.width, texture.frame.height);
 			}
 
-			g2.popTransformation();
+			buffer.g2.popTransformation();
 		}else{
 			if(texture.trimmed){
-				g2.drawSubImage(texture.image, x+texture.trim.x, y+texture.trim.y, texture.frame.x, texture.frame.y, texture.trim.width, texture.trim.height);
+				buffer.g2.drawSubImage(texture.image, x+texture.trim.x, y+texture.trim.y, texture.frame.x, texture.frame.y, texture.trim.width, texture.trim.height);
 			}else{
-				g2.drawSubImage(texture.image, x, y, texture.frame.x, texture.frame.y, texture.frame.width, texture.frame.height);
+				buffer.g2.drawSubImage(texture.image, x, y, texture.frame.x, texture.frame.y, texture.frame.width, texture.frame.height);
 			}
 		}
 	}
 
 	public inline function drawSubImage(img: Image, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
-		g2.drawSubImage(img, x, y, sx, sy, sw, sh);
+		buffer.g2.drawSubImage(img, x, y, sx, sy, sw, sh);
 	}
 
 	private inline function _drawSubTextureRotated(texture: Texture, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat) : Void {
 		_temp3 = texture.frame.width*texture.pivot.x;
 		_temp4 = texture.frame.height*texture.pivot.y;
-		g2.pushTransformation(kha.math.FastMatrix3.translation(-_temp3, -_temp4));
-		g2.rotate(-0.5*Math.PI, x, y);
-		g2.transformation._20 += _temp4;
-		g2.transformation._21 += _temp3;
+		buffer.g2.pushTransformation(kha.math.FastMatrix3.translation(-_temp3, -_temp4));
+		buffer.g2.rotate(-0.5*Math.PI, x, y);
+		buffer.g2.transformation._20 += _temp4;
+		buffer.g2.transformation._21 += _temp3;
 		
 		if(texture.trimmed){
 			_swtTemp = (sx > texture.trim.x ? sx-texture.trim.x : 0);
@@ -172,7 +187,7 @@ class Graphics {
 			_temp6 = sh - _temp2;
 			_temp6 = _temp6 > texture.trim.height ? texture.trim.height : _temp6;
 
-			g2.drawSubImage(
+			buffer.g2.drawSubImage(
 				texture.image, 
 				x-(_temp2 < 0 ? 0 : _temp2),//_temp2,
 				y+(_temp1 < 0 ? 0 : _temp1), 
@@ -182,7 +197,7 @@ class Graphics {
 				_temp5
 			);
 		}else{
-			g2.drawSubImage(
+			buffer.g2.drawSubImage(
 				texture.image, 
 				x,
 				y,
@@ -193,7 +208,7 @@ class Graphics {
 			);
 		}
 
-		g2.popTransformation();
+		buffer.g2.popTransformation();
 	}
 
 	private inline function _drawSubTexture(texture:Texture, x:FastFloat, y:FastFloat, sx:FastFloat, sy:FastFloat, sw:FastFloat, sh:FastFloat) {
@@ -213,7 +228,7 @@ class Graphics {
 				_temp4 = sh - _temp2;
 				_temp4 = _temp4 > texture.trim.height ? texture.trim.height : _temp4;
 
-				g2.drawSubImage(
+				buffer.g2.drawSubImage(
 					texture.image, 
 					x + _temp1, 
 					y + _temp2, 
@@ -226,7 +241,7 @@ class Graphics {
 				_swtTemp = texture.frame.width-sx;
 				_shtTemp = texture.frame.height-sy;
 
-				g2.drawSubImage(
+				buffer.g2.drawSubImage(
 					texture.image, 
 					x, 
 					y, 
@@ -247,12 +262,12 @@ class Graphics {
 	}
 
 	public inline function drawScaledImage(img: Image, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
-		g2.drawScaledImage(img, dx, dy, dw, dh);
+		buffer.g2.drawScaledImage(img, dx, dy, dw, dh);
 	}
 
 	public inline function drawScaledTexture(texture: Texture, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		if(texture.trimmed){
-			g2.drawScaledSubImage(
+			buffer.g2.drawScaledSubImage(
 				texture.image, 
 				texture.frame.x-texture.trim.x, 
 				texture.frame.y-texture.trim.y, 
@@ -264,12 +279,12 @@ class Graphics {
 				dh - texture.trim.y
 			);
 		}else{
-			g2.drawScaledSubImage(texture.image, texture.frame.x, texture.frame.y, texture.frame.width, texture.frame.height, texture.frame.x + dx, texture.frame.y + dy, dw, dh);
+			buffer.g2.drawScaledSubImage(texture.image, texture.frame.x, texture.frame.y, texture.frame.width, texture.frame.height, texture.frame.x + dx, texture.frame.y + dy, dw, dh);
 		}
 	}
 
 	public inline function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
-		g2.drawScaledSubImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+		buffer.g2.drawScaledSubImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
 	}
 
 	public inline function drawScaledSubTexture(texture: Texture, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
@@ -283,7 +298,7 @@ class Graphics {
 			_dwTemp = dw-texture.trim.x;
 			_dhTemp = dh-texture.trim.y;
 
-			g2.drawScaledSubImage( //todo fix
+			buffer.g2.drawScaledSubImage( //todo fix
 				texture.image, 
 				texture.frame.x - texture.trim.x + sx, 
 				texture.frame.y - texture.trim.y + sy, 
@@ -295,7 +310,7 @@ class Graphics {
 				dh
 			);
 		}else{
-			g2.drawScaledSubImage(
+			buffer.g2.drawScaledSubImage(
 				texture.image, 
 				texture.frame.x + sx, 
 				texture.frame.y + sy, 
@@ -310,11 +325,11 @@ class Graphics {
 	}
 
 	public inline function drawVideo(video:Video, x:Float, y:Float, width:Float, height:Float) : Void {
-		g2.drawVideo(video, x, y, width, height);
+		buffer.g2.drawVideo(video, x, y, width, height);
 	}
 
     public inline function drawString(text:String, x:Float, y:Float) : Void {
-		g2.drawString(text, x, y);
+		buffer.g2.drawString(text, x, y);
 	}
 
     public inline function drawAlignedString(text:String, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
@@ -326,15 +341,15 @@ class Graphics {
     }
 
     public inline function drawRect(x:Float, y:Float, width:Float, height:Float, ?strength:Float) : Void {
-		g2.drawRect(x, y, width, height, strength);
+		buffer.g2.drawRect(x, y, width, height, strength);
 	}
 
     public inline function fillRect(x:Float, y:Float, width:Float, height:Float) : Void {
-		g2.fillRect(x, y, width, height);
+		buffer.g2.fillRect(x, y, width, height);
 	}
 
     public inline function fillTriangle(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float) : Void {
-		g2.fillTriangle(x1, y1, x2, y2, x3, y3);
+		buffer.g2.fillTriangle(x1, y1, x2, y2, x3, y3);
 	}
 
 	public inline function drawArc(cx: Float, cy: Float, radius: Float, sAngle: Float, eAngle: Float, strength: Float = 1.0, ccw: Bool = false) {
@@ -386,7 +401,7 @@ class Graphics {
 	}
 
 	public function set_color(value:Color) : Color {
-		g2.color = value;
+		buffer.g2.color = value;
 		return _color = value;
 	}
 
@@ -395,17 +410,17 @@ class Graphics {
 	}
 
 	public function set_alpha(value:Float) : Float {
-		g2.opacity = value;
+		buffer.g2.opacity = value;
 		return _alpha = value;
     }
 
     public function get_matrix() : Matrix {
-		return g2.transformation;
+		return buffer.g2.transformation;
 	}
 
 	public function set_matrix(matrix:Matrix) : Matrix {
-        g2.transformation.setFrom(matrix);
-		return g2.transformation;
+        buffer.g2.transformation.setFrom(matrix);
+		return buffer.g2.transformation;
     }
 
     public function get_font() : Font {
@@ -413,7 +428,7 @@ class Graphics {
 	}
 
 	public function set_font(value:Font) : Font {
-		g2.font = value;
+		buffer.g2.font = value;
 		return _font = value;
 	}	
 
@@ -422,14 +437,14 @@ class Graphics {
 	}
 
 	public function set_fontSize(value:Int) : Int {
-		g2.fontSize = value;
+		buffer.g2.fontSize = value;
 		return _fontSize = value;
 	}
 
 	public function set_blendMode(blend:BlendMode) : BlendMode {
 		if(blend != _blendMode){
 			_blendMode = blend;
-			g2.pipeline = blend != null ? blend.getPipeline() : null;
+			buffer.g2.pipeline = blend != null ? blend.getPipeline() : null;
 		}
 
 		return _blendMode;
@@ -437,5 +452,9 @@ class Graphics {
 
 	public function get_blendMode() : BlendMode {
 		return _blendMode;
+	}
+
+	function get_isRendering():Bool {
+		return _isRendering;
 	}
 }

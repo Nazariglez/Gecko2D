@@ -1,5 +1,6 @@
 package exp.utils;
 
+//todo create instance with macros?
 class Pool<T> {
     static private var _emptyArgs:Array<Dynamic> = new Array<Dynamic>();
 

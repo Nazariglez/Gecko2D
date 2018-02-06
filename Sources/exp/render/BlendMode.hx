@@ -41,9 +41,7 @@ class BlendMode {
         if(_compiled)return;
 
         if(!Gecko.isIniaited){
-            Gecko.onKhaInit(function(){
-                _compile();
-            });
+            Gecko.onKhaInit += _compile;
             return;
         }
 
