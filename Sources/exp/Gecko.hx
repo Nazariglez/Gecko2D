@@ -1,5 +1,6 @@
 package exp;
 
+import exp.utils.FPSCounter;
 import exp.utils.Event;
 import exp.systems.RenderSystem;
 import exp.math.Random;
@@ -26,11 +27,15 @@ class Gecko {
     static public var onUpdate:Event<Float32->Void> = Event.create();
     static public var onDraw:Event<Void->Void> = Event.create();
     static public var onKhaInit:Event<Void->Void> = Event.create();
+    static public var onStart:Event<Void->Void> = Event.create();
+    static public var onStop:Event<Void->Void> = Event.create();
 
     static public var isRunning(get, null):Bool;
     static private var _isRunning:Bool = false;
 
     static private var _updateTaskId:Int = -1;
+    static public var updateTicker:FPSCounter;
+
 
     static public function init(onReady:Void->Void, opts:GeckoOptions) {
         var options = _parseOptions(opts != null ? opts : {});
@@ -53,13 +58,18 @@ class Gecko {
 
         Random.init(opts.randomSeed);
 
-        _initEntityManager();
+        _initWorld();
+
+        //clear the ticker
+        updateTicker = new FPSCounter();
+        onStop += updateTicker.clear;
 
         _isIniaited = true;
 
         start();
 
         onKhaInit.emit();
+        onKhaInit.clear();
 
         onReady();
     }
@@ -68,16 +78,18 @@ class Gecko {
         if(_isRunning || !_isIniaited)return;
         System.notifyOnRender(_render);
         _updateTaskId = Scheduler.addTimeTask(_update, 0, 1 / 60);
+        onStart.emit();
     }
 
     static public function stop() {
         if(!_isRunning || !_isIniaited)return;
         System.removeRenderListener(_render);
         Scheduler.removeTimeTask(_updateTaskId);
+        onStop.emit();
     }
 
 
-    static private function _initEntityManager() {
+    static private function _initWorld() {
         if(world == null){
             world = new World();
         }
@@ -196,7 +208,8 @@ class Gecko {
     }
 
     static private function _update() {
-        onUpdate.emit(0.0);
+        updateTicker.tick();
+        onUpdate.emit(updateTicker.delta);
     }
 
     static private function _render(f:Framebuffer) {

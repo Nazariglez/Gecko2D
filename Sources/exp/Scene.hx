@@ -5,8 +5,10 @@ import exp.macros.IAutoPool;
 import exp.systems.System;
 import exp.components.Component;
 
+#if !macro
 @:build(exp.macros.TypeInfoBuilder.buildScene())
 @:autoBuild(exp.macros.TypeInfoBuilder.buildScene())
+#end
 class Scene implements IAutoPool {
     //todo dirty flags to sort entities in update
 
@@ -58,13 +60,13 @@ class Scene implements IAutoPool {
         entities.push(entity);
         for(s in systems){
             s._registerEntity(entity);
-            entity.onAddComponent += _onEntityAddComponent;
+            entity.onAddedComponent += _onEntityAddComponent;
         }
     }
 
     public function removeEntitiy(entity:Entity) {
         for(s in systems){
-            entity.onAddComponent -= _onEntityAddComponent;
+            entity.onAddedComponent -= _onEntityAddComponent;
             entity.manager = null;
             s._removeEntity(entity);
         }

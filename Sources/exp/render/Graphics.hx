@@ -17,18 +17,11 @@ import kha.math.Vector2;
 class Graphics {
 	static public var emptyMatrix:Matrix = Matrix.identity();
 
-	public var buffer:Image;
+	public var buffer(get, null):Image;
+	private var _buffer:Image;
 
 	public var isRendering(get, null):Bool;
 	private var _isRendering:Bool = false;
-
-
-	public function setBuffer(buffer:Image) {
-		if(_isRendering){
-			throw "You can't change the buffer while rendering";
-		}
-		this.buffer = buffer;
-	}
 
 	public var g2:kha.graphics2.Graphics;
     public var g4:kha.graphics4.Graphics;
@@ -76,6 +69,14 @@ class Graphics {
 
         return vecs;
     }
+
+
+	public function setBuffer(buffer:Image) {
+		if(_isRendering){
+			throw "You can't change the buffer while rendering";
+		}
+		_buffer = buffer;
+	}
 
 	public function beginRenderTarget(img:Image) {
 		g2.end();
@@ -328,11 +329,11 @@ class Graphics {
 		buffer.g2.drawVideo(video, x, y, width, height);
 	}
 
-    public inline function drawString(text:String, x:Float, y:Float) : Void {
+    public inline function drawText(text:String, x:Float, y:Float) : Void {
 		buffer.g2.drawString(text, x, y);
 	}
 
-    public inline function drawAlignedString(text:String, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
+    public inline function drawAlignedText(text:String, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
         GraphicsExtension.drawAlignedString(g2, text, x, y, horAlign, verAlign);
     }
 
@@ -396,52 +397,52 @@ class Graphics {
 	}
 
 
-    public function get_color() : Color {
+    inline function get_color() : Color {
 		return _color;
 	}
 
-	public function set_color(value:Color) : Color {
+	inline function set_color(value:Color) : Color {
 		buffer.g2.color = value;
 		return _color = value;
 	}
 
-	public function get_alpha() : Float {
+	inline function get_alpha() : Float {
 		return _alpha;
 	}
 
-	public function set_alpha(value:Float) : Float {
+	inline function set_alpha(value:Float) : Float {
 		buffer.g2.opacity = value;
 		return _alpha = value;
     }
 
-    public function get_matrix() : Matrix {
+    inline function get_matrix() : Matrix {
 		return buffer.g2.transformation;
 	}
 
-	public function set_matrix(matrix:Matrix) : Matrix {
+	inline function set_matrix(matrix:Matrix) : Matrix {
         buffer.g2.transformation.setFrom(matrix);
 		return buffer.g2.transformation;
     }
 
-    public function get_font() : Font {
+    inline function get_font() : Font {
 		return _font;
 	}
 
-	public function set_font(value:Font) : Font {
+	inline function set_font(value:Font) : Font {
 		buffer.g2.font = value;
 		return _font = value;
 	}	
 
-	public function get_fontSize() : Int {
+	inline function get_fontSize() : Int {
 		return _fontSize;
 	}
 
-	public function set_fontSize(value:Int) : Int {
+	inline function set_fontSize(value:Int) : Int {
 		buffer.g2.fontSize = value;
 		return _fontSize = value;
 	}
 
-	public function set_blendMode(blend:BlendMode) : BlendMode {
+	inline function set_blendMode(blend:BlendMode) : BlendMode {
 		if(blend != _blendMode){
 			_blendMode = blend;
 			buffer.g2.pipeline = blend != null ? blend.getPipeline() : null;
@@ -450,11 +451,15 @@ class Graphics {
 		return _blendMode;
 	}
 
-	public function get_blendMode() : BlendMode {
+	inline function get_blendMode() : BlendMode {
 		return _blendMode;
 	}
 
-	function get_isRendering():Bool {
+	inline function get_isRendering():Bool {
 		return _isRendering;
+	}
+
+	inline function get_buffer():Image {
+		return _buffer;
 	}
 }

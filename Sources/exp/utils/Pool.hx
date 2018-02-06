@@ -24,8 +24,16 @@ class Pool<T> {
             _reset = opts.reset;
         }
 
-        for(i in 0...opts.amount){
-            _objects.push(_create());
+        if(exp.Gecko.isIniaited){
+            for(i in 0...opts.amount){
+                _objects.push(_create());
+            }
+        }else{
+            exp.Gecko.onKhaInit += function(){
+                for(i in 0...opts.amount){
+                    this._objects.push(this._create());
+                }
+            };
         }
     }
 

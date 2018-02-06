@@ -7,9 +7,11 @@ import exp.components.Component;
 //todo toString for debug
 //todo serialize && unserialize to save and load from text
 
+#if !macro
 @:poolAmount(100)
 @:build(exp.macros.TypeInfoBuilder.buildEntity())
 @:autoBuild(exp.macros.TypeInfoBuilder.buildEntity())
+#end
 class Entity implements IAutoPool {
     public var id:Int = Scene.getUniqueID();
     public var manager:Scene;
@@ -24,8 +26,8 @@ class Entity implements IAutoPool {
     private var _components:Map<String,Component> = new Map<String, Component>();
     private var _componentsList:Array<Component> = [];
 
-    public var onAddComponent:Event<Entity->Component->Void> = Event.create();
-    public var onRemoveComponent:Event<Entity->Component->Void> = Event.create();
+    public var onAddedComponent:Event<Entity->Component->Void> = Event.create();
+    public var onRemovedComponent:Event<Entity->Component->Void> = Event.create();
 
     public function new() {}
 
@@ -45,7 +47,7 @@ class Entity implements IAutoPool {
         for(name in _components.keys()){
             var component = _components.get(name);
             _components.remove(name);
-            onRemoveComponent.emit(this, component);
+            onRemovedComponent.emit(this, component);
             component.destroy();
         }
 
@@ -58,7 +60,7 @@ class Entity implements IAutoPool {
         component.entity = this;
         _components.set(component.__typeName__, component);
         _componentsList.push(component);
-        onAddComponent.emit(this, component);
+        onAddedComponent.emit(this, component);
         return this;
     }
 
@@ -70,7 +72,7 @@ class Entity implements IAutoPool {
             c.entity = null;
             _components.remove(name);
             _componentsList.remove(c);
-            onRemoveComponent.emit(this, c);
+            onRemovedComponent.emit(this, c);
             return c;
         }
         return null;

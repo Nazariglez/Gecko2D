@@ -6,8 +6,10 @@ import exp.components.Component;
 using Lambda;
 
 @:allow(exp.Scene)
+#if !macro
 @:build(exp.macros.TypeInfoBuilder.buildSystem())
 @:autoBuild(exp.macros.TypeInfoBuilder.buildSystem())
+#end
 class System implements IAutoPool {
     public var id:Int = Scene.getUniqueID();
 
@@ -70,7 +72,7 @@ class System implements IAutoPool {
     private function _registerEntity(entity:Entity) {
         if(isValidEntity(entity)){
             _entities.push(entity);
-            entity.onRemoveComponent += _onEntityRemoveComponent;
+            entity.onRemovedComponent += _onEntityRemoveComponent;
         }
     }
 
@@ -82,7 +84,7 @@ class System implements IAutoPool {
     }
 
     private function _removeEntity(entity:Entity) {
-        entity.onRemoveComponent -= _onEntityRemoveComponent;
+        entity.onRemovedComponent -= _onEntityRemoveComponent;
         _entities.remove(entity);
     }
 

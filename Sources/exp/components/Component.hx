@@ -2,9 +2,13 @@ package exp.components;
 
 import exp.macros.IAutoPool;
 
+//todo macro clone all fields to use with prefabs
+
 @:allow(exp.Entity)
+#if !macro
 @:build(exp.macros.TypeInfoBuilder.buildComponent())
 @:autoBuild(exp.macros.TypeInfoBuilder.buildComponent())
+#end
 class Component implements IAutoPool {
     public var entity:Entity;
 
