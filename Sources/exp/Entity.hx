@@ -26,6 +26,8 @@ class Entity implements IAutoPool {
     public var depth(get, set):Int;
     private var _depth:Int = 0;
 
+    private var _tags:Map<String, Bool> = new Map<String, Bool>();
+
     //todo hardcoded the renderComponent ref? and add it when addComponent Std.is(IRendereable) === true?
     //public var renderComponent:IRendereable;
 
@@ -54,7 +56,7 @@ class Entity implements IAutoPool {
         reset();
 
         if(scene != null){
-            scene.removeEntitiy(this);
+            scene.removeEntity(this);
         }
 
         for(name in _components.keys()){
@@ -68,6 +70,24 @@ class Entity implements IAutoPool {
     }
 
     private function __toPool__() {} //macro
+
+    public inline function addTag(tag:String) {
+        _tags.set(tag, true);
+    }
+
+    public inline function removeTag(tag:String) {
+        _tags.remove(tag);
+    }
+
+    public inline function hasTag(tag:String) : Bool {
+        return _tags.exists(tag);
+    }
+
+    public function removeAllTags() {
+        for(t in _tags.keys()){
+            _tags.remove(t);
+        }
+    }
 
     public function addComponent(component:Component) : Entity {
         component.entity = this;
