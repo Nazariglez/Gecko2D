@@ -22,6 +22,9 @@ class System implements IAutoPool {
     private var _entities:Array<Entity> = [];
     private var _dirtySortEntities:Bool = false;
 
+    public var disableDraw:Bool = false;
+    public var disableUpdate:Bool = false;
+
     public function new(){}
 
     public function init(name:String = "") {

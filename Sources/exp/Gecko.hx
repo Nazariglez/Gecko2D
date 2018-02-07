@@ -35,6 +35,7 @@ class Gecko {
 
     static private var _updateTaskId:Int = -1;
     static public var updateTicker:FPSCounter;
+    static public var renderTicker:FPSCounter;
 
     static private var _countUniqueID:Int = 0;
     static public function getUniqueID() : Int {
@@ -67,6 +68,9 @@ class Gecko {
         //clear the ticker
         updateTicker = new FPSCounter();
         onStop += updateTicker.clear;
+
+        renderTicker = new FPSCounter();
+        onStop += renderTicker.clear;
 
         _isIniaited = true;
 
@@ -219,6 +223,7 @@ class Gecko {
     }
 
     static private function _render(f:Framebuffer) {
+        renderTicker.tick();
 
         graphics.setBuffer(Screen.buffer);
 

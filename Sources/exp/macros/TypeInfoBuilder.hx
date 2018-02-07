@@ -40,6 +40,10 @@ class TypeInfoBuilder {
             fields = fields.concat(_extend);
         }
 
+        fields = fields.concat((macro class {
+            static public var __className__:String = $v{name};
+        }).fields);
+
         return fields;
     }
 

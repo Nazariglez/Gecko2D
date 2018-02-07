@@ -81,7 +81,7 @@ class Scene implements IAutoPool {
             s._registerEntity(entity);
             entity.onComponentAdded += _onEntityAddComponent;
         }
-        onEntityAdded.emit(entity);
+        //onEntityAdded.emit(entity);
     }
 
     public function removeEntity(entity:Entity) {
@@ -101,7 +101,7 @@ class Scene implements IAutoPool {
             s._removeEntity(entity);
         }
         entities.remove(entity);
-        onEntityRemoved.emit(entity);
+        //onEntityRemoved.emit(entity);
     }
 
     @:allow(exp.systems.System)
@@ -128,7 +128,7 @@ class Scene implements IAutoPool {
         }
 
         _dirtySortSystems = true;
-        onSystemAdded.emit(system);
+        //onSystemAdded.emit(system);
     }
 
     private function _sortSystems(a:System, b:System) {
@@ -151,7 +151,7 @@ class Scene implements IAutoPool {
         systems.remove(system);
         system._removeAllEntities();
 
-        onSystemRemoved.emit(system);
+        //onSystemRemoved.emit(system);
     }
 
     public function process(delta:Float32) {
@@ -188,14 +188,20 @@ class Scene implements IAutoPool {
 
     public function update(delta:Float32) {
         for(sys in systems){
-            sys.update(delta);
+            if(!sys.disableUpdate){
+                sys.update(delta);
+            }
         }
     }
 
     public function draw() {
+        _isProcessing = true;
         for(sys in systems){
-            sys.draw();
+            if(!sys.disableDraw){
+                sys.draw();
+            }
         }
+        _isProcessing = false;
     }
 
     private function _onEntityAddComponent(entity:Entity, component:Component) {

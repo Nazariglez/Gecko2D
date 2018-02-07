@@ -1,5 +1,6 @@
 package exp;
 
+import exp.components.DrawComponent;
 import exp.utils.Event;
 import exp.macros.IAutoPool;
 import exp.components.Component;
@@ -27,6 +28,8 @@ class Entity implements IAutoPool {
     private var _depth:Int = 0;
 
     private var _tags:Map<String, Bool> = new Map<String, Bool>();
+
+    public var dd:DrawComponent;
 
     //todo hardcoded the renderComponent ref? and add it when addComponent Std.is(IRendereable) === true?
     //public var renderComponent:IRendereable;
@@ -121,11 +124,11 @@ class Entity implements IAutoPool {
         return _componentsList;
     }
 
-    public function getComponent<T:Component>(componentClass:Class<T>) : T {
+    public inline function getComponent<T:Component>(componentClass:Class<T>) : T {
         return cast _components.get(Type.getClassName(componentClass));
     }
 
-    public function hasComponent(componentClass:Class<Component>) : Bool {
+    public inline function hasComponent(componentClass:Class<Component>) : Bool {
         return _components.exists(Type.getClassName(componentClass));
     }
 
@@ -148,11 +151,11 @@ class Entity implements IAutoPool {
         _scene = value;
 
         if(s != null){
-            onRemovedFromScene.emit(this, s);
+            //onRemovedFromScene.emit(this, s);
         }
 
         if(_scene != null){
-            onAddedToScene.emit(this, _scene);
+            //onAddedToScene.emit(this, _scene);
         }
 
         return _scene;
