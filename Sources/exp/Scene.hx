@@ -17,6 +17,7 @@ class Scene implements IAutoPool {
     private var _name:String = "";
 
     private var _dirtySortSystems:Bool = false;
+    private var _isProcessing:Bool = false;
 
     //todo loadAssets //unload assets automatically in the unload scene
 
@@ -31,6 +32,13 @@ class Scene implements IAutoPool {
 
     public var onSystemAdded:Event<System->Void> = Event.create();
     public var onSystemRemoved:Event<System->Void> = Event.create();
+
+    private var _systemsToAdd:Array<System> = [];
+    private var _systemsToRemove:Array<System> = [];
+    private var _entitiesToAdd:Array<Entity> = [];
+    private var _entitiesToRemove:Array<Entity> = [];
+
+    private var _dirtyProcess:Bool = false;
 
     public function new(){
         addSystem(RenderSystem.create());
@@ -48,7 +56,7 @@ class Scene implements IAutoPool {
             sys.destroy();
         }
         for(e in entities){
-            removeEntitiy(e);
+            removeEntity(e);
             e.destroy();
         }
         if(!avoidPool)__toPool__();
@@ -57,6 +65,16 @@ class Scene implements IAutoPool {
     private function __toPool__() {} //macros
 
     public function addEntity(entity:Entity) {
+        if(_isProcessing){
+            _entitiesToAdd.push(entity);
+            _dirtyProcess = true;
+            return;
+        }
+
+        _addEntity(entity);
+    }
+
+    private function _addEntity(entity:Entity) {
         entity.scene = this;
         entities.push(entity);
         for(s in systems){
@@ -66,7 +84,17 @@ class Scene implements IAutoPool {
         onEntityAdded.emit(entity);
     }
 
-    public function removeEntitiy(entity:Entity) {
+    public function removeEntity(entity:Entity) {
+        if(_isProcessing){
+            _entitiesToRemove.push(entity);
+            _dirtyProcess = true;
+            return;
+        }
+
+        _removeEntity(entity);
+    }
+
+    private function _removeEntity(entity:Entity) {
         for(s in systems){
             entity.onComponentAdded -= _onEntityAddComponent;
             entity.scene = null;
@@ -84,6 +112,16 @@ class Scene implements IAutoPool {
     }
 
     public function addSystem(system:System) {
+        if(_isProcessing){
+            _systemsToAdd.push(system);
+            _dirtyProcess = true;
+            return;
+        }
+
+        _addSystem(system);
+    }
+
+    private function _addSystem(system:System) {
         systems.push(system);
         for(e in entities){
             system._registerEntity(e);
@@ -100,18 +138,55 @@ class Scene implements IAutoPool {
     }
 
     public function removeSystem(system:System) {
+        if(_isProcessing){
+            _systemsToRemove.push(system);
+            _dirtyProcess = true;
+            return;
+        }
+
+        _removeSystem(system);
+    }
+
+    private function _removeSystem(system:System) {
         systems.remove(system);
         system._removeAllEntities();
 
         onSystemRemoved.emit(system);
     }
 
-    public function update(delta:Float32) {
+    public function process(delta:Float32) {
+        _isProcessing = true;
         if(_dirtySortSystems){
             systems.sort(_sortSystems);
             _dirtySortSystems = false;
         }
 
+        update(delta);
+
+        if(_dirtyProcess){
+            while(_entitiesToAdd.length != 0){
+                _addEntity(_entitiesToAdd.pop());
+            }
+
+            while(_entitiesToRemove.length != 0){
+                _removeEntity(_entitiesToRemove.pop());
+            }
+
+            while(_systemsToAdd.length != 0){
+                _addSystem(_systemsToAdd.pop());
+            }
+
+            while(_systemsToRemove.length != 0){
+                _removeSystem(_systemsToRemove.pop());
+            }
+
+            _dirtyProcess = false;
+        }
+
+        _isProcessing = false;
+    }
+
+    public function update(delta:Float32) {
         for(sys in systems){
             sys.update(delta);
         }

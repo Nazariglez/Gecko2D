@@ -6,9 +6,11 @@ class World {
     public var currentScene:Scene = Scene.create("initial");
     private var _nextScene:Scene;
 
-    public var onSceneChanged:Event<Scene->Scene->Void> = Event.create();
+    public var onSceneChanged:Event<Scene->Scene->Void>;
 
-    public function new(){}
+    public function new(){
+        onSceneChanged = Event.create();
+    }
 
     public function changeScene(scene:Scene) {
         _nextScene = scene;
@@ -24,7 +26,7 @@ class World {
             onSceneChanged.emit(scene, currentScene);
         }
 
-        currentScene.update(delta);
+        currentScene.process(delta);
     }
 
     public function draw() {
