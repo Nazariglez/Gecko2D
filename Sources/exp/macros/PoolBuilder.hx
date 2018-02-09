@@ -14,6 +14,10 @@ class PoolBuilder {
         var clazz = Context.getLocalClass().get();
         var path = clazz.pack.concat([clazz.name]);
 
+        if(clazz.isInterface){
+            return fields;
+        }
+
         //var arguments:Array<Dynamic> = null;
         var amount:Int = 1;
 

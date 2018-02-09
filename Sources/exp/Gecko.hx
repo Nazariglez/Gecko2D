@@ -2,7 +2,7 @@ package exp;
 
 import exp.utils.FPSCounter;
 import exp.utils.Event;
-import exp.systems.RenderSystem;
+import exp.systems.DrawSystem;
 import exp.math.Random;
 import kha.WindowMode;
 import kha.Scheduler;
@@ -199,7 +199,7 @@ class Gecko {
             #if debug
             options.randomSeed = 1;
             #else
-            options.randomSeed = math.Random();
+            options.randomSeed = Std.random(100000);
             #end
         }else{
             options.randomSeed = opts.randomSeed;

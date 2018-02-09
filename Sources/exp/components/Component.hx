@@ -1,16 +1,11 @@
 package exp.components;
 
-import exp.macros.IAutoPool;
 import exp.utils.Event;
 
 //todo macro clone all fields to use with prefabs
 
 @:allow(exp.Entity)
-#if !macro
-@:build(exp.macros.TypeInfoBuilder.buildComponent())
-@:autoBuild(exp.macros.TypeInfoBuilder.buildComponent())
-#end
-class Component implements IAutoPool {
+class Component implements IComponent {
     public var entity(get, set):Entity;
     private var _entity:Entity = null;
 
@@ -28,15 +23,15 @@ class Component implements IAutoPool {
         onRemovedFromEntity = Event.create();
     }
 
-    public function init(name:String = "") {
+    /*public function init(name:String = "") {
         _name = name;
-    }
+    }*/
     public function reset(){}
 
     public function destroy(avoidPool:Bool = false) {
         reset();
         if(entity != null){
-            entity.removeComponent(__type__);
+            entity.removeComponent(__typeName__);
         }
         if(!avoidPool)__toPool__();
     }

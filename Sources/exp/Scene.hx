@@ -1,7 +1,7 @@
 package exp;
 
 import exp.utils.Event;
-import exp.systems.RenderSystem;
+import exp.systems.DrawSystem;
 import exp.macros.IAutoPool;
 import exp.systems.System;
 import exp.components.Component;
@@ -41,7 +41,7 @@ class Scene implements IAutoPool {
     private var _dirtyProcess:Bool = false;
 
     public function new(){
-        addSystem(RenderSystem.create());
+        addSystem(DrawSystem.create());
     }
 
     public function init(name:String = ""){

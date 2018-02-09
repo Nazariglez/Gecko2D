@@ -24,13 +24,15 @@ abstract Event<T>(Evt<T>) from Evt<T> to Event<T> {
     public macro function emit(e1:Expr, extra:Array<Expr>) {
         var e = macro handler($a{extra});
         return macro {
-            for(handler in $e1.handlers){
-                $e;
+            if($e1.handlers.length != 0){
+                for(handler in $e1.handlers){
+                    $e;
+                }
             }
         };
     }
 
-    //todo add a reflection emit to use in runtime
+    //todo add a reflection emit to use at runtime
 
     public function clear() {
         if(this.handlers.length != 0){

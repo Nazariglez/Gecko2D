@@ -3,11 +3,15 @@ package exp.systems;
 import exp.components.DrawComponent;
 import exp.components.TransformComponent;
 
+//todo matcher
+
 @:expose
-class RenderSystem extends System {
-    override public function init(name:String = ""){
-        super.init(name);
+class DrawSystem extends System {
+    public function init(){
+        matcher.is(DrawComponent).equal(TransformComponent);
+
         disableUpdate = true;
+        disableDraw = false;
     }
 
     override public function draw() {
@@ -25,14 +29,14 @@ class RenderSystem extends System {
                 }
             }*/
 
-            if(e.dd != null && e.dd.enabled && e.dd.visible){
-                e.dd.draw();
+            if(e.renderer != null && e.renderer.enabled && e.renderer.visible){
+                e.renderer.draw();
             }
         }
     }
 
-    override public function isValidEntity(entity:Entity) : Bool {
-        if(!entity.hasComponent(TransformComponent))return false;
+    /*override public function isValidEntity(entity:Entity) : Bool {
+        if(!entity.hasComponent(TransformComponent.__className__))return false;
         var valid = false;
         /*for(c in entity.getAllComponents()){
             if(Std.is(c, DrawComponent)){
@@ -40,7 +44,7 @@ class RenderSystem extends System {
                 break;
             }
         }
-        return valid;*/
+        return valid;
         return entity.dd != null;
-    }
+    }*/
 }

@@ -1,35 +1,28 @@
 package exp.systems;
 
-import exp.macros.IAutoPool;
 import exp.components.Component;
 
 using Lambda;
 
 @:allow(exp.Scene)
-#if !macro
-@:build(exp.macros.TypeInfoBuilder.buildSystem())
-@:autoBuild(exp.macros.TypeInfoBuilder.buildSystem())
-#end
-class System implements IAutoPool {
+class System implements ISystem {
     public var id:Int = Gecko.getUniqueID();
 
     public var name(get, set):String;
     private var _name:String = "";
 
     public var priority:Int = 0;
-    public var requiredComponents:Array<Class<Component>> = [];
+    public var requiredComponents:Array<String> = [];
 
     private var _entities:Array<Entity> = [];
     private var _dirtySortEntities:Bool = false;
 
-    public var disableDraw:Bool = false;
+    public var disableDraw:Bool = true;
     public var disableUpdate:Bool = false;
 
-    public function new(){}
+    public var matcher:Matcher = new Matcher();
 
-    public function init(name:String = "") {
-        _name = name;
-    }
+    public function new(){}
 
     public function process(delta:Float32){
         if(_dirtySortEntities){
@@ -53,6 +46,7 @@ class System implements IAutoPool {
     public function destroy(avoidPool:Bool = false) {
         reset();
         removeAllEntities();
+        matcher.clear();
         if(!avoidPool)__toPool__();
     }
 
@@ -62,7 +56,7 @@ class System implements IAutoPool {
         return _entities;
     }
 
-    public inline function getEntitiesWithComponent(componentClass:Class<Component>) : Array<Entity> {
+    public inline function getEntitiesWithComponent(componentClass:String) : Array<Entity> {
         return _entities.filter(function(e) {
             return e.hasComponent(componentClass);
         }).array();
@@ -70,13 +64,7 @@ class System implements IAutoPool {
 
     //override to check if an entity is valid for your system
     public function isValidEntity(entity:Entity) : Bool {
-        for(c in requiredComponents){
-            if(!entity.hasComponent(c)){
-                return false;
-            }
-        }
-
-        return true;
+        return matcher.testEntity(entity);
     }
 
     public function removeAllEntities() {
