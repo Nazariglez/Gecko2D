@@ -41,7 +41,8 @@ class TypeInfoBuilder {
         }
 
         fields = fields.concat((macro class {
-            static inline public var __className__:exp.components.ComponentID = $v{name};
+            static inline public var __componentName__:String = $v{name};
+            //static private var __addNameToGlobalList__ = exp.utils.ECSList.addComponent($p{path}, $v{name});
         }).fields);
 
         return fields;

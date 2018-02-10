@@ -31,7 +31,7 @@ class Component implements IComponent {
     public function destroy(avoidPool:Bool = false) {
         reset();
         if(entity != null){
-            entity.removeComponent(__typeName__);
+            entity.removeComponent(__type__);
         }
         if(!avoidPool)__toPool__();
     }

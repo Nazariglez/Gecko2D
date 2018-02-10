@@ -5,16 +5,13 @@ import exp.components.DrawComponent;
 import exp.utils.Event;
 import exp.macros.IAutoPool;
 import exp.components.Component;
+import exp.components.ComponentClass;
 
 //todo toString for debug
 //todo serialize && unserialize to save and load from text
 
-#if !macro
 @:poolAmount(100)
-@:build(exp.macros.TypeInfoBuilder.buildEntity())
-@:autoBuild(exp.macros.TypeInfoBuilder.buildEntity())
-#end
-class Entity implements IAutoPool {
+class Entity implements IEntity {
     public var id:Int = Gecko.getUniqueID();
 
     public var enabled:Bool = true;
@@ -36,7 +33,7 @@ class Entity implements IAutoPool {
     //todo hardcoded the renderComponent ref? and add it when addComponent Std.is(IRendereable) === true?
     //public var renderComponent:IRendereable;
 
-    private var _components:Map<String,Component> = new Map<String, Component>();
+    private var _components:Map<String,Component> = new Map();
     private var _componentsList:Array<Component> = [];
 
     public var onComponentAdded:Event<Entity->Component->Void>;
@@ -99,14 +96,14 @@ class Entity implements IAutoPool {
 
         if(Std.is(component, DrawComponent)){
             if(renderer != null){
-                removeComponent(renderer.__typeName__);
+                removeComponent(renderer.__type__);
             }
             renderer = cast component;
         }
 
         if(component.__type__ == TransformComponent){
             if(transform != null){
-                removeComponent(transform.__typeName__);
+                removeComponent(transform.__type__);
             }
             transform = cast component;
         }
@@ -118,10 +115,8 @@ class Entity implements IAutoPool {
         return this;
     }
 
-    public function removeComponent<T:Component>(name:String) : T {
-        //var name = Type.getClassName(componentClass);
-
-        var c:T = cast _components.get(name);
+    public function removeComponent<T:Component>(componentClass:ComponentClass) : T {
+        var c:T = cast _components.get(componentClass.__componentName__);
         if(c != null){
             c.entity = null;
             _components.remove(name);
@@ -140,8 +135,8 @@ class Entity implements IAutoPool {
     }
 
     public function removeAllComponents() {
-        for(c in _components.keys()){
-            removeComponent(c);
+        for(c in _components){
+            removeComponent(c.__type__);
         }
     }
 
@@ -149,8 +144,8 @@ class Entity implements IAutoPool {
         return _componentsList;
     }
 
-    public inline function getComponent<T:Component>(name:String) : T {
-        return cast _components[name];
+    public inline function getComponent<T:Component>(componentClass:ComponentClass) : T {
+        return cast _components[componentClass.__componentName__];
     }
 
     public inline function hasComponent(name:String) : Bool {
