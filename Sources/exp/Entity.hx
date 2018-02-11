@@ -3,7 +3,6 @@ package exp;
 import exp.components.TransformComponent;
 import exp.components.DrawComponent;
 import exp.utils.Event;
-import exp.macros.IAutoPool;
 import exp.components.Component;
 import exp.components.ComponentClass;
 
@@ -40,12 +39,14 @@ class Entity implements IEntity {
     public var onComponentRemoved:Event<Entity->Component->Void>;
     public var onAddedToScene:Event<Entity->Scene->Void>;
     public var onRemovedFromScene:Event<Entity->Scene->Void>;
+    public var onDepthChanged:Event<Entity->Void>;
 
     public function new() {
         onComponentAdded = Event.create();
         onComponentRemoved = Event.create();
         onAddedToScene = Event.create();
         onRemovedFromScene = Event.create();
+        onDepthChanged = Event.create();
     }
 
     public function init(name:String = ""){
@@ -171,11 +172,11 @@ class Entity implements IEntity {
         _scene = value;
 
         if(s != null){
-            //onRemovedFromScene.emit(this, s);
+            onRemovedFromScene.emit(this, s);
         }
 
         if(_scene != null){
-            //onAddedToScene.emit(this, _scene);
+            onAddedToScene.emit(this, _scene);
         }
 
         return _scene;
@@ -188,9 +189,7 @@ class Entity implements IEntity {
     function set_depth(value:Int):Int {
         if(value == _depth)return _depth;
         _depth = value;
-        if(_scene != null){
-            _scene.depthChanged(this);
-        }
+        onDepthChanged.emit(this);
         return _depth;
     }
 }

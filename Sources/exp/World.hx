@@ -1,5 +1,6 @@
 package exp;
 
+import exp.render.Graphics;
 import exp.utils.Event;
 
 class World {
@@ -29,7 +30,7 @@ class World {
         currentScene.process(delta);
     }
 
-    public function draw() {
-        currentScene.draw();
+    public function draw(g:Graphics) {
+        currentScene.draw(g);
     }
 }

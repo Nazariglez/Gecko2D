@@ -1,5 +1,6 @@
 package exp.systems;
 
+import exp.render.Graphics;
 import exp.components.DrawComponent;
 import exp.components.TransformComponent;
 
@@ -9,42 +10,30 @@ import exp.components.TransformComponent;
 class DrawSystem extends System {
     public function init(){
         matcher.is(DrawComponent).equal(TransformComponent);
+        priority = 0;
 
         disableUpdate = true;
         disableDraw = false;
     }
 
-    override public function draw() {
+    override public function draw(g:Graphics) {
         for(e in getEntities()){
-            if(!e.enabled)continue;
+            if(!e.enabled || e.renderer == null || !e.renderer.enabled || !e.renderer.visible){
+                continue;
+            }
 
-            /*for(c in e.getAllComponents()){
-                if(!c.enabled)continue;
+            g.matrix = e.transform.worldMatrix;
+            g.color = e.renderer.color;
 
-                if(Std.is(c, DrawComponent)){
-                    var renderComponent:DrawComponent = cast c;
-                    if(!renderComponent.visible)continue;
+            if(e.transform.parent != null && e.transform.parent.renderer != null){
+                g.alpha = e.renderer.alpha*e.transform.parent.renderer.alpha;
+            }else{
+                g.alpha = e.renderer.alpha;
+            }
 
-                    renderComponent.draw();
-                }
-            }*/
-
-            if(e.renderer != null && e.renderer.enabled && e.renderer.visible){
-                e.renderer.draw();
+            if(g.alpha != 0){
+                e.renderer.draw(g);
             }
         }
     }
-
-    /*override public function isValidEntity(entity:Entity) : Bool {
-        if(!entity.hasComponent(TransformComponent.__className__))return false;
-        var valid = false;
-        /*for(c in entity.getAllComponents()){
-            if(Std.is(c, DrawComponent)){
-                valid = true;
-                break;
-            }
-        }
-        return valid;
-        return entity.dd != null;
-    }*/
 }

@@ -62,9 +62,9 @@ class Graphics {
     public function new(){}
 
     private static function _pointsToVec2(points:Array<Point>) : Array<Vector2> {
-        var vecs:Array<Vector2> = [];
+        var vecs:Array<Vector2> = []; //todo pool the array
         for(p in points){
-            vecs.push(Vec2Pool.getFromPoint(p));
+            vecs.push(p.getVec2());
         }
 
         return vecs;
@@ -374,7 +374,6 @@ class Graphics {
 		GraphicsExtension.drawCubicBezierPath(g2, x, y, segments, strength);
 	}
 
-	//todo change Vector2 for Point and use a pool of vector2 to pass to the drawPolygon.
 	public inline function drawPolygon(x:Float, y:Float, vertices:Array<Point>, ?strength:Float) : Void {
         var _pointVerts = Graphics._pointsToVec2(vertices);
 		GraphicsExtension.drawPolygon(g2, x, y, _pointVerts, strength);

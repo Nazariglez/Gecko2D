@@ -24,8 +24,9 @@ abstract Event<T>(Evt<T>) from Evt<T> to Event<T> {
     public macro function emit(e1:Expr, extra:Array<Expr>) {
         var e = macro handler($a{extra});
         return macro {
-            if($e1.handlers.length != 0){
-                for(handler in $e1.handlers){
+            var handlers = $e1.handlers;
+            if(handlers.length != 0){
+                for(handler in handlers){
                     $e;
                 }
             }

@@ -9,7 +9,6 @@ import kha.Scheduler;
 import kha.Framebuffer;
 import kha.System;
 import exp.render.Graphics;
-import exp.resources.Image;
 
 #if ((kha_html5 ||kha_debug_html5) && debug)
 @:expose
@@ -25,7 +24,7 @@ class Gecko {
     static private var _opts:GeckoOptions;
 
     static public var onUpdate:Event<Float32->Void> = Event.create();
-    static public var onDraw:Event<Void->Void> = Event.create();
+    static public var onDraw:Event<Graphics->Void> = Event.create();
     static public var onKhaInit:Event<Void->Void> = Event.create();
     static public var onStart:Event<Void->Void> = Event.create();
     static public var onStop:Event<Void->Void> = Event.create();
@@ -228,7 +227,7 @@ class Gecko {
         graphics.setBuffer(Screen.buffer);
 
         graphics.begin();
-        onDraw.emit();
+        onDraw.emit(graphics);
         graphics.end();
 
         f.g2.begin(true, _opts.bgColor); //todo html5 scale it's better with matrix transforms

@@ -1,16 +1,13 @@
 package exp;
 
+import exp.render.Graphics;
+import exp.systems.TransformSystem;
 import exp.utils.Event;
 import exp.systems.DrawSystem;
-import exp.macros.IAutoPool;
 import exp.systems.System;
 import exp.components.Component;
 
-#if !macro
-@:build(exp.macros.TypeInfoBuilder.buildScene())
-@:autoBuild(exp.macros.TypeInfoBuilder.buildScene())
-#end
-class Scene implements IAutoPool {
+class Scene implements IScene {
     public var id:Int = Gecko.getUniqueID();
 
     public var name(get, set):String;
@@ -41,6 +38,7 @@ class Scene implements IAutoPool {
     private var _dirtyProcess:Bool = false;
 
     public function new(){
+        addSystem(TransformSystem.create());
         addSystem(DrawSystem.create());
     }
 
@@ -81,7 +79,8 @@ class Scene implements IAutoPool {
             s._registerEntity(entity);
             entity.onComponentAdded += _onEntityAddComponent;
         }
-        //onEntityAdded.emit(entity);
+        entity.onDepthChanged += _entityDepthChanged;
+        onEntityAdded.emit(entity);
     }
 
     public function removeEntity(entity:Entity) {
@@ -100,12 +99,13 @@ class Scene implements IAutoPool {
             entity.scene = null;
             s._removeEntity(entity);
         }
+        entity.onDepthChanged -= _entityDepthChanged;
         entities.remove(entity);
-        //onEntityRemoved.emit(entity);
+        onEntityRemoved.emit(entity);
     }
 
     @:allow(exp.systems.System)
-    public function depthChanged(entity:Entity) {
+    private function _entityDepthChanged(entity:Entity) {
         for(sys in systems){
             sys._dirtySortEntities = true;
         }
@@ -128,7 +128,7 @@ class Scene implements IAutoPool {
         }
 
         _dirtySortSystems = true;
-        //onSystemAdded.emit(system);
+        onSystemAdded.emit(system);
     }
 
     private function _sortSystems(a:System, b:System) {
@@ -151,7 +151,7 @@ class Scene implements IAutoPool {
         systems.remove(system);
         system._removeAllEntities();
 
-        //onSystemRemoved.emit(system);
+        onSystemRemoved.emit(system);
     }
 
     public function process(delta:Float32) {
@@ -194,11 +194,11 @@ class Scene implements IAutoPool {
         }
     }
 
-    public function draw() {
+    public function draw(g:Graphics) {
         _isProcessing = true;
         for(sys in systems){
             if(!sys.disableDraw){
-                sys.draw();
+                sys.draw(g);
             }
         }
         _isProcessing = false;

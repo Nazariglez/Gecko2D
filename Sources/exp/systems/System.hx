@@ -1,5 +1,6 @@
 package exp.systems;
 
+import exp.render.Graphics;
 import exp.components.Component;
 
 using Lambda;
@@ -40,7 +41,7 @@ class System implements ISystem {
     }
 
     public function update(delta:Float32){}
-    public function draw(){}
+    public function draw(graphics:Graphics){}
     public function reset(){}
 
     public function destroy(avoidPool:Bool = false) {

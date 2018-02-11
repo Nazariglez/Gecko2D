@@ -1,5 +1,6 @@
 package exp.components;
 
+import exp.render.Graphics;
 import exp.resources.Texture;
 import exp.Assets;
 
@@ -12,9 +13,9 @@ class SpriteComponent extends DrawComponent {
         }
     }
 
-    override public function draw(){
+    override public function draw(g:Graphics){
         if(texture == null)return;
-        Gecko.graphics.drawTexture(texture, 0, 0); //todo
+        g.drawTexture(texture, 0, 0); //todo
     }
 
     override public function reset(){
