@@ -55,6 +55,7 @@ class Entity implements IEntity {
 
     public function reset(){}
 
+    //todo destroy children:Bool = true
     public function destroy(avoidPool:Bool = false) {
         reset();
 
