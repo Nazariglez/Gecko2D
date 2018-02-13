@@ -14,6 +14,7 @@ private typedef SkewCache = {
 
 class TransformComponent extends Component {
     public var parent:Entity;
+
     public var x(get, set):Float32;
     public var y(get, set):Float32;
     public var width(get, set):Float32;
@@ -30,9 +31,12 @@ class TransformComponent extends Component {
     public var flip:Vector2g<Bool> = new Vector2g(false, false);
 
     public var localMatrix:Matrix = Matrix.identity();
-    public var worldMatrix:Matrix = Matrix.identity();
+
+    public var worldMatrix(get, set):Matrix;
+    private var _worldMatrix:Matrix = Matrix.identity();
 
     public var dirtySkew:Bool = true;
+    public var dirtyWorldTransform:Bool = true;
     public var dirty:Bool = true;
 
     public var skewCache:SkewCache = {
@@ -43,8 +47,8 @@ class TransformComponent extends Component {
     };
 
     public function init(x:Float32, y:Float32, ?xSize:Float32, ?ySize:Float32) {
-        //todo set observer ina ll points and use dirty flags to avoid update?
         dirtySkew = true;
+        dirtyWorldTransform = true;
         dirty = true;
 
         position = Point.create(x, y);
@@ -94,13 +98,30 @@ class TransformComponent extends Component {
         skewCache.sinY = 0;
     }
 
+    private function _calculateWorldTransform() {
+        if(parent == null){
+            _worldMatrix.setFrom(localMatrix);
+        }else{
+            var _parentTransform = parent.transform.worldMatrix;
+
+            _worldMatrix._00 = (localMatrix._00 * _parentTransform._00) + (localMatrix._01 * _parentTransform._10);
+            _worldMatrix._01 = (localMatrix._00 * _parentTransform._01) + (localMatrix._01 * _parentTransform._11);
+            _worldMatrix._10 = (localMatrix._10 * _parentTransform._00) + (localMatrix._11 * _parentTransform._10);
+            _worldMatrix._11 = (localMatrix._10 * _parentTransform._01) + (localMatrix._11 * _parentTransform._11);
+
+            _worldMatrix._20 = (localMatrix._20 * _parentTransform._00) + (localMatrix._21 * _parentTransform._10) + _parentTransform._20;
+            _worldMatrix._21 = (localMatrix._20 * _parentTransform._01) + (localMatrix._21 * _parentTransform._11) + _parentTransform._21;
+        }
+        dirtyWorldTransform = false;
+    }
+
     public function apply(point:Point, newPoint:Point = null) : Point {
         if(newPoint == null){
             newPoint = Point.create();
         }
 
-        newPoint.x = worldMatrix._00 * point.x + worldMatrix._10 * point.y + worldMatrix._20;
-        newPoint.y = worldMatrix._01 * point.x + worldMatrix._11 * point.y + worldMatrix._21;
+        newPoint.x = _worldMatrix._00 * point.x + _worldMatrix._10 * point.y + _worldMatrix._20;
+        newPoint.y = _worldMatrix._01 * point.x + _worldMatrix._11 * point.y + _worldMatrix._21;
 
         return newPoint;
     }
@@ -110,9 +131,9 @@ class TransformComponent extends Component {
             newPoint = Point.create();
         }
 
-        var id = 1 / ((worldMatrix._00 * worldMatrix._11) + (worldMatrix._10 * -worldMatrix._01));
-        newPoint.x = (worldMatrix._11 * id * point.x) + (-worldMatrix._10 * id * point.y) + (((worldMatrix._21 * worldMatrix._10) - (worldMatrix._20 * worldMatrix._11)) * id);
-        newPoint.y = (worldMatrix._00 * id * point.y) + (-worldMatrix._01 * id * point.x) + (((-worldMatrix._21 * worldMatrix._00) + (worldMatrix._20 * worldMatrix._01)) * id);
+        var id = 1 / ((_worldMatrix._00 * _worldMatrix._11) + (_worldMatrix._10 * -_worldMatrix._01));
+        newPoint.x = (_worldMatrix._11 * id * point.x) + (-_worldMatrix._10 * id * point.y) + (((_worldMatrix._21 * _worldMatrix._10) - (_worldMatrix._20 * _worldMatrix._11)) * id);
+        newPoint.y = (_worldMatrix._00 * id * point.y) + (-_worldMatrix._01 * id * point.x) + (((-_worldMatrix._21 * _worldMatrix._00) + (_worldMatrix._20 * _worldMatrix._01)) * id);
 
         return newPoint;
     }
@@ -168,6 +189,17 @@ class TransformComponent extends Component {
         dirty = true;
         dirtySkew = true;
         return _rotation = value;
+    }
+
+    function get_worldMatrix():Matrix {
+        if(dirtyWorldTransform){
+            _calculateWorldTransform();
+        }
+        return _worldMatrix;
+    }
+
+    inline function set_worldMatrix(value:Matrix):Matrix {
+        return _worldMatrix = value;
     }
 
 }

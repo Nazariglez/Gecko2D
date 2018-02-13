@@ -1,5 +1,6 @@
 package exp.systems;
 
+import exp.utils.Event;
 import exp.render.Graphics;
 import exp.components.Component;
 
@@ -23,7 +24,13 @@ class System implements ISystem {
 
     public var matcher:Matcher = new Matcher();
 
-    public function new(){}
+    public var onEntityAdded:Event<Entity->Void>;
+    public var onEntityRemoved:Event<Entity->Void>;
+
+    public function new(){
+        onEntityAdded = Event.create();
+        onEntityRemoved = Event.create();
+    }
 
     public function process(delta:Float32){
         if(_dirtySortEntities){
@@ -34,6 +41,7 @@ class System implements ISystem {
         update(delta);
     }
 
+    //todo sort must be moved to each system
     private function _sortEntities(a:Entity, b:Entity) {
         if (a.depth < b.depth) return -1;
         if (a.depth > b.depth) return 1;
@@ -48,6 +56,8 @@ class System implements ISystem {
         reset();
         removeAllEntities();
         matcher.clear();
+        onEntityAdded.clear();
+        onEntityRemoved.clear();
         if(!avoidPool)__toPool__();
     }
 

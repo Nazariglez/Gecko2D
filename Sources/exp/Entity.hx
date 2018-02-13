@@ -114,6 +114,7 @@ class Entity implements IEntity {
         _componentsList.push(component);
 
         onComponentAdded.emit(this, component);
+
         return this;
     }
 

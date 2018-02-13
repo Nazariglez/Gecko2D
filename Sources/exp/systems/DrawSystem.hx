@@ -1,5 +1,6 @@
 package exp.systems;
 
+import exp.math.Matrix;
 import exp.render.Graphics;
 import exp.components.DrawComponent;
 import exp.components.TransformComponent;
@@ -26,7 +27,7 @@ class DrawSystem extends System {
             g.color = e.renderer.color;
 
             if(e.transform.parent != null && e.transform.parent.renderer != null){
-                g.alpha = e.renderer.alpha*e.transform.parent.renderer.alpha;
+                g.alpha = e.renderer.alpha*e.transform.parent.renderer.alpha; //todo use worldAlpha
             }else{
                 g.alpha = e.renderer.alpha;
             }
@@ -35,5 +36,7 @@ class DrawSystem extends System {
                 e.renderer.draw(g);
             }
         }
+
+        g.reset();
     }
 }

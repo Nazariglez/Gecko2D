@@ -42,7 +42,6 @@ class TransformSystem extends System {
             }
 
 
-            //todo set a dirty Flag to avoid localMatrix calcs?
             //Update local matrix
             if(e.transform.dirty){
                 _scX = e.transform.scale.x * (e.transform.flip.x ? -1 : 1);
@@ -74,20 +73,7 @@ class TransformSystem extends System {
             }
 
 
-            //update world matrix
-            if(parent != null){
-                _parentTransform = parent.transform.worldMatrix;
-                
-                e.transform.worldMatrix._00 = (e.transform.localMatrix._00 * _parentTransform._00) + (e.transform.localMatrix._01 * _parentTransform._10);
-                e.transform.worldMatrix._01 = (e.transform.localMatrix._00 * _parentTransform._01) + (e.transform.localMatrix._01 * _parentTransform._11);
-                e.transform.worldMatrix._10 = (e.transform.localMatrix._10 * _parentTransform._00) + (e.transform.localMatrix._11 * _parentTransform._10);
-                e.transform.worldMatrix._11 = (e.transform.localMatrix._10 * _parentTransform._01) + (e.transform.localMatrix._11 * _parentTransform._11);
-
-                e.transform.worldMatrix._20 = (e.transform.localMatrix._20 * _parentTransform._00) + (e.transform.localMatrix._21 * _parentTransform._10) + _parentTransform._20;
-                e.transform.worldMatrix._21 = (e.transform.localMatrix._20 * _parentTransform._01) + (e.transform.localMatrix._21 * _parentTransform._11) + _parentTransform._21;
-            }else{
-                e.transform.worldMatrix.setFrom(e.transform.localMatrix); //todo set screen matrix here
-            }
+            e.transform.dirtyWorldTransform = true;
 
 
             //todo remove childrenComponent, it's uselees, just use parent ref
