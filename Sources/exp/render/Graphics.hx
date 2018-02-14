@@ -4,7 +4,6 @@ import exp.Color;
 import exp.math.FastFloat;
 import exp.math.Matrix;
 import exp.math.Point;
-import exp.math.Vec2Pool;
 import exp.render.BlendMode;
 import exp.resources.Font;
 import exp.resources.Image;
@@ -123,10 +122,10 @@ class Graphics {
         matrix = Graphics.emptyMatrix;
     }
 
-	public function applyTransform(transform:gecko.math.MatrixTransform) {
-		color = transform.tint;
-		alpha = transform.alpha;
-		matrix = transform.world;
+	public function apply(transform:Matrix, color:Color, alpha:Float32){
+		this.color = color;
+		this.alpha = alpha;
+		this.matrix = transform;
 	}
 
     public inline function drawLine(x1:Float, y1:Float, x2:Float, y2:Float, ?strength:Float) : Void {
@@ -377,10 +376,6 @@ class Graphics {
 	public inline function drawPolygon(x:Float, y:Float, vertices:Array<Point>, ?strength:Float) : Void {
         var _pointVerts = Graphics._pointsToVec2(vertices);
 		GraphicsExtension.drawPolygon(g2, x, y, _pointVerts, strength);
-        
-        for(p in _pointVerts){ 
-            Vec2Pool.put(p);
-        }
 	}
 
 	public inline function fillCircle(cx:Float, cy:Float, radius:Float, ?segments:Int) : Void {
@@ -390,10 +385,6 @@ class Graphics {
 	public inline function fillPolygon(x:Float, y:Float, vertices:Array<Point>) : Void {
         var _pointVerts = Graphics._pointsToVec2(vertices);
 		GraphicsExtension.fillPolygon(g2, x, y, _pointVerts);
-
-        for(p in _pointVerts){ 
-            Vec2Pool.put(p);
-        }
 	}
 
 

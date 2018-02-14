@@ -1,5 +1,7 @@
 package exp;
 
+import kha.graphics4.TextureFormat;
+import kha.graphics4.DepthStencilFormat;
 import exp.math.Matrix;
 import exp.resources.Image;
 
@@ -13,7 +15,7 @@ class Screen {
     static public var matrix:Matrix = Matrix.identity();
 
     static public function init(opts:ScreenOptions, antialiasing:Int = 0) {
-        _buffer = Image.createRenderTarget(opts.width, opts.height, null, null, antialiasing);
+        _buffer = Image.createRenderTarget(opts.width, opts.height, TextureFormat.RGBA32, NoDepthAndStencil, antialiasing);
         //todo set center var
         //todo set scale matrix
     }

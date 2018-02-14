@@ -9,6 +9,8 @@ using Lambda;
 @:allow(exp.Scene)
 class System implements ISystem {
     public var id:Int = Gecko.getUniqueID();
+    public var scene:Scene;
+    public var enabled:Bool = true;
 
     public var name(get, set):String;
     private var _name:String = "";
@@ -55,6 +57,7 @@ class System implements ISystem {
     public function destroy(avoidPool:Bool = false) {
         reset();
         removeAllEntities();
+        scene = null;
         matcher.clear();
         onEntityAdded.clear();
         onEntityRemoved.clear();
@@ -93,6 +96,8 @@ class System implements ISystem {
             _entities.push(entity);
             entity.onComponentRemoved += _onEntityRemoveComponent;
             _dirtySortEntities = true;
+
+            onEntityAdded.emit(entity);
         }
     }
 
@@ -106,6 +111,8 @@ class System implements ISystem {
     private function _removeEntity(entity:Entity) {
         entity.onComponentRemoved -= _onEntityRemoveComponent;
         _entities.remove(entity);
+
+        onEntityRemoved.emit(entity);
     }
 
     private function _removeAllEntities() {

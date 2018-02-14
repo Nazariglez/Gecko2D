@@ -1,7 +1,6 @@
 package exp.systems;
 
 import exp.math.Matrix;
-import exp.components.ChildrenComponent;
 import exp.components.TransformComponent;
 import exp.Float32;
 
@@ -31,6 +30,11 @@ class TransformSystem extends System {
         for(e in getEntities()){
             if(!e.enabled)continue;
 
+            if(e.transform.children.length != 0 && e.transform.dirtyChildrenSort){
+                e.transform.children.sort(_sortChildren);
+                e.transform.dirtyChildrenSort = false;
+            }
+
             //update skew
             if(e.transform.dirtySkew){
                 e.transform.skewCache.cosX = Math.cos(e.transform.rotation + e.transform.skew.y);
@@ -41,6 +45,7 @@ class TransformSystem extends System {
                 e.transform.dirtySkew = false;
             }
 
+            //TODO FIXME rotation is not working!!!
 
             //Update local matrix
             if(e.transform.dirty){
@@ -74,17 +79,12 @@ class TransformSystem extends System {
 
 
             e.transform.dirtyWorldTransform = true;
-
-
-            //todo remove childrenComponent, it's uselees, just use parent ref
-            //todo http://bitsquid.blogspot.com.es/2014/10/building-data-oriented-entity-system.html
-            //todo use a manually sort array to set an index in entities and sort by !parent->depth - parent->parent.index + child.depth
-
-            //sort children entities
-            var container:ChildrenComponent = e.getComponent(ChildrenComponent);
-            if(container != null){
-                container.update(dt);
-            }
         }
+    }
+
+    private function _sortChildren(a:Entity, b:Entity) {
+        if (a.depth < b.depth) return -1;
+        if (a.depth > b.depth) return 1;
+        return 0;
     }
 }

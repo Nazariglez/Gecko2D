@@ -1,7 +1,7 @@
 package exp.resources;
 
-import gecko.math.Point;
-import gecko.math.Rect;
+import exp.math.Point;
+import exp.math.Rect;
 
 typedef TexturePackerPoint = {
     var x:Int;
@@ -66,7 +66,7 @@ class Texture {
         var texture = new Texture(img, frame, data.sourceSize.w, data.sourceSize.h, trim);
 
         texture.rotated = data.rotated;
-        texture.pivot = new Point(data.pivot.x, data.pivot.y);
+        texture.pivot = Point.create(data.pivot.x, data.pivot.y);
 
         return texture;
     }

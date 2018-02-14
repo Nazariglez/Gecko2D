@@ -13,7 +13,9 @@ private typedef SkewCache = {
 };
 
 class TransformComponent extends Component {
-    public var parent:Entity;
+    public var parent(get, set):Entity;
+    public var _parent:Entity;
+    public var children:Array<Entity> = [];
 
     public var x(get, set):Float32;
     public var y(get, set):Float32;
@@ -35,6 +37,7 @@ class TransformComponent extends Component {
     public var worldMatrix(get, set):Matrix;
     private var _worldMatrix:Matrix = Matrix.identity();
 
+    public var dirtyChildrenSort = true;
     public var dirtySkew:Bool = true;
     public var dirtyWorldTransform:Bool = true;
     public var dirty:Bool = true;
@@ -47,6 +50,9 @@ class TransformComponent extends Component {
     };
 
     public function init(x:Float32, y:Float32, ?xSize:Float32, ?ySize:Float32) {
+        enabled = true;
+
+        dirtyChildrenSort = true;
         dirtySkew = true;
         dirtyWorldTransform = true;
         dirty = true;
@@ -71,6 +77,16 @@ class TransformComponent extends Component {
     }
 
     override public function reset(){
+        enabled = false;
+
+        parent = null;
+        if(children.length != 0){
+            var copyChildren = children.copy();
+            for(e in copyChildren){
+                e.transform.parent = null;
+            }
+        }
+
         position.removeObserver();
         position.destroy();
 
@@ -193,6 +209,7 @@ class TransformComponent extends Component {
 
     function get_worldMatrix():Matrix {
         if(dirtyWorldTransform){
+            //todo avoid recursive functions, iterative to better performance
             _calculateWorldTransform();
         }
         return _worldMatrix;
@@ -200,6 +217,27 @@ class TransformComponent extends Component {
 
     inline function set_worldMatrix(value:Matrix):Matrix {
         return _worldMatrix = value;
+    }
+
+    inline function get_parent():Entity {
+        return _parent;
+    }
+
+    function set_parent(value:Entity):Entity {
+        if(value == _parent)return value;
+
+        if(_parent != null){
+            _parent.transform.children.remove(this.entity);
+        }
+
+        _parent = value;
+
+        if(_parent != null){
+            _parent.transform.children.push(this.entity);
+            dirtyChildrenSort = true;
+        }
+
+        return _parent;
     }
 
 }

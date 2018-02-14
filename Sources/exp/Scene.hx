@@ -1,5 +1,7 @@
 package exp;
 
+import exp.components.DrawComponent;
+import exp.components.TransformComponent;
 import exp.systems.SystemClass;
 import exp.render.Graphics;
 import exp.systems.TransformSystem;
@@ -13,6 +15,8 @@ class Scene implements IScene {
 
     public var name(get, set):String;
     private var _name:String = "";
+
+    public var rootEntity(default, null):Entity;
 
     private var _dirtySortSystems:Bool = false;
     private var _isProcessing:Bool = false;
@@ -41,9 +45,15 @@ class Scene implements IScene {
 
     private var _dirtyProcess:Bool = false;
 
-    public function new(){
-        addSystem(TransformSystem.create());
-        addSystem(DrawSystem.create());
+    public function new(initTransformAndDraw:Bool = true){
+        if(initTransformAndDraw){
+            addSystem(TransformSystem.create());
+            addSystem(DrawSystem.create());
+
+            rootEntity = Entity.create("scene-root-entity");
+            rootEntity.addComponent(TransformComponent.create(0, 0));
+            rootEntity.addComponent(DrawComponent.create());
+        }
     }
 
     public function init(name:String = ""){
@@ -78,6 +88,11 @@ class Scene implements IScene {
 
     private function _addEntity(entity:Entity) {
         entity.scene = this;
+
+        if(entity.transform != null && entity.transform.parent == null){
+            entity.transform.parent = rootEntity;
+        }
+
         entities.push(entity);
         for(s in _systemsList){
             s._registerEntity(entity);
@@ -101,9 +116,17 @@ class Scene implements IScene {
         for(s in _systemsList){
             entity.onComponentAdded -= _onEntityAddComponent;
             entity.scene = null;
+
+            if(entity.transform != null && entity.transform.parent == rootEntity){
+                entity.transform.parent = null;
+            }
+
             s._removeEntity(entity);
         }
+
         entity.onDepthChanged -= _entityDepthChanged;
+
+
         entities.remove(entity);
         onEntityRemoved.emit(entity);
     }
@@ -126,6 +149,7 @@ class Scene implements IScene {
     }
 
     private function _addSystem(system:System) {
+        system.scene = this;
         _systems.set(system.__typeName__, system);
         _systemsList.push(system);
         for(e in entities){
@@ -160,6 +184,7 @@ class Scene implements IScene {
     }
 
     private function _removeSystem(system:System) {
+        system.scene = null;
         _systems.remove(system.__typeName__);
         _systemsList.remove(system);
         system._removeAllEntities();
@@ -201,7 +226,7 @@ class Scene implements IScene {
 
     public function update(delta:Float32) {
         for(sys in _systemsList){
-            if(!sys.disableUpdate){
+            if(sys.enabled && !sys.disableUpdate){
                 sys.update(delta);
             }
         }
@@ -210,7 +235,7 @@ class Scene implements IScene {
     public function draw(g:Graphics) {
         _isProcessing = true;
         for(sys in _systemsList){
-            if(!sys.disableDraw){
+            if(sys.enabled && !sys.disableDraw){
                 sys.draw(g);
             }
         }
