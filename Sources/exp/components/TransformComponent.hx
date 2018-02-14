@@ -114,8 +114,10 @@ class TransformComponent extends Component {
         skewCache.sinY = 0;
     }
 
-    private function _calculateWorldTransform() {
-        if(parent == null){
+    public function calculateWorldTransform(?transform:Matrix) {
+        if(transform != null){
+            _worldMatrix.setFrom(transform);
+        }else if(parent == null){
             _worldMatrix.setFrom(localMatrix);
         }else{
             var _parentTransform = parent.transform.worldMatrix;
@@ -161,6 +163,10 @@ class TransformComponent extends Component {
 
     private function _setDirty(point:Point) {
         dirty = true;
+    }
+
+    public function setDirtyChildrenSort(entity:Entity) {
+        dirtyChildrenSort = true;
     }
 
     inline function get_x():Float32 {
@@ -210,7 +216,7 @@ class TransformComponent extends Component {
     function get_worldMatrix():Matrix {
         if(dirtyWorldTransform){
             //todo avoid recursive functions, iterative to better performance
-            _calculateWorldTransform();
+            calculateWorldTransform();
         }
         return _worldMatrix;
     }
@@ -228,13 +234,15 @@ class TransformComponent extends Component {
 
         if(_parent != null){
             _parent.transform.children.remove(this.entity);
+            this.entity.onDepthChanged -= _parent.transform.setDirtyChildrenSort;
         }
 
         _parent = value;
 
         if(_parent != null){
             _parent.transform.children.push(this.entity);
-            dirtyChildrenSort = true;
+            this.entity.onDepthChanged += _parent.transform.setDirtyChildrenSort;
+            _parent.transform.setDirtyChildrenSort(null);
         }
 
         return _parent;

@@ -45,8 +45,6 @@ class TransformSystem extends System {
                 e.transform.dirtySkew = false;
             }
 
-            //TODO FIXME rotation is not working!!!
-
             //Update local matrix
             if(e.transform.dirty){
                 _scX = e.transform.scale.x * (e.transform.flip.x ? -1 : 1);
@@ -77,8 +75,12 @@ class TransformSystem extends System {
                 e.transform.dirty = false;
             }
 
-
-            e.transform.dirtyWorldTransform = true;
+            if(e.transform.parent == scene.rootEntity){
+                e.transform.calculateWorldTransform(e.transform.localMatrix);
+                e.transform.dirtyWorldTransform = false;
+            }else{
+                e.transform.dirtyWorldTransform = true;
+            }
         }
     }
 

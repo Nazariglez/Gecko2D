@@ -35,19 +35,7 @@ class System implements ISystem {
     }
 
     public function process(delta:Float32){
-        if(_dirtySortEntities){
-            _entities.sort(_sortEntities);
-            _dirtySortEntities = false;
-        }
-
         update(delta);
-    }
-
-    //todo sort must be moved to each system
-    private function _sortEntities(a:Entity, b:Entity) {
-        if (a.depth < b.depth) return -1;
-        if (a.depth > b.depth) return 1;
-        return 0;
     }
 
     public function update(delta:Float32){}

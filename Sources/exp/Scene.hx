@@ -98,7 +98,7 @@ class Scene implements IScene {
             s._registerEntity(entity);
             entity.onComponentAdded += _onEntityAddComponent;
         }
-        entity.onDepthChanged += _entityDepthChanged;
+
         onEntityAdded.emit(entity);
     }
 
@@ -124,18 +124,8 @@ class Scene implements IScene {
             s._removeEntity(entity);
         }
 
-        entity.onDepthChanged -= _entityDepthChanged;
-
-
         entities.remove(entity);
         onEntityRemoved.emit(entity);
-    }
-
-    @:allow(exp.systems.System)
-    private function _entityDepthChanged(entity:Entity) {
-        for(sys in _systemsList){
-            sys._dirtySortEntities = true;
-        }
     }
 
     public function addSystem(system:System) {
