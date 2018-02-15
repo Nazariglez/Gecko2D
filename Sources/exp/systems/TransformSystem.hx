@@ -22,7 +22,7 @@ class TransformSystem extends System {
     private var _parentTransform:Matrix;
     
     public function init(){
-        matcher.equal(TransformComponent);
+        filter.equal(TransformComponent);
         priority = -1;
     }
 
@@ -37,6 +37,7 @@ class TransformSystem extends System {
 
             //update skew
             if(e.transform.dirtySkew){
+                //todo fixme it's ok this? sin in cos, X on Y. Maybe i changed the vars in the refactor to ecs?
                 e.transform.skewCache.cosX = Math.cos(e.transform.rotation + e.transform.skew.y);
                 e.transform.skewCache.sinX = Math.sin(e.transform.rotation + e.transform.skew.y);
                 e.transform.skewCache.cosY = -Math.sin(e.transform.rotation - e.transform.skew.x);

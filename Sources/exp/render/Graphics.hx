@@ -70,7 +70,7 @@ class Graphics {
     }
 
 
-	public function setBuffer(buffer:Image) {
+	public function setRenderTarget(buffer:Image) {
 		if(_isRendering){
 			Gecko.stop();
 			throw "You can't change the buffer while rendering";
@@ -102,9 +102,9 @@ class Graphics {
 		g2.begin();
 	}
 
-    public function begin(clear: Bool = true, ?color:Color) {
+    public function begin(?color:Color) {
 		_isRendering = true;
-        buffer.g2.begin(clear, color);
+        buffer.g2.begin(color != null, color);
     }
 
     public function end() {

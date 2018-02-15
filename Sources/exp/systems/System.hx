@@ -24,7 +24,7 @@ class System implements ISystem {
     public var disableDraw:Bool = true;
     public var disableUpdate:Bool = false;
 
-    public var matcher:Matcher = new Matcher();
+    public var filter:Filter = new Filter();
 
     public var onEntityAdded:Event<Entity->Void>;
     public var onEntityRemoved:Event<Entity->Void>;
@@ -46,7 +46,7 @@ class System implements ISystem {
         reset();
         removeAllEntities();
         scene = null;
-        matcher.clear();
+        filter.clear();
         onEntityAdded.clear();
         onEntityRemoved.clear();
         if(!avoidPool)__toPool__();
@@ -66,7 +66,7 @@ class System implements ISystem {
 
     //override to check if an entity is valid for your system
     public function isValidEntity(entity:Entity) : Bool {
-        return matcher.testEntity(entity);
+        return filter.testEntity(entity);
     }
 
     public function removeAllEntities() {

@@ -12,7 +12,7 @@ class DrawSystem extends System {
     private var _entityMap:Map<Int, Bool> = new Map();
 
     public function init(){
-        matcher.is(DrawComponent).equal(TransformComponent);
+        filter.is(DrawComponent).equal(TransformComponent);
         priority = 0;
 
         disableUpdate = false;
