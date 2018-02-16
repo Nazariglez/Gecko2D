@@ -27,6 +27,92 @@ class TransformSystem extends System {
     }
 
     override public function update(dt:Float32) {
+        //iterate tree (by branchs)
+        var current:Entity = scene.rootEntity;
+        var last:Entity = current;
+
+        while(current != null){
+            if(!current.enabled)continue;
+
+            _transformEntity(current);
+            
+            for(c in current.transform.children){
+                c.transform._branch = current.transform._branch + 1;
+                c.transform._nextChild = null;
+
+                last.transform._nextChild = c;
+                last = c;
+            }
+
+            current = current.transform._nextChild;
+        }
+    }
+    
+    inline private function _transformEntity(e:Entity) {
+        if(e.transform.children.length != 0 && e.transform.dirtyChildrenSort){
+            e.transform.children.sort(_sortChildren);
+            e.transform.dirtyChildrenSort = false;
+        }
+
+        //update skew
+        if(e.transform.dirtySkew){
+            //todo fixme it's ok this? sin in cos, X on Y. Maybe i changed the vars in the refactor to ecs?
+            e.transform.skewCache.cosX = Math.cos(e.transform.rotation + e.transform.skew.y);
+            e.transform.skewCache.sinX = Math.sin(e.transform.rotation + e.transform.skew.y);
+            e.transform.skewCache.cosY = -Math.sin(e.transform.rotation - e.transform.skew.x);
+            e.transform.skewCache.sinY = Math.cos(e.transform.rotation - e.transform.skew.x);
+
+            e.transform.dirtySkew = false;
+        }
+
+        //Update local matrix
+        if(e.transform.dirty){
+            _scX = e.transform.scale.x * (e.transform.flip.x ? -1 : 1);
+            _scY = e.transform.scale.y * (e.transform.flip.y ? -1 : 1);
+            _anX = e.transform.flip.x ? 1-e.transform.anchor.x : e.transform.anchor.x;
+            _anY = e.transform.flip.y ? 1-e.transform.anchor.y : e.transform.anchor.y;
+            _piX = e.transform.flip.x ? 1-e.transform.pivot.x : e.transform.pivot.x;
+            _piY = e.transform.flip.y ? 1-e.transform.pivot.y : e.transform.pivot.y;
+
+            e.transform.localMatrix._00 = e.transform.skewCache.cosX * _scX;
+            e.transform.localMatrix._01 = e.transform.skewCache.sinX * _scX;
+            e.transform.localMatrix._10 = e.transform.skewCache.cosY * _scY;
+            e.transform.localMatrix._11 = e.transform.skewCache.sinY * _scY;
+
+            _aW = _anX * e.transform.size.x;
+            _aH = _anY * e.transform.size.y;
+            _pW = _piX * e.transform.size.x;
+            _pH = _piY * e.transform.size.y;
+
+            e.transform.localMatrix._20 = e.transform.position.x - _aW * _scX + _pW * _scX;
+            e.transform.localMatrix._21 = e.transform.position.y - _aH * _scY + _pH * _scY;
+
+            if(_pW != 0 || _pH != 0){
+                e.transform.localMatrix._20 -= _pW * e.transform.localMatrix._00 + _pH * e.transform.localMatrix._10;
+                e.transform.localMatrix._21 -= _pW * e.transform.localMatrix._01 + _pH * e.transform.localMatrix._11;
+            }
+
+            e.transform.dirty = false;
+        }
+
+        if(e.transform.parent == scene.rootEntity || e.transform.parent == null){
+            e.transform.worldMatrix.setFrom(e.transform.localMatrix);
+            //e.transform.dirtyWorldTransform = false;
+        }else{
+            var _parentTransform = e.transform.parent.transform.worldMatrix;
+
+            e.transform.worldMatrix._00 = (e.transform.localMatrix._00 * _parentTransform._00) + (e.transform.localMatrix._01 * _parentTransform._10);
+            e.transform.worldMatrix._01 = (e.transform.localMatrix._00 * _parentTransform._01) + (e.transform.localMatrix._01 * _parentTransform._11);
+            e.transform.worldMatrix._10 = (e.transform.localMatrix._10 * _parentTransform._00) + (e.transform.localMatrix._11 * _parentTransform._10);
+            e.transform.worldMatrix._11 = (e.transform.localMatrix._10 * _parentTransform._01) + (e.transform.localMatrix._11 * _parentTransform._11);
+
+            e.transform.worldMatrix._20 = (e.transform.localMatrix._20 * _parentTransform._00) + (e.transform.localMatrix._21 * _parentTransform._10) + _parentTransform._20;
+            e.transform.worldMatrix._21 = (e.transform.localMatrix._20 * _parentTransform._01) + (e.transform.localMatrix._21 * _parentTransform._11) + _parentTransform._21;
+        }
+    } 
+
+    /*override public function update(dt:Float32) {
+        //untyped __js__("console.time();");
         for(e in getEntities()){
             if(!e.enabled)continue;
 
@@ -83,7 +169,8 @@ class TransformSystem extends System {
                 e.transform.dirtyWorldTransform = true;
             }
         }
-    }
+        //untyped __js__("console.timeEnd();");
+    }*/
 
     private function _sortChildren(a:Entity, b:Entity) {
         if (a.depth < b.depth) return -1;
