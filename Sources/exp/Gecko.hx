@@ -63,7 +63,7 @@ class Gecko {
         var _height:Int = opts.height;
 
         #if kha_html5
-        if(opts.fullScreen){
+        if(opts.maximizable){
             _width = cast js.Browser.window.innerWidth;
             _height = cast js.Browser.window.innerHeight;
 
@@ -159,7 +159,7 @@ class Gecko {
         options.height = opts.height != null ? opts.height : 600;
         options.bgColor = opts.bgColor != null ? opts.bgColor : Color.Black;
         options.fullScreen = opts.fullScreen;
-        options.maximizable = opts.maximizable;
+        options.maximizable = opts.maximizable != null ? opts.maximizable : false;
         options.resizable = opts.resizable != null ? opts.resizable : false;
 
         options.screen = opts.screen != null ? opts.screen : {width:opts.width, height:opts.height, mode:ScreenMode.None};

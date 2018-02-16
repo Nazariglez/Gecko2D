@@ -6,10 +6,17 @@ import kha.graphics4.DepthStencilFormat;
 import exp.math.Matrix;
 import exp.resources.Image;
 
-//todo set anchor (position) TOP_LEFT, TOP_RIGHT, TOP_CENTER, LEFT_CENTER, CENTER, RIGHT_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, BOTTOM_CENTER
+private enum AnchorMode {
+    TopLeft; TopCenter; TopRight;
+    LeftCenter; Center; RightCenter;
+    BottomLeft; BottomCenter; BottomRight;
+}
+
 
 class Screen {
     static private var _initiated:Bool = false;
+
+    static public var Anchor(default, never) = AnchorMode;
 
     static public var buffer(default, null):Image;
 
@@ -25,24 +32,29 @@ class Screen {
     static private var _size:Vector2 = new Vector2(0, 0);
     static private var _anchor:Vector2 = new Vector2(0.5, 0.5);
 
-    static private var _windowWidth:Int = 0;
-    static private var _windowHeight:Int = 0;
+    static public var windowWidth(default, null):Int = 0;
+    static public var windowHeight(default, null):Int = 0;
 
-    static public function init(opts:ScreenOptions, antialiasing:Int, windowWidth:Int, windowHeight:Int) {
+    static public var centerX(default, null):Float32 = 0;
+    static public var centerY(default, null):Float32 = 0;
+
+    static public function init(opts:ScreenOptions, antialiasing:Int, _windowWidth:Int, _windowHeight:Int) {
         _size.x = opts.width;
         _size.y = opts.height;
-        _windowWidth = windowWidth;
-        _windowHeight = windowHeight;
+        windowWidth = _windowWidth;
+        windowHeight = _windowHeight;
 
-        _position.x = _windowWidth*(1-_anchor.x);
-        _position.y = _windowHeight*(1-_anchor.y);
+        _fixPosition();
 
-        buffer = Image.createRenderTarget(Std.int(_size.x), Std.int(_size.y), TextureFormat.RGBA32, NoDepthAndStencil, antialiasing);
+        var ww = Std.int(_size.x);
+        var hh = Std.int(_size.y);
+        buffer = Image.createRenderTarget(ww, hh, TextureFormat.RGBA32, NoDepthAndStencil, antialiasing);
+
+        centerX = ww*0.5;
+        centerY = hh*0.5;
 
         mode = opts.mode;
         _updateMatrix();
-
-        //todo set center var
 
         if(!_initiated){
             Gecko.onWindowResize += _changeWindowSize;
@@ -50,13 +62,53 @@ class Screen {
         }
     }
 
+    static public function setAnchor(anchor:AnchorMode) {
+        switch(anchor){
+            case AnchorMode.TopLeft:
+                _anchor.x = 0;
+                _anchor.y = 0;
+            case AnchorMode.TopCenter:
+                _anchor.x = 0.5;
+                _anchor.y = 0;
+            case AnchorMode.TopRight:
+                _anchor.x = 1;
+                _anchor.y = 0;
+            case AnchorMode.LeftCenter:
+                _anchor.x = 0;
+                _anchor.y = 0.5;
+            case AnchorMode.Center:
+                _anchor.x = 0.5;
+                _anchor.y = 0.5;
+            case AnchorMode.RightCenter:
+                _anchor.x = 1;
+                _anchor.y = 0.5;
+            case AnchorMode.BottomLeft:
+                _anchor.x = 0;
+                _anchor.y = 1;
+            case AnchorMode.BottomCenter:
+                _anchor.x = 0.5;
+                _anchor.y = 1;
+            case AnchorMode.BottomRight:
+                _anchor.x = 1;
+                _anchor.y = 1;
+        }
+
+        _fixPosition();
+        _updateMatrix();
+    }
+
+    static private function _fixPosition() {
+        _position.x = windowWidth*(1-_anchor.x);
+        _position.y = windowHeight*(1-_anchor.y);
+    }
+
+    //todo add a custom "resizeCallback"
+
     static private function _changeWindowSize(width:Int, height:Int) {
-        _windowWidth = width;
-        _windowHeight = height;
+        windowWidth = width;
+        windowHeight = height;
 
-        _position.x = _windowWidth*(1-_anchor.x);
-        _position.y = _windowHeight*(1-_anchor.y);
-
+        _fixPosition();
         _setScreenMode(_mode);
     }
 
@@ -74,16 +126,16 @@ class Screen {
     static private function _setScreenMode(sm:ScreenMode) : ScreenMode {
         switch(_mode) {
             case ScreenMode.Fill:
-                _scale.x = _windowWidth/buffer.width;
-                _scale.y = _windowHeight/buffer.height;
+                _scale.x = windowWidth/buffer.width;
+                _scale.y = windowHeight/buffer.height;
 
             case ScreenMode.AspectFill:
-                var scale = Math.max(_windowWidth/buffer.width, _windowHeight/buffer.height);
+                var scale = Math.max(windowWidth/buffer.width, windowHeight/buffer.height);
                 _scale.x = scale;
                 _scale.y = scale;
 
             case ScreenMode.AspectFit:
-                var scale = Math.min(_windowWidth/buffer.width, _windowHeight/buffer.height);
+                var scale = Math.min(windowWidth/buffer.width, windowHeight/buffer.height);
                 _scale.x = scale;
                 _scale.y = scale;
 
@@ -111,6 +163,4 @@ class Screen {
         _mode = value;
         return _setScreenMode(_mode);
     }
-
-    //todo center var
 }
