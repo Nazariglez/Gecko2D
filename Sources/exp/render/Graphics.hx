@@ -102,9 +102,9 @@ class Graphics {
 		g2.begin();
 	}
 
-    public function begin(?color:Color) {
+    public function begin(clear:Bool = true, ?color:Color) {
 		_isRendering = true;
-        buffer.g2.begin(color != null, color);
+        buffer.g2.begin(clear, color);
     }
 
     public function end() {
