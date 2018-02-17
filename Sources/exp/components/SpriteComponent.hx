@@ -5,12 +5,15 @@ import exp.resources.Texture;
 import exp.Assets;
 
 class SpriteComponent extends DrawComponent {
-    public var texture:Texture;
+    public var texture(get, set):Texture;
+    private var _texture:Texture;
 
-    public function init(?texture:String) {
+    public function init(?texture:String, setSpriteSize:Bool = true) {
         if(texture != null){
             this.texture = Assets.textures.get(texture);
         }
+
+        onAddedToEntity += _setTransformSize;
     }
 
     override public function draw(g:Graphics){
@@ -20,5 +23,26 @@ class SpriteComponent extends DrawComponent {
 
     override public function reset(){
         texture = null;
+    }
+
+    private function _setTransformSize(e:Entity) {
+        if(e.transform != null){
+            e.transform.size.set(_texture.width, _texture.height);
+        }
+    }
+
+    inline function get_texture():Texture {
+        return _texture;
+    }
+
+    function set_texture(value:Texture):Texture {
+        if(value == _texture)return _texture;
+        _texture = value;
+
+        if(entity != null && entity.transform != null){
+            entity.transform.size.set(_texture.width, _texture.height);
+        }
+
+        return _texture;
     }
 }

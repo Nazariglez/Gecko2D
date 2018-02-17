@@ -30,42 +30,52 @@ class DrawSystem extends System {
         _entityMap.remove(entity.id);
     }
 
-    override public function update(dt:Float32) {
-        for(e in getEntities()){
-            e.renderer.dirtyAlpha = true;
-        }
-    }
-
     override public function draw(g:Graphics) {
-        _drawChildren(scene.rootEntity.transform.children, g);
+        //iterate through the tree (closing branchs from parent to childs)
+        var current:Entity = scene.rootEntity;
+        var last:Entity = current;
+        var branch:Int = 0;
+        var i = 0;
+        var isRendered:Bool = false;
+
+        while(current != null){
+            isRendered = false;
+
+            if(_canBeRendered(current)){
+                current.renderer.worldAlpha = current.transform.parent.renderer.worldAlpha * current.renderer.alpha;
+                if(current.renderer.worldAlpha > 0){
+                    _renderEntity(current, g);
+                    isRendered = true;
+                }
+            }else if(current == scene.rootEntity){
+                isRendered = true;
+            }
+
+            branch = current.transform._branch;
+            last = current;
+            current = current.transform._nextChild;
+
+            i = last.transform.children.length-1;
+            while(isRendered && i >= 0){
+                last.transform.children[i].transform._branch = branch+1;
+                last.transform.children[i].transform._nextChild = current;
+
+                current = last.transform.children[i];
+                i--;
+            }
+
+            //todo reset _nextChild to null to prevent collide with others systems?
+        }
 
         g.reset();
     }
 
-    private function _drawChildren(children:Array<Entity>, g:Graphics) {
-        //TODO avoid recursive calls!
-        for(e in children){
-            if(_entityMap.exists(e.id)){
-
-                if(!e.enabled || e.renderer == null || !e.renderer.enabled || !e.renderer.visible || e.renderer.worldAlpha <= 0){
-                    continue;
-                }
-
-                _drawEntity(e, g);
-
-                //todo thinks about this, if a parent don't have a drawComponent children needs to be renderer?
-                if(e.transform.children.length != 0){
-                    _drawChildren(e.transform.children, g);
-                }
-            }
-        }
+    inline private function _canBeRendered(e:Entity) : Bool {
+        return e.enabled && _entityMap.exists(e.id) && e.renderer != null && e.renderer.enabled && e.renderer.visible;
     }
 
-    private function _drawEntity(e:Entity, g:Graphics) {
+    inline private function _renderEntity(e:Entity, g:Graphics) {
         g.apply(e.transform.worldMatrix, e.renderer.color, e.renderer.worldAlpha);
-
-        if(g.alpha != 0){
-            e.renderer.draw(g);
-        }
+        e.renderer.draw(g);
     }
 }

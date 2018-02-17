@@ -113,25 +113,6 @@ class TransformComponent extends Component {
         skewCache.sinY = 0;
     }
 
-    /*public function calculateWorldTransform(?transform:Matrix) {
-        if(transform != null){
-            worldMatrix.setFrom(transform);
-        }else if(parent == null){
-            worldMatrix.setFrom(localMatrix);
-        }else{
-            var _parentTransform = parent.transform.worldMatrix;
-
-            worldMatrix._00 = (localMatrix._00 * _parentTransform._00) + (localMatrix._01 * _parentTransform._10);
-            worldMatrix._01 = (localMatrix._00 * _parentTransform._01) + (localMatrix._01 * _parentTransform._11);
-            worldMatrix._10 = (localMatrix._10 * _parentTransform._00) + (localMatrix._11 * _parentTransform._10);
-            worldMatrix._11 = (localMatrix._10 * _parentTransform._01) + (localMatrix._11 * _parentTransform._11);
-
-            worldMatrix._20 = (localMatrix._20 * _parentTransform._00) + (localMatrix._21 * _parentTransform._10) + _parentTransform._20;
-            worldMatrix._21 = (localMatrix._20 * _parentTransform._01) + (localMatrix._21 * _parentTransform._11) + _parentTransform._21;
-        }
-        dirtyWorldTransform = false;
-    }*/
-
     public function apply(point:Point, newPoint:Point = null) : Point {
         if(newPoint == null){
             newPoint = Point.create();
@@ -211,18 +192,6 @@ class TransformComponent extends Component {
         dirtySkew = true;
         return _rotation = value;
     }
-
-    /*function get_worldMatrix():Matrix {
-        if(dirtyWorldTransform){
-            //todo avoid recursive functions, iterative to better performance
-            calculateWorldTransform();
-        }
-        return worldMatrix;
-    }
-
-    inline function set_worldMatrix(value:Matrix):Matrix {
-        return worldMatrix = value;
-    }*/
 
     inline function get_parent():Entity {
         return _parent;
