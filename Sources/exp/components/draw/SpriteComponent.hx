@@ -8,7 +8,7 @@ class SpriteComponent extends DrawComponent {
     public var texture(get, set):Texture;
     private var _texture:Texture;
 
-    public function init(texture:String, setSpriteSize:Bool = true) {
+    public function init(texture:String) {
         this.texture = Assets.textures.get(texture);
 
         onAddedToEntity += _setTransformSize;
