@@ -1,4 +1,4 @@
-package exp.components;
+package exp.components.core;
 
 import exp.math.Vector2g;
 import exp.math.Matrix;

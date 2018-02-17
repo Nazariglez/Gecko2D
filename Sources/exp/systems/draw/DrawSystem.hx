@@ -1,8 +1,8 @@
-package exp.systems;
+package exp.systems.draw;
 
 import exp.render.Graphics;
-import exp.components.DrawComponent;
-import exp.components.TransformComponent;
+import exp.components.draw.DrawComponent;
+import exp.components.core.TransformComponent;
 import exp.Float32;
 
 @:expose

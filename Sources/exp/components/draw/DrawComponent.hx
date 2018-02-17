@@ -1,4 +1,4 @@
-package exp.components;
+package exp.components.draw;
 
 import exp.render.Graphics;
 import exp.IDrawable;

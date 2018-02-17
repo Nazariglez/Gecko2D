@@ -1,7 +1,7 @@
 package exp;
 
-import exp.components.TransformComponent;
-import exp.components.DrawComponent;
+import exp.components.core.TransformComponent;
+import exp.components.draw.DrawComponent;
 import exp.utils.Event;
 import exp.components.Component;
 import exp.components.ComponentClass;

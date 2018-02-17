@@ -2,7 +2,7 @@ package exp;
 
 import exp.utils.FPSCounter;
 import exp.utils.Event;
-import exp.systems.DrawSystem;
+import exp.systems.draw.DrawSystem;
 import exp.math.Random;
 import kha.WindowMode;
 import kha.Scheduler;

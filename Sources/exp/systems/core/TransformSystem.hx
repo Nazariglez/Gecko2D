@@ -1,7 +1,7 @@
-package exp.systems;
+package exp.systems.core;
 
 import exp.math.Matrix;
-import exp.components.TransformComponent;
+import exp.components.core.TransformComponent;
 import exp.Float32;
 
 class TransformSystem extends System implements IUpdatable {

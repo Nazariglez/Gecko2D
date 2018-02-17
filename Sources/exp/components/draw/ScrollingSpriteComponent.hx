@@ -1,4 +1,4 @@
-package exp.components;
+package exp.components.draw;
 
 import exp.math.Point;
 import exp.render.Graphics;

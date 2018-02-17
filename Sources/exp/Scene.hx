@@ -1,12 +1,12 @@
 package exp;
 
-import exp.components.DrawComponent;
-import exp.components.TransformComponent;
+import exp.components.draw.DrawComponent;
+import exp.components.core.TransformComponent;
 import exp.systems.SystemClass;
 import exp.render.Graphics;
-import exp.systems.TransformSystem;
+import exp.systems.core.TransformSystem;
 import exp.utils.Event;
-import exp.systems.DrawSystem;
+import exp.systems.draw.DrawSystem;
 import exp.systems.System;
 import exp.components.Component;
 
