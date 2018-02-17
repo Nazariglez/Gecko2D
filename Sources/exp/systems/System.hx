@@ -21,9 +21,6 @@ class System implements ISystem {
     private var _entities:Array<Entity> = [];
     private var _dirtySortEntities:Bool = false;
 
-    public var disableDraw:Bool = true;
-    public var disableUpdate:Bool = false;
-
     public var filter:Filter = new Filter();
 
     public var onEntityAdded:Event<Entity->Void>;

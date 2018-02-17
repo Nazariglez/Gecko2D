@@ -8,15 +8,12 @@ import exp.Float32;
 //todo matcher
 
 @:expose
-class DrawSystem extends System {
+class DrawSystem extends System implements IDrawable {
     private var _entityMap:Map<Int, Bool> = new Map();
 
     public function init(){
         filter.is(DrawComponent).equal(TransformComponent);
         priority = 0;
-
-        disableUpdate = false;
-        disableDraw = false;
 
         onEntityAdded += _addEntityToMap;
         onEntityRemoved += _removeEntityFromMap;

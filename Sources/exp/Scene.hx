@@ -28,6 +28,8 @@ class Scene implements IScene {
 
     public var entities:Array<Entity> = [];
     private var _systems:Map<String, System> = new Map();
+    private var _drawableSystems:Array<System> = [];
+    private var _updatableSystems:Array<System> = [];
     private var _systemsList:Array<System> = [];
 
     public var onEntityAdded:Event<Entity->Void> = Event.create();
@@ -146,6 +148,12 @@ class Scene implements IScene {
             system._registerEntity(e);
         }
 
+        if(Std.is(system, IDrawable)){
+            _drawableSystems.push(system);
+        }else if(Std.is(system, IUpdatable)){
+            _updatableSystems.push(system);
+        }
+
         _dirtySortSystems = true;
         onSystemAdded.emit(system);
     }
@@ -177,6 +185,10 @@ class Scene implements IScene {
         system.scene = null;
         _systems.remove(system.__typeName__);
         _systemsList.remove(system);
+
+        _drawableSystems.remove(system);
+        _updatableSystems.remove(system);
+
         system._removeAllEntities();
 
         onSystemRemoved.emit(system);
@@ -186,6 +198,8 @@ class Scene implements IScene {
         _isProcessing = true;
         if(_dirtySortSystems){
             _systemsList.sort(_sortSystems);
+            _drawableSystems.sort(_sortSystems);
+            _updatableSystems.sort(_sortSystems);
             _dirtySortSystems = false;
         }
 
@@ -215,8 +229,8 @@ class Scene implements IScene {
     }
 
     public function update(delta:Float32) {
-        for(sys in _systemsList){
-            if(sys.enabled && !sys.disableUpdate){
+        for(sys in _updatableSystems){
+            if(sys.enabled){
                 sys.update(delta);
             }
         }
@@ -224,8 +238,8 @@ class Scene implements IScene {
 
     public function draw(g:Graphics) {
         _isProcessing = true;
-        for(sys in _systemsList){
-            if(sys.enabled && !sys.disableDraw){
+        for(sys in _drawableSystems){
+            if(sys.enabled){
                 sys.draw(g);
             }
         }

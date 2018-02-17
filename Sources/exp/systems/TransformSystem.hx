@@ -4,7 +4,7 @@ import exp.math.Matrix;
 import exp.components.TransformComponent;
 import exp.Float32;
 
-class TransformSystem extends System {
+class TransformSystem extends System implements IUpdatable {
     public var parent:Entity;
 
     private var _aW:Float32 = 0;
