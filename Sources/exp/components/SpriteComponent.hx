@@ -8,17 +8,15 @@ class SpriteComponent extends DrawComponent {
     public var texture(get, set):Texture;
     private var _texture:Texture;
 
-    public function init(?texture:String, setSpriteSize:Bool = true) {
-        if(texture != null){
-            this.texture = Assets.textures.get(texture);
-        }
+    public function init(texture:String, setSpriteSize:Bool = true) {
+        this.texture = Assets.textures.get(texture);
 
         onAddedToEntity += _setTransformSize;
     }
 
     override public function draw(g:Graphics){
-        if(texture == null)return;
-        g.drawTexture(texture, 0, 0); //todo
+        if(_texture == null)return;
+        g.drawTexture(_texture, 0, 0); //todo
     }
 
     override public function reset(){
@@ -39,7 +37,7 @@ class SpriteComponent extends DrawComponent {
         if(value == _texture)return _texture;
         _texture = value;
 
-        if(entity != null && entity.transform != null){
+        if(_texture != null && entity != null && entity.transform != null){
             entity.transform.size.set(_texture.width, _texture.height);
         }
 

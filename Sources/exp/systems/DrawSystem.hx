@@ -8,7 +8,7 @@ import exp.Float32;
 //todo matcher
 
 @:expose
-class DrawSystem extends System implements IDrawable {
+class DrawSystem extends System implements IDrawable implements IUpdatable {
     private var _entityMap:Map<Int, Bool> = new Map();
 
     public function init(){
@@ -25,6 +25,14 @@ class DrawSystem extends System implements IDrawable {
 
     private function _removeEntityFromMap(entity:Entity) {
         _entityMap.remove(entity.id);
+    }
+
+    override public function update(dt:Float32) {
+        for(e in getEntities()){
+            if(e.enabled && e.renderer.enabled){
+                e.renderer.update(dt);
+            }
+        }
     }
 
     override public function draw(g:Graphics) {

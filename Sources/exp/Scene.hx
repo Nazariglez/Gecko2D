@@ -150,7 +150,9 @@ class Scene implements IScene {
 
         if(Std.is(system, IDrawable)){
             _drawableSystems.push(system);
-        }else if(Std.is(system, IUpdatable)){
+        }
+
+        if(Std.is(system, IUpdatable)){
             _updatableSystems.push(system);
         }
 
