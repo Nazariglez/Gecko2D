@@ -26,16 +26,30 @@ class NineSliceComponent extends DrawComponent {
     private var _sw:Float32 = 0;
     private var _sh:Float32 = 0;
 
+    public var width(get, set):Float32;
+    private var _width:Float32 = 0;
+
+    public var height(get, set):Float32;
+    private var _height:Float32 = 0;
+
     public function init(texture:String, ?options:NineSliceOptions) {
         this.texture = Assets.textures.get(texture);
         _options = options;
 
+        _width = cast this.texture.width;
+        _height = cast this.texture.height;
+
         onAddedToEntity += _setTransformSize;
+    }
+
+    override public function reset() {
+        _options = null;
+        texture = null;
     }
 
     private function _setTransformSize(e:Entity) {
         if(e.transform != null){
-            //todo
+            e.transform.size.set(_width, _height);
         }
     }
     
@@ -72,11 +86,42 @@ class NineSliceComponent extends DrawComponent {
         g.drawScaledSubTexture(_texture, _left+_centerW, _top+_centerH, _right, _bottom, _left+_sw, _top+_sh, _right, _bottom);
     }
 
-    function get_texture():Texture {
-        return texture;
+    inline function get_texture():Texture {
+        return _texture;
     }
 
     function set_texture(value:Texture):Texture {
-        return this.texture = value;
+        if(value == _texture)return _texture;
+        _texture = value;
+
+        if(_texture != null && entity != null && entity.transform != null){
+            _width = cast _texture.width;
+            _height = cast _texture.height;
+            entity.transform.size.set(_width, _height);
+        }
+
+        return _texture;
+    }
+
+    inline function get_width():Float32 {
+        return _width;
+    }
+
+    function set_width(value:Float32):Float32 {
+        if(entity != null && entity.transform != null){
+            entity.transform.size.x = value / entity.transform.scale.x;
+        }
+        return _width = value;
+    }
+
+    inline function get_height():Float32 {
+        return _height;
+    }
+
+    function set_height(value:Float32):Float32 {
+        if(entity != null && entity.transform != null){
+            entity.transform.size.y = value / entity.transform.scale.y;
+        }
+        return _height = value;
     }
 }
