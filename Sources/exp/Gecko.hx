@@ -207,7 +207,7 @@ class Gecko {
 
         graphics.setRenderTarget(Screen.buffer);
 
-        graphics.begin(true);
+        graphics.begin();
         onDraw.emit(graphics);
         graphics.end();
 

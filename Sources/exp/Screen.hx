@@ -20,8 +20,8 @@ class Screen {
 
     static public var buffer(default, null):Image;
 
-    static public var width(get, null):Int;
-    static public var height(get, null):Int;
+    static public var width(get, null):Float32;
+    static public var height(get, null):Float32;
     static public var mode(get, set):ScreenMode;
     static private var _mode:ScreenMode = ScreenMode.None;
 
@@ -146,11 +146,11 @@ class Screen {
         return _mode;
     }
 
-    static inline function get_width():Int {
+    static inline function get_width():Float32 {
         return buffer.width;
     }
 
-    static inline function get_height():Int {
+    static inline function get_height():Float32 {
         return buffer.height;
     }
 

@@ -16,7 +16,7 @@ class SpriteComponent extends DrawComponent {
 
     override public function draw(g:Graphics){
         if(_texture == null)return;
-        g.drawTexture(_texture, 0, 0); //todo
+        g.drawTexture(_texture, 0, 0);
     }
 
     override public function reset(){

@@ -16,7 +16,7 @@ class FPSCounter {
     public function new(){}
 
     public function tick() {
-        var now = Scheduler.realTime();
+        var now = Scheduler.time();
         _frames++;
         delta = now - _last;
         _elapsed += delta;

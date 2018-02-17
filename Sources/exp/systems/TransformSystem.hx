@@ -20,6 +20,8 @@ class TransformSystem extends System implements IUpdatable {
     private var _piY:Float32 = 0;
     
     private var _parentTransform:Matrix;
+
+    public var disableDepthSort:Bool = false;
     
     public function init(){
         filter.equal(TransformComponent);
@@ -53,7 +55,7 @@ class TransformSystem extends System implements IUpdatable {
     }
     
     inline private function _transformEntity(e:Entity) {
-        if(e.transform.children.length != 0 && e.transform.dirtyChildrenSort){
+        if(!disableDepthSort && e.transform.children.length != 0 && e.transform.dirtyChildrenSort){
             e.transform.children.sort(_sortChildren);
             e.transform.dirtyChildrenSort = false;
         }

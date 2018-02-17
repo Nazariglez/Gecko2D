@@ -5,8 +5,6 @@ import exp.components.DrawComponent;
 import exp.components.TransformComponent;
 import exp.Float32;
 
-//todo matcher
-
 @:expose
 class DrawSystem extends System implements IDrawable implements IUpdatable {
     private var _entityMap:Map<Int, Bool> = new Map();
