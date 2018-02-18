@@ -54,6 +54,7 @@ class ScrollingSpriteComponent extends DrawComponent {
         if(e.transform != null){
             e.transform.size.set(_width, _height);
         }
+        onAddedToEntity -= _setTransformSize;
     }
 
     override public function reset(){

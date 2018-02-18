@@ -44,6 +44,8 @@ class Gecko {
 
     static private var _dirtyWindowResize:Bool = false;
 
+    static public var currentScene(get, never):Scene;
+
     static public function init(onReady:Void->Void, opts:GeckoOptions) {
         var options = _parseOptions(opts != null ? opts : {});
 
@@ -231,5 +233,9 @@ class Gecko {
 
     static inline function get_isRunning():Bool {
         return _isRunning;
+    }
+
+    inline static function get_currentScene():Scene {
+        return world.currentScene;
     }
 }

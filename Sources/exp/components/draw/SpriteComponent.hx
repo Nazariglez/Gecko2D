@@ -21,6 +21,7 @@ class SpriteComponent extends DrawComponent {
 
     override public function reset(){
         texture = null;
+        onAddedToEntity -= _setTransformSize;
     }
 
     private function _setTransformSize(e:Entity) {
