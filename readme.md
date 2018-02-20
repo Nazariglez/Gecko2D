@@ -3,7 +3,7 @@ Gecko2D - Multiplatform Game Framework
 
 ## Dependencies
 - Git 
-- Node.js >= 6
+- Node.js >= 9
 
 ## How to install
 Use git to clone the repository:
@@ -14,7 +14,11 @@ git clone --recursive git@github.com:Nazariglez/Gecko2D.git
 And node.js to install it:
 ```
 cd Gecko2D && npm install -g
-``` 
+```
+
+## IMPORTANT Experimental branch
+Under heavy development to move from Object Orient Design to Entity-Component-System, to init a new project
+use `gecko init -t ecs` and `gecko watch`.
 
 ## Getting started
 Gecko2D has a command line interface to make your life easy.
