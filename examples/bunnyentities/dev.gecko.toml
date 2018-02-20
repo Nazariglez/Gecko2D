@@ -4,7 +4,7 @@ sources = ["Sources"]
 shaders = ["Sources/Shaders/**"]    #shaders directory
 libraries = []                      #libs at Libraries folder or haxelib
 output = "build"                    #build output
-debug = false                      #compile in debug mode
+debug = true                        #compile in debug mode
 
 [html5]
 webgl = true
@@ -14,17 +14,17 @@ serve_port = 8080           #port to serve the build with gecko serve
 html_file = ""              #inject the script in a custom html
 
 [osx]
-disable = false
 graphics = "opengl"         #mac graphics [opengl | metal]
 
 [windows]
-disable = true
 graphics = "direct3d11"         #windows graphics [direct3d11 | direct3d9 | direct3d12 | opengl]
 
+[flags]                         #custom compiler flags
+#debug_collisions = true
+
 [core]
-clean_temp = false               #clean temporal files after compile
-compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at ./kha_temp
-flags = []                      #custom compiler flags (ex: "debug_collisions")
+clean_temp = false              #clean temporal files after compile
+compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at ./kha_build
 compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
 ffmpeg = ""                     #ffmpeg drivers path (could be absolute)
 haxe = ""
