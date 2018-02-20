@@ -36,10 +36,11 @@ class TextComponent extends DrawComponent {
     public var width(default, null):Float32 = 0;
     public var height(default, null):Float32 = 0;
 
-    public function init(text:String, fontName:String, fontSize:Int) {
+    public function init(text:String, fontName:String, fontSize:Int, align:String = "left") {
         this.fontName = fontName;
         this.text = text;
         this.fontSize = fontSize;
+        this.align = align;
 
         onAddedToEntity += _setTransformSize;
     }
