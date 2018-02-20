@@ -60,11 +60,8 @@ class TextComponent extends DrawComponent {
 
         g.font = font;
         g.fontSize = _fontSize;
-        //trace(font);
         for(i in 0..._parsedText.length){
-            //trace(_fontName, _fontSize, _parsedText[i],  _parsedOriginX, _parsedLineHeight*i, _parsedAlign, VerticalTextAlign.TextTop);
             g.drawAlignedText(_parsedText[i], _parsedOriginX, _parsedLineHeight*i, _parsedAlign, VerticalTextAlign.TextTop);
-            //g.drawText(_parsedText[i], _parsedOriginX, _parsedLineHeight*i);
         }
     }
 

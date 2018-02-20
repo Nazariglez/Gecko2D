@@ -55,6 +55,7 @@ class Scene implements IScene {
             rootEntity = Entity.create("scene-root-entity");
             rootEntity.addComponent(TransformComponent.create(0, 0));
             rootEntity.addComponent(DrawComponent.create());
+            @:privateAccess rootEntity._isRoot = true;
         }
     }
 

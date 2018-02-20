@@ -13,6 +13,9 @@ import exp.components.ComponentClass;
 class Entity implements IEntity {
     public var id:Int = Gecko.getUniqueID();
 
+    public var isRoot(get, never):Bool;
+    private var _isRoot:Bool = false;
+
     public var enabled:Bool = true;
 
     public var name(get, set):String;
@@ -193,5 +196,9 @@ class Entity implements IEntity {
         _depth = value;
         onDepthChanged.emit(this);
         return _depth;
+    }
+
+    inline function get_isRoot():Bool {
+        return _isRoot;
     }
 }
