@@ -13,10 +13,14 @@ class FPSCounter {
     private var _elapsed:Float32 = 0;
     private var _last:Float = 0;
 
-    public function new(){}
+    public var isFixed(default, null):Bool = false;
+
+    public function new(isFixed:Bool = false){
+        this.isFixed = isFixed;
+    }
 
     public function tick() {
-        var now = Scheduler.time();
+        var now = isFixed ? Scheduler.time() : Scheduler.realTime();
         _frames++;
         delta = now - _last;
         _elapsed += delta;

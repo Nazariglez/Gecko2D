@@ -84,7 +84,7 @@ class Gecko {
         _initWorld();
 
         //clear the ticker
-        updateTicker = new FPSCounter();
+        updateTicker = new FPSCounter(true);
         onStop += updateTicker.clear;
 
         renderTicker = new FPSCounter();
