@@ -6,5 +6,6 @@ kha_build
 *.log
 examples/**/Libraries/gecko
 examples/**/korefile.js
+examples/**/khafile.js
 
 !*/.gitkeep
