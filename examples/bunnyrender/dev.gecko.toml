@@ -1,5 +1,5 @@
 # development gecko config.
-name = "bunnyentities"
+name = "bunnyrender"
 sources = ["Sources"]
 shaders = ["Sources/Shaders/**"]    #shaders directory
 libraries = []                      #libs at Libraries folder or haxelib
