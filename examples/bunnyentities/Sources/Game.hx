@@ -1,15 +1,17 @@
 package;
 
+import exp.Float32;
+import exp.components.core.TransformComponent;
 import exp.components.draw.TextComponent;
+import exp.components.draw.SpriteComponent;
 import exp.Screen;
 import exp.resources.Font;
 import exp.Color;
 import exp.render.Graphics;
 import exp.Gecko;
-import exp.components.core.TransformComponent;
 import exp.Assets;
 import exp.Entity;
-import exp.components.draw.SpriteComponent;
+import exp.input.Mouse;
 
 class Game {
     private var _count:Int = 0;
@@ -27,6 +29,15 @@ class Game {
 
         Gecko.currentScene.addSystem(MovementSystem.create(0.75));
         Gecko.onDraw += _onDraw;
+
+        Mouse.enable();
+        Mouse.onLeftPressed += function(x:Float32, y:Float32){
+          _addBunny(100);
+        };
+
+        Mouse.onRightPressed += function(x:Float32, y:Float32){
+            _addBunny(500);
+        }
 
         _addBackgroundText();
         _addBunny();
@@ -51,9 +62,11 @@ class Game {
         return bunny;
     }
 
-    private function _addBunny() {
-        _count++;
-        Gecko.currentScene.addEntity(_createBunny());
+    private function _addBunny(amount:Int = 1) {
+        for(i in 0...amount) {
+            _count++;
+            Gecko.currentScene.addEntity(_createBunny());
+        }
     }
 
     private function _addBackgroundText() {
