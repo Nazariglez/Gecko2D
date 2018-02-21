@@ -1,5 +1,6 @@
 package exp.input;
 
+import exp.components.core.TransformComponent;
 import exp.utils.Event;
 import kha.input.Mouse as KhaMouse;
 import exp.math.Point;
@@ -16,29 +17,27 @@ class Mouse {
     static public var movementX:Int = 0;
     static public var movementY:Int = 0;
 
-    static public var onRightPressed:Event<Int->Int->Void>;
-    static public var onRightReleased:Event<Int->Int->Void>;
-    static public var onRightDown:Event<Int->Int->Void>;
+    static public var onRightPressed:Event<Float32->Float32->Void> = Event.create();
+    static public var onRightReleased:Event<Float32->Float32->Void> = Event.create();
+    static public var onRightDown:Event<Float32->Float32->Void> = Event.create();
 
-    static public var onLeftPressed:Event<Int->Int->Void>;
-    static public var onLeftReleased:Event<Int->Int->Void>;
-    static public var onLeftDown:Event<Int->Int->Void>;
+    static public var onLeftPressed:Event<Float32->Float32->Void> = Event.create();
+    static public var onLeftReleased:Event<Float32->Float32->Void> = Event.create();
+    static public var onLeftDown:Event<Float32->Float32->Void> = Event.create();
 
-    static public var onCenterPressed:Event<Int->Int->Void>;
-    static public var onCenterReleased:Event<Int->Int->Void>;
-    static public var onCenterDown:Event<Int->Int->Void>;
+    static public var onCenterPressed:Event<Float32->Float32->Void> = Event.create();
+    static public var onCenterReleased:Event<Float32->Float32->Void> = Event.create();
+    static public var onCenterDown:Event<Float32->Float32->Void> = Event.create();
 
-    static public var onWheelMove:Event<Int->Void>;
-    static public var onMove:Event<Int->Int->Void>;
+    static public var onWheelMove:Event<Float32->Void> = Event.create();
+    static public var onMove:Event<Float32->Float32->Void> = Event.create();
 
-    static private var _pressedButtons:Map<MouseButton, Bool> = new Map<MouseButton, Bool>();
-    static private var _releasedButtons:Map<MouseButton, Bool> = new Map<MouseButton, Bool>();
-    static private var _downButtons:Map<MouseButton, Float32> = new Map<MouseButton, Float32>();
+    static private var _pressedButtons:Array<Bool> = [false, false, false];
+    static private var _releasedButtons:Array<Bool> = [false, false, false];
+    static private var _downButtons:Array<Float32> = [-1, -1, -1];
 
     static public function enable() {
-        _pressedButtons = [MouseButton.LEFT => false, MouseButton.CENTER => false, MouseButton.RIGHT => false];
-        _downButtons = [MouseButton.LEFT => -1, MouseButton.CENTER => -1, MouseButton.RIGHT => -1];
-        _releasedButtons = [MouseButton.LEFT => false, MouseButton.CENTER => false, MouseButton.RIGHT => false];
+        _resetStateButtons();
 
         KhaMouse.get().notify(_buttonDownHandler, _buttonUpHandler, _moveHandler, _wheelHandler, _leaveHandler);
         isEnabled = true;
@@ -53,8 +52,53 @@ class Mouse {
         isEnabled = false;
     }
 
-    static public function _update(dt:Float32) {
+    inline static public function _resetStateButtons() {
+        for(i in 0..._pressedButtons.length){
+            _pressedButtons[i] = false;
+        }
 
+        for(i in 0..._releasedButtons.length){
+            _releasedButtons[i] = false;
+        }
+
+        for(i in 0..._downButtons.length){
+            _downButtons[i] = -1;
+        }
+    }
+
+    static public function _update(dt:Float32) {
+        for(i in 0..._pressedButtons.length){
+            if(_pressedButtons[i]){
+                switch(i){
+                    case MouseButton.LEFT: onLeftPressed.emit(x, y);
+                    case MouseButton.RIGHT: onRightPressed.emit(x, y);
+                    case MouseButton.CENTER: onCenterPressed.emit(x, y);
+                }
+                _pressedButtons[i] = false;
+            }
+        }
+
+        for(i in 0..._downButtons.length){
+            if(_downButtons[i] != -1){
+                _downButtons[i] += dt;
+                switch(i){
+                    case MouseButton.LEFT: onLeftDown.emit(x, y);
+                    case MouseButton.RIGHT: onRightDown.emit(x, y);
+                    case MouseButton.CENTER: onCenterDown.emit(x, y);
+                }
+            }
+        }
+
+        for(i in 0..._releasedButtons.length){
+            if(_releasedButtons[i]){
+                switch(i){
+                    case MouseButton.LEFT: onLeftReleased.emit(x, y);
+                    case MouseButton.RIGHT: onRightReleased.emit(x, y);
+                    case MouseButton.CENTER: onCenterReleased.emit(x, y);
+                }
+                _releasedButtons[i] = false;
+            }
+        }
     }
 
     inline static public function wasPressed(button:MouseButton) : Bool {
@@ -68,16 +112,44 @@ class Mouse {
     static private function _buttonDownHandler(button:Int, x:Int, y:Int) {
         position.x = x;
         position.y = y;
-        _pressedButtons.set(button, true);
-        _downButtons.set(button, 0);
+        _pressedButtons[button] = true;
+        _downButtons[button] = 0;
     }
 
     static private function _buttonUpHandler(button:Int, x:Int, y:Int) {
         position.x = x;
         position.y = y;
-        _pressedButtons.set(button, false);
-        _downButtons.set(button, -1);
-        _releasedButtons.set(button, true);
+        _pressedButtons[button] = false;
+        _downButtons[button] = -1;
+        _releasedButtons[button] =  true;
+    }
+
+    static private function _moveHandler(x:Int, y:Int, movementX:Int, movementY:Int) {
+        position.x = x;
+        position.y = y;
+        Mouse.movementX = movementX;
+        Mouse.movementY = movementY;
+        onMove.emit(x, y);
+    }
+
+    static private function _wheelHandler(delta:Int) {
+        onWheelMove.emit(delta);
+    }
+
+    static private function _leaveHandler(){
+        //todo if kha_html5...
+    }
+
+    static public function isOverEntity(transform:TransformComponent, cachePoint:Point = null) : Bool {
+        if(cachePoint == null)cachePoint = Point.create();
+
+        transform.applyInverse(Mouse.position, cachePoint);
+        if(cachePoint.x > 0 && cachePoint.x < transform.size.x){
+            if(cachePoint.y > 0 && cachePoint.y < transform.size.y){
+                return true;
+            }
+        }
+        return false;
     }
 
     static public function isDown(button:MouseButton, duration:Float32 = -1) : Bool {
@@ -87,7 +159,7 @@ class Mouse {
         return _downButtons[button] != -1;
     }
 
-    inline static public function downDuration(button:MouseButton) : FastFloat {
+    inline static public function downDuration(button:MouseButton) : Float32 {
         return _downButtons[button];
     }
 
