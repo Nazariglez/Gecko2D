@@ -379,7 +379,11 @@ function _moveHTML5Build(from:string, to:string, debug:boolean, config:Config) :
         return e;
     }
 
-    return _copy(path.join(from, "assets"), path.join(to, "assets"));
+    if(fs.existsSync(path.join(from, "assets"))){
+        return _copy(path.join(from, "assets"), path.join(to, "assets"));
+    }
+
+    return null;
 }
 
 function _copy(from:string, to:string) : Error {
