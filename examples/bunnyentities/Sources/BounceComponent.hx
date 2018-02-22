@@ -4,7 +4,7 @@ import exp.components.Component;
 import exp.math.Point;
 import exp.Float32;
 
-class MovementComponent extends Component {
+class BounceComponent extends Component {
     public var speed:Point;
 
     public function init(speedX:Float32, speedY:Float32) {

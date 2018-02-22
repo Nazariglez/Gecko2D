@@ -6,11 +6,11 @@ import exp.systems.System;
 import exp.IUpdatable;
 import exp.Screen;
 
-class MovementSystem extends System implements IUpdatable {
+class BounceSystem extends System implements IUpdatable {
     public var gravity:Float32;
 
     public function init(gravity:Float32){
-        filter.all([TransformComponent, MovementComponent]);
+        filter.all([TransformComponent, BounceComponent]);
 
         this.gravity = gravity;
     }
@@ -18,7 +18,7 @@ class MovementSystem extends System implements IUpdatable {
     override public function update(dt:Float32) {
         for(e in getEntities()){
             var transform:TransformComponent = e.transform; //builtin reference to the TransformComponent
-            var movement:MovementComponent = e.getComponent(MovementComponent);
+            var movement:BounceComponent = e.getComponent(BounceComponent);
 
             transform.position.x += movement.speed.x;
             transform.position.y += movement.speed.y;

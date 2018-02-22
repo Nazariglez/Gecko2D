@@ -27,7 +27,7 @@ class Game {
     private function _onAssetsLoaded() {
         _font = Assets.fonts.get("mainfont.ttf");
 
-        Gecko.currentScene.addSystem(MovementSystem.create(0.75));
+        Gecko.currentScene.addSystem(BounceSystem.create(0.75));
         Gecko.onDraw += _onDraw;
 
         Mouse.enable();
@@ -58,7 +58,7 @@ class Game {
         var bunny = Entity.create();
         bunny.addComponent(TransformComponent.create(0, 0));
         bunny.addComponent(SpriteComponent.create("rabbit.png"));
-        bunny.addComponent(MovementComponent.create(Math.random() * 10, Math.random() * 10 - 5));
+        bunny.addComponent(BounceComponent.create(Math.random() * 10, Math.random() * 10 - 5));
         return bunny;
     }
 
