@@ -2,6 +2,7 @@ package exp.components.draw;
 
 import exp.render.Graphics;
 import exp.IDrawable;
+import exp.IUpdatable;
 import exp.Float32;
 
 class DrawComponent extends Component implements IDrawable implements IUpdatable {

@@ -4,11 +4,12 @@ import exp.macros.IAutoPool;
 import kha.math.Vector2;
 import exp.Float32;
 
+@:poolAmount(100)
 class Point implements IAutoPool {
-	private var _vec2:Vector2 = new Vector2();
+	private var _vec2:Vector2 = new Vector2(); //todo use FastVector2 instead vector2?
 	
-	public var x(get, set):FastFloat;
-	public var y(get, set):FastFloat;
+	public var x(get, set):Float32;
+	public var y(get, set):Float32;
 
 	private var _observer:Point -> Void;
 	private var _isObserved:Bool = false;
