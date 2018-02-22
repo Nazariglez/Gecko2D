@@ -6,10 +6,12 @@ import exp.Float32;
 
 @:poolAmount(100)
 class Point implements IAutoPool {
-	private var _vec2:Vector2 = new Vector2(); //todo use FastVector2 instead vector2?
+	private var _vec2:Vector2 = new Vector2(); //used to draw polyigons in the kha api avoiding allocate new vectors each tme
 	
 	public var x(get, set):Float32;
+	private var _x:Float32 = 0;
 	public var y(get, set):Float32;
+	private var _y:Float32 = 0;
 
 	private var _observer:Point -> Void;
 	private var _isObserved:Bool = false;
@@ -82,21 +84,21 @@ class Point implements IAutoPool {
     }
 
 	inline function get_x() : Float32 {
-		return _vec2.x;
+		return _x;
 	}
 
 	function set_x(value:Float32) : Float32 {
-		_vec2.x = value;
+		_vec2.x = _x = value;
 		if(_isObserved)_observer(this);
 		return value;
 	}
 
 	inline function get_y() : Float32 {
-		return _vec2.y;
+		return _y;
 	}
 
 	function set_y(value:Float32) : Float32 {
-		_vec2.y = value;
+		_vec2.y = _y = value;
 		if(_isObserved)_observer(this);
 		return value;
 	}

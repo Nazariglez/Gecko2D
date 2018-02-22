@@ -1,9 +1,8 @@
 package exp.components.motion;
 
-import exp.IUpdatable;
 import exp.Float32;
 
-class RotationComponent extends Component implements IUpdatable {
+class RotationComponent extends Component {
     public var speed:Float32;
     public var acceleration:Float32;
 
@@ -11,8 +10,6 @@ class RotationComponent extends Component implements IUpdatable {
         this.speed = speed;
         this.acceleration = acceleration;
     }
-
-    public function update(dt:Float32) {}
 
     override public function reset(){
         speed = 0;
