@@ -113,6 +113,24 @@ class PoolBuilder {
             }
         }
 
+        //TODO ------ destroy must call __pool__.put(this); automatically, but if it's override from a parent (avoid repeated calls)?
+        /*
+        if(f.name == "destroy"){
+                switch(f.kind){
+                    case FFun(fn):
+                        trace("yep", fn);
+                        trace(" - ");
+                        fn.expr = macro {
+                            trace("LOOOOL");
+                            ${fn.expr};
+                        };
+
+                    default:
+                }
+            }
+         */
+        //TODO -------
+
         var toPoolField = (macro class {
             override private function __toPool__() __pool__.put(this);
         }).fields[0];

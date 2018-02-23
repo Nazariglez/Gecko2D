@@ -4,6 +4,7 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
 
+//todo set __className__ as private and use @:private access in the ecs?
 class TypeInfoBuilder {
     static public macro function buildComponent() : Array<Field> {
         var fields = Context.getBuildFields();
