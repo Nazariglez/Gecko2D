@@ -29,6 +29,7 @@ class Assets {
     //todo compare in compilation time with macros the load and unload params with kha.Assets.*.names to check if exists
     static private function _parseAssetName(name:String, ext:Bool = false) : String {
         name = ext ? name : Path.withoutExtension(name);
+        name = Std.parseInt(name.charAt(0)) != null ? "_" + name : name;
         return (~/[\/\.-\s]/gi).replace(Path.normalize(name), "_");
     }
 
@@ -116,7 +117,7 @@ class Assets {
     }
 
     static public function loadBlob(name:String, done:?String->Void){
-        var parsedName = Assets._parseAssetName(name);
+        var parsedName = Assets._parseAssetName(name, true);
         kha.Assets.loadBlob(parsedName, function(blob:Blob){
             Assets.blobs[name] = blob;
             done();
