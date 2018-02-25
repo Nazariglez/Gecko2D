@@ -54,13 +54,13 @@ class Texture {
         var trim:Rect = null;
         
         if(data.rotated) {
-            frame = new Rect(data.frame.x, data.frame.y, data.frame.h, data.frame.w);
+            frame = Rect.create(data.frame.x, data.frame.y, data.frame.h, data.frame.w);
         }else{
-            frame = new Rect(data.frame.x, data.frame.y, data.frame.w, data.frame.h);
+            frame = Rect.create(data.frame.x, data.frame.y, data.frame.w, data.frame.h);
         }
 
         if(data.trimmed){
-            trim = new Rect(data.spriteSourceSize.x, data.spriteSourceSize.y, data.spriteSourceSize.w, data.spriteSourceSize.h);
+            trim = Rect.create(data.spriteSourceSize.x, data.spriteSourceSize.y, data.spriteSourceSize.w, data.spriteSourceSize.h);
         }
 
         var texture = new Texture(img, frame, data.sourceSize.w, data.sourceSize.h, trim);
@@ -76,7 +76,7 @@ class Texture {
         if(frame != null){
             this.frame = frame;
         }else{
-            this.frame = new Rect(0, 0, image.width, image.height);
+            this.frame = Rect.create(0, 0, image.width, image.height);
         }
 
         if(trim != null){
@@ -91,15 +91,15 @@ class Texture {
         //image.unload();
     }
 
-    function get_trimmed() : Bool {
+    inline function get_trimmed() : Bool {
         return trim != null;
     }
 
-    function get_width() : Int {
+    inline function get_width() : Int {
         return _width;
     }
 
-    function get_height() : Int {
+    inline function get_height() : Int {
         return _height;
     }
 

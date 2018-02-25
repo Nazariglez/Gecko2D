@@ -1,55 +1,58 @@
 package exp.math;
 
-import kha.math.Vector2;
+import exp.macros.IAutoPool;
+import exp.Float32;
 
-class Rect {
-	//todo add observer
-	public var x: FastFloat;
-	public var y: FastFloat;
-	public var width: FastFloat;
-	public var height: FastFloat;
+class Rect implements IAutoPool {
+	//todo add observer?
+	public var x: Float32 = 0;
+	public var y: Float32 = 0;
+	public var width: Float32 = 0;
+	public var height: Float32 = 0;
 
-	public var top(get, null): FastFloat;
-	public var bottom(get, null): FastFloat;
-	public var left(get, null): FastFloat;
-	public var right(get, null): FastFloat;
+	public var top(get, null): Float32;
+	public var bottom(get, null): Float32;
+	public var left(get, null): Float32;
+	public var right(get, null): Float32;
 
-	public function new(x: FastFloat = 0, y: FastFloat = 0, width: FastFloat = 0, height: FastFloat = 0) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+	public function new(){}
+
+	public function init(x: Float32 = 0, y: Float32 = 0, width: Float32 = 0, height: Float32 = 0) {
+		set(x, y, width, height);
 	}
+
+	public function beforeDestroy(){
+		clear();
+	}
+	public function destroy(){}
 
 	// Methods
-	public function set(x: FastFloat, y: FastFloat, width: FastFloat, height: FastFloat): Rect {
+	public function set(x: Float32, y: Float32, width: Float32, height: Float32) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-
-		return this;
 	}
 
-	public function clear(): Rect {
-		this.x = this.y = this.width = this.height = 0;
-		return this;
+	public function clear() {
+		x = 0;
+		y = 0;
+		width = 0;
+		height = 0;
 	}
 
-	public function copy(rect: Rect): Rect {
-		this.x = rect.x;
-		this.y = rect.y;
-		this.width = rect.width;
-		this.height = rect.height;
-
-		return this;
+	public function copy(rect: Rect) {
+		x = rect.x;
+		y = rect.y;
+		width = rect.width;
+		height = rect.height;
 	}
 
-	public function clone(rect: Rect): Rect {
-		return new Rect(this.x, this.y, this.width, this.height);
+	inline public function clone(rect: Rect): Rect {
+		return Rect.create(x, y, width, height);
 	}
 
-	public function contains(x: FastFloat, y: FastFloat) : Bool {
+	public function contains(x: Float32, y: Float32) : Bool {
 		if(this.width <= 0 || this.height <= 0){
 			return false;
 		}
@@ -63,7 +66,7 @@ class Rect {
 		return false;
 	}
 
-	public function containsVector2(point: Vector2) : Bool {
+	inline public function containsPoint(point: Point) : Bool {
 		return contains(point.x, point.y);
 	}
 
@@ -82,27 +85,27 @@ class Rect {
 	}
 
 	// Static Constructors
-	public static function fromSquare(side): Rect {
+	inline public static function fromSquare(side): Rect {
 		return Rect.fromRectangle(side, side);
 	}
 
-	public static function fromRectangle(width, height): Rect {
-		return new Rect(0, 0, width, height);
+	inline public static function fromRectangle(width, height): Rect {
+		return Rect.create(0, 0, width, height);
 	}
 
-	function get_top() : FastFloat {
+	inline function get_top() : Float32 {
 		return y;
 	}
 
-	function get_bottom() : FastFloat {
+	inline function get_bottom() : Float32 {
 		return y + height;
 	}
 
-	function get_left() : FastFloat {
+	inline function get_left() : Float32 {
 		return x;
 	}
 
-	function get_right() : FastFloat {
+	inline function get_right() : Float32 {
 		return x + width;
 	}
 }
