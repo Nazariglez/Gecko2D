@@ -13,5 +13,7 @@ class DrawComponent extends Component implements IDrawable implements IUpdatable
     public var worldAlpha:Float32 = 1;
 
     public function update(dt:Float32){}
+    //public function preDraw(g:Graphics){}
+    //public function postDraw(g:Graphics){}
     public function draw(graphics:Graphics){}
 }

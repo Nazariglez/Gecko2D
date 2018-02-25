@@ -12,6 +12,8 @@ typedef GeckoOptions = {
     ?resizable:Bool,
     ?bgColor:Color,
     ?maximizable:Bool,
+    ?useFixedDelta:Bool,
+    ?fps:Int,
     ?screen:ScreenOptions,
     ?khaOptions:SystemOptions
 };

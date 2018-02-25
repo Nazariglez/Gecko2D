@@ -49,11 +49,13 @@ class TextComponent extends DrawComponent {
         _updateText();
     }
 
-    override public function reset() {
+    override public function beforeDestroy() {
         text = "";
         fontSize = 10;
         font = null;
         onAddedToEntity -= _setTransformSize;
+
+        super.beforeDestroy();
     }
 
     public override function draw(g:Graphics) {

@@ -1,5 +1,6 @@
 package exp;
 
+import exp.timer.TimerManager;
 import exp.utils.FPSCounter;
 import exp.utils.Event;
 import exp.systems.draw.DrawSystem;
@@ -15,14 +16,14 @@ import exp.render.Graphics;
 #end
 #if !macro @:build(exp.macros.GeckoBuilder.build()) #end
 class Gecko {
-    static public var isIniaited(get, never):Bool;
-    static private var _isIniaited:Bool = false;
+    static public var isIniaited(default, null):Bool = false;
 
     static public var world:World;
 
     static public var graphics:Graphics;
     static private var _opts:GeckoOptions;
 
+    static public var onSystemUpdate:Event<Float32->Void> = Event.create();
     static public var onUpdate:Event<Float32->Void> = Event.create();
     static public var onDraw:Event<Graphics->Void> = Event.create();
     static public var onKhaInit:Event<Void->Void> = Event.create();
@@ -35,6 +36,7 @@ class Gecko {
 
     static private var _updateTaskId:Int = -1;
     static public var updateTicker:FPSCounter;
+    static public var systemUpdateTicker:FPSCounter;
     static public var renderTicker:FPSCounter;
 
     static private var _countUniqueID:Int = 0;
@@ -45,6 +47,7 @@ class Gecko {
     static private var _dirtyWindowResize:Bool = false;
 
     static public var currentScene(get, never):Scene;
+    static public var timerManager:TimerManager;
 
     static public function init(onReady:Void->Void, opts:GeckoOptions) {
         var options = _parseOptions(opts != null ? opts : {});
@@ -81,16 +84,21 @@ class Gecko {
 
         Random.init(opts.randomSeed);
 
+        timerManager = TimerManager.create();
+
         _initWorld();
 
         //clear the ticker
-        updateTicker = new FPSCounter(true);
+        updateTicker = new FPSCounter(_opts.useFixedDelta);
         onStop += updateTicker.clear;
+
+        systemUpdateTicker = new FPSCounter();
+        onStop += systemUpdateTicker.clear;
 
         renderTicker = new FPSCounter();
         onStop += renderTicker.clear;
 
-        _isIniaited = true;
+        isIniaited = true;
 
         start();
 
@@ -101,15 +109,15 @@ class Gecko {
     }
 
     static public function start() {
-        if(_isRunning || !_isIniaited)return;
+        if(_isRunning || !isIniaited)return;
         System.notifyOnRender(_render);
-        _updateTaskId = Scheduler.addTimeTask(_update, 0, 1 / 60);
+        _updateTaskId = Scheduler.addTimeTask(_update, 0, 1 / _opts.fps);
         _isRunning = true;
         onStart.emit();
     }
 
     static public function stop() {
-        if(!_isRunning || !_isIniaited)return;
+        if(!_isRunning || !isIniaited)return;
         System.removeRenderListener(_render);
         Scheduler.removeTimeTask(_updateTaskId);
         _isRunning = false;
@@ -163,6 +171,8 @@ class Gecko {
         options.fullScreen = opts.fullScreen;
         options.maximizable = opts.maximizable != null ? opts.maximizable : false;
         options.resizable = opts.resizable != null ? opts.resizable : false;
+        options.fps = opts.fps != null ? opts.fps : 60;
+        options.useFixedDelta = opts.useFixedDelta != null ? opts.useFixedDelta : true;
 
         options.screen = opts.screen != null ? opts.screen : {width:opts.width, height:opts.height, mode:ScreenMode.None};
         if(options.screen.mode == null){
@@ -173,7 +183,7 @@ class Gecko {
             #if debug
             options.randomSeed = 1;
             #else
-            options.randomSeed = Std.random(100000);
+            options.randomSeed = Std.int(kha.System.time * 1000);
             #end
         }else{
             options.randomSeed = opts.randomSeed;
@@ -201,7 +211,13 @@ class Gecko {
         #end
 
         updateTicker.tick();
+        systemUpdateTicker.tick();
+
+        timerManager.tick();
+
         onUpdate.emit(updateTicker.delta);
+        onSystemUpdate.emit(systemUpdateTicker.delta);
+
     }
 
     static private function _render(f:Framebuffer) {
@@ -225,10 +241,6 @@ class Gecko {
         #else
         return null;
         #end
-    }
-
-    static inline function get_isIniaited():Bool {
-        return _isIniaited;
     }
 
     static inline function get_isRunning():Bool {

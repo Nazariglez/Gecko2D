@@ -19,9 +19,11 @@ class SpriteComponent extends DrawComponent {
         g.drawTexture(_texture, 0, 0);
     }
 
-    override public function reset(){
+    override public function beforeDestroy(){
         texture = null;
         onAddedToEntity -= _setTransformSize;
+
+        super.beforeDestroy();
     }
 
     private function _setTransformSize(e:Entity) {

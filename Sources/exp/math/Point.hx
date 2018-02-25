@@ -23,13 +23,14 @@ class Point implements IAutoPool {
 		set(x,y);
 	}
 
-	public function destroy(avoidPool:Bool = false) {
+	public function beforeDestroy(){
 		_observer = null;
 		_isObserved = false;
 		_vec2.x = 0;
 		_vec2.y = 0;
-		if(!avoidPool)__toPool__();
 	}
+
+	public function destroy() {}
 
 	private function __toPool__(){}
 

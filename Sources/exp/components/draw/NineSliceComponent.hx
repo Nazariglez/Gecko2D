@@ -42,10 +42,12 @@ class NineSliceComponent extends DrawComponent {
         onAddedToEntity += _setTransformSize;
     }
 
-    override public function reset() {
+    override public function beforeDestroy() {
         _options = null;
         texture = null;
         onAddedToEntity -= _setTransformSize;
+
+        super.beforeDestroy();
     }
 
     private function _setTransformSize(e:Entity) {

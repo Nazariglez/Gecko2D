@@ -38,6 +38,5 @@ class FPSCounter {
         _frames = 0;
         _elapsed = 0;
         _last = 0;
-        _frames = 0;
     }
 }

@@ -57,12 +57,14 @@ class ScrollingSpriteComponent extends DrawComponent {
         onAddedToEntity -= _setTransformSize;
     }
 
-    override public function reset(){
+    override public function beforeDestroy(){
         scale.destroy();
         position.destroy();
         speed.destroy();
 
         texture = null;
+
+        super.beforeDestroy();
     }
 
     override public function update(dt:Float32) {

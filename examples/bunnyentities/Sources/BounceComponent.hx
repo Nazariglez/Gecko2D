@@ -11,8 +11,10 @@ class BounceComponent extends Component {
         speed = Point.create(speedX, speedY);
     }
 
-    override public function reset() {
+    override public function beforeDestroy() {
         speed.destroy();
         speed = null;
+
+        super.beforeDestroy();
     }
 }

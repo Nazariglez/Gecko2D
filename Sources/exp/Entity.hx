@@ -32,9 +32,6 @@ class Entity implements IEntity {
     public var transform:TransformComponent = null;
     public var renderer:DrawComponent = null;
 
-    //todo hardcoded the renderComponent ref? and add it when addComponent Std.is(IRendereable) === true?
-    //public var renderComponent:IRendereable;
-
     private var _components:Map<String,Component> = new Map();
     private var _componentsList:Array<Component> = [];
 
@@ -56,12 +53,8 @@ class Entity implements IEntity {
         _name = name;
     }
 
-    public function reset(){}
-
     //todo destroy children:Bool = true
-    public function destroy(avoidPool:Bool = false) {
-        reset();
-
+    public function beforeDestroy(){
         if(scene != null){
             scene.removeEntity(this);
         }
@@ -73,10 +66,14 @@ class Entity implements IEntity {
             component.destroy();
         }
 
-        if(!avoidPool)__toPool__();
+        onComponentAdded.clear();
+        onComponentRemoved.clear();
+        onAddedToScene.clear();
+        onRemovedFromScene.clear();
+        onDepthChanged.clear();
     }
 
-    private function __toPool__() {} //macro
+    public function destroy() {}
 
     public inline function addTag(tag:String) {
         _tags.set(tag, true);

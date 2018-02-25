@@ -75,7 +75,7 @@ class TransformComponent extends Component {
         size.setObserver(_setDirty);
     }
 
-    override public function reset(){
+    override public function beforeDestroy(){
         enabled = false;
 
         parent = null;
@@ -111,6 +111,8 @@ class TransformComponent extends Component {
         skewCache.cosY = 0;
         skewCache.sinX = 0;
         skewCache.sinY = 0;
+
+        super.beforeDestroy();
     }
 
     public function apply(point:Point, cachePoint:Point = null) : Point {

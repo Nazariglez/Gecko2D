@@ -19,7 +19,7 @@ class AnimationComponent extends DrawComponent {
         onAddedToEntity += _setTransformSize;
     }
 
-    override public function reset() {
+    override public function beforeDestroy() {
         var anim = animations.pop();
         while(anim != null){
             anim.destroy();
@@ -31,6 +31,8 @@ class AnimationComponent extends DrawComponent {
         _index = -1;
         isPlaying = false;
         onAddedToEntity -= _setTransformSize;
+
+        super.beforeDestroy();
     }
 
     private function _setTransformSize(e:Entity) {
@@ -138,15 +140,16 @@ class AnimationData implements IAutoPool {
         this.frames = frames;
     }
 
-    public function destroy(){
+    public function beforeDestroy() {
         id = "";
         loop = false;
         time = 1;
         frames = [];
         index = 0;
         repeat = 0;
-        __toPool__();
     }
+
+    public function destroy(){}
 
     private function __toPool__(){}
 }

@@ -1,5 +1,6 @@
 package exp;
 
+import exp.timer.TimerManager;
 import exp.components.draw.DrawComponent;
 import exp.components.core.TransformComponent;
 import exp.systems.SystemClass;
@@ -47,7 +48,11 @@ class Scene implements IScene {
 
     private var _dirtyProcess:Bool = false;
 
+    public var timerManager:TimerManager;
+
     public function new(initTransformAndDraw:Bool = true){
+        timerManager = TimerManager.create();
+
         if(initTransformAndDraw){
             addSystem(TransformSystem.create());
             addSystem(DrawSystem.create());
@@ -59,13 +64,7 @@ class Scene implements IScene {
         }
     }
 
-    public function init(name:String = ""){
-        _name = name;
-    }
-    public function reset(){}
-
-    public function destroy(avoidPool:Bool = false){
-        reset();
+    public function beforeDestroy(){
         for(sys in _systemsList){
             removeSystem(sys.__type__);
             sys.destroy();
@@ -74,8 +73,17 @@ class Scene implements IScene {
             removeEntity(e);
             e.destroy();
         }
-        if(!avoidPool)__toPool__();
+
+        //timerManager.clear(); //todo timer destroy or clear?
+
+        onEntityAdded.clear();
+        onEntityRemoved.clear();
+
+        onSystemAdded.clear();
+        onSystemRemoved.clear();
     }
+
+    public function destroy() {}
 
     private function __toPool__() {} //macros
 
@@ -232,6 +240,8 @@ class Scene implements IScene {
     }
 
     public function update(delta:Float32) {
+        timerManager.tick();
+
         for(sys in _updatableSystems){
             if(sys.enabled){
                 sys.update(delta);

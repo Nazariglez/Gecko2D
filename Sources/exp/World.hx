@@ -4,7 +4,7 @@ import exp.render.Graphics;
 import exp.utils.Event;
 
 class World {
-    public var currentScene:Scene = Scene.create("initial");
+    public var currentScene:Scene = Scene.create();
     private var _nextScene:Scene;
 
     public var onSceneChanged:Event<Scene->Scene->Void>;

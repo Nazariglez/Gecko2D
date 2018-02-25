@@ -26,15 +26,17 @@ class Component implements IComponent {
     /*public function init(name:String = "") {
         _name = name;
     }*/
-    public function reset(){}
 
-    public function destroy(avoidPool:Bool = false) {
-        reset();
+    public function beforeDestroy(){
         if(entity != null){
             entity.removeComponent(__type__);
         }
-        if(!avoidPool)__toPool__();
+
+        onAddedToEntity.clear();
+        onRemovedFromEntity.clear();
     }
+
+    public function destroy() {}
 
     private function __toPool__() {} //macros
 

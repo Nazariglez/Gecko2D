@@ -13,12 +13,14 @@ class MovementComponent extends Component {
         this.friction = friction != null ? friction : Point.create();
     }
 
-    override public function reset(){
+    override public function beforeDestroy(){
         speed.destroy();
         speed = null;
         acceleration.destroy();
         acceleration = null;
         friction.destroy();
         friction = null;
+
+        super.beforeDestroy();
     }
 }

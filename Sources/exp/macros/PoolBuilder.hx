@@ -8,6 +8,7 @@ class PoolBuilder {
 
     static private var _initFns:Map<String, Field> = new Map<String, Field>();
     static private var _poolOptions = ":poolAmount";
+    static private var _poolUnsafe = ":poolUnsafe";
 
     static public macro function build() : Array<Field> {
         var fields = Context.getBuildFields();
@@ -32,10 +33,10 @@ class PoolBuilder {
             }
         }
 
+        //todo add a instancePoolId (unique id) to debug?
         var poolFields = (macro class {
             static var __pool__ = new exp.utils.Pool($p{path}, {amount: $v{amount}/*, args: $v{arguments}*/});
             static inline public function getPool() return __pool__;
-            //static inline public function create() return __pool__.get();
         }).fields;
 
         //add create function
@@ -99,58 +100,25 @@ class PoolBuilder {
             }
 
             fields.push(createFn);
-
         }
 
-        //add __toPool__ fn
-        var i = -1;
-        var existsToPool = false;
+        var _destroyUnsafe:Expr = macro __pool__.safePut(this);
+        if(clazz.meta.has(_poolUnsafe)){
+            _destroyUnsafe = macro __pool__.put(this);
+        }
+
         for(f in fields){
-            i++;
-            if(f.name == "__toPool__"){
-                existsToPool = true;
-                break;
-            }
-        }
-
-        //TODO ------ destroy must call __pool__.put(this); automatically, but if it's override from a parent (avoid repeated calls)?
-        /*
-        if(f.name == "destroy"){
+            if(f.name == "destroy"){
                 switch(f.kind){
                     case FFun(fn):
-                        trace("yep", fn);
-                        trace(" - ");
                         fn.expr = macro {
-                            trace("LOOOOL");
-                            ${fn.expr};
+                            beforeDestroy();
+                            $_destroyUnsafe;
                         };
 
                     default:
                 }
             }
-         */
-        //TODO -------
-
-        var toPoolField = (macro class {
-            override private function __toPool__() __pool__.put(this);
-        }).fields[0];
-
-        if(existsToPool){
-            switch (fields[i].kind) {
-                case FieldType.FFun(fn):
-                    if (isEmptyFun(fn.expr)){
-
-                        //change the body of the __toPool__
-                        fn.expr = macro {
-                            //__pool__.safePut(this);
-                            __pool__.put(this);
-                        }
-                    }
-
-                default:
-            }
-        }else{
-            fields.push(toPoolField);
         }
 
         return fields.concat(poolFields);

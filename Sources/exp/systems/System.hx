@@ -37,17 +37,16 @@ class System implements ISystem {
 
     public function update(delta:Float32){}
     public function draw(graphics:Graphics){}
-    public function reset(){}
 
-    public function destroy(avoidPool:Bool = false) {
-        reset();
+    public function beforeDestroy(){
         removeAllEntities();
         scene = null;
         filter.clear();
         onEntityAdded.clear();
         onEntityRemoved.clear();
-        if(!avoidPool)__toPool__();
     }
+
+    public function destroy() {}
 
     private function __toPool__(){} //macro
 

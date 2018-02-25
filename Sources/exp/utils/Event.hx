@@ -3,7 +3,7 @@ package exp.utils;
 import haxe.macro.Expr;
 
 private typedef Evt<T> = {
-    //var once:Map<T, Bool>; //todo once
+    //var once:Map<T, Bool>; //todo once?
     var handlers:Array<T>;
 };
 
@@ -36,9 +36,8 @@ abstract Event<T>(Evt<T>) from Evt<T> to Event<T> {
     //todo add a reflection emit to use at runtime
 
     public function clear() {
-        if(this.handlers.length != 0){
-            this.handlers = []; //todo, remove all events instead create a new array?
-        }
+        if(this.handlers.length == 0)return;
+        this.handlers = []; //todo, remove all events instead create a new array?
     }
 
     /*public function once(handler:T) {

@@ -11,8 +11,10 @@ class RotationComponent extends Component {
         this.acceleration = acceleration;
     }
 
-    override public function reset(){
+    override public function beforeDestroy(){
         speed = 0;
         acceleration = 0;
+
+        super.beforeDestroy();
     }
 }
