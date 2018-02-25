@@ -30,12 +30,12 @@ class Game {
     public function new(){
         Assets.load([
             "rabbit.png",
-            "mainfont.ttf"
+            "Ubuntu-B.ttf"
         ], _onAssetsLoaded).start();
     }
 
     private function _onAssetsLoaded() {
-        _font = Assets.fonts.get("mainfont.ttf");
+        _font = Assets.fonts.get("Ubuntu-B.ttf");
         _texture = Assets.textures.get("rabbit.png");
 
         Gecko.onUpdate += _onUpdate;
@@ -106,16 +106,16 @@ class Game {
         g.fillRect(0, 0, 150, 50);
         g.color = Color.Black;
         g.font = _font;
-        g.fontSize = 22;
+        g.fontSize = 18;
         g.drawText('${Gecko.renderTicker.fps}fps - ${Gecko.renderTicker.ms}ms', 10, 5);
         g.color = Color.Orange;
-        g.drawText('Bunnies: ${_count}', 10, 22);
+        g.drawText('Bunnies: ${_count}', 10, 25);
     }
 
     private function _addBackgroundText() {
         var textEntity = Entity.create();
         textEntity.addComponent(TransformComponent.create(Screen.centerX, Screen.centerY));
-        textEntity.addComponent(TextComponent.create("Left click to add 500 bunnies.\nRight click to add 1000 bunnies.", "mainfont.ttf", 30, "center"));
+        textEntity.addComponent(TextComponent.create("Left click to add 500 bunnies.\nRight click to add 1000 bunnies.", "Ubuntu-B.ttf", 30, "center"));
         Gecko.currentScene.addEntity(textEntity);
     }
 }
