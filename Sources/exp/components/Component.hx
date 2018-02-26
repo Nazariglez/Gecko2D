@@ -38,8 +38,6 @@ class Component implements IComponent {
 
     public function destroy() {}
 
-    private function __toPool__() {} //macros
-
     inline function get_name():String {
         return _name == "" ? __typeName__ : _name;
     }

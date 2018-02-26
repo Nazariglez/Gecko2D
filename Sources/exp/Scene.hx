@@ -18,6 +18,7 @@ class Scene implements IScene {
     private var _name:String = "";
 
     public var rootEntity(default, null):Entity;
+    //public var cameras:Array<Camera> //TODO cameras
 
     private var _dirtySortSystems:Bool = false;
     private var _isProcessing:Bool = false;
@@ -84,8 +85,6 @@ class Scene implements IScene {
     }
 
     public function destroy() {}
-
-    private function __toPool__() {} //macros
 
     public function addEntity(entity:Entity) {
         if(_isProcessing){

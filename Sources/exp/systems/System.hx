@@ -48,8 +48,6 @@ class System implements ISystem {
 
     public function destroy() {}
 
-    private function __toPool__(){} //macro
-
     public inline function getEntities() : Array<Entity> {
         return _entities;
     }
