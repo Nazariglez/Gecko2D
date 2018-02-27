@@ -26,7 +26,6 @@ class Gecko {
     static public var onSystemUpdate:Event<Float32->Void> = Event.create();
     static public var onUpdate:Event<Float32->Void> = Event.create();
     static public var onDraw:Event<Graphics->Void> = Event.create();
-    static public var onKhaInit:Event<Void->Void> = Event.create();
     static public var onStart:Event<Void->Void> = Event.create();
     static public var onStop:Event<Void->Void> = Event.create();
     static public var onWindowResize:Event<Int->Int->Void> = Event.create();
@@ -48,6 +47,8 @@ class Gecko {
 
     static public var currentScene(get, never):Scene;
     static public var timerManager:TimerManager;
+
+    static private var _onKhaInitCallbacks:Array<Void->Void> = [];
 
     static public function init(onReady:Void->Void, opts:GeckoOptions) {
         var options = _parseOptions(opts != null ? opts : {});
@@ -102,10 +103,25 @@ class Gecko {
 
         start();
 
-        onKhaInit.emit();
-        onKhaInit.clear();
+        _dispatchOnKhaInit();
 
         onReady();
+    }
+
+    static public function addOnKhaInitCallback(fn:Void->Void) {
+        if(isIniaited){
+            throw "Kha init callback must be added before Gecko init.";
+        }
+
+        _onKhaInitCallbacks.push(fn);
+    }
+
+    static private function _dispatchOnKhaInit() {
+        var fn = _onKhaInitCallbacks.pop();
+        while(fn != null){
+            fn();
+            fn = _onKhaInitCallbacks.pop();
+        }
     }
 
     static public function start() {

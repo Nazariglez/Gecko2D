@@ -29,11 +29,11 @@ class Pool<T> {
                 _objects.push(_create());
             }
         }else{
-            exp.Gecko.onKhaInit += function(){
+            exp.Gecko.addOnKhaInitCallback(function(){
                 for(i in 0...opts.amount){
                     this._objects.push(this._create());
                 }
-            };
+            });
         }
     }
 

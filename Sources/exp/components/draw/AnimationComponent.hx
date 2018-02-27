@@ -53,6 +53,7 @@ class AnimationComponent extends DrawComponent {
 
         _index = -1;
         isPlaying = false;
+        isPaused = false;
         onAddedToEntity -= _setTransformSize;
 
         onPlay.clear();
