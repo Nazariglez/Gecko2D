@@ -93,7 +93,7 @@ class Entity implements IEntity {
         }
     }
 
-    public function addComponent(component:Component) : Entity {
+    public function addComponent<T:Component>(component:T) : T {
         component.entity = this;
 
         if(Std.is(component, DrawComponent)){
@@ -115,7 +115,7 @@ class Entity implements IEntity {
 
         onComponentAdded.emit(this, component);
 
-        return this;
+        return cast component;
     }
 
     public function removeComponent<T:Component>(componentClass:ComponentClass) : T {
