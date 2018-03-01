@@ -32,12 +32,12 @@ class NineSliceComponent extends DrawComponent {
     public var height(get, set):Float32;
     private var _height:Float32 = 0;
 
-    public function init(texture:String, ?options:NineSliceOptions) {
+    public function init(texture:String, width:Float32 = 0, height:Float32 = 0, ?options:NineSliceOptions) {
         this.texture = Assets.textures.get(texture);
         _options = options;
 
-        _width = cast this.texture.width;
-        _height = cast this.texture.height;
+        _width = width != 0 ? width : cast this.texture.width;
+        _height = height != 0 ? height : cast this.texture.height;
 
         onAddedToEntity += _setTransformSize;
     }

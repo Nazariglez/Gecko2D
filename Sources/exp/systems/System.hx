@@ -9,8 +9,10 @@ using Lambda;
 @:allow(exp.Scene)
 class System implements ISystem {
     public var id:Int = Gecko.getUniqueID();
-    public var scene:Scene;
     public var enabled:Bool = true;
+
+    public var scene(get, set):Scene;
+    private var _scene:Scene = null;
 
     public var name(get, set):String;
     private var _name:String = "";
@@ -25,10 +27,14 @@ class System implements ISystem {
 
     public var onEntityAdded:Event<Entity->Void>;
     public var onEntityRemoved:Event<Entity->Void>;
+    public var onAddedToScene:Event<Scene->Void>;
+    public var onRemovedFromScene:Event<Scene->Void>;
 
     public function new(){
         onEntityAdded = Event.create();
         onEntityRemoved = Event.create();
+        onAddedToScene = Event.create();
+        onRemovedFromScene = Event.create();
     }
 
     public function process(delta:Float32){
@@ -44,6 +50,8 @@ class System implements ISystem {
         filter.clear();
         onEntityAdded.clear();
         onEntityRemoved.clear();
+        onAddedToScene.clear();
+        onRemovedFromScene.clear();
     }
 
     public function destroy() {}
@@ -109,5 +117,25 @@ class System implements ISystem {
 
     inline function set_name(value:String):String {
         return this._name = value;
+    }
+
+    inline function get_scene():Scene {
+        return _scene;
+    }
+
+    function set_scene(value:Scene):Scene {
+        if(value == _scene)return _scene;
+
+        if(_scene != null){
+            onRemovedFromScene.emit(_scene);
+        }
+
+        _scene = value;
+
+        if(_scene != null){
+            onAddedToScene.emit(_scene);
+        }
+
+        return _scene;
     }
 }

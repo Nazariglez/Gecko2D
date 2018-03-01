@@ -50,6 +50,8 @@ class Gecko {
 
     static private var _onKhaInitCallbacks:Array<Void->Void> = [];
 
+    static public var time(get, null):Float32;
+
     static public function init(onReady:Void->Void, opts:GeckoOptions) {
         var options = _parseOptions(opts != null ? opts : {});
 
@@ -266,4 +268,9 @@ class Gecko {
     inline static function get_currentScene():Scene {
         return world.currentScene;
     }
+
+    inline static function get_time():Float32 {
+        return kha.Scheduler.realTime();
+    }
+
 }
