@@ -1,0 +1,31 @@
+# development gecko config.
+name = "Demo"
+sources = ["Sources"]
+shaders = ["Sources/Shaders/**"]    #shaders directory
+libraries = []                      #libs at Libraries folder or haxelib
+output = "build"                    #build output
+debug = true                        #compile in debug mode
+
+[html5]
+webgl = true
+canvas = "kanvas"           #canvas id
+script = "game"             #script name
+serve_port = 8080           #port to serve the build with gecko serve
+html_file = ""              #inject the script in a custom html
+
+[osx]
+graphics = "opengl"         #mac graphics [opengl | metal]
+
+[windows]
+graphics = "direct3d11"         #windows graphics [direct3d11 | direct3d9 | direct3d12 | opengl]
+
+[flags]                         #custom compiler flags
+#debug_collisions = true
+
+[core]
+clean_temp = false              #clean temporal files after compile
+compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at ./kha_build
+compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
+ffmpeg = ""                     #ffmpeg drivers path (could be absolute)
+haxe = ""
+kha = ""
