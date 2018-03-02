@@ -88,7 +88,7 @@ class Texture {
     }
 
     public function unload() {
-        //image.unload();
+        image.unload();
     }
 
     inline function get_trimmed() : Bool {

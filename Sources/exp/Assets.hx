@@ -33,6 +33,10 @@ class Assets {
         return (~/[\/\.-\s]/gi).replace(Path.normalize(name), "_");
     }
 
+    static inline private function _existsAssetsName(name:String, type:String) : Bool {
+        return Reflect.hasField(Reflect.field(kha.Assets, type),name);
+    }
+
     static public function load(arr:Array<String>, ?onComplete:Void->Void, ?onError:String->Void) : Assets {
         var loader = new Assets(arr.length);
 
@@ -47,7 +51,8 @@ class Assets {
         loader.setTask(function(){
             Chain.eachSeries(arr, loader.observProgress(Assets._loadAsset), function(?err:String){
                 if(err != null){
-                    trace(err);
+                    trace("Error: " + err);
+                    loader.onError.emit(err);
                 }
             });
         });
@@ -78,68 +83,92 @@ class Assets {
 
     static public function loadJson(name:String, done:?String->Void){
         var parsedName = Assets._parseAssetName(name, true);
-        kha.Assets.loadBlob(parsedName, function(blob:Blob){
-            Assets.json[name] = haxe.Json.parse(blob.toString());
-            if(Assets.json[name].frames != null && Assets.json[name].meta != null && Assets.json[name].meta.image != null){
-                var json:TexturePacker = haxe.Json.parse(blob.toString());
-                Assets.loadImage(json.meta.image, function(?err:String){
-                    if(err != null){
-                        done(err);
-                        return;
-                    }
+        if(_existsAssetsName(parsedName, "blobs")){
+            kha.Assets.loadBlob(parsedName, function(blob:Blob){
+                Assets.json[name] = haxe.Json.parse(blob.toString());
+                if(Assets.json[name].frames != null && Assets.json[name].meta != null && Assets.json[name].meta.image != null){
+                    var json:TexturePacker = haxe.Json.parse(blob.toString());
+                    Assets.loadImage(json.meta.image, function(?err:String){
+                        if(err != null){
+                            done(err);
+                            return;
+                        }
 
-                    for(frame in Reflect.fields(json.frames)){
-                        Assets.textures[frame] = Texture.fromTexturePacker(Assets.images[json.meta.image], Reflect.field(json.frames, frame));
-                    }
+                        for(frame in Reflect.fields(json.frames)){
+                            Assets.textures[frame] = Texture.fromTexturePacker(Assets.images[json.meta.image], Reflect.field(json.frames, frame));
+                        }
+                        done();
+                    });
+                }else{
                     done();
-                });
-            }else{
-                done();
-            }            
-        });
+                }
+            });
+        }else{
+            done("Invalid asset name: " + name);
+        }
     }
 
     static public function loadImage(name:String, done:?String->Void){
         var parsedName = Assets._parseAssetName(name);
-        kha.Assets.loadImage(parsedName, function(img:Image){
-            Assets.images[name] = img;
-            Assets.textures[name] = new Texture(img);
-            done();
-        });
+        if(_existsAssetsName(parsedName, "images")){
+            kha.Assets.loadImage(parsedName, function(img:Image){
+                Assets.images[name] = img;
+                Assets.textures[name] = new Texture(img);
+                done();
+            });
+        }else{
+            done("Invalid asset name: " + name);
+        }
     }
 
     static public function loadVideo(name:String, done:?String->Void){
         var parsedName = Assets._parseAssetName(name);
-        kha.Assets.loadVideo(parsedName, function(vid:Video){
-            Assets.videos[name] = vid;
-            done();
-        });
+        if(_existsAssetsName(parsedName, "videos")){
+            kha.Assets.loadVideo(parsedName, function(vid:Video){
+                Assets.videos[name] = vid;
+                done();
+            });
+        }else{
+            done("Invalid asset name: " + name);
+        }
     }
 
     static public function loadBlob(name:String, done:?String->Void){
         var parsedName = Assets._parseAssetName(name, true);
-        kha.Assets.loadBlob(parsedName, function(blob:Blob){
-            Assets.blobs[name] = blob;
-            done();
-        });
+        if(_existsAssetsName(parsedName, "blobs")){
+            kha.Assets.loadBlob(parsedName, function(blob:Blob){
+                Assets.blobs[name] = blob;
+                done();
+            });
+        }else{
+            done("Invalid asset name: " + name);
+        }
     }
 
     static public function loadSound(name:String, done:?String->Void){
         var parsedName = Assets._parseAssetName(name);
-        kha.Assets.loadSound(parsedName, function(sound:Sound){
-            sound.uncompress(function(){
-                Assets.sounds[name] = sound;
-                done();
+        if(_existsAssetsName(parsedName, "sounds")){
+            kha.Assets.loadSound(parsedName, function(sound:Sound){
+                sound.uncompress(function(){
+                    Assets.sounds[name] = sound;
+                    done();
+                });
             });
-        });
+        }else{
+            done("Invalid asset name: " + name);
+        }
     }
 
     static public function loadFont(name:String, done:?String->Void){
         var parsedName = Assets._parseAssetName(name);
-        kha.Assets.loadFont(parsedName, function(fnt:Font){
-            Assets.fonts[name] = fnt;
-            done();
-        });
+        if(_existsAssetsName(parsedName, "fonts")){
+            kha.Assets.loadFont(parsedName, function(fnt:Font){
+                Assets.fonts[name] = fnt;
+                done();
+            });
+        }else{
+            done("Invalid asset name: " + name);
+        }
     }
 
     static public function unload(arr:Array<String>, ?onComplete:Void->Void, ?onError:String->Void) : Assets {
@@ -179,6 +208,12 @@ class Assets {
     }
 
     static public function unloadImage(name:String, done:?String->Void){
+        var texture = Assets.textures.get(name);
+        if(texture != null){
+            texture.unload();
+            Assets.textures.remove(name);
+        }
+
         Assets.images[name].unload();
         Assets.images.remove(name);
         done();
