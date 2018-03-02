@@ -21,7 +21,7 @@ class MouseComponent extends Component {
 
     public var onOver:Event<Float32->Float32->Void>;
     public var onOut:Event<Float32->Float32->Void>;
-    public var onMove:Event<Float32->Float32->Void>;
+    public var onMove:Event<Float32->Float32->Void>; //todo
 
     public var onClick:Event<Float32->Float32->Void>;
     public var onDoubleClick:Event<Float32->Float32->Void>;

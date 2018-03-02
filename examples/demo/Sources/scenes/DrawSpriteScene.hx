@@ -4,6 +4,7 @@ import exp.Entity;
 import exp.components.draw.SpriteComponent;
 import exp.components.core.TransformComponent;
 import exp.Float32;
+
 class DrawSpriteScene extends CustomScene {
     override public function init(closeButton:Bool = false) {
         super.init(closeButton);

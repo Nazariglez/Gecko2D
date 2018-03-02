@@ -36,6 +36,8 @@ class Mouse {
     static private var _releasedButtons:Array<Bool> = [false, false, false];
     static private var _downButtons:Array<Float32> = [-1, -1, -1];
 
+    //todo limit fps to 30 by default to check buttons state?
+
     static public function enable() {
         _resetStateButtons();
 
