@@ -42,6 +42,11 @@ class TransformComponent extends Component {
     public var dirtySkew:Bool = true;
     public var dirty:Bool = true;
 
+    public var top(get, null):Float32;
+    public var bottom(get, null):Float32;
+    public var left(get, null):Float32;
+    public var right(get, null):Float32;
+
     public var skewCache:SkewCache = {
         cosX: 0,
         cosY: 0,
@@ -216,6 +221,22 @@ class TransformComponent extends Component {
         }
 
         return _parent;
+    }
+
+    inline function get_top():Float32 {
+        return entity.transform.position.y - entity.transform.height * entity.transform.anchor.y;
+    }
+
+    inline function get_bottom():Float32 {
+        return entity.transform.position.y + entity.transform.height * entity.transform.anchor.y;
+    }
+
+    inline function get_left():Float32 {
+        return entity.transform.position.x - entity.transform.width * entity.transform.anchor.x;
+    }
+
+    inline function get_right():Float32 {
+        return entity.transform.position.x + entity.transform.width * entity.transform.anchor.x;
     }
 
 }

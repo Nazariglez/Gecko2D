@@ -1,5 +1,6 @@
 package exp.components.input;
 
+import exp.math.Rect;
 import exp.utils.Event;
 import exp.components.Component;
 
@@ -30,6 +31,8 @@ class MouseComponent extends Component {
     public var isRightDown:Bool = false;
     public var isLeftDown:Bool = false;
     public var isCenterDown:Bool = false;
+
+    public var box:Rect; //todo add a box to use instead the transform size
 
     public var doubleClickTreshold:Float32 = 0;
 

@@ -50,7 +50,7 @@ class Point implements IAutoPool {
 		this.y = (y == null) ? x : y;
 	}
 
-	public inline function clone(point:Point) : Point {
+	public inline function clone() : Point {
 		return Point.create(x, y);
 	}
 

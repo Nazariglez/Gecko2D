@@ -48,7 +48,7 @@ class Rect implements IAutoPool {
 		height = rect.height;
 	}
 
-	inline public function clone(rect: Rect): Rect {
+	inline public function clone(): Rect {
 		return Rect.create(x, y, width, height);
 	}
 
