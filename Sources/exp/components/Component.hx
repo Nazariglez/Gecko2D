@@ -2,7 +2,7 @@ package exp.components;
 
 import exp.utils.Event;
 
-//todo macro clone all fields to use with prefabs
+//todo macro clone all fields to use with prefabs?
 
 @:allow(exp.Entity)
 class Component implements IComponent {
@@ -22,10 +22,6 @@ class Component implements IComponent {
         onAddedToEntity = Event.create();
         onRemovedFromEntity = Event.create();
     }
-
-    /*public function init(name:String = "") {
-        _name = name;
-    }*/
 
     public function beforeDestroy(){
         if(entity != null){

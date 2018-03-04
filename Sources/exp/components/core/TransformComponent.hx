@@ -27,6 +27,7 @@ class TransformComponent extends Component {
     public var rotation(get, set):Float32;
     private var _rotation:Float32 = 0;
 
+    public var lastPosition:Point;
     public var position:Point;
     public var scale:Point;
     public var skew:Point;
@@ -47,6 +48,8 @@ class TransformComponent extends Component {
     public var left(get, null):Float32;
     public var right(get, null):Float32;
 
+    public var wasUpdated:Bool = false;
+
     public var skewCache:SkewCache = {
         cosX: 0,
         cosY: 0,
@@ -60,6 +63,8 @@ class TransformComponent extends Component {
         dirtyChildrenSort = true;
         dirtySkew = true;
         dirty = true;
+
+        lastPosition = Point.create(x, y);
 
         position = Point.create(x, y);
         position.setObserver(_setDirty);
@@ -91,23 +96,32 @@ class TransformComponent extends Component {
             }
         }
 
+        lastPosition.destroy();
+        lastPosition = null;
+
         position.removeObserver();
         position.destroy();
+        position = null;
 
         scale.removeObserver();
         scale.destroy();
+        scale = null;
 
         skew.removeObserver();
         skew.destroy();
+        skew = null;
 
         pivot.removeObserver();
         pivot.destroy();
+        pivot = null;
 
         anchor.removeObserver();
         anchor.destroy();
+        anchor = null;
 
         size.removeObserver();
         size.destroy();
+        size = null;
 
         flip.set(false, false); //todo add observer
 
@@ -129,6 +143,40 @@ class TransformComponent extends Component {
         cachePoint.y = worldMatrix._01 * point.x + worldMatrix._11 * point.y + worldMatrix._21;
 
         return cachePoint;
+    }
+
+    public function localToScreen(point:Point, cachePoint:Point = null) : Point {
+        if(cachePoint == null){
+            cachePoint = Point.create();
+        }
+
+        var xx = point.x;
+        var yy = point.y;
+
+        cachePoint.x = worldMatrix._00 * xx + worldMatrix._10 * yy + worldMatrix._20;
+        cachePoint.y = worldMatrix._01 * xx + worldMatrix._11 * yy + worldMatrix._21;
+
+        return cachePoint;
+    }
+
+
+    public function screenToLocal(point:Point, cachePoint:Point = null) : Point {
+        if(cachePoint == null){
+            cachePoint = Point.create();
+        }
+
+        var xx = point.x;
+        var yy = point.y;
+
+        var id = 1 / ((worldMatrix._00 * worldMatrix._11) + (worldMatrix._10 * -worldMatrix._01));
+        cachePoint.x = (worldMatrix._11 * id * xx) + (-worldMatrix._10 * id * yy) + (((worldMatrix._21 * worldMatrix._10) - (worldMatrix._20 * worldMatrix._11)) * id);
+        cachePoint.y = (worldMatrix._00 * id * yy) + (-worldMatrix._01 * id * xx) + (((-worldMatrix._21 * worldMatrix._00) + (worldMatrix._20 * worldMatrix._01)) * id);
+
+        return cachePoint;
+    }
+
+    inline public function localToLocal(from:TransformComponent, point:Point, cachePoint:Point = null) : Point {
+        return screenToLocal(cachePoint = from.localToScreen(point, cachePoint), cachePoint);
     }
 
     public function applyInverse(point:Point, cachePoint:Point = null) : Point {

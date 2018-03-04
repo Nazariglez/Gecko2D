@@ -55,6 +55,10 @@ class TransformSystem extends System implements IUpdatable {
     }
     
     inline private function _transformEntity(e:Entity) {
+        e.transform.lastPosition.copy(e.transform.position);
+
+        var wasUpdated = false;
+
         if(enableDepthSort && e.transform.children.length != 0 && e.transform.dirtyChildrenSort){
             e.transform.children.sort(_sortChildren);
             e.transform.dirtyChildrenSort = false;
@@ -69,6 +73,7 @@ class TransformSystem extends System implements IUpdatable {
             e.transform.skewCache.sinY = Math.cos(e.transform.rotation - e.transform.skew.x);
 
             e.transform.dirtySkew = false;
+            wasUpdated = true;
         }
 
         //Update local matrix
@@ -99,20 +104,27 @@ class TransformSystem extends System implements IUpdatable {
             }
 
             e.transform.dirty = false;
+            wasUpdated = true;
         }
 
-        if(e.transform.parent == scene.rootEntity || e.transform.parent == null){
-            e.transform.worldMatrix.setFrom(e.transform.localMatrix);
+        if(wasUpdated){
+            e.transform.wasUpdated = true;
+
+            if(e.transform.parent == scene.rootEntity || e.transform.parent == null){
+                e.transform.worldMatrix.setFrom(e.transform.localMatrix);
+            }else{
+                var _parentTransform = e.transform.parent.transform.worldMatrix;
+
+                e.transform.worldMatrix._00 = (e.transform.localMatrix._00 * _parentTransform._00) + (e.transform.localMatrix._01 * _parentTransform._10);
+                e.transform.worldMatrix._01 = (e.transform.localMatrix._00 * _parentTransform._01) + (e.transform.localMatrix._01 * _parentTransform._11);
+                e.transform.worldMatrix._10 = (e.transform.localMatrix._10 * _parentTransform._00) + (e.transform.localMatrix._11 * _parentTransform._10);
+                e.transform.worldMatrix._11 = (e.transform.localMatrix._10 * _parentTransform._01) + (e.transform.localMatrix._11 * _parentTransform._11);
+
+                e.transform.worldMatrix._20 = (e.transform.localMatrix._20 * _parentTransform._00) + (e.transform.localMatrix._21 * _parentTransform._10) + _parentTransform._20;
+                e.transform.worldMatrix._21 = (e.transform.localMatrix._20 * _parentTransform._01) + (e.transform.localMatrix._21 * _parentTransform._11) + _parentTransform._21;
+            }
         }else{
-            var _parentTransform = e.transform.parent.transform.worldMatrix;
-
-            e.transform.worldMatrix._00 = (e.transform.localMatrix._00 * _parentTransform._00) + (e.transform.localMatrix._01 * _parentTransform._10);
-            e.transform.worldMatrix._01 = (e.transform.localMatrix._00 * _parentTransform._01) + (e.transform.localMatrix._01 * _parentTransform._11);
-            e.transform.worldMatrix._10 = (e.transform.localMatrix._10 * _parentTransform._00) + (e.transform.localMatrix._11 * _parentTransform._10);
-            e.transform.worldMatrix._11 = (e.transform.localMatrix._10 * _parentTransform._01) + (e.transform.localMatrix._11 * _parentTransform._11);
-
-            e.transform.worldMatrix._20 = (e.transform.localMatrix._20 * _parentTransform._00) + (e.transform.localMatrix._21 * _parentTransform._10) + _parentTransform._20;
-            e.transform.worldMatrix._21 = (e.transform.localMatrix._20 * _parentTransform._01) + (e.transform.localMatrix._21 * _parentTransform._11) + _parentTransform._21;
+            e.transform.wasUpdated = false;
         }
     }
 

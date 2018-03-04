@@ -82,6 +82,10 @@ class Point implements IAutoPool {
         return x * point.x + y * point.y;
     }
 
+	inline public function toString() : String {
+		return 'Point($_x, $_y)';
+	}
+
 	inline function get_x() : Float32 {
 		return _x;
 	}

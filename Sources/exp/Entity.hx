@@ -66,6 +66,10 @@ class Entity implements IEntity {
             component.destroy();
         }
 
+        for(tag in _tags.keys()){
+            _tags.remove(tag);
+        }
+
         onComponentAdded.clear();
         onComponentRemoved.clear();
         onAddedToScene.clear();
