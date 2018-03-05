@@ -137,17 +137,6 @@ class TransformComponent extends Component {
         super.beforeDestroy();
     }
 
-    public function apply(point:Point, cachePoint:Point = null) : Point {
-        if(cachePoint == null){
-            cachePoint = Point.create();
-        }
-
-        cachePoint.x = worldMatrix._00 * point.x + worldMatrix._10 * point.y + worldMatrix._20;
-        cachePoint.y = worldMatrix._01 * point.x + worldMatrix._11 * point.y + worldMatrix._21;
-
-        return cachePoint;
-    }
-
     public function localToScreen(point:Point, cachePoint:Point = null) : Point {
         if(cachePoint == null){
             cachePoint = Point.create();
@@ -180,18 +169,6 @@ class TransformComponent extends Component {
 
     inline public function localToLocal(from:TransformComponent, point:Point, cachePoint:Point = null) : Point {
         return screenToLocal(cachePoint = from.localToScreen(point, cachePoint), cachePoint);
-    }
-
-    public function applyInverse(point:Point, cachePoint:Point = null) : Point {
-        if(cachePoint == null){
-            cachePoint = Point.create();
-        }
-
-        var id = 1 / ((worldMatrix._00 * worldMatrix._11) + (worldMatrix._10 * -worldMatrix._01));
-        cachePoint.x = (worldMatrix._11 * id * point.x) + (-worldMatrix._10 * id * point.y) + (((worldMatrix._21 * worldMatrix._10) - (worldMatrix._20 * worldMatrix._11)) * id);
-        cachePoint.y = (worldMatrix._00 * id * point.y) + (-worldMatrix._01 * id * point.x) + (((-worldMatrix._21 * worldMatrix._00) + (worldMatrix._20 * worldMatrix._01)) * id);
-
-        return cachePoint;
     }
 
     private function _setDirtySkew(point:Point) {

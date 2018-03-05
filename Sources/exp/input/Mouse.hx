@@ -145,7 +145,7 @@ class Mouse {
     static public function isOverEntity(transform:TransformComponent, cachePoint:Point = null) : Bool {
         if(cachePoint == null)cachePoint = Point.create();
 
-        transform.applyInverse(Mouse.position, cachePoint);
+        transform.screenToLocal(Mouse.position, cachePoint);
         if(cachePoint.x > 0 && cachePoint.x < transform.size.x){
             if(cachePoint.y > 0 && cachePoint.y < transform.size.y){
                 return true;

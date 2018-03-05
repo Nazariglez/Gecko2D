@@ -68,7 +68,7 @@ class InteractivitySystem extends System implements IUpdatable {
 
     private function _dispatchEntityEvents(e:Entity) {
         var transform:TransformComponent = e.transform;
-        transform.applyInverse(Mouse.position, _localPoint);
+        transform.screenToLocal(Mouse.position, _localPoint);
 
         var mouseComponent:MouseComponent = e.getComponent(MouseComponent);
         var draggableComponent:DraggableComponent = e.getComponent(DraggableComponent);
@@ -202,7 +202,7 @@ class InteractivitySystem extends System implements IUpdatable {
 
         if(draggableComponent != null && draggableComponent.isDragged){
             var parent = draggableComponent.entity.transform.parent;
-            parent.transform.applyInverse(Mouse.position, _localPoint);
+            parent.transform.screenToLocal(Mouse.position, _localPoint);
 
             if(draggableComponent.bounds == null){
                 draggableComponent.entity.transform.position.copy(_localPoint);
