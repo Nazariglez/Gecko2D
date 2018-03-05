@@ -29,6 +29,8 @@ class Scene implements IScene {
     //todo findEntityByName
 
     public var entities:Array<Entity> = [];
+    private var _entitesMap:Map<Int, Entity> = new Map();
+
     private var _systems:Map<String, System> = new Map();
     private var _drawableSystems:Array<System> = [];
     private var _updatableSystems:Array<System> = [];
@@ -84,8 +86,13 @@ class Scene implements IScene {
         onSystemRemoved.clear();
     }
 
+    inline public function getEntityById(id:Int) : Entity {
+        return _entitesMap.get(id);
+    }
 
     public function addEntity(entity:Entity) {
+        if(getEntityById(entity.id) != null)return;
+
         if(_isProcessing){
             _entitiesToAdd.push(entity);
             _dirtyProcess = true;
@@ -103,6 +110,8 @@ class Scene implements IScene {
         }
 
         entities.push(entity);
+        _entitesMap.set(entity.id, entity);
+
         for(s in _systemsList){
             s._registerEntity(entity);
             entity.onComponentAdded += _onEntityAddComponent;
@@ -112,6 +121,8 @@ class Scene implements IScene {
     }
 
     public function removeEntity(entity:Entity) {
+        if(getEntityById(entity.id) == null)return;
+
         if(_isProcessing){
             _entitiesToRemove.push(entity);
             _dirtyProcess = true;
@@ -134,6 +145,7 @@ class Scene implements IScene {
         }
 
         entities.remove(entity);
+        _entitesMap.remove(entity.id);
         onEntityRemoved.emit(entity);
     }
 
