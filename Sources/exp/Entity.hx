@@ -53,7 +53,6 @@ class Entity implements IEntity {
         _name = name;
     }
 
-    //todo destroy children:Bool = true
     public function beforeDestroy(){
         if(scene != null){
             scene.removeEntity(this);
@@ -62,6 +61,13 @@ class Entity implements IEntity {
         for(name in _components.keys()){
             var component = _components.get(name);
             _components.remove(name);
+
+            if(component == transform){
+                transform = null;
+            }else if(component == renderer){
+                renderer = null;
+            }
+
             onComponentRemoved.emit(this, component);
             component.destroy();
         }
