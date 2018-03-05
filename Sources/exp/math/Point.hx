@@ -30,7 +30,6 @@ class Point implements IAutoPool {
 		_vec2.y = 0;
 	}
 
-	public function destroy() {}
 
 	public inline function getVec2() : Vector2 {
 		return _vec2;

@@ -24,7 +24,6 @@ class Rect implements IAutoPool {
 	public function beforeDestroy(){
 		clear();
 	}
-	public function destroy(){}
 
 	// Methods
 	public function set(x: Float32, y: Float32, width: Float32, height: Float32) {

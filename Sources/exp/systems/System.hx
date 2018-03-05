@@ -54,7 +54,6 @@ class System implements ISystem {
         onRemovedFromScene.clear();
     }
 
-    public function destroy() {}
 
     public inline function getEntities() : Array<Entity> {
         return _entities;

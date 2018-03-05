@@ -171,5 +171,4 @@ class TimerGroup implements IAutoPool {
         onResume.clear();
     }
 
-    public function destroy(){}
 }

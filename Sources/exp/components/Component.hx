@@ -32,7 +32,6 @@ class Component implements IComponent {
         onRemovedFromEntity.clear();
     }
 
-    public function destroy() {}
 
     inline function get_name():String {
         return _name == "" ? __typeName__ : _name;

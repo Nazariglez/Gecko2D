@@ -7,6 +7,8 @@ import haxe.macro.Type;
 class PoolBuilder {
 
     static private var _initFns:Map<String, Field> = new Map<String, Field>();
+    static private var _destroyFns:Map<String, Field> = new Map<String, Field>();
+    static private var _destroyInmediateFns:Map<String, Field> = new Map<String, Field>();
     static private var _poolOptions = ":poolAmount";
     static private var _poolUnsafe = ":poolUnsafe";
 
@@ -43,6 +45,7 @@ class PoolBuilder {
         var initIndex = -1;
         var existsInit = false;
         var initFn:Field;
+
 
         for(f in fields){
             if(f.name == "init"){
@@ -102,14 +105,140 @@ class PoolBuilder {
             fields.push(createFn);
         }
 
+
+
+
+
+        var destroyIndex = -1;
+        var existsDestroy = false;
+        var destroyFn:Field;
+        var destroyInmediateIndex = -1;
+        var existsDestroyInmediate = false;
+        var destroyInmediateFn:Field;
+
+
+        for(f in fields){
+            if(f.name == "destroy"){
+                existsDestroy = true;
+                destroyFn = f;
+                _destroyFns.set(getClassId(clazz), f);
+            }else if(f.name == "destroyInmediate"){
+                existsDestroyInmediate = true;
+                destroyInmediateFn = f;
+                _destroyInmediateFns.set(getClassId(clazz), f);
+            }
+        }
+
+        var isDestroyInherited = false;
+        var isDestroyInmediateInherited = false;
+
+            //get the inherited init args
+        if(!existsDestroy && clazz.superClass != null){
+
+            var _cls = clazz;
+            while(_cls.superClass != null){
+                _cls = _cls.superClass.t.get();
+                var id = getClassId(_cls);
+                if(_destroyFns.exists(id)){
+                    destroyFn = _destroyFns.get(id);
+                    existsDestroy = true;
+                    isDestroyInherited = true;
+                    break;
+                }
+            }
+
+        }
+
+        if(!existsDestroyInmediate && clazz.superClass != null){
+
+            var _cls = clazz;
+            while(_cls.superClass != null){
+                _cls = _cls.superClass.t.get();
+                var id = getClassId(_cls);
+                if(_destroyInmediateFns.exists(id)){
+                    destroyInmediateFn = _destroyInmediateFns.get(id);
+                    existsDestroyInmediate = true;
+                    isDestroyInmediateInherited = true;
+                    break;
+                }
+            }
+
+        }
+
+
         var _destroyUnsafe:Expr = macro __pool__.safePut(this);
         if(clazz.meta.has(_poolUnsafe)){
             _destroyUnsafe = macro __pool__.put(this);
         }
 
-        for(f in fields){
-            if(f.name == "destroy"){
-                switch(f.kind){
+        if(!existsDestroy){
+            var f = (macro class {
+                public function destroy(){
+                        if(exp.Gecko.isProcessing){
+                            @:privateAccess exp.Gecko._destroyCallbacks.push(this.destroy);
+                            return;
+                        }
+
+                        beforeDestroy();
+                        $_destroyUnsafe;
+                    };
+                }).fields[0];
+            fields.push(f);
+
+            _destroyFns.set(getClassId(clazz), f);
+        }else{
+            if(isDestroyInherited){
+                fields.push((macro class {
+                    override public function destroy(){
+                        if(exp.Gecko.isProcessing){
+                            @:privateAccess exp.Gecko._destroyCallbacks.push(this.destroy);
+                            return;
+                        }
+
+                        beforeDestroy();
+                        $_destroyUnsafe;
+                    };
+                }).fields[0]);
+            }else{
+                switch(destroyFn.kind){
+                    case FFun(fn):
+                        fn.expr = macro {
+                            if(exp.Gecko.isProcessing){
+                                @:privateAccess exp.Gecko._destroyCallbacks.push(this.destroy);
+                                return;
+                            }
+
+                            beforeDestroy();
+                            $_destroyUnsafe;
+                        };
+
+                    default:
+                }
+            }
+        }
+
+
+        //Destroy inmmediate
+        if(!existsDestroyInmediate){
+            var f = (macro class {
+                public function destroyInmediate(){
+                    beforeDestroy();
+                    $_destroyUnsafe;
+                };
+            }).fields[0];
+            fields.push(f);
+
+            _destroyInmediateFns.set(getClassId(clazz), f);
+        }else{
+            if(isDestroyInmediateInherited){
+                fields.push((macro class {
+                    override public function destroyInmediate(){
+                        beforeDestroy();
+                        $_destroyUnsafe;
+                    };
+                }).fields[0]);
+            }else{
+                switch(destroyInmediateFn.kind){
                     case FFun(fn):
                         fn.expr = macro {
                             beforeDestroy();

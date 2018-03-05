@@ -30,8 +30,8 @@ class Gecko {
     static public var onStop:Event<Void->Void> = Event.create();
     static public var onWindowResize:Event<Int->Int->Void> = Event.create();
 
-    static public var isRunning(get, null):Bool;
-    static private var _isRunning:Bool = false;
+    static public var isRunning(default, null):Bool = false;
+    static public var isProcessing(default, null):Bool = false;
 
     static private var _updateTaskId:Int = -1;
     static public var updateTicker:FPSCounter;
@@ -51,6 +51,8 @@ class Gecko {
     static private var _onKhaInitCallbacks:Array<Void->Void> = [];
 
     static public var time(get, null):Float32;
+
+    static private var _destroyCallbacks:Array<Void->Void> = [];
 
     static public function init(onReady:Void->Void, opts:GeckoOptions) {
         var options = _parseOptions(opts != null ? opts : {});
@@ -127,18 +129,18 @@ class Gecko {
     }
 
     static public function start() {
-        if(_isRunning || !isIniaited)return;
+        if(isRunning || !isIniaited)return;
         System.notifyOnRender(_render);
         _updateTaskId = Scheduler.addTimeTask(_update, 0, 1 / _opts.fps);
-        _isRunning = true;
+        isRunning = true;
         onStart.emit();
     }
 
     static public function stop() {
-        if(!_isRunning || !isIniaited)return;
+        if(!isRunning || !isIniaited)return;
         System.removeRenderListener(_render);
         Scheduler.removeTimeTask(_updateTaskId);
-        _isRunning = false;
+        isRunning = false;
         onStop.emit();
     }
 
@@ -220,7 +222,18 @@ class Gecko {
         return options;
     }
 
+    static inline private function _safeDestroyObjects() {
+        var cb:Void->Void;
+        while((cb = _destroyCallbacks.pop()) != null){
+            cb();
+        }
+    }
+
     static private function _update() {
+        _safeDestroyObjects();
+
+        isProcessing = true;
+
         #if kha_html5
         if(_dirtyWindowResize){
             resize(cast js.Browser.window.innerWidth, cast js.Browser.window.innerHeight);
@@ -236,9 +249,14 @@ class Gecko {
         onUpdate.emit(updateTicker.delta);
         onSystemUpdate.emit(systemUpdateTicker.delta);
 
+        isProcessing = false;
+
+        _safeDestroyObjects();
     }
 
     static private function _render(f:Framebuffer) {
+        isProcessing = true;
+
         renderTicker.tick();
 
         graphics.setRenderTarget(Screen.buffer);
@@ -251,6 +269,8 @@ class Gecko {
         f.g2.transformation.setFrom(Screen.matrix);
         f.g2.drawImage(Screen.buffer, 0, 0);
         f.g2.end();
+
+        isProcessing = false;
     }
 
     static public function getHtml5Canvas() : #if kha_js js.html.CanvasElement #else Dynamic #end {
@@ -259,10 +279,6 @@ class Gecko {
         #else
         return null;
         #end
-    }
-
-    static inline function get_isRunning():Bool {
-        return _isRunning;
     }
 
     inline static function get_currentScene():Scene {

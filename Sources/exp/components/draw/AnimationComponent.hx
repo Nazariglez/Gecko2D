@@ -298,6 +298,4 @@ class AnimationData implements IAutoPool {
         isStarted = false;
         elapsedTime = 0;
     }
-
-    public function destroy(){}
 }

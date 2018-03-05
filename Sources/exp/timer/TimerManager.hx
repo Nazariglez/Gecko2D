@@ -66,5 +66,4 @@ class TimerManager implements IAutoPool {
             t = timers.pop();
         }
     }
-    public function destroy(){}
 }

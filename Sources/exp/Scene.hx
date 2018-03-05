@@ -84,7 +84,6 @@ class Scene implements IScene {
         onSystemRemoved.clear();
     }
 
-    public function destroy() {}
 
     public function addEntity(entity:Entity) {
         if(_isProcessing){

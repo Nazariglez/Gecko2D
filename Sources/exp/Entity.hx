@@ -29,7 +29,7 @@ class Entity implements IEntity {
 
     private var _tags:Map<String, Bool> = new Map<String, Bool>();
 
-    public var transform:TransformComponent = null;
+    public var transform:TransformComponent = null; //add a transformComponent always by default?
     public var renderer:DrawComponent = null;
 
     private var _components:Map<String,Component> = new Map();
@@ -77,7 +77,6 @@ class Entity implements IEntity {
         onDepthChanged.clear();
     }
 
-    public function destroy() {}
 
     public inline function addTag(tag:String) {
         _tags.set(tag, true);

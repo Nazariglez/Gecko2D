@@ -172,5 +172,4 @@ class Timer implements IAutoPool {
         onUpdate.clear();
     }
 
-    public function destroy() {}
 }
