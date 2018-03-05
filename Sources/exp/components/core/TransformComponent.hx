@@ -83,6 +83,8 @@ class TransformComponent extends Component {
 
         size = Point.create(xSize != null ? xSize : 1, ySize != null ? ySize : xSize);
         size.setObserver(_setDirty);
+
+        flip.setObserver(_setDirtyFlip);
     }
 
     override public function beforeDestroy(){
@@ -123,7 +125,8 @@ class TransformComponent extends Component {
         size.destroy();
         size = null;
 
-        flip.set(false, false); //todo add observer
+        flip.removeObserver();
+        flip.set(false, false);
 
         rotation = 0;
         skewCache.cosX = 0;
@@ -197,6 +200,10 @@ class TransformComponent extends Component {
     }
 
     private function _setDirty(point:Point) {
+        dirty = true;
+    }
+
+    private function _setDirtyFlip(vec:Vector2g<Bool>) {
         dirty = true;
     }
 

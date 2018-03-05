@@ -14,8 +14,7 @@ class Point implements IAutoPool {
 	private var _y:Float32 = 0;
 
 	private var _observer:Point -> Void;
-	private var _isObserved:Bool = false;
-	public var isObserved(get, null):Bool;
+	public var isObserved(default, null):Bool;
 
 	public function new(){}
 
@@ -25,7 +24,7 @@ class Point implements IAutoPool {
 
 	public function beforeDestroy(){
 		_observer = null;
-		_isObserved = false;
+		isObserved = false;
 		_vec2.x = 0;
 		_vec2.y = 0;
 	}
@@ -36,12 +35,12 @@ class Point implements IAutoPool {
 	}
 
 	public function setObserver(cb:Point -> Void) : Void {
-		_isObserved = true;
+		isObserved = true;
 		_observer = cb;
 	}
 
 	public function removeObserver() : Void {
-		_isObserved = false;
+		isObserved = false;
 	}
 
 	public inline function set(x:Float32, ?y:Float32) {
@@ -90,8 +89,9 @@ class Point implements IAutoPool {
 	}
 
 	function set_x(value:Float32) : Float32 {
+		if(value == _x)return _x;
 		_vec2.x = _x = value;
-		if(_isObserved)_observer(this);
+		if(isObserved)_observer(this);
 		return value;
 	}
 
@@ -100,12 +100,9 @@ class Point implements IAutoPool {
 	}
 
 	function set_y(value:Float32) : Float32 {
+		if(value == _y)return _y;
 		_vec2.y = _y = value;
-		if(_isObserved)_observer(this);
+		if(isObserved)_observer(this);
 		return value;
-	}
-
-	inline function get_isObserved() : Bool {
-		return _isObserved;
 	}
 }
