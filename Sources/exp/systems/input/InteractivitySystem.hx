@@ -1,5 +1,6 @@
 package exp.systems.input;
 
+import exp.input.Touch;
 import exp.components.input.DraggableComponent;
 import exp.components.core.TransformComponent;
 import exp.math.Point;
@@ -24,29 +25,46 @@ class InteractivitySystem extends System implements IUpdatable {
     private var _centerDown:Bool = false;
 
     private var _localPoint:Point;
+    private var _pointer:Point;
 
     public function init(checkInDrawOrder:Bool = false){
         this.checkInDrawOrder = checkInDrawOrder;
 
         _localPoint = Point.create(0,0);
+        _pointer = Point.create(0,0);
 
         filter.equal(TransformComponent).any([MouseComponent, DraggableComponent]);
     }
 
     override public function update(dt:Float32) {
-        if(!Mouse.isEnabled)return;
+        if(!Mouse.isEnabled && !Touch.isEnabled)return;
 
-        _rightPressed = Mouse.wasPressed(MouseButton.RIGHT);
-        _leftPressed = Mouse.wasPressed(MouseButton.LEFT);
-        _centerPressed = Mouse.wasPressed(MouseButton.CENTER);
+        if(Mouse.isEnabled){
+            _rightPressed = Mouse.wasPressed(MouseButton.RIGHT);
+            _leftPressed = Mouse.wasPressed(MouseButton.LEFT);
+            _centerPressed = Mouse.wasPressed(MouseButton.CENTER);
 
-        _rightReleased = Mouse.wasReleased(MouseButton.RIGHT);
-        _leftReleased = Mouse.wasReleased(MouseButton.LEFT);
-        _centerReleased = Mouse.wasReleased(MouseButton.CENTER);
+            _rightReleased = Mouse.wasReleased(MouseButton.RIGHT);
+            _leftReleased = Mouse.wasReleased(MouseButton.LEFT);
+            _centerReleased = Mouse.wasReleased(MouseButton.CENTER);
 
-        _rightDown = Mouse.isDown(MouseButton.RIGHT);
-        _leftDown = Mouse.isDown(MouseButton.LEFT);
-        _centerDown = Mouse.isDown(MouseButton.CENTER);
+            _rightDown = Mouse.isDown(MouseButton.RIGHT);
+            _leftDown = Mouse.isDown(MouseButton.LEFT);
+            _centerDown = Mouse.isDown(MouseButton.CENTER);
+
+            _pointer.copy(Mouse.position);
+
+        }
+
+        if(Touch.isEnabled){
+            _rightPressed = Touch.wasPressed(0);
+            _rightReleased = Touch.wasReleased(0);
+            _rightDown = Touch.isDown(0);
+
+            if(_rightDown){
+                _pointer.copy(Touch.getPosition(0));
+            }
+        }
 
         if(!checkInDrawOrder){
             _checkEntites(dt);
@@ -222,6 +240,9 @@ class InteractivitySystem extends System implements IUpdatable {
     override public function beforeDestroy() {
         _localPoint.destroy();
         _localPoint = null;
+
+        _pointer.destroy();
+        _pointer = null;
 
         _rightPressed = false;
         _leftPressed = false;

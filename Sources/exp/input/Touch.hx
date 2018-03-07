@@ -1,5 +1,6 @@
 package exp.input;
 
+import exp.components.core.TransformComponent;
 import exp.Float32;
 import exp.math.Point;
 import exp.utils.Event;
@@ -8,10 +9,10 @@ import kha.input.Surface;
 class Touch {
     static private var _instance:Touch = new Touch();
 
-    static public var onPressed:Event<Int->Int->Int>;
-    static public var onReleased:Event<Int->Int->Int>;
-    static public var onDown:Event<Int->Int->Int>;
-    static public var onMove:Event<Int->Int->Int>;
+    static public var onPressed:Event<Int->Float32->Float32->Void>;
+    static public var onReleased:Event<Int->Float32->Float32->Void>;
+    static public var onDown:Event<Int->Float32->Float32->Void>;
+    static public var onMove:Event<Int->Float32->Float32->Void>;
 
     static private var _pressed:Map<Int, Bool> = new Map();
     static private var _released:Map<Int, Bool> = new Map();
@@ -22,30 +23,17 @@ class Touch {
 
     static public var isEnabled(default, null):Bool;
 
-    static private function _bindEvents() {
-        if(_eventEmitter != null){
-            onPressed = _eventEmitter.bind(new Event(EVENT_PRESSED));
-            onPressedOnce = _eventEmitter.bind(new Event(EVENT_PRESSED, true));
-
-            onReleased = _eventEmitter.bind(new Event(EVENT_RELEASED));
-            onReleasedOnce = _eventEmitter.bind(new Event(EVENT_RELEASED, true));
-
-            onDown = _eventEmitter.bind(new Event(EVENT_DOWN));
-            onDownOnce = _eventEmitter.bind(new Event(EVENT_DOWN, true));
-
-            onMove = _eventEmitter.bind(new Event(EVENT_MOVE));
-            onMoveOnce = _eventEmitter.bind(new Event(EVENT_MOVE, true));
-        }
-    }
-
     private function new() {
-        Touch._bindEvents();
+        onPressed = Event.create();
+        onReleased = Event.create();
+        onDown = Event.create();
+        onMove = Event.create();
     }
 
     static public function enable() {
-        _pressed = new Map<Int, Bool>();
-        _down = new Map<Int, Float32>();
-        _released = new Map<Int, Bool>();
+        _pressed = new Map();
+        _down = new Map();
+        _released = new Map();
 
         Surface.get().notify(_downHandler, _upHandler, _moveHandler);
 
@@ -75,31 +63,29 @@ class Touch {
 
     static public function update(delta:Float32) {
         for(index in _pressed.keys()) {
-            _eventEmitter.emit(EVENT_PRESSED, [index, _pointers[index].x, _pointers[index].y]);
+            onPressed.emit(index, _pointers[index].x, _pointers[index].y);
             _pressed.remove(index);
         }
 
-        while(pointers.length > 0){
-            pointers.pop();
-        }
+        while(pointers.pop() != null){}
 
         for(index in _down.keys()) {
-            _down[index] += delta;
-            _eventEmitter.emit(EVENT_DOWN, [index, _pointers[index].x, _pointers[index].y]);
+            _down[index] += Gecko.systemUpdateTicker.delta;
+            onDown.emit(index, _pointers[index].x, _pointers[index].y);
             pointers[index] = _pointers[index];
         }
 
         for(index in _released.keys()) {
-            _eventEmitter.emit(EVENT_RELEASED, [index, _pointers[index].x, _pointers[index].y]);
+            onReleased.emit(index, _pointers[index].x, _pointers[index].y);
             _released.remove(index);
         }
     }
 
-    static public function wasPressed(touch:Int) : Bool {
+    inline static public function wasPressed(touch:Int) : Bool {
         return _pressed.exists(touch);
     }
 
-    static public function wasReleased(touch:Int) : Bool {
+    inline static public function wasReleased(touch:Int) : Bool {
         return _released.exists(touch);
     }
 
@@ -111,17 +97,27 @@ class Touch {
         return _down.exists(touch);
     }
 
-    static public function downDuration(touch:Int) : Float32 {
+    inline static public function downDuration(touch:Int) : Float32 {
         return _down.exists(touch) ? _down[touch] : -1;
     }
 
-    static public function isOverEntity(touch:Int, entity:Entity) : Bool {
+    static public function isOverEntity(touch:Int, transform:TransformComponent, cachePoint:Point = null) : Bool {
         var pos = getPosition(touch);
         if(pos == null){
             return false;
         }
 
-        return Mouse.isOverEntity(entity, pos);
+
+        if(cachePoint == null)cachePoint = Point.create();
+
+        transform.screenToLocal(pos, cachePoint);
+        if(cachePoint.x > 0 && cachePoint.x < transform.size.x){
+            if(cachePoint.y > 0 && cachePoint.y < transform.size.y){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     static private function _downHandler(index:Int, x:Int, y:Int) {
@@ -129,7 +125,7 @@ class Touch {
         _down.set(index, 0);
 
         if(!_pointers.exists(index)){
-            _pointers.set(index, new Point(0,0));
+            _pointers.set(index, Point.create(0,0));
         }
 
         _pointers[index].set(x, y);
@@ -146,10 +142,6 @@ class Touch {
 
     static private function _moveHandler(index:Int, x:Int, y:Int) {
         _pointers[index].set(x, y);
-        _eventEmitter.emit(EVENT_MOVE, [index, x, y]);
-    }
-
-    static function get_isEnabled():Bool {
-        return _isEnabled;
+        onMove.emit(index, x, y);
     }
 }
