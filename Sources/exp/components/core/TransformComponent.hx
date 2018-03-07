@@ -12,13 +12,15 @@ private typedef SkewCache = {
     var sinY:Float32;
 };
 
+@:allow(exp.systems.core.TransformSystem)
+@:allow(exp.systems.draw.DrawSystem)
 class TransformComponent extends Component {
     public var parent(get, set):Entity;
     public var _parent:Entity;
     public var children:Array<Entity> = [];
 
-    public var _branch:Int = 0;
-    public var _nextChild:Entity = null;
+    private var _branch:Int = 0;
+    private var _nextChild:Entity = null;
 
     public var x(get, set):Float32;
     public var y(get, set):Float32;
@@ -48,7 +50,7 @@ class TransformComponent extends Component {
     public var left(get, null):Float32;
     public var right(get, null):Float32;
 
-    public var wasUpdated:Bool = false;
+    public var wasUpdated(default, null):Bool = false;
 
     public var skewCache:SkewCache = {
         cosX: 0,
