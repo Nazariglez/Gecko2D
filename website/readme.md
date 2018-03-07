@@ -2,5 +2,6 @@ Website + docs with a static content manager like hugo, Kube could be a nice the
 
 
 Alternatives:
+ - https://docsify.js.org/#/ssr
  - https://themes.gohugo.io/theme/hugo-theme-learn/en
  - https://gohugo.io/showcase/template/
