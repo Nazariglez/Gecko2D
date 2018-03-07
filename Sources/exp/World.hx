@@ -4,7 +4,7 @@ import exp.render.Graphics;
 import exp.utils.Event;
 
 class World {
-    public var currentScene:Scene = Scene.create();
+    public var currentScene(default, null):Scene = Scene.create();
     private var _nextScene:Scene;
     private var _destroyCurrentScene:Bool = false;
 
