@@ -6,6 +6,7 @@ import exp.utils.Event;
 class World {
     public var currentScene:Scene = Scene.create();
     private var _nextScene:Scene;
+    private var _destroyCurrentScene:Bool = false;
 
     public var onSceneChanged:Event<Scene->Scene->Void>;
 
@@ -13,8 +14,9 @@ class World {
         onSceneChanged = Event.create();
     }
 
-    public function changeScene(scene:Scene) {
-        _nextScene = scene;
+    public function changeScene(sceneIn:Scene, destroyCurrentScene:Bool = false) {
+        _destroyCurrentScene = destroyCurrentScene;
+        _nextScene = sceneIn;
     }
 
     public function update(delta:Float32) {
@@ -25,6 +27,10 @@ class World {
             _nextScene = null;
 
             onSceneChanged.emit(scene, currentScene);
+
+            if(_destroyCurrentScene){
+                scene.destroy();
+            }
         }
 
         currentScene.process(delta);
