@@ -27,7 +27,7 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
 
     override public function update(dt:Float32) {
         for(e in getEntities()){
-            if(e.enabled && e.renderer.enabled){
+            if(e.enabled){
                 e.renderer.update(dt);
             }
         }
@@ -74,7 +74,7 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
     }
 
     inline private function _canBeRendered(e:Entity) : Bool {
-        return e.enabled && _entityMap.exists(e.id) && e.renderer != null && e.renderer.enabled && e.renderer.visible;
+        return e.enabled && _entityMap.exists(e.id) && e.renderer != null && e.renderer.visible;
     }
 
     inline private function _renderEntity(e:Entity, g:Graphics) {

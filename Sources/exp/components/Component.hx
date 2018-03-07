@@ -10,7 +10,6 @@ class Component implements IComponent {
     private var _entity:Entity = null;
 
     public var id:Int = Gecko.getUniqueID();
-    public var enabled:Bool = true; //todo remove enable in the component?
 
     public var name(get, set):String;
     private var _name:String = "";

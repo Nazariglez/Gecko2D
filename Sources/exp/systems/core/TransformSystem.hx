@@ -36,7 +36,7 @@ class TransformSystem extends System implements IUpdatable {
 
         while(current != null){
 
-            if(current.enabled && current.transform.enabled){
+            if(current.enabled){
                 _transformEntity(current);
 
                 for(c in current.transform.children){

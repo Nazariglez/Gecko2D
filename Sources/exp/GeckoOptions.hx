@@ -11,7 +11,7 @@ typedef GeckoOptions = {
     ?fullScreen:Bool,
     ?resizable:Bool,
     ?bgColor:Color,
-    ?maximizable:Bool,
+    ?maximizable:Bool, //todo use screenSize instead maximizable in html5 and pc to use window size
     ?useFixedDelta:Bool,
     ?fps:Int,
     ?screen:ScreenOptions,

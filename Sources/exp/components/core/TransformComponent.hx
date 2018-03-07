@@ -58,8 +58,6 @@ class TransformComponent extends Component {
     };
 
     public function init(x:Float32, y:Float32, ?xSize:Float32, ?ySize:Float32) {
-        enabled = true;
-
         dirtyChildrenSort = true;
         dirtySkew = true;
         dirty = true;
@@ -85,11 +83,11 @@ class TransformComponent extends Component {
         size.setObserver(_setDirty);
 
         flip.setObserver(_setDirtyFlip);
+
+
     }
 
     override public function beforeDestroy(){
-        enabled = false;
-
         parent = null;
         if(children.length != 0){
             var copyChildren = children.copy();
