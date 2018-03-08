@@ -9,17 +9,44 @@ class DrawSpriteScene extends CustomScene {
     override public function init(closeButton:Bool = false) {
         super.init(closeButton);
 
-        _addSprite("images/hippo.png", 220, 120);
-        _addSprite("images/elephant.png", 420, 120);
-        _addSprite("images/monkey.png", 620, 120);
+        //sprites to draw
+        var spriteNames = [
+            "images/elephant.png",
+            "images/hippo.png",
+            "images/monkey.png",
+            "images/giraffe.png",
+            "images/panda.png",
+            "images/parrot.png",
+            "images/snake.png",
+            "images/penguin.png",
+            "images/pig.png"
+        ];
+
+
+        //Draw sprites in a grid
+        var minX = 155;
+        var minY = 110;
+
+        var gapX = 250;
+        var gapY = 180;
+
+        var i = 0;
+        for(x in 0...3){
+            for(y in 0...3){
+                _addSprite(spriteNames[i], minX + gapX*x, minY + gapY*y);
+
+                i++;
+            }
+        }
     }
 
+    //Create an add the sprite
     private function _addSprite(sprite:String, x:Float32, y:Float32) {
         var e = Entity.create();
         e.addComponent(TransformComponent.create(x, y));
         e.addComponent(SpriteComponent.create(sprite));
 
-        e.transform.scale.set(0.3, 0.3);
+        e.transform.scale.set(0.4, 0.4); //scale because they're too big
 
         addEntity(e);
     }

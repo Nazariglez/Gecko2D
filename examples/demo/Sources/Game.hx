@@ -16,7 +16,13 @@ class Game {
         "images/red_cross.png",
         "images/elephant.png",
         "images/hippo.png",
-        "images/monkey.png"
+        "images/monkey.png",
+        "images/giraffe.png",
+        "images/panda.png",
+        "images/parrot.png",
+        "images/snake.png",
+        "images/penguin.png",
+        "images/pig.png"
     ];
 
     public function new(){
