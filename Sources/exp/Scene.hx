@@ -77,7 +77,7 @@ class Scene implements IScene {
             e.destroy();
         }
 
-        //timerManager.clear(); //todo timer destroy or clear?
+        timerManager.cleanTimers();
 
         onEntityAdded.clear();
         onEntityRemoved.clear();

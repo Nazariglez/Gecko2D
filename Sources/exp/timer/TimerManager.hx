@@ -49,11 +49,7 @@ class TimerManager implements IAutoPool {
         }
     }
 
-    private function _remove(timer:Timer) {
-        timers.remove(timer);
-    }
-
-    public function beforeDestroy(){
+    public function cleanTimers() {
         var t:Timer = _timersToDelete.pop();
         while(t != null){
             t.destroy();
@@ -65,5 +61,13 @@ class TimerManager implements IAutoPool {
             t.destroy();
             t = timers.pop();
         }
+    }
+
+    private function _remove(timer:Timer) {
+        timers.remove(timer);
+    }
+
+    public function beforeDestroy(){
+        cleanTimers();
     }
 }
