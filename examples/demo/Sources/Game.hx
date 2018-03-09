@@ -13,6 +13,7 @@ class Game {
         //your assets here
         "Ubuntu-B.ttf",
         "images/green_panel.png",
+        "images/grey_button08.png",
         "images/red_cross.png",
         "images/elephant.png",
         "images/hippo.png",

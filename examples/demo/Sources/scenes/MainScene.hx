@@ -14,6 +14,7 @@ import exp.components.draw.TextComponent;
 import scenes.DrawSpriteScene;
 import scenes.DrawTextScene;
 import scenes.DrawShapeScene;
+import scenes.DrawNineSliceScene;
 
 class MainScene extends CustomScene {
     override public function init(closeButton:Bool = false) {
@@ -25,7 +26,7 @@ class MainScene extends CustomScene {
             { name: "Draw Sprites", scene: DrawSpriteScene.create(true) },
             { name: "Draw Shapes", scene: DrawShapeScene.create(true) },
             { name: "Draw Animations", scene: null },
-            { name: "Draw NineSlices", scene: null },
+            { name: "Draw NineSlices", scene: DrawNineSliceScene.create(true) },
             { name: "Draw ScrollingSprites", scene: null },
             { name: "Draw Text", scene: DrawTextScene.create(true) },
 
