@@ -11,15 +11,15 @@ class DrawSpriteScene extends CustomScene {
 
         //sprites to draw
         var spriteNames = [
-            "images/elephant.png",
-            "images/hippo.png",
-            "images/monkey.png",
-            "images/giraffe.png",
-            "images/panda.png",
-            "images/parrot.png",
-            "images/snake.png",
-            "images/penguin.png",
-            "images/pig.png"
+            "images/kenney/elephant.png",
+            "images/kenney/hippo.png",
+            "images/kenney/monkey.png",
+            "images/kenney/giraffe.png",
+            "images/kenney/panda.png",
+            "images/kenney/parrot.png",
+            "images/kenney/snake.png",
+            "images/kenney/penguin.png",
+            "images/kenney/pig.png"
         ];
 
 

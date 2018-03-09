@@ -12,18 +12,18 @@ class Game {
     private var _assetsToLoad:Array<String> = [
         //your assets here
         "Ubuntu-B.ttf",
-        "images/green_panel.png",
-        "images/grey_button08.png",
-        "images/red_cross.png",
-        "images/elephant.png",
-        "images/hippo.png",
-        "images/monkey.png",
-        "images/giraffe.png",
-        "images/panda.png",
-        "images/parrot.png",
-        "images/snake.png",
-        "images/penguin.png",
-        "images/pig.png"
+        "images/kenney/green_panel.png",
+        "images/kenney/grey_button08.png",
+        "images/kenney/red_cross.png",
+        "images/kenney/elephant.png",
+        "images/kenney/hippo.png",
+        "images/kenney/monkey.png",
+        "images/kenney/giraffe.png",
+        "images/kenney/panda.png",
+        "images/kenney/parrot.png",
+        "images/kenney/snake.png",
+        "images/kenney/penguin.png",
+        "images/kenney/pig.png"
     ];
 
     public function new(){

@@ -9,7 +9,7 @@ import exp.math.Random;
 
 class DrawNineSliceScene extends CustomScene {
     var _colors = [Color.Red, Color.Green, Color.Blue, Color.White, Color.Yellow, Color.Orange, Color.Brown, Color.Magenta];
-    var _sprites = ["images/grey_button08.png", "images/green_panel.png"];
+    var _sprites = ["images/kenney/grey_button08.png", "images/kenney/green_panel.png"];
 
     override public function init(closeButton:Bool = false){
         super.init(closeButton);

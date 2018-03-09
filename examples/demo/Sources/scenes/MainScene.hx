@@ -72,7 +72,7 @@ class MainScene extends CustomScene {
         //Button sprite
         var btn = Entity.create();
         btn.addComponent(TransformComponent.create(x, y));
-        btn.addComponent(NineSliceComponent.create("images/green_panel.png", 160, 50));
+        btn.addComponent(NineSliceComponent.create("images/kenney/green_panel.png", 160, 50));
 
         //button text
         var txt = Entity.create();

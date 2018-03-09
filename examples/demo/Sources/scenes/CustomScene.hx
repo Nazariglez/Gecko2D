@@ -29,7 +29,7 @@ class CustomScene extends Scene {
         var transform = btn.addComponent(TransformComponent.create(Screen.width-20, 20));
         transform.anchor.set(1, 0);
 
-        btn.addComponent(SpriteComponent.create("images/red_cross.png"));
+        btn.addComponent(SpriteComponent.create("images/kenney/red_cross.png"));
 
         var mouse = btn.addComponent(MouseComponent.create());
         mouse.onClick += _gotoMainScene;
