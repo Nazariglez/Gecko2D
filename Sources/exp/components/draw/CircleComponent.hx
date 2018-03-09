@@ -10,21 +10,23 @@ class CircleComponent extends DrawComponent {
 
     public var fill:Bool = false;
     public var strength:Float32 = 2;
+    public var segments:Int = 0;
     public var diameter(default, null):Float32 = 4;
 
-    public function init(fill:Bool, radius:Float32 = 1, strength:Float32 = 2) {
+    public function init(fill:Bool, radius:Float32 = 1, strength:Float32 = 2, segments:Int = 0) {
         this.radius = radius;
         this.fill = fill;
         this.strength = strength;
+        this.segments = segments;
 
         onAddedToEntity += _setTransformSize;
     }
 
     override public function draw(g:Graphics) {
         if(fill){
-            g.fillCircle(0, 0, _radius);
+            g.fillCircle(_radius, _radius, _radius);
         }else{
-            g.drawCircle(0, 0, _radius, strength);
+            g.drawCircle(_radius, _radius, _radius, strength, segments);
         }
     }
 
