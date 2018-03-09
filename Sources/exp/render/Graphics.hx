@@ -9,9 +9,10 @@ import exp.resources.Font;
 import exp.resources.Image;
 import exp.resources.Texture;
 import exp.resources.Video;
-import kha.graphics2.GraphicsExtension;
 import kha.graphics4.PipelineState;
 import kha.math.Vector2;
+
+using kha.graphics2.GraphicsExtension;
 
 class Graphics {
 	static public var emptyMatrix:Matrix = Matrix.identity();
@@ -334,11 +335,11 @@ class Graphics {
 	}
 
     public inline function drawAlignedText(text:String, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
-        GraphicsExtension.drawAlignedString(buffer.g2, text, x, y, horAlign, verAlign);
+		buffer.g2.drawAlignedString(text, x, y, horAlign, verAlign);
     }
 
     public inline function drawAlignedCharacters(text:Array<Int>, start:Int, end:Int, x:Float, y:Float, horAlign:HorizontalTextAlign, verAlign:VerticalTextAlign) : Void {
-        GraphicsExtension.drawAlignedCharacters(buffer.g2, text, start, end, x, y, horAlign, verAlign);
+		buffer.g2.drawAlignedCharacters(text, start, end, x, y, horAlign, verAlign);
     }
 
     public inline function drawRect(x:Float, y:Float, width:Float, height:Float, ?strength:Float) : Void {
@@ -354,37 +355,37 @@ class Graphics {
 	}
 
 	public inline function drawArc(cx: Float, cy: Float, radius: Float, sAngle: Float, eAngle: Float, strength: Float = 1.0, ccw: Bool = false) {
-		GraphicsExtension.drawArc(buffer.g2, cx, cy, radius, sAngle, eAngle, strength, ccw);
+		buffer.g2.drawArc(cx, cy, radius, sAngle, eAngle, strength, ccw);
 	}
 
 	public inline function fillArc(cx: Float, cy: Float, radius: Float, sAngle: Float, eAngle: Float, ccw: Bool = false) {
-		GraphicsExtension.fillArc(buffer.g2, cx, cy, radius, sAngle, eAngle, ccw);
+		buffer.g2.fillArc(cx, cy, radius, sAngle, eAngle, ccw);
 	}
 
 	public inline function drawCircle(cx:Float, cy:Float, radius:Float, ?strength:Float, ?segments:Int) : Void {
-		GraphicsExtension.drawCircle(buffer.g2, cx, cy, radius, strength, segments);
+		buffer.g2.drawCircle(cx, cy, radius, strength, segments);
 	}
 
     public inline function drawCubicBezier(x:Array<Float>, y:Array<Float>, ?segments:Int, ?strength:Float) : Void {
-		GraphicsExtension.drawCubicBezier(buffer.g2, x, y, segments, strength);
+		buffer.g2.drawCubicBezier(x, y, segments, strength);
 	}
 
 	public inline function drawCubicBezierPath(x:Array<Float>, y:Array<Float>, ?segments:Int, ?strength:Float) : Void {
-		GraphicsExtension.drawCubicBezierPath(buffer.g2, x, y, segments, strength);
+		buffer.g2.drawCubicBezierPath(x, y, segments, strength);
 	}
 
 	public inline function drawPolygon(x:Float, y:Float, vertices:Array<Point>, ?strength:Float) : Void {
         var _pointVerts = Graphics._pointsToVec2(vertices);
-		GraphicsExtension.drawPolygon(buffer.g2, x, y, _pointVerts, strength);
+		buffer.g2.drawPolygon(x, y, _pointVerts, strength);
 	}
 
 	public inline function fillCircle(cx:Float, cy:Float, radius:Float, ?segments:Int) : Void {
-		GraphicsExtension.fillCircle(buffer.g2, cx, cy, radius, segments);
+		buffer.g2.fillCircle(cx, cy, radius, segments);
 	}
 
 	public inline function fillPolygon(x:Float, y:Float, vertices:Array<Point>) : Void {
         var _pointVerts = Graphics._pointsToVec2(vertices);
-		GraphicsExtension.fillPolygon(buffer.g2, x, y, _pointVerts);
+		buffer.g2.fillPolygon(x, y, _pointVerts);
 	}
 
 

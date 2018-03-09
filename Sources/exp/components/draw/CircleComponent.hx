@@ -8,8 +8,9 @@ class CircleComponent extends DrawComponent {
     public var radius(get, set):Float32;
     private var _radius:Float32 = 1;
 
-    public var fill(default, null):Bool = false;
-    public var strength(default, null):Float32 = 2;
+    public var fill:Bool = false;
+    public var strength:Float32 = 2;
+    public var diameter(default, null):Float32 = 4;
 
     public function init(fill:Bool, radius:Float32 = 1, strength:Float32 = 2) {
         this.radius = radius;
@@ -39,7 +40,7 @@ class CircleComponent extends DrawComponent {
 
     private function _setTransformSize(e:Entity) {
         if(e.transform != null){
-            e.transform.size.set(_radius*2);
+            e.transform.size.set(diameter, diameter);
         }
     }
 
@@ -51,9 +52,10 @@ class CircleComponent extends DrawComponent {
         if(value == _radius)return _radius;
 
         _radius = value;
+        diameter = _radius * 2;
 
         if(entity != null && entity.transform != null){
-            entity.transform.size.set(_radius*2);
+            entity.transform.size.set(diameter, diameter);
         }
 
         return _radius;
