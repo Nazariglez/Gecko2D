@@ -23,7 +23,9 @@ class Game {
         "images/kenney/parrot.png",
         "images/kenney/snake.png",
         "images/kenney/penguin.png",
-        "images/kenney/pig.png"
+        "images/kenney/pig.png",
+        "images/opengameart/mountain.png",
+        "images/opengameart/carbon_fiber.png"
     ];
 
     public function new(){

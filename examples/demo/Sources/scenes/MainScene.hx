@@ -15,6 +15,7 @@ import scenes.DrawSpriteScene;
 import scenes.DrawTextScene;
 import scenes.DrawShapeScene;
 import scenes.DrawNineSliceScene;
+import scenes.DrawScrollingSpriteScene;
 
 class MainScene extends CustomScene {
     override public function init(closeButton:Bool = false) {
@@ -27,7 +28,7 @@ class MainScene extends CustomScene {
             { name: "Draw Shapes", scene: DrawShapeScene.create(true) },
             { name: "Draw Animations", scene: null },
             { name: "Draw NineSlices", scene: DrawNineSliceScene.create(true) },
-            { name: "Draw ScrollingSprites", scene: null },
+            { name: "Draw ScrollingSprites", scene: DrawScrollingSpriteScene.create(true) },
             { name: "Draw Text", scene: DrawTextScene.create(true) },
 
             { name: "Transform Rotation", scene: null },
