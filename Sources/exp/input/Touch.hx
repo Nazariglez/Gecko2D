@@ -70,7 +70,7 @@ class Touch {
         while(pointers.pop() != null){}
 
         for(index in _down.keys()) {
-            _down[index] += Gecko.systemUpdateTicker.delta;
+            _down[index] += Gecko.ticker.delta;
             onDown.emit(index, _pointers[index].x, _pointers[index].y);
             pointers[index] = _pointers[index];
         }

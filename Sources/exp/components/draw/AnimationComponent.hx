@@ -170,7 +170,7 @@ class AnimationComponent extends DrawComponent {
             onStart.emit(anim.id);
         }
 
-        anim.elapsedTime += Gecko.systemUpdateTicker.delta; //use raw delta
+        anim.elapsedTime += Gecko.ticker.delta; //use raw delta
         if(anim.elapsedTime >= anim.time){
             anim.elapsedTime = 0;
 

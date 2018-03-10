@@ -15,7 +15,7 @@ class TimerManager implements IAutoPool {
                 continue;
             }
 
-            t.update(Gecko.systemUpdateTicker.delta);
+            t.update(Gecko.ticker.delta);
 
             if(t.isEnded && t.destroyOnEnd) {
                 t.destroy();
@@ -63,7 +63,7 @@ class TimerManager implements IAutoPool {
         }
     }
 
-    private function _remove(timer:Timer) {
+    inline private function _remove(timer:Timer) {
         timers.remove(timer);
     }
 

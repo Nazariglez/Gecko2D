@@ -82,7 +82,7 @@ class Keyboard {
         }
 
         for(key in _downKeys.keys()){
-            _downKeys[key] += Gecko.systemUpdateTicker.delta;
+            _downKeys[key] += Gecko.ticker.delta;
             onDown.emit(key, _downKeys[key]);
         }
 

@@ -34,8 +34,8 @@ class Gecko {
     static public var isProcessing(default, null):Bool = false;
 
     static private var _updateTaskId:Int = -1;
-    static public var updateTicker:FPSCounter;
-    static public var systemUpdateTicker:FPSCounter;
+    static public var fixedTicker:FPSCounter;
+    static public var ticker:FPSCounter;
     static public var renderTicker:FPSCounter;
 
     static private var _countUniqueID:Int = 0;
@@ -94,11 +94,11 @@ class Gecko {
         _initWorld();
 
         //clear the ticker
-        updateTicker = new FPSCounter(_opts.useFixedDelta);
-        onStop += updateTicker.clear;
+        fixedTicker = new FPSCounter(true);
+        onStop += fixedTicker.clear;
 
-        systemUpdateTicker = new FPSCounter();
-        onStop += systemUpdateTicker.clear;
+        ticker = new FPSCounter();
+        onStop += ticker.clear;
 
         renderTicker = new FPSCounter();
         onStop += renderTicker.clear;
@@ -241,13 +241,13 @@ class Gecko {
         }
         #end
 
-        updateTicker.tick();
-        systemUpdateTicker.tick();
+        fixedTicker.tick();
+        ticker.tick();
 
         timerManager.tick();
 
-        onUpdate.emit(updateTicker.delta);
-        onSystemUpdate.emit(systemUpdateTicker.delta);
+        onUpdate.emit(_opts.useFixedDelta ? fixedTicker.delta : ticker.delta);
+        onSystemUpdate.emit(ticker.delta);
 
         isProcessing = false;
 
