@@ -31,12 +31,12 @@ class TweenManager implements IAutoPool {
         }
     }
 
-    inline public function createTween(target:Dynamic, valuesTo:Dynamic, time:Float32, ?easing:Ease) {
+    inline public function createTween(target:Dynamic, valuesTo:Dynamic, time:Float32, ?easing:Ease) : Tween {
         return Tween.create(target, valuesTo, time, easing, this);
     }
 
-    public function createGroup() {
-
+    public function createGroup(tweens:Array<Tween>) : TweenGroup {
+        return TweenGroup.create(tweens);
     }
 
     inline public function removeTween(tween:Tween) {

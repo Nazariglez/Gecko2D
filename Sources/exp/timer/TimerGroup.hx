@@ -32,7 +32,9 @@ class TimerGroup implements IAutoPool {
         onResume = Event.create();
     }
 
-    public function init(timers:Array<Timer>){}
+    public function init(timers:Array<Timer>){
+        this.timers = timers;
+    }
 
     public function addTimer(t:Timer) {
         if(isActive){
@@ -163,6 +165,17 @@ class TimerGroup implements IAutoPool {
             t.destroy();
             t = timers.pop();
         }
+
+        var u:Void->Void;
+        while((u = _unsubscribeAll.pop()) != null){}
+
+        isActive = false;
+        isPaused = false;
+
+        repeat = 0;
+        loop = false;
+
+        _repeat = 0;
 
         onProgress.clear();
         onRepeat.clear();
