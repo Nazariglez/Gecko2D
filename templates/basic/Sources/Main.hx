@@ -1,15 +1,13 @@
 package;
 
 import gecko.Gecko;
-import gecko.GeckoOptions;
 
 class Main {
 	public static function main() {
-		var options:GeckoOptions = {
-			width: 800,
-			height: 600,
-			antialiasing: 4
-		};
-		Gecko.init(Game, options);
+		Gecko.init(_onReady, {width: 800, height: 600});
+	}
+
+	private static function _onReady() {
+		var game = new Game();
 	}
 }

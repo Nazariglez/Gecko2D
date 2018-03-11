@@ -1,33 +1,20 @@
 package scenes;
 
-import gecko.Scene;
+import gecko.Screen;
 import gecko.Entity;
-import gecko.Color;
-import gecko.render.Renderer;
+import gecko.Scene;
+import gecko.components.core.TransformComponent;
+import gecko.components.draw.TextComponent;
 
 class MainScene extends Scene {
-    static public inline var Name:String = "main-scene";
-
-    override public function new(){
-        super(Name);
-
-        var demoEntity = new DemoEntity();
-        demoEntity.position.set(400, 300);
-        demoEntity.addTo(this);
-    }
-}
-
-class DemoEntity extends Entity {
-    public function new(){
-        super();
-        size.set(50, 50);
-        rotationSpeed = 45*Math.PI/180;
-        tint = Color.Red;
+    public function init() {
+        addEntity(_getWelcomeText());
     }
 
-    override public function render(r:Renderer){
-        super.render(r);
-        r.color = tint;
-        r.fillRect(0, 0, width, height);
+    private function _getWelcomeText() {
+        var entity = Entity.create();
+        entity.addComponent(TransformComponent.create(Screen.centerX, Screen.centerY));
+        entity.addComponent(TextComponent.create("Welcome to your Gecko2D game!", "Ubuntu-B.ttf", 40));
+        return entity;
     }
 }
