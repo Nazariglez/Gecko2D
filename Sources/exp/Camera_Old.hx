@@ -1,11 +1,12 @@
-package gecko;
+package exp;
 
+/*
+import gecko.math.FastFloat;
 import gecko.math.Matrix;
 import gecko.math.Point;
-import gecko.math.FastFloat;
 import gecko.render.Renderer;
 
-class Camera extends Container {
+class Camera_Old extends Container {
     public var watch:Entity;
 
     public var lookPosition(get, set):Point;
@@ -107,3 +108,4 @@ class Camera extends Container {
         return _internalEntity.pivot;
     }
 }
+*/
