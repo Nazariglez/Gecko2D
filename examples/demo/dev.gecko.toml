@@ -26,6 +26,6 @@ graphics = "direct3d11"         #windows graphics [direct3d11 | direct3d9 | dire
 clean_temp = false              #clean temporal files after compile
 compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at ./kha_build
 compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
-ffmpeg = ""                     #ffmpeg drivers path (could be absolute)
+ffmpeg = "/Users/nazarigonzalez/ffmpeg/ffmpeg"                     #ffmpeg drivers path (could be absolute)
 haxe = ""
 kha = ""

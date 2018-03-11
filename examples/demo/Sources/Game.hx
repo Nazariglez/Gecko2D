@@ -7,6 +7,7 @@ import exp.components.core.TransformComponent;
 import exp.Entity;
 import exp.Assets;
 import exp.components.draw.ProgressBarComponent;
+import exp.Audio;
 
 class Game {
     private var _assetsToLoad:Array<String> = [
@@ -25,7 +26,8 @@ class Game {
         "images/kenney/penguin.png",
         "images/kenney/pig.png",
         "images/opengameart/mountain.png",
-        "images/opengameart/carbon_fiber.png"
+        "images/opengameart/carbon_fiber.png",
+        "audio/Retro-Beat.wav"
     ];
 
     public function new(){
