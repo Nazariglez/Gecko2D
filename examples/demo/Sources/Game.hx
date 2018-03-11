@@ -6,7 +6,7 @@ import exp.Screen;
 import exp.components.core.TransformComponent;
 import exp.Entity;
 import exp.Assets;
-import exp.components.draw.LoaderBarComponent;
+import exp.components.draw.ProgressBarComponent;
 
 class Game {
     private var _assetsToLoad:Array<String> = [
@@ -46,12 +46,9 @@ class Game {
     public function _loadAssets() {
         var entity = Entity.create();
         entity.addComponent(TransformComponent.create(Screen.centerX, Screen.centerY, 500, 40));
-
-        var loaderBar = LoaderBarComponent.create();
-        entity.addComponent(loaderBar);
+        var loaderBar = entity.addComponent(ProgressBarComponent.create());
 
         Gecko.currentScene.addEntity(entity);
-
 
         var loader = Assets.load(_assetsToLoad);
         loader.onProgressEnd += function(progress:Int, assetName:String){
