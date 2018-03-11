@@ -1,8 +1,8 @@
 package;
 
-import exp.components.Component;
-import exp.math.Point;
-import exp.Float32;
+import gecko.components.Component;
+import gecko.math.Point;
+import gecko.Float32;
 
 class BounceComponent extends Component {
     public var speed:Point;

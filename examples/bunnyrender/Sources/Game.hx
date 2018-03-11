@@ -1,18 +1,18 @@
 package;
 
-import exp.input.Mouse;
-import exp.components.draw.TextComponent;
-import exp.Screen;
-import exp.components.core.TransformComponent;
-import exp.Entity;
-import exp.resources.Texture;
-import exp.render.Graphics;
-import exp.Color;
-import exp.Gecko;
-import exp.Assets;
-import exp.Float32;
-import exp.math.Point;
-import exp.resources.Font;
+import gecko.input.Mouse;
+import gecko.components.draw.TextComponent;
+import gecko.Screen;
+import gecko.components.core.TransformComponent;
+import gecko.Entity;
+import gecko.resources.Texture;
+import gecko.render.Graphics;
+import gecko.Color;
+import gecko.Gecko;
+import gecko.Assets;
+import gecko.Float32;
+import gecko.math.Point;
+import gecko.resources.Font;
 
 typedef Bunny = {
     position:Point,

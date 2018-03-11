@@ -1,17 +1,17 @@
 package;
 
-import exp.Float32;
-import exp.components.core.TransformComponent;
-import exp.components.draw.TextComponent;
-import exp.components.draw.SpriteComponent;
-import exp.Screen;
-import exp.resources.Font;
-import exp.Color;
-import exp.render.Graphics;
-import exp.Gecko;
-import exp.Assets;
-import exp.Entity;
-import exp.input.Mouse;
+import gecko.Float32;
+import gecko.components.core.TransformComponent;
+import gecko.components.draw.TextComponent;
+import gecko.components.draw.SpriteComponent;
+import gecko.Screen;
+import gecko.resources.Font;
+import gecko.Color;
+import gecko.render.Graphics;
+import gecko.Gecko;
+import gecko.Assets;
+import gecko.Entity;
+import gecko.input.Mouse;
 
 class Game {
     private var _count:Int = 0;

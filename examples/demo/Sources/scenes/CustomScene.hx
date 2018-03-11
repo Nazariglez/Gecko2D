@@ -1,15 +1,15 @@
 package scenes;
 
-import exp.Gecko;
-import exp.Float32;
-import exp.components.input.MouseComponent;
-import exp.components.draw.SpriteComponent;
-import exp.Screen;
-import exp.components.core.TransformComponent;
-import exp.Entity;
-import exp.systems.input.InteractivitySystem;
-import exp.Scene;
-import exp.Color;
+import gecko.Gecko;
+import gecko.Float32;
+import gecko.components.input.MouseComponent;
+import gecko.components.draw.SpriteComponent;
+import gecko.Screen;
+import gecko.components.core.TransformComponent;
+import gecko.Entity;
+import gecko.systems.input.InteractivitySystem;
+import gecko.Scene;
+import gecko.Color;
 
 class CustomScene extends Scene {
     public function new(){

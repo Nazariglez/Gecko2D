@@ -1,15 +1,15 @@
 package scenes;
 
-import exp.Scene;
-import exp.Gecko;
-import exp.Color;
-import exp.components.input.MouseComponent;
-import exp.components.draw.NineSliceComponent;
-import exp.Float32;
-import exp.Screen;
-import exp.Entity;
-import exp.components.core.TransformComponent;
-import exp.components.draw.TextComponent;
+import gecko.Scene;
+import gecko.Gecko;
+import gecko.Color;
+import gecko.components.input.MouseComponent;
+import gecko.components.draw.NineSliceComponent;
+import gecko.Float32;
+import gecko.Screen;
+import gecko.Entity;
+import gecko.components.core.TransformComponent;
+import gecko.components.draw.TextComponent;
 
 import scenes.DrawSpriteScene;
 import scenes.DrawTextScene;

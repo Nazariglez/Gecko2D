@@ -1,14 +1,14 @@
 package scenes;
 
-import exp.components.draw.PolygonComponent;
-import exp.math.Point;
-import exp.Float32;
-import exp.components.draw.DrawComponent;
-import exp.Color;
-import exp.Entity;
-import exp.components.core.TransformComponent;
-import exp.components.draw.CircleComponent;
-import exp.components.draw.RectangleComponent;
+import gecko.components.draw.PolygonComponent;
+import gecko.math.Point;
+import gecko.Float32;
+import gecko.components.draw.DrawComponent;
+import gecko.Color;
+import gecko.Entity;
+import gecko.components.core.TransformComponent;
+import gecko.components.draw.CircleComponent;
+import gecko.components.draw.RectangleComponent;
 
 class DrawShapeScene extends CustomScene {
     override public function init(closeButton:Bool = false) {

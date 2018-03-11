@@ -1,11 +1,11 @@
 package;
 
-import exp.Gecko;
-import exp.Screen;
-import exp.components.core.TransformComponent;
-import exp.Entity;
-import exp.Assets;
-import exp.components.draw.ProgressBarComponent;
+import gecko.Gecko;
+import gecko.Screen;
+import gecko.components.core.TransformComponent;
+import gecko.Entity;
+import gecko.Assets;
+import gecko.components.draw.ProgressBarComponent;
 
 class Game {
     private var _assetsToLoad:Array<String> = [

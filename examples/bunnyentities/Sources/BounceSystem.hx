@@ -1,10 +1,10 @@
 package;
 
-import exp.components.core.TransformComponent;
-import exp.Float32;
-import exp.systems.System;
-import exp.IUpdatable;
-import exp.Screen;
+import gecko.components.core.TransformComponent;
+import gecko.Float32;
+import gecko.systems.System;
+import gecko.IUpdatable;
+import gecko.Screen;
 
 class BounceSystem extends System implements IUpdatable {
     public var gravity:Float32;

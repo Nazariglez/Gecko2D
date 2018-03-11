@@ -1,9 +1,9 @@
 package scenes;
 
-import exp.Entity;
-import exp.components.draw.SpriteComponent;
-import exp.components.core.TransformComponent;
-import exp.Float32;
+import gecko.Entity;
+import gecko.components.draw.SpriteComponent;
+import gecko.components.core.TransformComponent;
+import gecko.Float32;
 
 class DrawSpriteScene extends CustomScene {
     override public function init(closeButton:Bool = false) {

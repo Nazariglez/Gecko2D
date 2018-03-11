@@ -1,10 +1,10 @@
 package scenes;
 
-import exp.Screen;
-import exp.Float32;
-import exp.components.draw.ScrollingSpriteComponent;
-import exp.components.core.TransformComponent;
-import exp.Entity;
+import gecko.Screen;
+import gecko.Float32;
+import gecko.components.draw.ScrollingSpriteComponent;
+import gecko.components.core.TransformComponent;
+import gecko.Entity;
 
 class DrawScrollingSpriteScene extends CustomScene {
     override public function init(closeButton:Bool = false) {

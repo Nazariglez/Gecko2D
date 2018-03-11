@@ -1,6 +1,6 @@
 package;
 
-import exp.Gecko;
+import gecko.Gecko;
 
 class Main {
 	public static function main() {

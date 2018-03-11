@@ -1,13 +1,13 @@
 package;
 
-import exp.input.Mouse;
-import exp.Gecko;
-import exp.Screen;
-import exp.components.core.TransformComponent;
-import exp.Entity;
-import exp.Assets;
-import exp.components.draw.ProgressBarComponent;
-import exp.Audio;
+import gecko.input.Mouse;
+import gecko.Gecko;
+import gecko.Screen;
+import gecko.components.core.TransformComponent;
+import gecko.Entity;
+import gecko.Assets;
+import gecko.components.draw.ProgressBarComponent;
+import gecko.Audio;
 
 class Game {
     private var _assetsToLoad:Array<String> = [

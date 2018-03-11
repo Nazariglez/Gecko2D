@@ -1,11 +1,11 @@
 package scenes;
 
-import exp.Color;
-import exp.Entity;
-import exp.components.draw.NineSliceComponent;
-import exp.components.core.TransformComponent;
-import exp.Float32;
-import exp.math.Random;
+import gecko.Color;
+import gecko.Entity;
+import gecko.components.draw.NineSliceComponent;
+import gecko.components.core.TransformComponent;
+import gecko.Float32;
+import gecko.math.Random;
 
 class DrawNineSliceScene extends CustomScene {
     var _colors = [Color.Red, Color.Green, Color.Blue, Color.White, Color.Yellow, Color.Orange, Color.Brown, Color.Magenta];

@@ -1,8 +1,8 @@
 package scenes;
 
-import exp.components.core.TransformComponent;
-import exp.components.draw.TextComponent;
-import exp.Entity;
+import gecko.components.core.TransformComponent;
+import gecko.components.draw.TextComponent;
+import gecko.Entity;
 
 
 class DrawTextScene extends CustomScene {

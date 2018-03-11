@@ -1,10 +1,10 @@
 package scenes;
 
-import exp.Screen;
-import exp.Entity;
-import exp.Scene;
-import exp.components.core.TransformComponent;
-import exp.components.draw.TextComponent;
+import gecko.Screen;
+import gecko.Entity;
+import gecko.Scene;
+import gecko.components.core.TransformComponent;
+import gecko.components.draw.TextComponent;
 
 class MainScene extends Scene {
     public function init() {
