@@ -1,5 +1,6 @@
 package exp;
 
+import exp.tween.TweenManager;
 import exp.timer.TimerManager;
 import exp.utils.FPSCounter;
 import exp.utils.Event;
@@ -47,6 +48,7 @@ class Gecko {
 
     static public var currentScene(get, never):Scene;
     static public var timerManager:TimerManager;
+    static public var tweenManager:TweenManager;
 
     static private var _onKhaInitCallbacks:Array<Void->Void> = [];
 
@@ -90,6 +92,7 @@ class Gecko {
         Random.init(opts.randomSeed);
 
         timerManager = TimerManager.create();
+        tweenManager = TweenManager.create();
 
         _initWorld();
 
@@ -245,6 +248,7 @@ class Gecko {
         ticker.tick();
 
         timerManager.tick();
+        tweenManager.tick();
 
         onUpdate.emit(_opts.useFixedDelta ? fixedTicker.delta : ticker.delta);
         onSystemUpdate.emit(ticker.delta);

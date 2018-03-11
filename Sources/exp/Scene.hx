@@ -1,5 +1,6 @@
 package exp;
 
+import exp.tween.TweenManager;
 import exp.timer.TimerManager;
 import exp.components.draw.DrawComponent;
 import exp.components.core.TransformComponent;
@@ -52,9 +53,11 @@ class Scene implements IScene {
     private var _dirtyProcess:Bool = false;
 
     public var timerManager:TimerManager;
+    public var tweenManager:TweenManager;
 
     public function new(initTransformAndDraw:Bool = true){
         timerManager = TimerManager.create();
+        tweenManager = TweenManager.create();
 
         if(initTransformAndDraw){
             addSystem(TransformSystem.create());
@@ -251,6 +254,7 @@ class Scene implements IScene {
 
     public function update(delta:Float32) {
         timerManager.tick();
+        tweenManager.tick();
 
         for(sys in _updatableSystems){
             if(sys.enabled){
