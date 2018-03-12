@@ -17,6 +17,17 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
         onEntityRemoved += _removeEntityFromMap;
     }
 
+    override public function beforeDestroy() {
+        onEntityAdded -= _addEntityToMap;
+        onEntityRemoved -= _removeEntityFromMap;
+
+        for(key in _entityMap.keys()){
+            _entityMap.remove(key);
+        }
+
+        super.beforeDestroy();
+    }
+
     private function _addEntityToMap(entity:Entity) {
         _entityMap.set(entity.id, true);
     }

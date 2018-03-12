@@ -8,6 +8,7 @@ import gecko.components.draw.NineSliceComponent;
 import gecko.Float32;
 import gecko.Screen;
 import gecko.Entity;
+import gecko.math.Point;
 import gecko.components.core.TransformComponent;
 import gecko.components.draw.TextComponent;
 
@@ -17,28 +18,20 @@ import scenes.DrawShapeScene;
 import scenes.DrawNineSliceScene;
 import scenes.DrawScrollingSpriteScene;
 
+typedef ExamplesDef = {
+    name:String,
+    scene:Scene
+};
+
 class MainScene extends CustomScene {
+    static var _examples:Array<ExamplesDef> = [];
+
     override public function init(closeButton:Bool = false) {
         super.init(closeButton);
         _addTitle(Screen.centerX, 60);
 
         //buttons and scenes to go
-        var _examples = [
-            { name: "Draw Sprites", scene: DrawSpriteScene.create(true) },
-            { name: "Draw Shapes", scene: DrawShapeScene.create(true) },
-            { name: "Draw Animations", scene: null },
-            { name: "Draw NineSlices", scene: DrawNineSliceScene.create(true) },
-            { name: "Draw ScrollingSprites", scene: DrawScrollingSpriteScene.create(true) },
-            { name: "Draw Text", scene: DrawTextScene.create(true) },
-
-            { name: "Transform Rotation", scene: null },
-            { name: "Transform Anchors", scene: null },
-            { name: "Transform Pivots", scene: null },
-            { name: "Transform Skew", scene: null },
-            { name: "Transform Pivot", scene: null },
-            { name: "Transform Parents", scene: null },
-
-        ];
+        _initExamples();
 
         //create buttons
         var minX = 140;
@@ -51,6 +44,7 @@ class MainScene extends CustomScene {
         var yy = minY;
 
         for(example in _examples){
+            if(example.scene != null)trace(example.scene.isAlreadyDestroyed);
             _createButton(example.name, xx, yy, function(x, y){
                _gotoScene(example.scene);
             });
@@ -62,11 +56,31 @@ class MainScene extends CustomScene {
                 yy = minY;
             }
         }
+    }
 
+    private function _initExamples() {
+        if(_examples.length == 0){
+            trace("INIT");
+            _examples = [
+                { name: "Draw Sprites", scene: DrawSpriteScene.create(true) },
+                { name: "Draw Shapes", scene: DrawShapeScene.create(true) },
+                { name: "Draw Animations", scene: null },
+                { name: "Draw NineSlices", scene: DrawNineSliceScene.create(true) },
+                { name: "Draw ScrollingSprites", scene: DrawScrollingSpriteScene.create(true) },
+                { name: "Draw Text", scene: DrawTextScene.create(true) },
+
+                { name: "Transform Rotation", scene: null },
+                { name: "Transform Anchors", scene: null },
+                { name: "Transform Pivots", scene: null },
+                { name: "Transform Skew", scene: null },
+                { name: "Transform Pivot", scene: null },
+                { name: "Transform Parents", scene: null },
+            ];
+        }
     }
 
     private function _gotoScene(scene:Scene){
-        Gecko.world.changeScene(scene);
+        Gecko.world.changeScene(scene, true);
     }
 
     private function _createButton(text:String, x:Float32, y:Float32, callback:Float32->Float32->Void) {

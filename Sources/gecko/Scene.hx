@@ -55,38 +55,69 @@ class Scene implements IScene {
     public var timerManager:TimerManager;
     public var tweenManager:TweenManager;
 
-    public function new(initTransformAndDraw:Bool = true){
+    public var is2D(default, null):Bool = false;
+
+    public function new(is2D:Bool = true){
         timerManager = TimerManager.create();
         tweenManager = TweenManager.create();
 
-        if(initTransformAndDraw){
-            addSystem(TransformSystem.create());
-            addSystem(DrawSystem.create());
-
-            rootEntity = Entity.create("scene-root-entity");
-            rootEntity.addComponent(TransformComponent.create(0, 0));
-            rootEntity.addComponent(DrawComponent.create());
-            @:privateAccess rootEntity._isRoot = true;
+        if(is2D){
+            _init2D();
         }
     }
 
+    private function _init2D() {
+        is2D = true;
+        addSystem(TransformSystem.create());
+        addSystem(DrawSystem.create());
+
+        rootEntity = Entity.create();
+        rootEntity.name = "scene-root-entity";
+        rootEntity.addComponent(TransformComponent.create(0, 0));
+        rootEntity.addComponent(DrawComponent.create());
+        @:privateAccess rootEntity._isRoot = true;
+    }
+
     public function beforeDestroy(){
-        for(sys in _systemsList){
+        trace("--",_systemsList.length, "--");
+        var sys:System;
+        while((sys = _systemsList.pop()) != null){
             removeSystem(sys.__type__);
             sys.destroy();
         }
-        for(e in entities){
+        /*for(sys in _systemsList){
+            removeSystem(sys.__type__);
+            sys.destroy();
+        }*/
+
+        trace("--|",_systemsList.length, "|--");
+        var e:Entity;
+        while((e = entities.pop()) != null){
             removeEntity(e);
             e.destroy();
         }
+        /*for(e in entities){
+            removeEntity(e);
+            e.destroy();
+        }*/
+
+        if(rootEntity != null){
+            rootEntity.destroy();
+            rootEntity = null;
+        }
 
         timerManager.cleanTimers();
+        tweenManager.cleanTweens();
 
         onEntityAdded.clear();
         onEntityRemoved.clear();
 
         onSystemAdded.clear();
         onSystemRemoved.clear();
+
+        if(is2D){
+            _init2D();
+        }
     }
 
     inline public function getEntityById(id:Int) : Entity {
@@ -162,7 +193,7 @@ class Scene implements IScene {
         _addSystem(system);
     }
 
-    private function _addSystem(system:System) {
+    private function _addSystem<T:System>(system:T) : T {
         system.scene = this;
         _systems.set(system.__typeName__, system);
         _systemsList.push(system);
@@ -180,6 +211,8 @@ class Scene implements IScene {
 
         _dirtySortSystems = true;
         onSystemAdded.emit(system);
+
+        return system;
     }
 
     inline public function getSystem<T>(systemClass:SystemClass) : T {

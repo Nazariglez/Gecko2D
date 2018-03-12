@@ -69,15 +69,22 @@ class Pool<T> {
     }
 
     public function safePut(obj:T) {
+        if(obj == null)return;
+
         //check array before add (slower than put)
         if(_objects.indexOf(obj) != -1){
             return;
         }
 
-        put(obj);
+        if(_reset != null){
+            _reset(obj);
+        }
+        _objects.push(obj);
     }
 
     public function put(obj:T) {
+        if(obj == null)return;
+
         if(_reset != null){
             _reset(obj);
         }
@@ -89,7 +96,7 @@ class Pool<T> {
     }
 
     public var length(get, null):Int;
-    function get_length() : Int {
+    inline function get_length() : Int {
         return _objects.length;
     }
 }

@@ -4,7 +4,7 @@ import gecko.macros.IAutoPool;
 import kha.math.Vector2;
 import gecko.Float32;
 
-@:poolAmount(100)
+//@:poolAmount(100)
 class Point implements IAutoPool {
 	private var _vec2:Vector2 = new Vector2(); //used to draw polyigons in the kha api avoiding allocate new vectors each tme
 	

@@ -12,13 +12,9 @@ import gecko.Scene;
 import gecko.Color;
 
 class CustomScene extends Scene {
-    public function new(){
-        super();
-
-        addSystem(InteractivitySystem.create());
-    }
-
     public function init(closeButton:Bool = false) {
+        addSystem(InteractivitySystem.create());
+
         if(closeButton){
             _addCloseButton();
         }

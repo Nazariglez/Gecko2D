@@ -227,7 +227,7 @@ class Gecko {
 
     static inline private function _safeDestroyObjects() {
         var cb:Void->Void;
-        while((cb = _destroyCallbacks.pop()) != null){
+        while((cb = _destroyCallbacks.shift()) != null){
             cb();
         }
     }

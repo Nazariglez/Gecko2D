@@ -9,7 +9,7 @@ import gecko.components.ComponentClass;
 //todo toString for debug
 //todo serialize && unserialize to save and load from text
 
-@:poolAmount(100)
+//@:poolAmount(100)
 class Entity implements IEntity {
     public var id:Int = Gecko.getUniqueID();
 
@@ -49,10 +49,6 @@ class Entity implements IEntity {
         onDepthChanged = Event.create();
     }
 
-    public function init(name:String = ""){
-        _name = name;
-    }
-
     public function beforeDestroy(){
         if(scene != null){
             scene.removeEntity(this);
@@ -60,7 +56,8 @@ class Entity implements IEntity {
 
         for(name in _components.keys()){
             var component = _components.get(name);
-            _components.remove(name);
+            _removeComponent(component);
+            /*_components.remove(name);
 
             if(component == transform){
                 transform = null;
@@ -68,13 +65,15 @@ class Entity implements IEntity {
                 renderer = null;
             }
 
-            onComponentRemoved.emit(this, component);
+            onComponentRemoved.emit(this, component);*/
             component.destroy();
         }
 
         for(tag in _tags.keys()){
             _tags.remove(tag);
         }
+
+        _isRoot = false;
 
         onComponentAdded.clear();
         onComponentRemoved.clear();
@@ -130,20 +129,25 @@ class Entity implements IEntity {
     public function removeComponent<T:Component>(componentClass:ComponentClass) : T {
         var c:T = cast _components.get(componentClass.__componentName__);
         if(c != null){
-            c.entity = null;
-            _components.remove(name);
-            _componentsList.remove(c);
-            onComponentRemoved.emit(this, c);
-
-            if(transform != null && c.__type__ == transform.__type__){
-                transform = null;
-            }else if(renderer != null && c.__type__ == renderer.__type__){
-                renderer = null;
-            }
-
+            _removeComponent(c);
             return c;
         }
         return null;
+    }
+
+    private function _removeComponent(c:Component){
+        _components.remove(c.__typeName__);
+        _componentsList.remove(c);
+
+        if(transform != null && c.__type__ == transform.__type__){
+            transform = null;
+        }else if(renderer != null && c.__type__ == renderer.__type__){
+            renderer = null;
+        }
+
+        trace("remove c", c.entity);
+        c.entity = null;
+        onComponentRemoved.emit(this, c);
     }
 
     public function removeAllComponents() {
