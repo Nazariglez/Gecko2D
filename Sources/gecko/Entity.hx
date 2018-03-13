@@ -145,7 +145,6 @@ class Entity implements IEntity {
             renderer = null;
         }
 
-        trace("remove c", c.entity);
         c.entity = null;
         onComponentRemoved.emit(this, c);
     }

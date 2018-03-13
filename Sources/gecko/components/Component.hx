@@ -47,12 +47,12 @@ class Component implements IComponent {
     function set_entity(value:Entity):Entity {
         if(_entity == value)return _entity;
 
-        var e = _entity;
-        _entity = value;
-
-        if(e != null){
-            onRemovedFromEntity.emit(e);
+        if(_entity != null){
+            trace("removed entity", Type.getClassName(Type.getClass(this)));
+            onRemovedFromEntity.emit(_entity);
         }
+
+        _entity = value;
 
         if(_entity != null){
             onAddedToEntity.emit(_entity);
