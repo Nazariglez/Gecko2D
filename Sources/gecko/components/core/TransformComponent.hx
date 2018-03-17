@@ -86,14 +86,21 @@ class TransformComponent extends Component {
 
         flip.setObserver(_setDirtyFlip);
 
+        onAddedToEntity += function(e:Entity){
+            trace(id, "ADDED TO:", e.id);
+        };
+        onRemovedFromEntity += _cleanParentDepth;
 
+        trace(" - - - ", id);
     }
 
     override public function beforeDestroy(){
         parent = null;
         if(children.length != 0){
             var copyChildren = children.copy();
+            trace("fisfis",id, copyChildren.length);
             for(e in copyChildren){
+                trace("e-", id, e.id, e.isRoot, e.transform != null);
                 e.transform.parent = null;
             }
         }
@@ -134,6 +141,8 @@ class TransformComponent extends Component {
         skewCache.sinX = 0;
         skewCache.sinY = 0;
 
+        onRemovedFromEntity -= _cleanParentDepth;
+
         super.beforeDestroy();
     }
 
@@ -169,6 +178,13 @@ class TransformComponent extends Component {
 
     inline public function localToLocal(from:TransformComponent, point:Point, cachePoint:Point = null) : Point {
         return screenToLocal(cachePoint = from.localToScreen(point, cachePoint), cachePoint);
+    }
+
+    private function _cleanParentDepth(e:Entity) {
+        trace(id, "REMOVED FROM:", e.id);
+        if(entity != null && _parent != null){
+            entity.onDepthChanged -= _parent.transform.setDirtyChildrenSort;
+        }
     }
 
     private function _setDirtySkew(point:Point) {
@@ -238,15 +254,16 @@ class TransformComponent extends Component {
 
     function set_parent(value:Entity):Entity {
         if(value == _parent)return value;
+        trace("change parent",Type.getClassName(Type.getClass(this)));
 
-        if(_parent != null){
+        if(entity != null && _parent != null){
             _parent.transform.children.remove(this.entity);
             this.entity.onDepthChanged -= _parent.transform.setDirtyChildrenSort;
         }
 
         _parent = value;
 
-        if(_parent != null){
+        if(entity != null && _parent != null){
             _parent.transform.children.push(this.entity);
             this.entity.onDepthChanged += _parent.transform.setDirtyChildrenSort;
             _parent.transform.setDirtyChildrenSort(null);

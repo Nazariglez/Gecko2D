@@ -9,6 +9,7 @@ class PoolBuilder {
     static private var _initFns:Map<String, Field> = new Map<String, Field>();
     static private var _destroyFns:Map<String, Field> = new Map<String, Field>();
     static private var _destroyInmediateFns:Map<String, Field> = new Map<String, Field>();
+    static private var _destroyedFlag:Map<String, Field> = new Map<String, Field>();
     static private var _poolOptions = ":poolAmount";
     static private var _poolUnsafe = ":poolUnsafe";
 
@@ -75,7 +76,11 @@ class PoolBuilder {
 
         if(!existsInit){
             fields.push((macro class {
-                static inline public function create() return __pool__.get();
+                static inline public function create(){
+                    var obj = __pool__.get();
+                    obj.isAlreadyDestroyed = false;
+                    return obj;
+                }
             }).fields[0]);
         }else{
             //add init args
@@ -92,6 +97,7 @@ class PoolBuilder {
                 static inline public function create(){
                     var obj = __pool__.get();
                     $objInit;
+                    obj.isAlreadyDestroyed = false;
                     return obj;
                 }
             }).fields[0];
@@ -116,6 +122,7 @@ class PoolBuilder {
         var existsDestroyInmediate = false;
         var destroyInmediateFn:Field;
 
+        var hasDestroyedFlag = false;
 
         for(f in fields){
             if(f.name == "destroy"){
@@ -126,6 +133,12 @@ class PoolBuilder {
                 existsDestroyInmediate = true;
                 destroyInmediateFn = f;
                 _destroyInmediateFns.set(getClassId(clazz), f);
+            }
+
+            if(f.name == "isAlreadyDestroyed"){
+                hasDestroyedFlag = true;
+                //trace"HERE");
+                _destroyedFlag.set(getClassId(clazz), f);
             }
         }
 
@@ -165,6 +178,26 @@ class PoolBuilder {
 
         }
 
+        if(!hasDestroyedFlag && clazz.superClass != null) {
+            var _cls = clazz;
+            while(_cls.superClass != null) {
+                _cls = _cls.superClass.t.get();
+                var id = getClassId(_cls);
+                if(_destroyedFlag.exists(id)){
+                    hasDestroyedFlag = true;
+                    break;
+                }
+            }
+        }
+
+        if(!hasDestroyedFlag){
+            var f = (macro class {
+                public var isAlreadyDestroyed(default, null):Bool = false;
+            }).fields[0];
+
+            fields.push(f);
+            _destroyedFlag.set(getClassId(clazz), f);
+        }
 
         var _destroyUnsafe:Expr = macro __pool__.safePut(this);
         if(clazz.meta.has(_poolUnsafe)){
@@ -174,11 +207,19 @@ class PoolBuilder {
         if(!existsDestroy){
             var f = (macro class {
                 public function destroy(){
+        if(isAlreadyDestroyed){
+        //trace"isAlredyDestroyed", Type.getClassName(Type.getClass(this)));
+        return;
+        }
+                        //trace"- processing:", gecko.Gecko.isProcessing, Type.getClassName(Type.getClass(this)));
                         if(gecko.Gecko.isProcessing){
                             @:privateAccess gecko.Gecko._destroyCallbacks.push(this.destroy);
+                            //trace"send to delayed destroy", Type.getClassName(Type.getClass(this)));
                             return;
                         }
 
+        //trace"full destroy", Type.getClassName(Type.getClass(this)));
+                        isAlreadyDestroyed = true;
                         beforeDestroy();
                         $_destroyUnsafe;
                     };
@@ -190,11 +231,21 @@ class PoolBuilder {
             if(isDestroyInherited){
                 fields.push((macro class {
                     override public function destroy(){
-                        if(gecko.Gecko.isProcessing){
-                            @:privateAccess gecko.Gecko._destroyCallbacks.push(this.destroy);
+                        if(isAlreadyDestroyed){
+                            //trace"isAlredyDestroyed", Type.getClassName(Type.getClass(this)));
                             return;
                         }
 
+                        //trace"- processing:", gecko.Gecko.isProcessing, Type.getClassName(Type.getClass(this)));
+                        if(gecko.Gecko.isProcessing){
+                            @:privateAccess gecko.Gecko._destroyCallbacks.push(this.destroy);
+        //trace"send to delayed destroy",Type.getClassName(Type.getClass(this)));
+
+        return;
+                        }
+
+        //trace"full destroy", Type.getClassName(Type.getClass(this)));
+                        isAlreadyDestroyed = true;
                         beforeDestroy();
                         $_destroyUnsafe;
                     };
@@ -203,11 +254,20 @@ class PoolBuilder {
                 switch(destroyFn.kind){
                     case FFun(fn):
                         fn.expr = macro {
+        if(isAlreadyDestroyed){
+        //trace"isAlredyDestroyed", Type.getClassName(Type.getClass(this)));
+        return;
+        }
+                            //trace"- processing:", gecko.Gecko.isProcessing, Type.getClassName(Type.getClass(this)));
                             if(gecko.Gecko.isProcessing){
                                 @:privateAccess gecko.Gecko._destroyCallbacks.push(this.destroy);
-                                return;
+        //trace"send to delayed destroy", Type.getClassName(Type.getClass(this)));
+
+        return;
                             }
 
+        //trace"full destroy", Type.getClassName(Type.getClass(this)));
+                            isAlreadyDestroyed = true;
                             beforeDestroy();
                             $_destroyUnsafe;
                         };
@@ -222,6 +282,8 @@ class PoolBuilder {
         if(!existsDestroyInmediate){
             var f = (macro class {
                 public function destroyInmediate(){
+                    if(isAlreadyDestroyed)return;
+                    isAlreadyDestroyed = true;
                     beforeDestroy();
                     $_destroyUnsafe;
                 };
@@ -233,6 +295,8 @@ class PoolBuilder {
             if(isDestroyInmediateInherited){
                 fields.push((macro class {
                     override public function destroyInmediate(){
+                        if(isAlreadyDestroyed)return;
+                        isAlreadyDestroyed = true;
                         beforeDestroy();
                         $_destroyUnsafe;
                     };
@@ -241,6 +305,8 @@ class PoolBuilder {
                 switch(destroyInmediateFn.kind){
                     case FFun(fn):
                         fn.expr = macro {
+                            if(isAlreadyDestroyed)return;
+                            isAlreadyDestroyed = true;
                             beforeDestroy();
                             $_destroyUnsafe;
                         };

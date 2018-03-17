@@ -48,7 +48,7 @@ class Component implements IComponent {
         if(_entity == value)return _entity;
 
         if(_entity != null){
-            trace("removed entity", Type.getClassName(Type.getClass(this)));
+            trace("removed entity", id, Type.getClassName(Type.getClass(this)));
             onRemovedFromEntity.emit(_entity);
         }
 
