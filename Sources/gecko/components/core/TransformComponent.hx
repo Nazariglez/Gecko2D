@@ -87,20 +87,20 @@ class TransformComponent extends Component {
         flip.setObserver(_setDirtyFlip);
 
         onAddedToEntity += function(e:Entity){
-            trace(id, "ADDED TO:", e.id);
+            //trace(id, "ADDED TO:", e.id);
         };
         onRemovedFromEntity += _cleanParentDepth;
 
-        trace(" - - - ", id);
+        //trace(" - - - ", id);
     }
 
     override public function beforeDestroy(){
         parent = null;
         if(children.length != 0){
             var copyChildren = children.copy();
-            trace("fisfis",id, copyChildren.length);
+            //trace("fisfis",id, copyChildren.length);
             for(e in copyChildren){
-                trace("e-", id, e.id, e.isRoot, e.transform != null);
+                //trace("e-", id, e.id, e.isRoot, e.transform != null);
                 e.transform.parent = null;
             }
         }
@@ -181,7 +181,7 @@ class TransformComponent extends Component {
     }
 
     private function _cleanParentDepth(e:Entity) {
-        trace(id, "REMOVED FROM:", e.id);
+        //trace(id, "REMOVED FROM:", e.id);
         if(entity != null && _parent != null){
             entity.onDepthChanged -= _parent.transform.setDirtyChildrenSort;
         }
@@ -254,7 +254,7 @@ class TransformComponent extends Component {
 
     function set_parent(value:Entity):Entity {
         if(value == _parent)return value;
-        trace("change parent",Type.getClassName(Type.getClass(this)));
+        //trace("change parent",Type.getClassName(Type.getClass(this)));
 
         if(entity != null && _parent != null){
             _parent.transform.children.remove(this.entity);

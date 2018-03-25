@@ -29,6 +29,13 @@ class Point implements IAutoPool {
 		_vec2.y = 0;
 	}
 
+	inline private function _setX(value:Float32) {
+		_vec2.x = _x = value;
+	}
+
+	inline private function _setY(value:Float32) {
+		_vec2.y = _y = value;
+	}
 
 	public inline function getVec2() : Vector2 {
 		return _vec2;
@@ -43,9 +50,13 @@ class Point implements IAutoPool {
 		isObserved = false;
 	}
 
-	public inline function set(x:Float32, ?y:Float32) {
-		this.x = x;
-		this.y = (y == null) ? x : y;
+	public function set(x:Float32, ?y:Float32) {
+		if(y == null)y = x;
+		if(x != this._x || y != this._y){
+			_setX(x);
+			_setY(y);
+			if(isObserved)_observer(this);
+		}
 	}
 
 	public inline function clone() : Point {

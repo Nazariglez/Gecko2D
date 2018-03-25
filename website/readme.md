@@ -14,6 +14,8 @@ This framework aims to be a solid foundation for all your games, allowing you to
 
 # Showcase
 
-# Collaboration
+# Contributing
+Want to contribute? Great! Here are some ways you can contribute:
 
-//check github issues and grab one with the tag "Help Wanted"
+- Check out the issues and look for the label ["Help Wanted"](https://github.com/Nazariglez/Gecko2D/labels/Help%20Wanted)
+- //todo

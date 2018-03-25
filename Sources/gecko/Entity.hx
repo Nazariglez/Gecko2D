@@ -41,7 +41,11 @@ class Entity implements IEntity {
     public var onRemovedFromScene:Event<Entity->Scene->Void>;
     public var onDepthChanged:Event<Entity->Void>;
 
+    public var trans:Transform;
+
     public function new() {
+        trans = new Transform(this);
+
         onComponentAdded = Event.create();
         onComponentRemoved = Event.create();
         onAddedToScene = Event.create();

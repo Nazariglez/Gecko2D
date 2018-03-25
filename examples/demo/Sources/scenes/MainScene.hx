@@ -1,5 +1,6 @@
 package scenes;
 
+import gecko.render.Graphics;
 import gecko.Scene;
 import gecko.Gecko;
 import gecko.Color;
@@ -11,6 +12,7 @@ import gecko.Entity;
 import gecko.math.Point;
 import gecko.components.core.TransformComponent;
 import gecko.components.draw.TextComponent;
+import gecko.Transform;
 
 import scenes.DrawSpriteScene;
 import scenes.DrawTextScene;
@@ -28,6 +30,7 @@ class MainScene extends CustomScene {
 
     override public function init(closeButton:Bool = false) {
         super.init(closeButton);
+
         _addTitle(Screen.centerX, 60);
 
         //buttons and scenes to go
@@ -56,6 +59,93 @@ class MainScene extends CustomScene {
                 yy = minY;
             }
         }
+
+        var e1 = Entity.create();
+        e1.trans.size.set(20, 20);
+        //e1.trans.localScale.set(4,4);
+        e1.trans.position.set(450, 200);
+
+        var e2 = Entity.create();
+        e2.trans.parent = e1.trans;
+        e2.trans.size.set(20, 20);
+        e2.trans.position.set(460, 210);
+        //e2.trans.localPosition.set(5,5);
+
+        var e3 = Entity.create();
+        e3.trans.parent = e2.trans;
+        e3.trans.size.set(20, 20);
+        e3.trans.position.set(470, 220);
+        //e3.trans.localPosition.set(5,5);
+
+        var e4 = Entity.create();
+        e4.trans.parent = e3.trans;
+        e4.trans.size.set(20, 20);
+        e4.trans.position.set(480,230);
+        //e4.trans.localPosition.set(10,10);
+
+        var list:Map<String, Entity> = [
+            "e1" => e1,
+            "e2" => e2,
+            "e3" => e3,
+            "e4" => e4
+        ];
+
+        untyped js.Browser.window.e = list;
+        untyped js.Browser.window.test = function(){
+          for(en in list.keys()){
+              trace(en, list.get(en).trans);
+          }
+        };
+
+        //trace("1 - ",e1.trans, e2.trans, e3.trans, e4.trans);
+
+        Gecko.onDraw += function(g:Graphics) {
+            var m = g.matrix;
+
+            g.matrix = e1.trans.worldMatrix;
+            g.color = Color.Red;
+            g.drawRect(0,0, e1.trans.size.x, e1.trans.size.y, 2);
+            g.color = Color.White;
+            g.drawRect(0,0, 1, 1, 2);
+
+            g.matrix = e2.trans.worldMatrix;
+            g.color = Color.Blue;
+            g.drawRect(0,0, e2.trans.size.x, e2.trans.size.y, 2);
+            g.color = Color.White;
+            g.drawRect(0,0, 1, 1, 2);
+
+            g.matrix = e3.trans.worldMatrix;
+            g.color = Color.Green;
+            g.drawRect(0,0, e3.trans.size.x, e3.trans.size.y, 2);
+            g.color = Color.White;
+            g.drawRect(0,0, 1, 1, 2);
+
+            g.matrix = e4.trans.worldMatrix;
+            g.color = Color.Yellow;
+            g.drawRect(0,0, e4.trans.size.x, e4.trans.size.y, 2);
+            g.color = Color.White;
+            g.drawRect(0,0, 1, 1, 2);
+
+            g.reset();
+            g.color = Color.Orange;
+            g.drawRect(480, 230, 2, 2, 2);
+            g.drawRect(470, 220, 2, 2, 2);
+            g.drawRect(460, 210, 2, 2, 2);
+            g.drawRect(450, 200, 2, 2, 2);
+
+            for(en in list.keys()){
+                //list.get(en).trans.rotation += 0.5* Math.PI/180;
+                //@:privateAccess list.get(en).trans._setDirty(true);
+            }
+
+            //e1.trans.localPosition.x += 0.5;
+            //e2.trans.localPosition.y += 1;
+        };
+
+        //e2.trans.localPosition.set(0, 0);
+
+        //trace("2 - ",e1.trans, e2.trans, e3.trans);
+
     }
 
     private function _initExamples() {
