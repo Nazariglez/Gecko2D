@@ -191,7 +191,6 @@ class Transform {
 
             worldMatrix._20 = (localMatrix._20 * _parentTransform._00) + (localMatrix._21 * _parentTransform._10) + _parentTransform._20;
             worldMatrix._21 = (localMatrix._20 * _parentTransform._01) + (localMatrix._21 * _parentTransform._11) + _parentTransform._21;
-            //trace(entity.id, _aW, _aH, worldMatrix._20, worldMatrix._21);
 
             //set world position
             if(_dirtyPosition){
@@ -275,11 +274,8 @@ class Transform {
     }
 
     private function _vecDirty(vec:Vector2g<Bool>) {
-        _setDirty();
-    }
-
-    private function _pointDirty(point:Point) {
-        _setDirty();
+        _setDirty(true);
+        _dirtyPosition = false;
     }
 
     private function _pointDirtyPosition(point:Point) {
@@ -375,7 +371,7 @@ class Transform {
             //todo sort children
         }
 
-        _setDirty(true);
+        _setDirty(true, true, true);
 
         return _parent;
     }
