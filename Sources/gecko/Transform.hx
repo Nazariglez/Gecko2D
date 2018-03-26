@@ -27,15 +27,11 @@ class Transform {
 
     public var entity(default, null):Entity;
 
-    /*public var width(get, set):Float32;
-    public var height(get, set):Float32;
-    public var position(get, set):Point;
-    public var scale(get, set):Point;
-
+    public var width(get, set):Float32;
     public var localWidth(get, set):Float32;
+
+    public var height(get, set):Float32;
     public var localHeight(get, set):Float32;
-    public var localPosition(get, set):Point;
-    public var localScale(get, set):Point;*/
 
     public var localPosition(get, null):Point;
     private var _localPosition:Point;
@@ -49,7 +45,7 @@ class Transform {
     public var localScale(get, null):Point;
     private var _localScale:Point;
 
-    public var skew(get, null):Point;
+    //public var skew(get, null):Point;
     private var _skew:Point;
 
     public var pivot(get, null):Point;
@@ -67,13 +63,25 @@ class Transform {
     public var rotation(get, set):Float32;
     private var _rotation:Float32 = 0;
 
+    public var localRotation(get, set):Float32;
+    private var _localRotation:Float32 = 0;
+
+    public var top(get, null):Float32;
+    public var localTop(get, null):Float32;
+    public var bottom(get, null):Float32;
+    public var localBottom(get, null):Float32;
+    public var left(get, null):Float32;
+    public var localLeft(get, null):Float32;
+    public var right(get, null):Float32;
+    public var localRight(get, null):Float32;
+
     public var depth:Int = 0; //todo
 
     public var localMatrix:Matrix = Matrix.identity();
     public var worldMatrix:Matrix = Matrix.identity();
 
     private var _dirty:Bool = true;
-    private var _dirtySkew:Bool = true;
+    private var _dirtyAngle:Bool = true;
     private var _dirtyScale:Bool = true;
     private var _dirtyDepth:Bool = false;
     private var _dirtyPosition:Bool = true;
@@ -91,10 +99,7 @@ class Transform {
         _flip.setObserver(_vecDirty);
 
         _skew = Point.create();
-        _skew.setObserver(function(p:Point){
-            _dirtySkew = true;
-            _pointDirty(p); //update position in children?
-        });
+        _skew.setObserver(_onSetSkew);
 
         _pivot = Point.create(0.5, 0.5);
         _pivot.setObserver(_pointDirtyPosition);
@@ -116,7 +121,6 @@ class Transform {
 
         _localScale = Point.create(1, 1);
         _localScale.setObserver(_onSetLocalScale);
-
     }
 
     public function sortChildren(?handler:Transform->Transform->Int) {
@@ -144,14 +148,12 @@ class Transform {
             _parent.updateTransform();
         }
 
-        if(_dirtySkew){
+        if(_dirtyAngle){
             //todo fixme it's ok this? sin in cos, X on Y. Maybe i changed the vars in the refactor to ecs?
             _skewCache.cosX = Math.cos(_rotation + _skew.y);
             _skewCache.sinX = Math.sin(_rotation + _skew.y);
             _skewCache.cosY = -Math.sin(_rotation - _skew.x);
             _skewCache.sinY = Math.cos(_rotation - _skew.x);
-            
-            _dirtySkew = false;
         }
 
         var _scX = _localScale.x * (_flip.x ? -1 : 1);
@@ -203,6 +205,11 @@ class Transform {
                 _scale._setY(_localScale.y*_parent._scale.y);
             }
 
+            //set world rotation
+            if(_dirtyAngle) {
+                _rotation = _localRotation + _parent._rotation;
+            }
+
         }else{
             worldMatrix.setFrom(localMatrix);
 
@@ -215,13 +222,20 @@ class Transform {
                 _scale._setX(_localScale.x);
                 _scale._setY(_localScale.y);
             }
+
+            if(_dirtyAngle) {
+                _rotation = _localRotation;
+            }
         }
 
-        trace("entity", entity.id, "matrix", worldMatrix);
-
+        _dirtyAngle = false;
         _dirtyScale = false;
         _dirtyPosition = false;
         _dirty = false;
+    }
+
+    private function _onSetSkew(p:Point){
+        _setDirty(true, false, true);
     }
 
     private function _onSetScale(p:Point) {
@@ -274,14 +288,14 @@ class Transform {
 
     private function _setDirty(positionDirty:Bool = false, scaleDirty:Bool = false, rotationDirty:Bool = false){
         if( _dirty
-            && _dirtySkew == rotationDirty
+            && _dirtyAngle == rotationDirty
             && _dirtyPosition == positionDirty
             && _dirtyScale == scaleDirty
         ) return;
 
         _dirty = true;
-        if(rotationDirty && !_dirtySkew){
-            _dirtySkew = true;
+        if(rotationDirty && !_dirtyAngle){
+            _dirtyAngle = true;
         }
 
         if(positionDirty && !_dirtyPosition){
@@ -293,7 +307,7 @@ class Transform {
         }
 
         for(child in _children){
-            child._setDirty(_dirtyPosition, _dirtyScale, _dirtySkew);
+            child._setDirty(_dirtyPosition, _dirtyScale, _dirtyAngle);
         }
     }
 
@@ -340,7 +354,7 @@ class Transform {
     }
 
     inline public function toString() : String {
-        return 'Transform: position -> ${position}, localPosition -> ${localPosition}';
+        return 'Transform: position -> ${position}, localPosition -> ${localPosition}, ';
     }
 
     inline function get_parent():Transform {
@@ -397,10 +411,10 @@ class Transform {
         return _anchor;
     }
 
-    function get_skew():Point {
+    /*function get_skew():Point {
         if(_dirty)updateTransform();
         return _skew;
-    }
+    }*/
 
     function get_pivot():Point {
         if(_dirty)updateTransform();
@@ -419,9 +433,94 @@ class Transform {
 
     function set_rotation(value:Float32):Float32 {
         if(value == _rotation)return _rotation;
-        _dirtySkew = true;
-        _setDirty();
-        return _rotation = value;
+        _rotation = value;
+
+        if(_parent != null){
+            _localRotation = _rotation + _parent._rotation;
+        }else{
+            _localRotation = _rotation;
+        }
+
+        _setDirty(true, false, true);
+        _dirtyPosition = false;
+        return _rotation;
+    }
+
+    function get_localRotation():Float32 {
+        if(_dirty)updateTransform();
+        return _localRotation;
+    }
+
+    function set_localRotation(value:Float32):Float32 {
+        if(value == _localRotation)return _localRotation;
+        _localRotation = value;
+        _setDirty(true, false, true);
+        _dirtyPosition = false;
+        return _localRotation;
+    }
+
+    inline function get_width():Float32 {
+        return scale.x * size.x;
+    }
+
+    inline function get_localWidth():Float32 {
+        return localScale.x * size.x;
+    }
+
+    inline function set_width(value:Float32):Float32 {
+        return scale.x = value / size.x;
+    }
+
+    inline function set_localWidth(value:Float32):Float32 {
+        return localScale.x = value / size.x;
+    }
+
+    inline function get_height():Float32 {
+        return scale.y * size.y;
+    }
+
+    inline function get_localHeight():Float32 {
+        return localScale.y * size.y;
+    }
+
+    inline function set_height(value:Float32):Float32 {
+        return scale.y = value / size.y;
+    }
+
+    inline function set_localHeight(value:Float32):Float32 {
+        return localScale.y = value / size.y;
+    }
+
+    inline function get_top():Float32 {
+        return position.y - height * anchor.x;
+    }
+
+    inline function get_bottom():Float32 {
+        return position.y + height * anchor.y;
+    }
+
+    inline function get_left():Float32 {
+        return position.x - width * anchor.x;
+    }
+
+    inline function get_right():Float32 {
+        return position.x + width * anchor.x;
+    }
+
+    inline function get_localTop():Float32 {
+        return localPosition.y - localHeight * anchor.x;
+    }
+
+    inline function get_localBottom():Float32 {
+        return localPosition.y + localHeight * anchor.y;
+    }
+
+    inline function get_localLeft():Float32 {
+        return localPosition.x - localWidth * anchor.x;
+    }
+
+    inline function get_localRight():Float32 {
+        return localPosition.x + localWidth * anchor.x;
     }
 
 }
