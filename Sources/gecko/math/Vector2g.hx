@@ -60,4 +60,8 @@ class Vector2g<T> { //todo add observer
     inline function get_y():T {
         return _y;
     }
+
+    inline public function toString() : String {
+        return 'Vector2g($_x, $_y)';
+    }
 }

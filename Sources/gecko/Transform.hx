@@ -17,6 +17,8 @@ class Transform {
         return 0;
     }
 
+    public var lastUpdateID(default, null):Int = 0;
+
     public var parent(get, set):Transform;
     private var _parent:Transform;
 
@@ -123,6 +125,8 @@ class Transform {
         _localScale.setObserver(_onSetLocalScale);
     }
 
+
+
     public function sortChildren(?handler:Transform->Transform->Int) {
         if(handler == null){
             handler = Transform.sortChildrenHandler;
@@ -143,6 +147,7 @@ class Transform {
 
     public function updateTransform() {
         if(!_dirty)return;
+        lastUpdateID++;
 
         if(_parent != null){
             _parent.updateTransform();
@@ -350,7 +355,12 @@ class Transform {
     }
 
     inline public function toString() : String {
-        return 'Transform: position -> ${position}, localPosition -> ${localPosition}, ';
+        return 'Transform: hasParent -> ${parent != null},'
+        + ' position -> ${position}, localPosition -> ${localPosition},'
+        + ' scale -> ${scale}, localScale -> ${localScale}, '
+        + ' rotation -> ${rotation}, localRotation -> ${localRotation}'
+        + ' size -> ${size}, anchor -> ${anchor}'
+        + ' pivot -> ${pivot}, flip -> ${flip}';
     }
 
     inline function get_parent():Transform {

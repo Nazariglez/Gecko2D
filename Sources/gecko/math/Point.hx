@@ -50,8 +50,8 @@ class Point implements IAutoPool {
 		isObserved = false;
 	}
 
-	public function set(x:Float32, ?y:Float32) {
-		if(y == null)y = x;
+	public function set(x:Float32, y:Float32) {
+		//if(y == null)y = x;
 		if(x != this._x || y != this._y){
 			_setX(x);
 			_setY(y);

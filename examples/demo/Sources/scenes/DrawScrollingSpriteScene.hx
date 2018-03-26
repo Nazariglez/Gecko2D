@@ -18,7 +18,7 @@ class DrawScrollingSpriteScene extends CustomScene {
 
         var scroll3 = _createScrollingSprite("images/opengameart/carbon_fiber.png", 550, Screen.centerY, 400, 300);
         scroll3.speed.set(20, 20);
-        scroll3.scale.set(0.5);
+        scroll3.scale.set(0.5, 0.5);
 
         super.init(closeButton);
     }
