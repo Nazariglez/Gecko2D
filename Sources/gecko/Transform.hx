@@ -11,6 +11,12 @@ using gecko.utils.ArrayHelper;
 
 @:access(gecko.math.Point)
 class Transform {
+    dynamic static function sortChildrenHandler(a:Transform, b:Transform) : Int {
+        if (a.depth < b.depth) return -1;
+        if (a.depth > b.depth) return 1;
+        return 0;
+    }
+
     public var parent(get, set):Transform;
     private var _parent:Transform;
 
@@ -61,11 +67,14 @@ class Transform {
     public var rotation(get, set):Float32;
     private var _rotation:Float32 = 0;
 
+    public var depth:Int = 0; //todo
+
     public var localMatrix:Matrix = Matrix.identity();
     public var worldMatrix:Matrix = Matrix.identity();
 
     private var _dirty:Bool = true;
     private var _dirtySkew:Bool = true;
+    private var _dirtyScale:Bool = true;
     private var _dirtyDepth:Bool = false;
     private var _dirtyPosition:Bool = true;
 
@@ -84,31 +93,40 @@ class Transform {
         _skew = Point.create();
         _skew.setObserver(function(p:Point){
             _dirtySkew = true;
-            _pointDirty(p);
+            _pointDirty(p); //update position in children?
         });
 
         _pivot = Point.create(0.5, 0.5);
-        _pivot.setObserver(_pointDirty);
+        _pivot.setObserver(_pointDirtyPosition);
 
         _anchor = Point.create(0.5,0.5);
-        _anchor.setObserver(_pointDirty);
+        _anchor.setObserver(_pointDirtyPosition);
 
         _size = Point.create();
-        _size.setObserver(_pointDirty);
+        _size.setObserver(_pointDirtyPosition);
 
         _position = Point.create();
         _position.setObserver(_onSetPosition);
 
         _localPosition = Point.create();
-        _localPosition.setObserver(function(p){
-            trace("setted local point");
-            _pointDirtyPosition(p);
-        });
+        _localPosition.setObserver(_pointDirtyPosition);
 
         _scale = Point.create(1, 1);
+        _scale.setObserver(_onSetScale);
 
         _localScale = Point.create(1, 1);
+        _localScale.setObserver(_onSetLocalScale);
 
+    }
+
+    public function sortChildren(?handler:Transform->Transform->Int) {
+        if(handler == null){
+            handler = Transform.sortChildrenHandler;
+        }
+
+        _children.sort(handler);
+
+        //todo emit onSortChirldren
     }
 
     public function reset() {
@@ -171,10 +189,18 @@ class Transform {
 
             worldMatrix._20 = (localMatrix._20 * _parentTransform._00) + (localMatrix._21 * _parentTransform._10) + _parentTransform._20;
             worldMatrix._21 = (localMatrix._20 * _parentTransform._01) + (localMatrix._21 * _parentTransform._11) + _parentTransform._21;
-            
+            //trace(entity.id, _aW, _aH, worldMatrix._20, worldMatrix._21);
+
+            //set world position
             if(_dirtyPosition){
                 _position._setX(_parentTransform._00 * _localPosition.x + _parentTransform._10 * _localPosition.y + _parentTransform._20);
                 _position._setY(_parentTransform._01 * _localPosition.x + _parentTransform._11 * _localPosition.y + _parentTransform._21);
+            }
+
+            //set world scale
+            if(_dirtyScale){
+                _scale._setX(_localScale.x*_parent._scale.x);
+                _scale._setY(_localScale.y*_parent._scale.y);
             }
 
         }else{
@@ -184,10 +210,36 @@ class Transform {
                 _position._setX(_localPosition.x);
                 _position._setY(_localPosition.y);
             }
+
+            if(_dirtyScale){
+                _scale._setX(_localScale.x);
+                _scale._setY(_localScale.y);
+            }
         }
 
+        trace("entity", entity.id, "matrix", worldMatrix);
+
+        _dirtyScale = false;
         _dirtyPosition = false;
         _dirty = false;
+    }
+
+    private function _onSetScale(p:Point) {
+        if(_parent != null){
+            _localScale._setX(_scale.x/_parent._scale.x);
+            _localScale._setY(_scale.y/_parent._scale.y);
+        }else{
+            _localScale._setX(_scale.x);
+            _localScale._setY(_scale.y);
+        }
+
+        _setDirty(true, true);
+        _dirtyPosition = false;
+        _dirtyScale = false;
+    }
+
+    private function _onSetLocalScale(p:Point) {
+        _setDirty(true, true);
     }
 
     private function _onSetPosition(p:Point) {
@@ -220,8 +272,12 @@ class Transform {
         _setDirty(true);
     }
 
-    private function _setDirty(positionDirty:Bool = false, rotationDirty:Bool = false){
-        if(_dirty && _dirtySkew == rotationDirty && _dirtyPosition == positionDirty)return;
+    private function _setDirty(positionDirty:Bool = false, scaleDirty:Bool = false, rotationDirty:Bool = false){
+        if( _dirty
+            && _dirtySkew == rotationDirty
+            && _dirtyPosition == positionDirty
+            && _dirtyScale == scaleDirty
+        ) return;
 
         _dirty = true;
         if(rotationDirty && !_dirtySkew){
@@ -232,8 +288,12 @@ class Transform {
             _dirtyPosition = true;
         }
 
+        if(scaleDirty && !_dirtyScale){
+            _dirtyScale = true;
+        }
+
         for(child in _children){
-            child._setDirty(_dirtyPosition, _dirtySkew);
+            child._setDirty(_dirtyPosition, _dirtyScale, _dirtySkew);
         }
     }
 

@@ -63,25 +63,29 @@ class MainScene extends CustomScene {
         var e1 = Entity.create();
         e1.trans.size.set(20, 20);
         //e1.trans.localScale.set(4,4);
-        e1.trans.position.set(450, 200);
+        e1.trans.position.set(0,0);
+        e1.trans.anchor.set(0,0);
 
         var e2 = Entity.create();
         e2.trans.parent = e1.trans;
         e2.trans.size.set(20, 20);
-        e2.trans.position.set(460, 210);
-        //e2.trans.localPosition.set(5,5);
+        e2.trans.anchor.set(0,0);
+        e2.trans.position.set(20, 20);
+        //e2.trans.localPosition.set(20,20);
 
         var e3 = Entity.create();
         e3.trans.parent = e2.trans;
         e3.trans.size.set(20, 20);
-        e3.trans.position.set(470, 220);
-        //e3.trans.localPosition.set(5,5);
+        e3.trans.anchor.set(0,0);
+        e3.trans.position.set(40, 40);
+        //e3.trans.localPosition.set(20,20);
 
         var e4 = Entity.create();
         e4.trans.parent = e3.trans;
         e4.trans.size.set(20, 20);
-        e4.trans.position.set(480,230);
-        //e4.trans.localPosition.set(10,10);
+        e4.trans.anchor.set(0,0);
+        e4.trans.position.set(60, 60);
+        //e4.trans.localPosition.set(20,20);
 
         var list:Map<String, Entity> = [
             "e1" => e1,
