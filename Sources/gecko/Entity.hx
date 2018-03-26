@@ -164,11 +164,19 @@ class Entity implements IEntity {
     }
 
     public inline function getComponent<T:Component>(componentClass:ComponentClass) : T {
+        #if js
+        return cast untyped _components.h[componentClass.__componentName__];
+        #else
         return cast _components[componentClass.__componentName__];
+        #end
     }
 
     public inline function hasComponent(name:String) : Bool {
+        #if js
+        return untyped _components.h.hasOwnProperty(name);
+        #else
         return _components.exists(name);
+        #end
     }
 
     inline function get_name():String {

@@ -77,7 +77,7 @@ class Transform {
     public var right(get, null):Float32;
     public var localRight(get, null):Float32;
 
-    public var depth:Int = 0; //todo
+    public var depth:Int = 0; //todo depth
 
     public var localMatrix:Matrix = Matrix.identity();
     public var worldMatrix:Matrix = Matrix.identity();
