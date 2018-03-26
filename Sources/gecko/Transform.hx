@@ -1,5 +1,6 @@
 package gecko;
 
+import gecko.utils.Event;
 import gecko.math.Matrix;
 import gecko.math.Vector2g;
 import gecko.math.Point;
@@ -88,6 +89,10 @@ class Transform {
     private var _dirtyDepth:Bool = false;
     private var _dirtyPosition:Bool = true;
 
+    public var onAddedToParent:Event<Transform->Void>;
+    public var onRemovedFromParent:Event<Transform->Void>;
+    public var onTransformChange:Event<Void->Void>;
+
     private var _skewCache:SkewCache = {
         cosX: 0,
         cosY: 0,
@@ -123,8 +128,11 @@ class Transform {
 
         _localScale = Point.create(1, 1);
         _localScale.setObserver(_onSetLocalScale);
-    }
 
+        onAddedToParent = Event.create();
+        onRemovedFromParent = Event.create();
+        onTransformChange = Event.create();
+    }
 
 
     public function sortChildren(?handler:Transform->Transform->Int) {
@@ -236,6 +244,8 @@ class Transform {
         _dirtyScale = false;
         _dirtyPosition = false;
         _dirty = false;
+
+        onTransformChange.emit();
     }
 
     private function _onSetSkew(p:Point){
@@ -372,12 +382,14 @@ class Transform {
 
         if(_parent != null){
             _parent._children.remove(this);
+            onRemovedFromParent.emit(_parent);
         }
 
         _parent = value;
 
         if(_parent != null){
              _parent._children.push(this);
+            onAddedToParent.emit(_parent);
             //todo sort children
         }
 
