@@ -5,7 +5,6 @@ import gecko.Float32;
 import gecko.components.input.MouseComponent;
 import gecko.components.draw.SpriteComponent;
 import gecko.Screen;
-import gecko.components.core.TransformComponent;
 import gecko.Entity;
 import gecko.systems.input.InteractivitySystem;
 import gecko.Scene;
@@ -22,8 +21,8 @@ class CustomScene extends Scene {
 
     private function _addCloseButton() {
         var btn = Entity.create();
-        var transform = btn.addComponent(TransformComponent.create(Screen.width-20, 20));
-        transform.anchor.set(1, 0);
+        btn.transform.position.set(Screen.width-20, 20);
+        btn.transform.anchor.set(1, 0);
 
         btn.addComponent(SpriteComponent.create("images/kenney/red_cross.png"));
 

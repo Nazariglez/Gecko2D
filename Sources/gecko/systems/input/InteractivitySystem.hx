@@ -2,7 +2,6 @@ package gecko.systems.input;
 
 import gecko.input.Touch;
 import gecko.components.input.DraggableComponent;
-import gecko.components.core.TransformComponent;
 import gecko.math.Point;
 import gecko.components.input.MouseComponent;
 import gecko.input.MouseButton;
@@ -33,7 +32,7 @@ class InteractivitySystem extends System implements IUpdatable {
         _localPoint = Point.create(0,0);
         _pointer = Point.create(0,0);
 
-        filter.equal(TransformComponent).any([MouseComponent, DraggableComponent]);
+        filter.any([MouseComponent, DraggableComponent]);
     }
 
     override public function update(dt:Float32) {
@@ -85,7 +84,7 @@ class InteractivitySystem extends System implements IUpdatable {
     }
 
     private function _dispatchEntityEvents(e:Entity) {
-        var transform:TransformComponent = e.transform;
+        var transform:Transform = e.transform;
         transform.screenToLocal(Mouse.position, _localPoint);
 
         var mouseComponent:MouseComponent = e.getComponent(MouseComponent);
@@ -220,7 +219,7 @@ class InteractivitySystem extends System implements IUpdatable {
 
         if(draggableComponent != null && draggableComponent.isDragged){
             var parent = draggableComponent.entity.transform.parent;
-            parent.transform.screenToLocal(Mouse.position, _localPoint);
+            parent.screenToLocal(Mouse.position, _localPoint);
 
             if(draggableComponent.bounds == null){
                 draggableComponent.entity.transform.position.copy(_localPoint);

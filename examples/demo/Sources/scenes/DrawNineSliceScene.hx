@@ -3,7 +3,6 @@ package scenes;
 import gecko.Color;
 import gecko.Entity;
 import gecko.components.draw.NineSliceComponent;
-import gecko.components.core.TransformComponent;
 import gecko.Float32;
 import gecko.math.Random;
 
@@ -30,7 +29,7 @@ class DrawNineSliceScene extends CustomScene {
 
     private function _createNineSlice(x:Float32, y:Float32, width:Float32, height:Float32) {
         var e = Entity.create();
-        e.addComponent(TransformComponent.create(x, y));
+        e.transform.position.set(x, y);
         e.addComponent(NineSliceComponent.create(_getRandomSprite(), width, height));
 
         //e.renderer.color = _getRandomColor();

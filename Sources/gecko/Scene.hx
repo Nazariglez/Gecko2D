@@ -3,10 +3,8 @@ package gecko;
 import gecko.tween.TweenManager;
 import gecko.timer.TimerManager;
 import gecko.components.draw.DrawComponent;
-import gecko.components.core.TransformComponent;
 import gecko.systems.SystemClass;
 import gecko.render.Graphics;
-import gecko.systems.core.TransformSystem;
 import gecko.utils.Event;
 import gecko.systems.draw.DrawSystem;
 import gecko.systems.System;
@@ -68,12 +66,10 @@ class Scene implements IScene {
 
     private function _init2D() {
         is2D = true;
-        addSystem(TransformSystem.create());
         addSystem(DrawSystem.create());
 
         rootEntity = Entity.create();
         rootEntity.name = "scene-root-entity";
-        rootEntity.addComponent(TransformComponent.create(0, 0));
         rootEntity.addComponent(DrawComponent.create());
         @:privateAccess rootEntity._isRoot = true;
     }
@@ -140,7 +136,7 @@ class Scene implements IScene {
         entity.scene = this;
 
         if(entity.transform != null && entity.transform.parent == null){
-            entity.transform.parent = rootEntity;
+            entity.transform.parent = rootEntity.transform;
         }
 
         entities.push(entity);
@@ -171,7 +167,7 @@ class Scene implements IScene {
             entity.onComponentAdded -= _onEntityAddComponent;
             entity.scene = null;
 
-            if(entity.transform != null && entity.transform.parent == rootEntity){
+            if(entity.transform != null && entity.transform.parent == rootEntity.transform){
                 entity.transform.parent = null;
             }
 

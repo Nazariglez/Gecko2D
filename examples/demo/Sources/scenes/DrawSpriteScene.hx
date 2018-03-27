@@ -2,7 +2,6 @@ package scenes;
 
 import gecko.Entity;
 import gecko.components.draw.SpriteComponent;
-import gecko.components.core.TransformComponent;
 import gecko.Float32;
 
 class DrawSpriteScene extends CustomScene {
@@ -43,7 +42,7 @@ class DrawSpriteScene extends CustomScene {
     //Create an add the sprite
     private function _addSprite(sprite:String, x:Float32, y:Float32) {
         var e = Entity.create();
-        e.addComponent(TransformComponent.create(x, y));
+        e.transform.position.set(x, y);
         e.addComponent(SpriteComponent.create(sprite));
 
         e.transform.scale.set(0.4, 0.4); //scale because they're too big

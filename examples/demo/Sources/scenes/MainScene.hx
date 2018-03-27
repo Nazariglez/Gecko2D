@@ -10,7 +10,6 @@ import gecko.Float32;
 import gecko.Screen;
 import gecko.Entity;
 import gecko.math.Point;
-import gecko.components.core.TransformComponent;
 import gecko.components.draw.TextComponent;
 import gecko.Transform;
 
@@ -89,12 +88,12 @@ class MainScene extends CustomScene {
     private function _createButton(text:String, x:Float32, y:Float32, callback:Float32->Float32->Void) {
         //Button sprite
         var btn = Entity.create();
-        btn.addComponent(TransformComponent.create(x, y));
+        btn.transform.position.set(x, y);
         btn.addComponent(NineSliceComponent.create("images/kenney/green_panel.png", 160, 50));
 
         //button text
         var txt = Entity.create();
-        txt.addComponent(TransformComponent.create(x, y));
+        txt.transform.position.set(x, y);
         txt.addComponent(TextComponent.create(text, "Ubuntu-B.ttf", 20));
 
         //Text must be inside the text
@@ -124,7 +123,7 @@ class MainScene extends CustomScene {
 
     private function _addTitle(x:Float32, y:Float32) {
         var entity = Entity.create();
-        entity.addComponent(TransformComponent.create(x, y));
+        entity.transform.position.set(x, y);
         entity.addComponent(TextComponent.create("Gecko2D Demo", "Ubuntu-B.ttf", 70));
         addEntity(entity);
     }

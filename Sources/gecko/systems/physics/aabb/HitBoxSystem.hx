@@ -1,14 +1,13 @@
 package gecko.systems.physics.aabb;
 
-import gecko.components.core.TransformComponent;
-import gecko.components.physics.HitBoxComponent;
+import gecko.components.physics.aabb.HitBoxComponent;
 import gecko.Float32;
 
 class HitBoxSystem extends System implements IUpdatable {
     private var _frameID:Int = -1;
 
     public function init(){
-        filter.all([TransformComponent, HitBoxComponent]);
+        filter.equal(HitBoxComponent);
     }
 
     override public function update(dt:Float32) {

@@ -8,10 +8,18 @@ import gecko.math.Point;
 using gecko.utils.ArrayHelper;
 
 //todo https://www.gamedev.net/articles/programming/math-and-physics/making-a-game-engine-transformations-r3566/
-    //todo https://www.gamedev.net/articles/programming/general-and-gameplay-programming/making-a-game-engine-core-design-principles-r3210
+//todo https://www.gamedev.net/articles/programming/general-and-gameplay-programming/making-a-game-engine-core-design-principles-r3210
+
+enum DepthMode {
+    DEFAULT;
+    ENABLED;
+    DISABLED;
+}
 
 @:access(gecko.math.Point)
 class Transform {
+    static public var isDepthEnabled:Bool = false;
+
     dynamic static function sortChildrenHandler(a:Transform, b:Transform) : Int {
         if (a.depth < b.depth) return -1;
         if (a.depth > b.depth) return 1;
@@ -26,9 +34,7 @@ class Transform {
     private var _children:Array<Transform> = [];
 
     private var _branch:Int = 0;
-    private var _nexChild:Transform = null;
-
-    public var entity(default, null):Entity;
+    private var _nextChild:Transform = null;
 
     public var width(get, set):Float32;
     public var localWidth(get, set):Float32;
@@ -78,10 +84,17 @@ class Transform {
     public var right(get, null):Float32;
     public var localRight(get, null):Float32;
 
-    public var depth:Int = 0; //todo depth
+    public var depthMode(get, set):DepthMode;
+    private var _depthMode:DepthMode = DepthMode.DEFAULT;
 
-    public var localMatrix:Matrix = Matrix.identity();
-    public var worldMatrix:Matrix = Matrix.identity();
+    public var depth(get, set):Int;
+    private var _depth:Int = 0;
+
+    public var localMatrix(get, set):Matrix;
+    private var _localMatrix:Matrix = Matrix.identity();
+
+    public var worldMatrix(get, set):Matrix;
+    private var _worldMatrix:Matrix = Matrix.identity();
 
     private var _dirty:Bool = true;
     private var _dirtyAngle:Bool = true;
@@ -92,6 +105,7 @@ class Transform {
     public var onAddedToParent:Event<Transform->Void>;
     public var onRemovedFromParent:Event<Transform->Void>;
     public var onTransformChange:Event<Void->Void>;
+    public var onDepthChange:Event<Transform->Void>;
 
     private var _skewCache:SkewCache = {
         cosX: 0,
@@ -100,8 +114,16 @@ class Transform {
         sinY: 0
     };
 
-    public function new(entity:Entity) {
+    public var entity(default, null):Entity;
+
+    public function new(entity:Entity){
         this.entity = entity;
+
+        onAddedToParent = Event.create();
+        onRemovedFromParent = Event.create();
+        onTransformChange = Event.create();
+        onDepthChange = Event.create();
+
         _flip = new Vector2g(false, false);
         _flip.setObserver(_vecDirty);
 
@@ -114,13 +136,13 @@ class Transform {
         _anchor = Point.create(0.5,0.5);
         _anchor.setObserver(_pointDirtyPosition);
 
-        _size = Point.create();
+        _size = Point.create(0, 0);
         _size.setObserver(_pointDirtyPosition);
 
         _position = Point.create();
         _position.setObserver(_onSetPosition);
 
-        _localPosition = Point.create();
+        _localPosition = Point.create(0, 0);
         _localPosition.setObserver(_pointDirtyPosition);
 
         _scale = Point.create(1, 1);
@@ -129,11 +151,8 @@ class Transform {
         _localScale = Point.create(1, 1);
         _localScale.setObserver(_onSetLocalScale);
 
-        onAddedToParent = Event.create();
-        onRemovedFromParent = Event.create();
-        onTransformChange = Event.create();
+        _dirty = _dirtyPosition = _dirtyAngle = _dirtyScale = true;
     }
-
 
     public function sortChildren(?handler:Transform->Transform->Int) {
         if(handler == null){
@@ -142,10 +161,10 @@ class Transform {
 
         _children.sort(handler);
 
-        //todo emit onSortChirldren
+        //todo emit onSortChirldren?
     }
 
-    public function reset() {
+    public function reset() { //todo REST TRANSFORM
         parent = null;
 
         while(_children.length > 0){
@@ -176,34 +195,34 @@ class Transform {
         var _piX = _flip.x ? 1-_pivot.x : _pivot.x;
         var _piY = _flip.y ? 1-_pivot.y : _pivot.y;
 
-        localMatrix._00 = _skewCache.cosX * _scX;
-        localMatrix._01 = _skewCache.sinX * _scX;
-        localMatrix._10 = _skewCache.cosY * _scY;
-        localMatrix._11 = _skewCache.sinY * _scY;
+        _localMatrix._00 = _skewCache.cosX * _scX;
+        _localMatrix._01 = _skewCache.sinX * _scX;
+        _localMatrix._10 = _skewCache.cosY * _scY;
+        _localMatrix._11 = _skewCache.sinY * _scY;
 
         var _aW = _anX * _size.x;
         var _aH = _anY * _size.y;
         var _pW = _piX * _size.x;
         var _pH = _piY * _size.y;
 
-        localMatrix._20 = _localPosition.x - _aW * _scX + _pW * _scX;
-        localMatrix._21 = _localPosition.y - _aH * _scY + _pH * _scY;
+        _localMatrix._20 = _localPosition.x - _aW * _scX + _pW * _scX;
+        _localMatrix._21 = _localPosition.y - _aH * _scY + _pH * _scY;
 
         if(_pW != 0 || _pH != 0){
-            localMatrix._20 -= _pW * localMatrix._00 + _pH * localMatrix._10;
-            localMatrix._21 -= _pW * localMatrix._01 + _pH * localMatrix._11;
+            _localMatrix._20 -= _pW * _localMatrix._00 + _pH * _localMatrix._10;
+            _localMatrix._21 -= _pW * _localMatrix._01 + _pH * _localMatrix._11;
         }
 
         if(_parent != null){
-            var _parentTransform = _parent.worldMatrix;
+            var _parentTransform = _parent._worldMatrix;
 
-            worldMatrix._00 = (localMatrix._00 * _parentTransform._00) + (localMatrix._01 * _parentTransform._10);
-            worldMatrix._01 = (localMatrix._00 * _parentTransform._01) + (localMatrix._01 * _parentTransform._11);
-            worldMatrix._10 = (localMatrix._10 * _parentTransform._00) + (localMatrix._11 * _parentTransform._10);
-            worldMatrix._11 = (localMatrix._10 * _parentTransform._01) + (localMatrix._11 * _parentTransform._11);
+            _worldMatrix._00 = (_localMatrix._00 * _parentTransform._00) + (_localMatrix._01 * _parentTransform._10);
+            _worldMatrix._01 = (_localMatrix._00 * _parentTransform._01) + (_localMatrix._01 * _parentTransform._11);
+            _worldMatrix._10 = (_localMatrix._10 * _parentTransform._00) + (_localMatrix._11 * _parentTransform._10);
+            _worldMatrix._11 = (_localMatrix._10 * _parentTransform._01) + (_localMatrix._11 * _parentTransform._11);
 
-            worldMatrix._20 = (localMatrix._20 * _parentTransform._00) + (localMatrix._21 * _parentTransform._10) + _parentTransform._20;
-            worldMatrix._21 = (localMatrix._20 * _parentTransform._01) + (localMatrix._21 * _parentTransform._11) + _parentTransform._21;
+            _worldMatrix._20 = (_localMatrix._20 * _parentTransform._00) + (_localMatrix._21 * _parentTransform._10) + _parentTransform._20;
+            _worldMatrix._21 = (_localMatrix._20 * _parentTransform._01) + (_localMatrix._21 * _parentTransform._11) + _parentTransform._21;
 
             //set world position
             if(_dirtyPosition){
@@ -223,7 +242,7 @@ class Transform {
             }
 
         }else{
-            worldMatrix.setFrom(localMatrix);
+            _worldMatrix.setFrom(_localMatrix);
 
             if(_dirtyPosition){
                 _position._setX(_localPosition.x);
@@ -299,9 +318,9 @@ class Transform {
 
     private function _setDirty(positionDirty:Bool = false, scaleDirty:Bool = false, rotationDirty:Bool = false){
         if( _dirty
-            && _dirtyAngle == rotationDirty
-            && _dirtyPosition == positionDirty
-            && _dirtyScale == scaleDirty
+        && _dirtyAngle == rotationDirty
+        && _dirtyPosition == positionDirty
+        && _dirtyScale == scaleDirty
         ) return;
 
         _dirty = true;
@@ -388,9 +407,13 @@ class Transform {
         _parent = value;
 
         if(_parent != null){
-             _parent._children.push(this);
+            _parent._children.push(this);
+
+            if(_parent._depthMode == DepthMode.ENABLED || _parent._depthMode == DepthMode.DEFAULT && Transform.isDepthEnabled){
+                _parent.sortChildren();
+            }
+
             onAddedToParent.emit(_parent);
-            //todo sort children
         }
 
         _setDirty(true, true, true);
@@ -539,6 +562,56 @@ class Transform {
 
     inline function get_localRight():Float32 {
         return localPosition.x + localWidth * anchor.x;
+    }
+
+    function get_localMatrix():Matrix {
+        if(_dirty)updateTransform();
+        return _localMatrix;
+    }
+
+    inline function set_localMatrix(value:Matrix):Matrix {
+        return _localMatrix = value;
+    }
+
+    function get_worldMatrix():Matrix {
+        if(_dirty)updateTransform();
+        return _worldMatrix;
+    }
+
+    inline function set_worldMatrix(value:Matrix):Matrix {
+        return _worldMatrix = value;
+    }
+
+    inline function get_depth():Int {
+        return _depth;
+    }
+
+    function set_depth(value:Int):Int {
+        if(value == _depth)return _depth;
+        _depth = value;
+
+        if(_parent != null && (_parent._depthMode == DepthMode.ENABLED || _parent._depthMode == DepthMode.DEFAULT && Transform.isDepthEnabled)){
+            _parent.sortChildren();
+        }
+
+        onDepthChange.emit(this);
+
+        return _depth;
+    }
+
+    function set_depthMode(value:DepthMode):DepthMode {
+        if(value == _depthMode)return _depthMode;
+        _depthMode = value;
+
+        if(_depthMode == DepthMode.ENABLED || _depthMode == DepthMode.DEFAULT && Transform.isDepthEnabled){
+            sortChildren();
+        }
+
+        return _depthMode;
+    }
+
+    inline function get_depthMode():DepthMode {
+        return _depthMode;
     }
 
 }

@@ -3,7 +3,6 @@ package;
 import gecko.input.Mouse;
 import gecko.components.draw.TextComponent;
 import gecko.Screen;
-import gecko.components.core.TransformComponent;
 import gecko.Entity;
 import gecko.resources.Texture;
 import gecko.render.Graphics;
@@ -114,7 +113,7 @@ class Game {
 
     private function _addBackgroundText() {
         var textEntity = Entity.create();
-        textEntity.addComponent(TransformComponent.create(Screen.centerX, Screen.centerY));
+        textEntity.transform.position.set(Screen.centerX, Screen.centerY);
         textEntity.addComponent(TextComponent.create("Left click to add 500 bunnies.\nRight click to add 1000 bunnies.", "Ubuntu-B.ttf", 30, "center"));
         Gecko.currentScene.addEntity(textEntity);
     }

@@ -6,7 +6,6 @@ import gecko.Float32;
 import gecko.components.draw.DrawComponent;
 import gecko.Color;
 import gecko.Entity;
-import gecko.components.core.TransformComponent;
 import gecko.components.draw.CircleComponent;
 import gecko.components.draw.RectangleComponent;
 
@@ -46,7 +45,7 @@ class DrawShapeScene extends CustomScene {
     //create a generic entitiy to add a shape draw component
     private function _createShape(x:Float32, y:Float32, shapeComponent:DrawComponent, color:Color) {
         var e = Entity.create();
-        e.addComponent(TransformComponent.create(x, y));
+        e.transform.position.set(x, y);
         e.addComponent(shapeComponent);
 
         shapeComponent.color = color;

@@ -1,6 +1,5 @@
 package gecko.input;
 
-import gecko.components.core.TransformComponent;
 import gecko.utils.Event;
 import kha.input.Mouse as KhaMouse;
 import gecko.math.Point;
@@ -142,7 +141,7 @@ class Mouse {
         //todo if kha_html5...
     }
 
-    static public function isOverEntity(transform:TransformComponent, cachePoint:Point = null) : Bool {
+    static public function isOverEntity(transform:Transform, cachePoint:Point = null) : Bool {
         if(cachePoint == null)cachePoint = Point.create();
 
         transform.screenToLocal(Mouse.position, cachePoint);

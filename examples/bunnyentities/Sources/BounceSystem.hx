@@ -1,6 +1,6 @@
 package;
 
-import gecko.components.core.TransformComponent;
+import gecko.Transform;
 import gecko.Float32;
 import gecko.systems.System;
 import gecko.IUpdatable;
@@ -10,18 +10,21 @@ class BounceSystem extends System implements IUpdatable {
     public var gravity:Float32;
 
     public function init(gravity:Float32){
-        filter.all([TransformComponent, BounceComponent]);
+        filter.equal(BounceComponent);
 
         this.gravity = gravity;
     }
 
     override public function update(dt:Float32) {
         for(e in getEntities()){
-            var transform:TransformComponent = e.transform; //builtin reference to the TransformComponent
+            var transform:Transform = e.transform;
             var movement:BounceComponent = e.getComponent(BounceComponent);
 
-            transform.position.x += movement.speed.x;
-            transform.position.y += movement.speed.y;
+            transform.position.set(
+                transform.position.x + movement.speed.x,
+                transform.position.y + movement.speed.y
+            );
+
             movement.speed.y += gravity;
 
             if(transform.position.x > Screen.width){

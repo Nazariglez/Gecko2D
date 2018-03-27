@@ -1,6 +1,5 @@
 package gecko.input;
 
-import gecko.components.core.TransformComponent;
 import gecko.Float32;
 import gecko.math.Point;
 import gecko.utils.Event;
@@ -101,7 +100,7 @@ class Touch {
         return _down.exists(touch) ? _down[touch] : -1;
     }
 
-    static public function isOverEntity(touch:Int, transform:TransformComponent, cachePoint:Point = null) : Bool {
+    static public function isOverEntity(touch:Int, transform:Transform, cachePoint:Point = null) : Bool {
         var pos = getPosition(touch);
         if(pos == null){
             return false;

@@ -1,18 +1,17 @@
 package gecko.systems.motion;
 
 import gecko.components.motion.RotationComponent;
-import gecko.components.core.TransformComponent;
 import gecko.components.motion.MovementComponent;
 import gecko.Float32;
 
 class MotionSystem extends System implements IUpdatable {
     public function init(){
-        filter.equal(TransformComponent).any([MovementComponent, RotationComponent]);
+        filter.any([MovementComponent, RotationComponent]);
     }
 
     override public function update(dt:Float32) {
         for(e in getEntities()){
-            var transform:TransformComponent = e.transform;
+            var transform:Transform = e.transform;
             var movement:MovementComponent = e.getComponent(MovementComponent);
             var rotation:RotationComponent = e.getComponent(RotationComponent);
 
@@ -55,8 +54,10 @@ class MotionSystem extends System implements IUpdatable {
                 }
 
                 //speed update the current position
-                transform.position.x += movement.speed.x*dt;
-                transform.position.y += movement.speed.y*dt;
+                transform.position.set(
+                    transform.position.x + movement.speed.x*dt,
+                    transform.position.y + movement.speed.y*dt
+                );
             }
 
             if(rotation != null){

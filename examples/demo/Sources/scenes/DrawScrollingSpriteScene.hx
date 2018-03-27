@@ -3,7 +3,6 @@ package scenes;
 import gecko.Screen;
 import gecko.Float32;
 import gecko.components.draw.ScrollingSpriteComponent;
-import gecko.components.core.TransformComponent;
 import gecko.Entity;
 
 class DrawScrollingSpriteScene extends CustomScene {
@@ -25,7 +24,7 @@ class DrawScrollingSpriteScene extends CustomScene {
 
     private function _createScrollingSprite(sprite:String, x:Float32, y:Float32, width:Float32, height:Float32) : ScrollingSpriteComponent {
         var e = Entity.create();
-        e.addComponent(TransformComponent.create(x, y));
+        e.transform.position.set(x, y);
 
         addEntity(e);
 

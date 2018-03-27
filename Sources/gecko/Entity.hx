@@ -1,6 +1,5 @@
 package gecko;
 
-import gecko.components.core.TransformComponent;
 import gecko.components.draw.DrawComponent;
 import gecko.utils.Event;
 import gecko.components.Component;
@@ -29,7 +28,7 @@ class Entity implements IEntity {
 
     private var _tags:Map<String, Bool> = new Map<String, Bool>();
 
-    public var transform:TransformComponent = null; //add a transformComponent always by default?
+    public var transform:Transform;
     public var renderer:DrawComponent = null;
 
     private var _components:Map<String,Component> = new Map();
@@ -41,10 +40,8 @@ class Entity implements IEntity {
     public var onRemovedFromScene:Event<Entity->Scene->Void>;
     public var onDepthChanged:Event<Entity->Void>;
 
-    public var trans:Transform;
-
     public function new() {
-        trans = new Transform(this);
+        transform = new Transform(this);
 
         onComponentAdded = Event.create();
         onComponentRemoved = Event.create();
@@ -58,18 +55,11 @@ class Entity implements IEntity {
             scene.removeEntity(this);
         }
 
+        transform.reset();
+
         for(name in _components.keys()){
             var component = _components.get(name);
             _removeComponent(component);
-            /*_components.remove(name);
-
-            if(component == transform){
-                transform = null;
-            }else if(component == renderer){
-                renderer = null;
-            }
-
-            onComponentRemoved.emit(this, component);*/
             component.destroy();
         }
 
@@ -115,13 +105,6 @@ class Entity implements IEntity {
             renderer = cast component;
         }
 
-        if(component.__type__ == TransformComponent){
-            if(transform != null){
-                removeComponent(transform.__type__);
-            }
-            transform = cast component;
-        }
-
         _components.set(component.__typeName__, component);
         _componentsList.push(component);
 
@@ -143,9 +126,7 @@ class Entity implements IEntity {
         _components.remove(c.__typeName__);
         _componentsList.remove(c);
 
-        if(transform != null && c.__type__ == transform.__type__){
-            transform = null;
-        }else if(renderer != null && c.__type__ == renderer.__type__){
+        if(renderer != null && c.__type__ == renderer.__type__){
             renderer = null;
         }
 
@@ -177,6 +158,10 @@ class Entity implements IEntity {
         #else
         return _components.exists(name);
         #end
+    }
+
+    inline public function toString() : String {
+        return 'Entity: id -> ${id}, components -> todo...';
     }
 
     inline function get_name():String {

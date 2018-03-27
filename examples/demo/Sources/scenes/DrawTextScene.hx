@@ -1,6 +1,5 @@
 package scenes;
 
-import gecko.components.core.TransformComponent;
 import gecko.components.draw.TextComponent;
 import gecko.Entity;
 

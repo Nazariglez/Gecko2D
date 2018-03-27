@@ -1,7 +1,6 @@
 package;
 
 import gecko.Float32;
-import gecko.components.core.TransformComponent;
 import gecko.components.draw.TextComponent;
 import gecko.components.draw.SpriteComponent;
 import gecko.Screen;
@@ -56,7 +55,6 @@ class Game {
 
     private function _createBunny() : Entity {
         var bunny = Entity.create();
-        bunny.addComponent(TransformComponent.create(0, 0));
         bunny.addComponent(SpriteComponent.create("rabbit.png"));
         bunny.addComponent(BounceComponent.create(Math.random() * 10, Math.random() * 10 - 5));
         return bunny;
@@ -71,8 +69,9 @@ class Game {
 
     private function _addBackgroundText() {
         var textEntity = Entity.create();
-        textEntity.addComponent(TransformComponent.create(Screen.centerX, Screen.centerY));
         textEntity.addComponent(TextComponent.create("Left click to add 100 bunnies.\nRight click to add 500 bunnies.", "Ubuntu-B.ttf", 30, "center"));
+        textEntity.transform.position.set(Screen.centerX, Screen.centerY);
+
         Gecko.currentScene.addEntity(textEntity);
     }
 }

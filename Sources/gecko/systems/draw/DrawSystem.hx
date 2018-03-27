@@ -2,15 +2,14 @@ package gecko.systems.draw;
 
 import gecko.render.Graphics;
 import gecko.components.draw.DrawComponent;
-import gecko.components.core.TransformComponent;
 import gecko.Float32;
 
-@:expose
+@:access(gecko.Transform)
 class DrawSystem extends System implements IDrawable implements IUpdatable {
     private var _entityMap:Map<Int, Bool> = new Map();
 
     public function init(){
-        filter.is(DrawComponent).equal(TransformComponent);
+        filter.is(DrawComponent);
         priority = 0;
 
         onEntityAdded += _addEntityToMap;
@@ -46,8 +45,8 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
 
     override public function draw(g:Graphics) {
         //iterate through the tree (closing branchs from parent to childs)
-        var current:Entity = scene.rootEntity;
-        var last:Entity = current;
+        var current:Transform = scene.rootEntity.transform;
+        var last:Transform = current;
         var branch:Int = 0;
         var i = 0;
         var isRendered:Bool = false;
@@ -55,26 +54,26 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
         while(current != null){
             isRendered = false;
 
-            if(_canBeRendered(current)){
-                current.renderer.worldAlpha = current.transform.parent.renderer.worldAlpha * current.renderer.alpha;
-                if(current.renderer.worldAlpha > 0){
-                    _renderEntity(current, g);
+            if(_canBeRendered(current.entity)){
+                current.entity.renderer.worldAlpha = current.parent.entity.renderer.worldAlpha * current.entity.renderer.alpha;
+                if(current.entity.renderer.worldAlpha > 0){
+                    _renderEntity(current.entity, g);
                     isRendered = true;
                 }
-            }else if(current == scene.rootEntity){
+            }else if(current.entity == scene.rootEntity){
                 isRendered = true;
             }
 
-            branch = current.transform._branch;
+            branch = current._branch;
             last = current;
-            current = current.transform._nextChild;
+            current = current._nextChild;
 
-            i = last.transform.children.length-1;
+            i = last._children.length-1;
             while(isRendered && i >= 0){
-                last.transform.children[i].transform._branch = branch+1;
-                last.transform.children[i].transform._nextChild = current;
+                last._children[i]._branch = branch+1;
+                last._children[i]._nextChild = current;
 
-                current = last.transform.children[i];
+                current = last._children[i];
                 i--;
             }
 
@@ -89,6 +88,7 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
     }
 
     inline private function _renderEntity(e:Entity, g:Graphics) {
+        e.transform.updateTransform();
         g.apply(e.transform.worldMatrix, e.renderer.color, e.renderer.worldAlpha);
         e.renderer.draw(g);
     }
