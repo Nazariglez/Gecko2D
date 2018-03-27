@@ -75,22 +75,18 @@ class Scene implements IScene {
     }
 
     public function beforeDestroy(){
-        trace("entities", entities.length);
         while(entities.length > 0){
             var e = entities[0];
             removeEntity(e);
             e.destroy();
         }
-        trace("rest entities", entities.length);
 
-        trace("--",_systemsList.length, "--");
         while(_systemsList.length > 0){
             var sys = _systemsList[0];
             removeSystem(sys.__type__);
             sys.destroy();
         }
 
-        trace("--|",_systemsList.length, "|--");
 
         if(rootEntity != null){
             rootEntity.destroy();
@@ -162,7 +158,7 @@ class Scene implements IScene {
             entity.onComponentAdded -= _onEntityAddComponent;
             entity.scene = null;
 
-            if(entity.transform != null && rootEntity != null && entity.transform.parent == rootEntity.transform){
+            if(rootEntity != null && entity.transform.parent == rootEntity.transform){
                 entity.transform.parent = null;
             }
 
