@@ -55,7 +55,7 @@ class Entity implements IEntity {
             scene.removeEntity(this);
         }
 
-        transform.reset();
+        transform._reset();
 
         for(name in _components.keys()){
             var component = _components.get(name);

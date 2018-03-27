@@ -16,7 +16,8 @@ enum DepthMode {
     DISABLED;
 }
 
-@:access(gecko.math.Point)
+@:allow(gecko.Entity)
+@:access(gecko.math.Point, gecko.math.Vector2g)
 class Transform {
     static public var isDepthEnabled:Bool = false;
 
@@ -164,12 +165,57 @@ class Transform {
         //todo emit onSortChirldren?
     }
 
-    public function reset() { //todo REST TRANSFORM
+    private function _reset() {
         parent = null;
 
         while(_children.length > 0){
             _children[0].parent = null;
         }
+
+        onDepthChange.clear();
+        onAddedToParent.clear();
+        onRemovedFromParent.clear();
+        onTransformChange.clear();
+
+        _position._setX(0);
+        _position._setY(0);
+
+        _localPosition._setX(0);
+        _localPosition._setY(0);
+
+        _scale._setX(0);
+        _scale._setY(0);
+
+        _localScale._setX(0);
+        _localScale._setY(0);
+
+        _skew._setX(0);
+        _skew._setY(0);
+
+        _pivot._setX(0);
+        _pivot._setY(0);
+
+        _anchor._setX(0);
+        _anchor._setY(0);
+
+        _size._setX(0);
+        _size._setY(0);
+
+        _flip._setX(false);
+        _flip._setY(false);
+
+        _rotation = 0;
+        _localRotation = 0;
+
+        _skewCache.cosX = 0;
+        _skewCache.sinX = 0;
+        _skewCache.cosY = 0;
+        _skewCache.sinY = 0;
+
+        _depth = 0;
+        _depthMode = DepthMode.DEFAULT;
+
+        _dirty = _dirtyPosition = _dirtyAngle = _dirtyScale = true;
     }
 
     public function updateTransform() {

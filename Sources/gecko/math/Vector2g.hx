@@ -22,9 +22,20 @@ class Vector2g<T> { //todo add observer
         isObserved = false;
     }
 
-    public inline function set(x:T, ?y:T) {
-        this.x = x;
-		this.y = (y == null) ? x : y;
+    public inline function set(x:T, y:T) {
+        if(x != _x || y != _y){
+            _setX(x);
+            _setY(y);
+            if(isObserved)_observer(this);
+        }
+    }
+
+    inline private function _setX(x:T) {
+        _x = x;
+    }
+
+    inline private function _setY(y:T) {
+        _y = y;
     }
 
     public inline function clone(vec:Vector2g<T>) : Vector2g<T> {
