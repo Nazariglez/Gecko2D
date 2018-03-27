@@ -40,7 +40,7 @@ class Game {
     public function _gotoMainScene() {
         Mouse.enable();
 
-        Gecko.world.changeScene(scenes.MainScene.create());
+        Gecko.world.changeScene(scenes.MainScene.create(), true);
     }
 
     //Add a loaderbar an go to mainScene when the load finish

@@ -183,20 +183,20 @@ class Transform {
         _localPosition._setX(0);
         _localPosition._setY(0);
 
-        _scale._setX(0);
-        _scale._setY(0);
+        _scale._setX(1);
+        _scale._setY(1);
 
-        _localScale._setX(0);
-        _localScale._setY(0);
+        _localScale._setX(1);
+        _localScale._setY(1);
 
         _skew._setX(0);
         _skew._setY(0);
 
-        _pivot._setX(0);
-        _pivot._setY(0);
+        _pivot._setX(0.5);
+        _pivot._setY(0.5);
 
-        _anchor._setX(0);
-        _anchor._setY(0);
+        _anchor._setX(0.5);
+        _anchor._setY(0.5);
 
         _size._setX(0);
         _size._setY(0);

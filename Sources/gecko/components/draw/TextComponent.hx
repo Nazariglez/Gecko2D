@@ -50,12 +50,13 @@ class TextComponent extends DrawComponent {
     }
 
     override public function beforeDestroy() {
+        super.beforeDestroy();
+
         text = "";
+        fontName = "";
         fontSize = 10;
         font = null;
-        onAddedToEntity -= _setTransformSize;
-
-        super.beforeDestroy();
+        //onAddedToEntity -= _setTransformSize;
     }
 
     public override function draw(g:Graphics) {
@@ -146,7 +147,7 @@ class TextComponent extends DrawComponent {
         width = max;
         height = (font.height(_fontSize)+_lineSpacing)*_parsedText.length-_lineSpacing;
 
-        if(entity != null && entity.transform != null){
+        if(entity != null){
             entity.transform.size.set(width, height);
         }
     }

@@ -5,10 +5,13 @@ import gecko.utils.Event;
 import gecko.components.Component;
 import gecko.components.ComponentClass;
 
+using Lambda;
+
 //todo toString for debug
 //todo serialize && unserialize to save and load from text
 
 //@:poolAmount(100)
+    @:expose
 class Entity implements IEntity {
     public var id:Int = Gecko.getUniqueID();
 
@@ -161,7 +164,7 @@ class Entity implements IEntity {
     }
 
     inline public function toString() : String {
-        return 'Entity: id -> ${id}, components -> todo...';
+        return 'Entity: id -> ${id}, components -> ${_componentsList.map(function(c){ return c.name; })}';
     }
 
     inline function get_name():String {
