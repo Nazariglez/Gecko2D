@@ -20,10 +20,10 @@ class SpriteComponent extends DrawComponent {
     }
 
     override public function beforeDestroy(){
+        super.beforeDestroy();
+
         texture = null;
         onAddedToEntity -= _setTransformSize;
-
-        super.beforeDestroy();
     }
 
     private function _setTransformSize(e:Entity) {

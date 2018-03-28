@@ -40,6 +40,12 @@ class Game {
     public function _gotoMainScene() {
         Mouse.enable();
 
+        untyped js.Browser.window.goto = function(){
+            trace("goto", Gecko.currentScene.id);
+            Gecko.world.changeScene(scenes.MainScene.create(), true);
+            trace("end goto", Gecko.currentScene.id);
+        };
+
         Gecko.world.changeScene(scenes.MainScene.create(), true);
     }
 

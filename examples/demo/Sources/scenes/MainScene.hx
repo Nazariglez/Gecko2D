@@ -24,6 +24,7 @@ typedef ExamplesDef = {
     scene:Scene
 };
 
+@:expose
 class MainScene extends CustomScene {
     static var _examples:Array<ExamplesDef> = [];
 

@@ -58,13 +58,13 @@ class ScrollingSpriteComponent extends DrawComponent {
     }
 
     override public function beforeDestroy(){
+        super.beforeDestroy();
+
         scale.destroy();
         position.destroy();
         speed.destroy();
 
         texture = null;
-
-        super.beforeDestroy();
     }
 
     override public function update(dt:Float32) {

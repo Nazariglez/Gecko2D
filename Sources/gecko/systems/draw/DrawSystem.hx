@@ -4,41 +4,42 @@ import gecko.Graphics;
 import gecko.components.draw.DrawComponent;
 import gecko.Float32;
 
+@:expose
 @:access(gecko.Transform)
 class DrawSystem extends System implements IDrawable implements IUpdatable {
-    private var _entityMap:Map<Int, Bool> = new Map();
+    //private var _entityMap:Map<Int, Bool> = new Map();
 
     public function init(){
         filter.is(DrawComponent);
         priority = 0;
 
-        onEntityAdded += _addEntityToMap;
-        onEntityRemoved += _removeEntityFromMap;
+        //onEntityAdded += _addEntityToMap;
+        //onEntityRemoved += _removeEntityFromMap;
     }
 
     override public function beforeDestroy() {
-        onEntityAdded -= _addEntityToMap;
-        onEntityRemoved -= _removeEntityFromMap;
+        //onEntityAdded -= _addEntityToMap;
+        //onEntityRemoved -= _removeEntityFromMap;
 
-        for(key in _entityMap.keys()){
+        /*for(key in _entityMap.keys()){
             _entityMap.remove(key);
-        }
+        }*/
 
         super.beforeDestroy();
     }
 
-    private function _addEntityToMap(entity:Entity) {
+    /*private function _addEntityToMap(entity:Entity) {
         _entityMap.set(entity.id, true);
     }
 
     private function _removeEntityFromMap(entity:Entity) {
         _entityMap.remove(entity.id);
-    }
+    }*/
 
     override public function update(dt:Float32) {
         for(e in getEntities()){
             if(e.enabled){
-                e.renderer.update(dt);
+                e.getDrawComponent().update(dt);
             }
         }
     }
@@ -54,13 +55,22 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
         while(current != null){
             isRendered = false;
 
-            if(_canBeRendered(current.entity)){
-                current.entity.renderer.worldAlpha = current.parent.entity.renderer.worldAlpha * current.entity.renderer.alpha;
-                if(current.entity.renderer.worldAlpha > 0){
-                    _renderEntity(current.entity, g);
+            var currentEntity = current.entity;
+
+            if(currentEntity.enabled && hasEntity(currentEntity) && _canBeRendered(current.entity)){
+                var drawComponent = currentEntity.getDrawComponent();
+                var parentDrawComponent = current.parent.entity.getDrawComponent();
+
+                drawComponent.worldAlpha = parentDrawComponent.worldAlpha * drawComponent.alpha;
+
+                if(drawComponent.isVisible){
+                    g.apply(current.worldMatrix, drawComponent.color, drawComponent.worldAlpha);
+                    drawComponent.draw(g);
+
                     isRendered = true;
                 }
-            }else if(current.entity == scene.rootEntity){
+
+            }else if(currentEntity == scene.rootEntity){
                 isRendered = true;
             }
 
@@ -84,12 +94,6 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
     }
 
     inline private function _canBeRendered(e:Entity) : Bool {
-        return e.enabled && _entityMap.exists(e.id) && e.renderer != null && e.renderer.visible;
-    }
-
-    inline private function _renderEntity(e:Entity, g:Graphics) {
-        e.transform.updateTransform();
-        g.apply(e.transform.worldMatrix, e.renderer.color, e.renderer.worldAlpha);
-        e.renderer.draw(g);
+        return e.hasDrawComponent() && e.getDrawComponent().visible;
     }
 }

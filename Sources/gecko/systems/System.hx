@@ -20,8 +20,8 @@ class System implements ISystem {
     public var priority:Int = 0;
     public var requiredComponents:Array<String> = [];
 
-    private var _entities:Array<Entity> = [];
-    private var _dirtySortEntities:Bool = false;
+    private var _entitiesList:Array<Entity> = [];
+    private var _entities:Map<Int, Entity> = new Map();
 
     public var filter:Filter = new Filter();
 
@@ -56,11 +56,11 @@ class System implements ISystem {
 
 
     public inline function getEntities() : Array<Entity> {
-        return _entities;
+        return _entitiesList;
     }
 
     public inline function getEntitiesWithComponent(componentClass:String) : Array<Entity> {
-        return _entities.filter(function(e) {
+        return _entitiesList.filter(function(e) {
             return e.hasComponent(componentClass);
         }).array();
     }
@@ -71,20 +71,25 @@ class System implements ISystem {
     }
 
     public function removeAllEntities() {
-        for(e in _entities){
+        for(e in _entitiesList){
             _removeEntity(e);
         }
     }
 
     public inline function hasEntity(entity:Entity) : Bool {
-        return _entities.indexOf(entity) != -1;
+        #if js
+        return untyped _entities.h.hasOwnProperty(entity.id);
+        #else
+        return _entities.exists(entity.id); //_entitiesList.indexOf(entity) != -1;
+        #end
+
     }
 
     private function _registerEntity(entity:Entity) {
         if(isValidEntity(entity)){
-            _entities.push(entity);
+            _entitiesList.push(entity);
+            _entities.set(entity.id, entity);
             entity.onComponentRemoved += _onEntityRemoveComponent;
-            _dirtySortEntities = true;
 
             onEntityAdded.emit(entity);
         }
@@ -99,13 +104,14 @@ class System implements ISystem {
 
     private function _removeEntity(entity:Entity) {
         entity.onComponentRemoved -= _onEntityRemoveComponent;
-        _entities.remove(entity);
+        _entitiesList.remove(entity);
+        _entities.remove(entity.id);
 
         onEntityRemoved.emit(entity);
     }
 
     private function _removeAllEntities() {
-        for(e in _entities){
+        for(e in _entitiesList){
             _removeEntity(e);
         }
     }

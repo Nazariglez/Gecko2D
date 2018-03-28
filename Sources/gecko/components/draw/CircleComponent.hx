@@ -31,13 +31,13 @@ class CircleComponent extends DrawComponent {
     }
 
     override public function beforeDestroy() {
+        super.beforeDestroy();
+
         onAddedToEntity -= _setTransformSize;
 
         radius = 1;
         fill = false;
         strength = 2;
-
-        super.beforeDestroy();
     }
 
     private function _setTransformSize(e:Entity) {

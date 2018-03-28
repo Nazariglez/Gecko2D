@@ -26,13 +26,10 @@ class Entity implements IEntity {
     public var scene(get, set):Scene;
     private var _scene:Scene;
 
-    public var depth(get, set):Int;
-    private var _depth:Int = 0;
-
     private var _tags:Map<String, Bool> = new Map<String, Bool>();
 
     public var transform:Transform;
-    public var renderer:DrawComponent = null;
+    private var _renderer:DrawComponent = null;
 
     private var _components:Map<String,Component> = new Map();
     private var _componentsList:Array<Component> = [];
@@ -41,7 +38,6 @@ class Entity implements IEntity {
     public var onComponentRemoved:Event<Entity->Component->Void>;
     public var onAddedToScene:Event<Entity->Scene->Void>;
     public var onRemovedFromScene:Event<Entity->Scene->Void>;
-    public var onDepthChanged:Event<Entity->Void>;
 
     public function new() {
         transform = new Transform(this);
@@ -50,7 +46,6 @@ class Entity implements IEntity {
         onComponentRemoved = Event.create();
         onAddedToScene = Event.create();
         onRemovedFromScene = Event.create();
-        onDepthChanged = Event.create();
     }
 
     public function beforeDestroy(){
@@ -76,9 +71,15 @@ class Entity implements IEntity {
         onComponentRemoved.clear();
         onAddedToScene.clear();
         onRemovedFromScene.clear();
-        onDepthChanged.clear();
     }
 
+    inline public function getDrawComponent() : DrawComponent {
+        return _renderer;
+    }
+
+    inline public function hasDrawComponent() : Bool {
+        return _renderer != null;
+    }
 
     public inline function addTag(tag:String) {
         _tags.set(tag, true);
@@ -102,10 +103,10 @@ class Entity implements IEntity {
         component.entity = this;
 
         if(Std.is(component, DrawComponent)){
-            if(renderer != null){
-                removeComponent(renderer.__type__);
+            if(_renderer != null){
+                removeComponent(_renderer.__type__);
             }
-            renderer = cast component;
+            _renderer = cast component;
         }
 
         _components.set(component.__typeName__, component);
@@ -129,8 +130,8 @@ class Entity implements IEntity {
         _components.remove(c.__typeName__);
         _componentsList.remove(c);
 
-        if(renderer != null && c.__type__ == renderer.__type__){
-            renderer = null;
+        if(_renderer != null && c.__type__ == _renderer.__type__){
+            _renderer = null;
         }
 
         c.entity = null;
@@ -194,17 +195,6 @@ class Entity implements IEntity {
         }
 
         return _scene;
-    }
-
-    inline function get_depth():Int {
-        return _depth;
-    }
-
-    function set_depth(value:Int):Int {
-        if(value == _depth)return _depth;
-        _depth = value;
-        onDepthChanged.emit(this);
-        return _depth;
     }
 
     inline function get_isRoot():Bool {

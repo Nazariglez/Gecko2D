@@ -61,16 +61,15 @@ class PolygonComponent extends DrawComponent {
     }
 
     override public function beforeDestroy() {
+        super.beforeDestroy();
+
         onAddedToEntity -= _setTransformSize;
 
         fill = false;
 
-        var p:Point;
-        while((p = _points.pop()) != null){
-            p.destroy();
+        while(_points.length > 0){
+            _points[0].destroy();
         }
-
-        super.beforeDestroy();
     }
 
     private function _setTransformSize(e:Entity) {

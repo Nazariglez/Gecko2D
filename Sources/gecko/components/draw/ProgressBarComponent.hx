@@ -23,4 +23,11 @@ class ProgressBarComponent extends DrawComponent {
         g.color = lineColor;
         g.drawRect(0, 0, entity.transform.size.x, entity.transform.size.y, outlineWidth);
     }
+
+    override public function beforeDestroy() {
+        super.beforeDestroy();
+
+        progress = 0;
+        outlineWidth = 2;
+    }
 }

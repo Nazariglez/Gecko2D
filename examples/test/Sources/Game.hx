@@ -1,7 +1,8 @@
 package;
 
+import gecko.Scene;
 import gecko.Color;
-import gecko.render.Graphics;
+import gecko.Graphics;
 import gecko.Assets;
 import gecko.components.draw.SpriteComponent;
 import gecko.Screen;
@@ -18,15 +19,16 @@ class Game {
             g.color = Color.Red;
             g.fillRect(Screen.centerX, Screen.centerY, 3 , 3);
         };
+
+        gecko.input.Mouse.enable();
+        untyped js.Browser.window.goto = function(){
+            _onLoaded();
+        };
     }
 
     private function _onLoaded() {
-        var scene = Gecko.currentScene;
+        var scene = gecko.math.Random.getFloat() < 0.5 ? TestScene.create() : TestScene2.create();
 
-        var e = Entity.create();
-        e.addComponent(SpriteComponent.create("rabbit.png"));
-        e.transform.position.set(Screen.centerX, Screen.centerY);
-
-        scene.addEntity(e);
+        Gecko.world.changeScene(scene, true);
     }
 }

@@ -38,14 +38,14 @@ class RectangleComponent extends DrawComponent {
     }
 
     override public function beforeDestroy(){
+        super.beforeDestroy();
+
         width = 0;
         height = 0;
         fill = false;
         strength = 2;
 
         onAddedToEntity -= _setTransformSize;
-
-        super.beforeDestroy();
     }
 
     inline function get_width():Float32 {

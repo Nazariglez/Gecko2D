@@ -43,6 +43,8 @@ class AnimationComponent extends DrawComponent {
     }
 
     override public function beforeDestroy() {
+        super.beforeDestroy();
+
         var anim = animations.pop();
         while(anim != null){
             anim.destroy();
@@ -63,8 +65,6 @@ class AnimationComponent extends DrawComponent {
         onPause.clear();
         onResume.clear();
         onLoop.clear();
-
-        super.beforeDestroy();
     }
 
     private function _setTransformSize(e:Entity) {
