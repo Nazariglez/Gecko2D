@@ -1,6 +1,5 @@
 package gecko;
 
-import gecko.render.Graphics;
 import gecko.utils.Event;
 
 class World {
@@ -17,10 +16,12 @@ class World {
     public function changeScene(sceneIn:Scene, destroyCurrentScene:Bool = false) {
         _destroyCurrentScene = destroyCurrentScene;
         _nextScene = sceneIn;
+        trace("scene in", sceneIn.id, "scene out", currentScene.id);
     }
 
     public function update(delta:Float32) {
         if(_nextScene != null){
+            trace("init change scene");
             var scene = currentScene;
 
             currentScene = _nextScene;
@@ -31,6 +32,7 @@ class World {
             if(_destroyCurrentScene){
                 scene.destroy();
             }
+            trace("end change scene",_destroyCurrentScene);
         }
 
         currentScene.process(delta);

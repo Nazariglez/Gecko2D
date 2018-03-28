@@ -1,7 +1,7 @@
 package gecko.components.draw;
 
 import gecko.render.VerticalTextAlign;
-import gecko.render.Graphics;
+import gecko.Graphics;
 import gecko.render.HorizontalTextAlign;
 import gecko.resources.Font;
 import gecko.Float32;
@@ -52,9 +52,9 @@ class TextComponent extends DrawComponent {
     override public function beforeDestroy() {
         super.beforeDestroy();
 
-        text = "";
-        fontName = "";
-        fontSize = 10;
+        _text = "";
+        _fontName = "";
+        _fontSize = 10;
         font = null;
         //onAddedToEntity -= _setTransformSize;
     }

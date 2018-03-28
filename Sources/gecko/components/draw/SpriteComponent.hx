@@ -1,6 +1,6 @@
 package gecko.components.draw;
 
-import gecko.render.Graphics;
+import gecko.Graphics;
 import gecko.resources.Texture;
 import gecko.Assets;
 

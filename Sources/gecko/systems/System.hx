@@ -1,7 +1,7 @@
 package gecko.systems;
 
 import gecko.utils.Event;
-import gecko.render.Graphics;
+import gecko.Graphics;
 import gecko.components.Component;
 
 using Lambda;

@@ -1,6 +1,6 @@
 package scenes;
 
-import gecko.render.Graphics;
+import gecko.Graphics;
 import gecko.Scene;
 import gecko.Gecko;
 import gecko.Color;
@@ -28,6 +28,7 @@ class MainScene extends CustomScene {
     static var _examples:Array<ExamplesDef> = [];
 
     override public function init(closeButton:Bool = false) {
+        trace("start init main scene");
         super.init(closeButton);
 
         _addTitle(Screen.centerX, 60);
@@ -46,9 +47,9 @@ class MainScene extends CustomScene {
         var yy = minY;
 
         for(example in _examples){
-            if(example.scene != null)trace(example.scene.isAlreadyDestroyed);
+            if(example.scene != null)trace("already destroyed",example.scene.isAlreadyDestroyed);
             _createButton(example.name, xx, yy, function(x, y){
-               _gotoScene(example.scene);
+               _gotoScene(MainScene.create());
             });
 
             yy += gapY;
@@ -58,6 +59,8 @@ class MainScene extends CustomScene {
                 yy = minY;
             }
         }
+
+        trace("end init mainscene");
     }
 
     private function _initExamples() {

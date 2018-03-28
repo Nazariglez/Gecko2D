@@ -4,7 +4,6 @@ import gecko.tween.TweenManager;
 import gecko.timer.TimerManager;
 import gecko.components.draw.DrawComponent;
 import gecko.systems.SystemClass;
-import gecko.render.Graphics;
 import gecko.utils.Event;
 import gecko.systems.draw.DrawSystem;
 import gecko.systems.System;
@@ -102,8 +101,11 @@ class Scene implements IScene {
         onSystemAdded.clear();
         onSystemRemoved.clear();
 
+        trace("scene clean", id);
+
         if(is2D){
             _init2D();
+            trace("scene added 2d shit", id);
         }
     }
 

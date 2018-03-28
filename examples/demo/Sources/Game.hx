@@ -6,7 +6,7 @@ import gecko.Screen;
 import gecko.Entity;
 import gecko.Assets;
 import gecko.components.draw.ProgressBarComponent;
-import gecko.Audio;
+//import gecko.Audio;
 
 class Game {
     private var _assetsToLoad:Array<String> = [
@@ -26,7 +26,7 @@ class Game {
         "images/kenney/pig.png",
         "images/opengameart/mountain.png",
         "images/opengameart/carbon_fiber.png",
-        "audio/Retro-Beat.wav"
+        //"audio/Retro-Beat.wav"
     ];
 
     public function new(){

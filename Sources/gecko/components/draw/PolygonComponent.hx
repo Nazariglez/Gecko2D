@@ -1,7 +1,7 @@
 package gecko.components.draw;
 
 import gecko.math.Point;
-import gecko.render.Graphics;
+import gecko.Graphics;
 import gecko.Entity;
 import gecko.components.draw.DrawComponent;
 

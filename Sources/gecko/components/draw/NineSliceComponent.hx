@@ -1,7 +1,7 @@
 package gecko.components.draw;
 
 import gecko.resources.Texture;
-import gecko.render.Graphics;
+import gecko.Graphics;
 import gecko.Float32;
 
 typedef NineSliceOptions = {

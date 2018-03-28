@@ -1,6 +1,6 @@
 package gecko.systems.draw;
 
-import gecko.render.Graphics;
+import gecko.Graphics;
 import gecko.components.draw.DrawComponent;
 import gecko.Float32;
 

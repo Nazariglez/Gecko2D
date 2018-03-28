@@ -1,4 +1,4 @@
-package gecko.render;
+package gecko;
 
 import gecko.Color;
 import gecko.Float32;
@@ -11,6 +11,7 @@ import gecko.resources.Texture;
 import gecko.resources.Video;
 import kha.graphics4.PipelineState;
 import kha.math.Vector2;
+import gecko.render.*;
 
 using kha.graphics2.GraphicsExtension;
 

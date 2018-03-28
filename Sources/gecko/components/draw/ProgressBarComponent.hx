@@ -1,7 +1,7 @@
 package gecko.components.draw;
 
 import gecko.components.draw.DrawComponent;
-import gecko.render.Graphics;
+import gecko.Graphics;
 import gecko.Color;
 
 class ProgressBarComponent extends DrawComponent {

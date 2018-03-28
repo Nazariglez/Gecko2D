@@ -10,7 +10,6 @@ import kha.WindowMode;
 import kha.Scheduler;
 import kha.Framebuffer;
 import kha.System;
-import gecko.render.Graphics;
 
 #if ((kha_html5 ||kha_debug_html5) && debug)
 @:expose
