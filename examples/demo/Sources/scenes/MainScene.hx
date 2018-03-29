@@ -21,7 +21,7 @@ import scenes.DrawScrollingSpriteScene;
 
 typedef ExamplesDef = {
     name:String,
-    scene:Scene
+    callback:Void->Void
 };
 
 @:expose
@@ -48,9 +48,8 @@ class MainScene extends CustomScene {
         var yy = minY;
 
         for(example in _examples){
-            if(example.scene != null)trace("already destroyed",example.scene.isAlreadyDestroyed);
             _createButton(example.name, xx, yy, function(x, y){
-               _gotoScene(MainScene.create());
+               example.callback();
             });
 
             yy += gapY;
@@ -64,23 +63,49 @@ class MainScene extends CustomScene {
         trace("end init mainscene");
     }
 
+    override public function beforeDestroy() {
+        super.beforeDestroy();
+
+        _examples = [];
+    }
+
     private function _initExamples() {
         if(_examples.length == 0){
             trace("INIT");
             _examples = [
-                { name: "Draw Sprites", scene: DrawSpriteScene.create(true) },
-                { name: "Draw Shapes", scene: DrawShapeScene.create(true) },
-                { name: "Draw Animations", scene: null },
-                { name: "Draw NineSlices", scene: DrawNineSliceScene.create(true) },
-                { name: "Draw ScrollingSprites", scene: DrawScrollingSpriteScene.create(true) },
-                { name: "Draw Text", scene: DrawTextScene.create(true) },
+                {
+                    name: "Draw Sprites",
+                    callback: function() {
+                        _gotoScene(DrawSpriteScene.create(true));
+                    }
+                },
+                {
+                    name: "Draw Shapes",
+                    callback: function() {
+                        _gotoScene(DrawShapeScene.create(true));
+                    }
+                },
+                //{ name: "Draw Animations", callback: null },
+                {
+                    name: "Draw NineSlices",
+                    callback: function() {
+                        _gotoScene(DrawNineSliceScene.create(true));
+                    }
+                },
+                {
+                    name: "Draw ScrollingSprites",
+                    callback: function() {
+                        _gotoScene(DrawScrollingSpriteScene.create(true));
+                    }
+                },
+                /*{ name: "Draw Text", scene: DrawTextScene.create(true) },
 
                 { name: "Transform Rotation", scene: null },
                 { name: "Transform Anchors", scene: null },
                 { name: "Transform Pivots", scene: null },
                 { name: "Transform Skew", scene: null },
                 { name: "Transform Pivot", scene: null },
-                { name: "Transform Parents", scene: null },
+                { name: "Transform Parents", scene: null },*/
             ];
         }
     }
@@ -93,7 +118,8 @@ class MainScene extends CustomScene {
         //Button sprite
         var btn = Entity.create();
         btn.transform.position.set(x, y);
-        btn.addComponent(NineSliceComponent.create("images/kenney/green_panel.png", 160, 50));
+
+        var nineSlice = btn.addComponent(NineSliceComponent.create("images/kenney/green_panel.png", 160, 50));
 
         //button text
         var txt = Entity.create();
@@ -110,11 +136,11 @@ class MainScene extends CustomScene {
         //over and out color effect
         var mouse = btn.addComponent(MouseComponent.create());
         mouse.onOver += function(x:Float32, y:Float32) {
-            btn.renderer.color = Color.LightGreen;
+            nineSlice.color = Color.LightGreen;
         };
 
         mouse.onOut += function(x:Float32, y:Float32){
-            btn.renderer.color = Color.White;
+            nineSlice.color = Color.White;
         };
 
         //trigger the callback when the button it's clicked

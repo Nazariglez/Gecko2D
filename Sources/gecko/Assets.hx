@@ -34,7 +34,7 @@ class Assets {
     }
 
     static inline private function _existsAssetsName(name:String, type:String) : Bool {
-        return Reflect.hasField(Reflect.field(kha.Assets, type),name);
+        return Reflect.field(kha.Assets, type).names.indexOf(name) != -1;
     }
 
     static public function load(arr:Array<String>, ?onComplete:Void->Void, ?onError:String->Void) : Assets {

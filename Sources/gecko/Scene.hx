@@ -58,6 +58,11 @@ class Scene implements IScene {
         timerManager = TimerManager.create();
         tweenManager = TweenManager.create();
 
+        rootEntity = Entity.create();
+        rootEntity.name = "scene-root-entity";
+        rootEntity.addComponent(DrawComponent.create());
+        @:privateAccess rootEntity._isRoot = true;
+
         if(is2D){
             _init2D();
         }
@@ -67,10 +72,12 @@ class Scene implements IScene {
         is2D = true;
         addSystem(DrawSystem.create());
 
-        rootEntity = Entity.create();
-        rootEntity.name = "scene-root-entity";
-        rootEntity.addComponent(DrawComponent.create());
-        @:privateAccess rootEntity._isRoot = true;
+        /*if(rootEntity == null){
+            rootEntity = Entity.create();
+            rootEntity.name = "scene-root-entity";
+            rootEntity.addComponent(DrawComponent.create());
+            @:privateAccess rootEntity._isRoot = true;
+        }*/
     }
 
     public function beforeDestroy(){
@@ -87,10 +94,10 @@ class Scene implements IScene {
         }
 
 
-        if(rootEntity != null){
+        /*if(rootEntity != null){
             rootEntity.destroy();
             rootEntity = null;
-        }
+        }*/
 
         timerManager.cleanTimers();
         tweenManager.cleanTweens();
@@ -101,11 +108,9 @@ class Scene implements IScene {
         onSystemAdded.clear();
         onSystemRemoved.clear();
 
-        trace("scene clean", id);
 
         if(is2D){
             _init2D();
-            trace("scene added 2d shit", id);
         }
     }
 
@@ -241,6 +246,7 @@ class Scene implements IScene {
     }
 
     public function process(delta:Float32) {
+        //trace("update start");
         _isProcessing = true;
         if(_dirtySortSystems){
             _systemsList.sort(_sortSystems);
@@ -272,6 +278,7 @@ class Scene implements IScene {
         }
 
         _isProcessing = false;
+        //trace("update end");
     }
 
     public function update(delta:Float32) {
@@ -286,6 +293,7 @@ class Scene implements IScene {
     }
 
     public function draw(g:Graphics) {
+        //trace("draw start");
         _isProcessing = true;
         for(sys in _drawableSystems){
             if(sys.enabled){
@@ -293,6 +301,7 @@ class Scene implements IScene {
             }
         }
         _isProcessing = false;
+        //trace("draw end");
     }
 
     private function _onEntityAddComponent(entity:Entity, component:Component) {

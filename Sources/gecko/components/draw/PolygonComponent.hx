@@ -68,7 +68,7 @@ class PolygonComponent extends DrawComponent {
         fill = false;
 
         while(_points.length > 0){
-            _points[0].destroy();
+            _points.pop().destroy();
         }
     }
 

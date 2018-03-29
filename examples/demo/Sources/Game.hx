@@ -11,7 +11,6 @@ import gecko.components.draw.ProgressBarComponent;
 class Game {
     private var _assetsToLoad:Array<String> = [
         //your assets here
-        "Ubuntu-B.ttf",
         "images/kenney/green_panel.png",
         "images/kenney/grey_button08.png",
         "images/kenney/red_cross.png",
@@ -26,6 +25,7 @@ class Game {
         "images/kenney/pig.png",
         "images/opengameart/mountain.png",
         "images/opengameart/carbon_fiber.png",
+        "Ubuntu-B.ttf",
         //"audio/Retro-Beat.wav"
     ];
 
@@ -40,11 +40,13 @@ class Game {
     public function _gotoMainScene() {
         Mouse.enable();
 
-        untyped js.Browser.window.goto = function(){
-            trace("goto", Gecko.currentScene.id);
-            Gecko.world.changeScene(scenes.MainScene.create(), true);
-            trace("end goto", Gecko.currentScene.id);
+        Mouse.onLeftPressed += function(x, y){
+            trace(x,y);
         };
+
+        /*untyped js.Browser.window.goto = function(){
+            Gecko.world.changeScene(scenes.MainScene.create(), true);
+        };*/
 
         Gecko.world.changeScene(scenes.MainScene.create(), true);
     }

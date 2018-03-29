@@ -21,12 +21,21 @@ class Game {
         };
 
         gecko.input.Mouse.enable();
-        untyped js.Browser.window.goto = function(){
+        /*untyped js.Browser.window.goto = function(){
+            _onLoaded();
+        };*/
+
+        gecko.input.Mouse.onRightReleased += function(x, y){
             _onLoaded();
         };
     }
 
     private function _onLoaded() {
+        /*var e = Entity.create();
+        e.addComponent(SpriteComponent.create("rabbit.png"));
+        e.transform.position.set(Screen.centerX, Screen.centerY);
+
+        Gecko.currentScene.addEntity(e);*/
         var scene = gecko.math.Random.getFloat() < 0.5 ? TestScene.create() : TestScene2.create();
 
         Gecko.world.changeScene(scene, true);

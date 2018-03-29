@@ -24,24 +24,24 @@ class CustomScene extends Scene {
         btn.transform.position.set(Screen.width-20, 20);
         btn.transform.anchor.set(1, 0);
 
-        btn.addComponent(SpriteComponent.create("images/kenney/red_cross.png"));
+        var sprite = btn.addComponent(SpriteComponent.create("images/kenney/red_cross.png"));
 
         var mouse = btn.addComponent(MouseComponent.create());
         mouse.onClick += _gotoMainScene;
 
         mouse.onOver += function(x:Float32, y:Float32) {
-            btn.renderer.color = Color.Red;
+            sprite.color = Color.Red;
         };
 
         mouse.onOut += function(x:Float32, y:Float32) {
-            btn.renderer.color = Color.White;
+            sprite.color = Color.White;
         };
 
         addEntity(btn);
     }
 
     private function _gotoMainScene(x:Float32, y:Float32) {
-        Gecko.world.changeScene(MainScene.create());
+        Gecko.world.changeScene(MainScene.create(), true);
         trace("here1");
     }
 }

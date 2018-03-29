@@ -6,7 +6,7 @@ import gecko.components.draw.SpriteComponent;
 import gecko.Screen;
 import gecko.resources.Font;
 import gecko.Color;
-import gecko.render.Graphics;
+import gecko.Graphics;
 import gecko.Gecko;
 import gecko.Assets;
 import gecko.Entity;

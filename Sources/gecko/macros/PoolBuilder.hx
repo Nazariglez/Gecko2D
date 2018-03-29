@@ -112,9 +112,6 @@ class PoolBuilder {
         }
 
 
-
-
-
         var destroyIndex = -1;
         var existsDestroy = false;
         var destroyFn:Field;
@@ -137,7 +134,6 @@ class PoolBuilder {
 
             if(f.name == "isAlreadyDestroyed"){
                 hasDestroyedFlag = true;
-                //trace"HERE");
                 _destroyedFlag.set(getClassId(clazz), f);
             }
         }
@@ -145,7 +141,7 @@ class PoolBuilder {
         var isDestroyInherited = false;
         var isDestroyInmediateInherited = false;
 
-            //get the inherited init args
+        //get the inherited init args
         if(!existsDestroy && clazz.superClass != null){
 
             var _cls = clazz;
@@ -193,10 +189,11 @@ class PoolBuilder {
         if(!hasDestroyedFlag){
             var f = (macro class {
                 public var isAlreadyDestroyed(default, null):Bool = false;
-            }).fields[0];
+                private var __flagToDestroy__(default, null):Bool = false;
+            });
 
-            fields.push(f);
-            _destroyedFlag.set(getClassId(clazz), f);
+            fields = fields.concat(f.fields);
+            _destroyedFlag.set(getClassId(clazz), f.fields[0]);
         }
 
         var _destroyUnsafe:Expr = macro __pool__.safePut(this);
@@ -207,21 +204,19 @@ class PoolBuilder {
         if(!existsDestroy){
             var f = (macro class {
                 public function destroy(){
-        if(isAlreadyDestroyed){
-        //trace"isAlredyDestroyed", Type.getClassName(Type.getClass(this)));
-        return;
-        }
-                        //trace"- processing:", gecko.Gecko.isProcessing, Type.getClassName(Type.getClass(this)));
-                        if(gecko.Gecko.isProcessing){
+                    if(isAlreadyDestroyed){
+                    return;
+                    }
+                        if(!__flagToDestroy__){
+                            __flagToDestroy__ = true;
                             @:privateAccess gecko.Gecko._destroyCallbacks.push(this.destroy);
-                            //trace"send to delayed destroy", Type.getClassName(Type.getClass(this)));
                             return;
                         }
 
-        //trace"full destroy", Type.getClassName(Type.getClass(this)));
                         isAlreadyDestroyed = true;
                         beforeDestroy();
                         $_destroyUnsafe;
+                        __flagToDestroy__ = false;
                     };
                 }).fields[0];
             fields.push(f);
@@ -232,44 +227,39 @@ class PoolBuilder {
                 fields.push((macro class {
                     override public function destroy(){
                         if(isAlreadyDestroyed){
-                            //trace"isAlredyDestroyed", Type.getClassName(Type.getClass(this)));
                             return;
                         }
 
-                        //trace"- processing:", gecko.Gecko.isProcessing, Type.getClassName(Type.getClass(this)));
-                        if(gecko.Gecko.isProcessing){
+                        if(!__flagToDestroy__){
+                            __flagToDestroy__ = true;
                             @:privateAccess gecko.Gecko._destroyCallbacks.push(this.destroy);
-        //trace"send to delayed destroy",Type.getClassName(Type.getClass(this)));
-
-        return;
+                            return;
                         }
 
-        //trace"full destroy", Type.getClassName(Type.getClass(this)));
                         isAlreadyDestroyed = true;
                         beforeDestroy();
                         $_destroyUnsafe;
+                        __flagToDestroy__ = false;
                     };
                 }).fields[0]);
             }else{
                 switch(destroyFn.kind){
                     case FFun(fn):
                         fn.expr = macro {
-        if(isAlreadyDestroyed){
-        //trace"isAlredyDestroyed", Type.getClassName(Type.getClass(this)));
-        return;
-        }
-                            //trace"- processing:", gecko.Gecko.isProcessing, Type.getClassName(Type.getClass(this)));
-                            if(gecko.Gecko.isProcessing){
-                                @:privateAccess gecko.Gecko._destroyCallbacks.push(this.destroy);
-        //trace"send to delayed destroy", Type.getClassName(Type.getClass(this)));
-
-        return;
+                            if(isAlreadyDestroyed){
+                                return;
                             }
 
-        //trace"full destroy", Type.getClassName(Type.getClass(this)));
+                            if(!__flagToDestroy__){
+                                __flagToDestroy__ = true;
+                                @:privateAccess gecko.Gecko._destroyCallbacks.push(this.destroy);
+                                return;
+                            }
+
                             isAlreadyDestroyed = true;
                             beforeDestroy();
                             $_destroyUnsafe;
+                            __flagToDestroy__ = false;
                         };
 
                     default:

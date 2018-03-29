@@ -225,15 +225,13 @@ class Gecko {
     }
 
     static inline private function _safeDestroyObjects() {
-        var cb:Void->Void;
-        while((cb = _destroyCallbacks.shift()) != null){
+        while(_destroyCallbacks.length > 0){
+            var cb = _destroyCallbacks.shift();
             cb();
         }
     }
 
     static private function _update() {
-        _safeDestroyObjects();
-
         isProcessing = true;
 
         #if kha_html5
@@ -274,6 +272,8 @@ class Gecko {
         f.g2.end();
 
         isProcessing = false;
+
+        _safeDestroyObjects();
     }
 
     static public function getHtml5Canvas() : #if kha_js js.html.CanvasElement #else Dynamic #end {
