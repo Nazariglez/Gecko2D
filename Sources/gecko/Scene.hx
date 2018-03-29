@@ -208,8 +208,9 @@ class Scene implements IScene {
         return system;
     }
 
-    inline public function getSystem<T>(systemClass:SystemClass) : T {
-        return cast _systems.get(systemClass.__systemName__);
+    inline public function getSystem<T:System>(systemClass:Class<System>) : T {
+        var clazz:SystemClass = systemClass;
+        return cast _systems.get(clazz.__systemName__);
     }
 
     private function _sortSystems(a:System, b:System) {
@@ -218,8 +219,9 @@ class Scene implements IScene {
         return 0;
     }
 
-    public function removeSystem(systemClass:SystemClass) {
-        var sys = _systems.get(systemClass.__systemName__);
+    public function removeSystem(systemClass:Class<System>) {
+        var clazz:SystemClass = systemClass;
+        var sys = _systems.get(clazz.__systemName__);
         if(sys != null){
             if(_isProcessing){
                 _systemsToRemove.push(sys);
@@ -245,7 +247,6 @@ class Scene implements IScene {
     }
 
     public function process(delta:Float32) {
-        //trace("update start");
         _isProcessing = true;
         if(_dirtySortSystems){
             _systemsList.sort(_sortSystems);
@@ -277,7 +278,6 @@ class Scene implements IScene {
         }
 
         _isProcessing = false;
-        //trace("update end");
     }
 
     public function update(delta:Float32) {
@@ -292,7 +292,6 @@ class Scene implements IScene {
     }
 
     public function draw(g:Graphics) {
-        //trace("draw start");
         _isProcessing = true;
         for(sys in _drawableSystems){
             if(sys.enabled){
@@ -300,7 +299,6 @@ class Scene implements IScene {
             }
         }
         _isProcessing = false;
-        //trace("draw end");
     }
 
     private function _onEntityAddComponent(entity:Entity, component:Component) {

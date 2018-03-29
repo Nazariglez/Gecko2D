@@ -117,8 +117,9 @@ class Entity implements IEntity {
         return cast component;
     }
 
-    public function removeComponent<T:Component>(componentClass:ComponentClass) : T {
-        var c:T = cast _components.get(componentClass.__componentName__);
+    public function removeComponent<T:Component>(componentClass:Class<Component>) : T {
+        var clazz:ComponentClass = componentClass;
+        var c:T = cast _components.get(clazz.__componentName__);
         if(c != null){
             _removeComponent(c);
             return c;
@@ -148,19 +149,21 @@ class Entity implements IEntity {
         return _componentsList;
     }
 
-    public inline function getComponent<T:Component>(componentClass:ComponentClass) : T {
+    public inline function getComponent<T:Component>(componentClass:Class<Component>) : T {
         #if js
         return cast untyped _components.h[componentClass.__componentName__];
         #else
-        return cast _components[componentClass.__componentName__];
+        var clazz:ComponentClass = componentClass;
+        return cast _components[clazz.__componentName__];
         #end
     }
 
-    public inline function hasComponent(name:String) : Bool {
+    public inline function hasComponent(componentClass:Class<Component>) : Bool {
         #if js
-        return untyped _components.h.hasOwnProperty(name);
+        return untyped _components.h.hasOwnProperty(componentClass.__componentName__);
         #else
-        return _components.exists(name);
+        var clazz:ComponentClass = componentClass;
+        return _components.exists(clazz.__componentName__);
         #end
     }
 

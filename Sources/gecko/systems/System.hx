@@ -59,7 +59,7 @@ class System implements ISystem {
         return _entitiesList;
     }
 
-    public inline function getEntitiesWithComponent(componentClass:String) : Array<Entity> {
+    public inline function getEntitiesWithComponent(componentClass:Class<Component>) : Array<Entity> {
         return _entitiesList.filter(function(e) {
             return e.hasComponent(componentClass);
         }).array();
