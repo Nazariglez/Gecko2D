@@ -68,6 +68,8 @@ class MouseComponent extends Component {
     }
 
     override public function beforeDestroy() {
+        super.beforeDestroy();
+
         onRightPressed.clear();
         onRightReleased.clear();
         onRightReleasedOutside.clear();
@@ -96,8 +98,6 @@ class MouseComponent extends Component {
         isCenterDown = false;
         isRightDown = false;
         _lastClickTime = -1;
-
-        super.beforeDestroy();
     }
 
     public function stopOrderPropagate(){

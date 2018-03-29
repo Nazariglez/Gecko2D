@@ -81,18 +81,17 @@ class Scene implements IScene {
     }
 
     public function beforeDestroy(){
-        while(entities.length > 0){
-            var e = entities[0];
-            removeEntity(e);
-            e.destroy();
-        }
-
         while(_systemsList.length > 0){
             var sys = _systemsList[0];
-            removeSystem(sys.__type__);
+            _removeSystem(sys);
             sys.destroy();
         }
 
+        while(entities.length > 0){
+            var e = entities[0];
+            _removeEntity(e);
+            e.destroy();
+        }
 
         /*if(rootEntity != null){
             rootEntity.destroy();

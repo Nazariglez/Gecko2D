@@ -85,7 +85,12 @@ class MainScene extends CustomScene {
                         _gotoScene(DrawShapeScene.create(true));
                     }
                 },
-                //{ name: "Draw Animations", callback: null },
+                {
+                    name: "Draw Animations",
+                    callback: function(){
+
+                    }
+                },
                 {
                     name: "Draw NineSlices",
                     callback: function() {
@@ -98,14 +103,48 @@ class MainScene extends CustomScene {
                         _gotoScene(DrawScrollingSpriteScene.create(true));
                     }
                 },
-                /*{ name: "Draw Text", scene: DrawTextScene.create(true) },
+                {
+                    name: "Draw Text",
+                    callback: function(){
+                        _gotoScene(DrawTextScene.create(true));
+                    }
+                },
+                {
+                    name: "Transform Rotation",
+                    callback: function(){
 
-                { name: "Transform Rotation", scene: null },
-                { name: "Transform Anchors", scene: null },
-                { name: "Transform Pivots", scene: null },
-                { name: "Transform Skew", scene: null },
-                { name: "Transform Pivot", scene: null },
-                { name: "Transform Parents", scene: null },*/
+                    }
+                },
+                {
+                    name: "Transform Anchors",
+                    callback: function(){
+
+                    }
+                },
+                {
+                    name: "Transform Pivots",
+                    callback: function(){
+
+                    }
+                },
+                {
+                    name: "Transform Skew",
+                    callback: function(){
+
+                    }
+                },
+                {
+                    name: "Transform Pivot",
+                    callback: function(){
+
+                    }
+                },
+                {
+                    name: "Transform Parents",
+                    callback: function(){
+
+                    }
+                },
             ];
         }
     }
@@ -145,6 +184,10 @@ class MainScene extends CustomScene {
 
         //trigger the callback when the button it's clicked
         mouse.onClick += callback;
+
+        mouse.onMove += function(x,y){
+            trace(mouse.entity.id, x,y);
+        };
 
         //add the entities to this scene
         addEntity(btn);
