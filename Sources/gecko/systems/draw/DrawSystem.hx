@@ -7,34 +7,11 @@ import gecko.Float32;
 @:expose
 @:access(gecko.Transform)
 class DrawSystem extends System implements IDrawable implements IUpdatable {
-    //private var _entityMap:Map<Int, Bool> = new Map();
 
     public function init(){
         filter.is(DrawComponent);
-        priority = 0;
-
-        //onEntityAdded += _addEntityToMap;
-        //onEntityRemoved += _removeEntityFromMap;
+        priority = 5;
     }
-
-    override public function beforeDestroy() {
-        //onEntityAdded -= _addEntityToMap;
-        //onEntityRemoved -= _removeEntityFromMap;
-
-        /*for(key in _entityMap.keys()){
-            _entityMap.remove(key);
-        }*/
-
-        super.beforeDestroy();
-    }
-
-    /*private function _addEntityToMap(entity:Entity) {
-        _entityMap.set(entity.id, true);
-    }
-
-    private function _removeEntityFromMap(entity:Entity) {
-        _entityMap.remove(entity.id);
-    }*/
 
     override public function update(dt:Float32) {
         for(e in getEntities()){
