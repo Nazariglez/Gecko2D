@@ -2,7 +2,7 @@ package;
 
 import gecko.Gecko;
 import gecko.Screen;
-import gecko.components.core.TransformComponent;
+import gecko.Transform;
 import gecko.Entity;
 import gecko.Assets;
 import gecko.components.draw.ProgressBarComponent;
@@ -28,7 +28,8 @@ class Game {
     //Add a loaderbar an go to mainScene when the load finish
     public function _loadAssets() {
         var entity = Entity.create();
-        entity.addComponent(TransformComponent.create(Screen.centerX, Screen.centerY, 500, 40));
+        entity.transform.position.set(Screen.centerX, Screen.centerY);
+        entity.transform.size.set(500, 40);
 
         var progressBar = entity.addComponent(ProgressBarComponent.create());
 
