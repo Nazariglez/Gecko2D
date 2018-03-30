@@ -22,7 +22,7 @@ export const graphics = {
 export const defaultConfig = `# development ${C.ENGINE_NAME} config.
 name = "Gecko2D-Game"
 sources = ["Sources"]
-shaders = ["Sources/Shaders/**"]    #shaders directory
+shaders = []                        #shaders directory
 libraries = []                      #libs at Libraries folder or haxelib
 output = "build"                    #build output
 debug = true                        #compile in debug mode
@@ -45,7 +45,7 @@ graphics = "${graphics.windows[0]}"         #windows graphics [${graphics.window
 
 [core]
 clean_temp = false              #clean temporal files after compile
-compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at ./kha_build
+compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at ${C.TEMP_RELATIVE_PATH}
 compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
 ffmpeg = ""                     #ffmpeg drivers path (could be absolute)
 haxe = ""
@@ -211,9 +211,11 @@ export function generateKhafileContent(config:Config) : string {
         });
     }
 
-    config.shaders.forEach((s)=>{
-        kfile += `p.addShaders("${s}");\n`;
-    });
+    if(config.shaders.length >= 0){
+        config.shaders.forEach((s)=>{
+            kfile += `p.addShaders("${s}");\n`;
+        });
+    }
 
     kfile += `p.addAssets('Assets/**', {nameBaseDir: 'Assets', destination: 'assets/{dir}/{name}', name: '{dir}/{name}'});\n`;
 

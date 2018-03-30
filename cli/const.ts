@@ -18,5 +18,6 @@ export const TEMPLATES_PATH = path.join(ENGINE_PATH, "templates");
 export const GAME_TEMPLATE_PATH = path.join(TEMPLATES_PATH, "game");
 export const BUILD_TEMPLATES_PATH = path.join(ENGINE_PATH, "build_templates");
 export const HTML5_TEMPLATE_PATH = path.join(BUILD_TEMPLATES_PATH, "html5");
+export const DOCS_PATH = path.resolve(ENGINE_PATH, "docs");
 
 export const HTML5_SERVE_PORT = 8080;

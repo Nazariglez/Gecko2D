@@ -6,6 +6,7 @@ import * as update from './cmd/update';
 import * as version from './cmd/version';
 import * as serve from './cmd/serve';
 import * as watch from './cmd/watch';
+import * as docs from './cmd/docs';
 
 export const commands:Command[] = [
     build,
@@ -14,7 +15,8 @@ export const commands:Command[] = [
     update,
     version,
     serve,
-    watch
+    watch,
+    docs
 ].map(c => c.cmd).sort((a, b)=>{
     if(a.name < b.name) return -1;
     if(a.name > b.name) return 1;
