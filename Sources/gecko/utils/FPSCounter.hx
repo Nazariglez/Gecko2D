@@ -17,6 +17,7 @@ class FPSCounter {
 
     public function new(isFixed:Bool = false){
         this.isFixed = isFixed;
+        _last = isFixed ? Scheduler.time() : Scheduler.realTime();
     }
 
     public function tick() {
@@ -37,6 +38,6 @@ class FPSCounter {
     public function clear() {
         _frames = 0;
         _elapsed = 0;
-        _last = 0;
+        _last = isFixed ? Scheduler.time() : Scheduler.realTime();
     }
 }
