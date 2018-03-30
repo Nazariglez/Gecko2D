@@ -1,5 +1,6 @@
 package;
 
+import gecko.Scene;
 import gecko.Float32;
 import gecko.components.draw.TextComponent;
 import gecko.components.draw.SpriteComponent;
@@ -17,6 +18,8 @@ class Game {
     private var _font:Font;
 
     public function new(){
+        Gecko.world.changeScene(Scene.createWidthDraw(), true);
+
         Assets.load([
             "rabbit.png",
             "Ubuntu-B.ttf"

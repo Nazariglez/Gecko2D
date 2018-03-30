@@ -1,7 +1,7 @@
 # development gecko config.
 name = "bunnyentities"
 sources = ["Sources"]
-shaders = ["Sources/Shaders/**"]    #shaders directory
+shaders = []                        #shaders directory
 libraries = []                      #libs at Libraries folder or haxelib
 output = "build"                    #build output
 debug = false                        #compile in debug mode

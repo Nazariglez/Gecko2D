@@ -1,5 +1,6 @@
 package;
 
+import gecko.Scene;
 import gecko.input.Mouse;
 import gecko.components.draw.TextComponent;
 import gecko.Screen;
@@ -27,6 +28,8 @@ class Game {
     private var _bunnies:Array<Bunny> = [];
 
     public function new(){
+        Gecko.world.changeScene(Scene.createWithDrawSystem(), true);
+        
         Assets.load([
             "rabbit.png",
             "Ubuntu-B.ttf"

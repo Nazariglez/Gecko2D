@@ -1,5 +1,6 @@
 package scenes;
 
+import gecko.systems.draw.DrawSystem;
 import gecko.Gecko;
 import gecko.Float32;
 import gecko.components.input.MouseComponent;
@@ -12,6 +13,7 @@ import gecko.Color;
 
 class CustomScene extends Scene {
     public function init(closeButton:Bool = false) {
+        addSystem(DrawSystem.create());
         addSystem(InteractivitySystem.create());
 
         if(closeButton){

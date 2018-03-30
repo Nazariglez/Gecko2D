@@ -1,5 +1,6 @@
 package scenes;
 
+import gecko.systems.draw.DrawSystem;
 import gecko.Screen;
 import gecko.Entity;
 import gecko.Scene;
@@ -7,6 +8,7 @@ import gecko.components.draw.TextComponent;
 
 class MainScene extends Scene {
     public function init() {
+        addSystem(DrawSystem.create());
         addEntity(_getWelcomeText());
     }
 

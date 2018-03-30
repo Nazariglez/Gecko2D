@@ -52,9 +52,17 @@ class Scene implements IScene {
     public var timerManager:TimerManager;
     public var tweenManager:TweenManager;
 
-    public var is2D(default, null):Bool = false;
+    static public function createWithDrawSystem(?priority:Int) : Scene {
+        var s = Scene.create();
+        var sys:DrawSystem = DrawSystem.create();
+        if(priority != null){
+            sys.priority = priority;
+        }
+        s.addSystem(sys);
+        return s;
+    }
 
-    public function new(is2D:Bool = true){
+    public function new(){
         timerManager = TimerManager.create();
         tweenManager = TweenManager.create();
 
@@ -62,22 +70,6 @@ class Scene implements IScene {
         rootEntity.name = "scene-root-entity";
         rootEntity.addComponent(DrawComponent.create());
         @:privateAccess rootEntity._isRoot = true;
-
-        if(is2D){
-            _init2D();
-        }
-    }
-
-    private function _init2D() {
-        is2D = true;
-        addSystem(DrawSystem.create());
-
-        /*if(rootEntity == null){
-            rootEntity = Entity.create();
-            rootEntity.name = "scene-root-entity";
-            rootEntity.addComponent(DrawComponent.create());
-            @:privateAccess rootEntity._isRoot = true;
-        }*/
     }
 
     public function beforeDestroy(){
@@ -93,11 +85,6 @@ class Scene implements IScene {
             e.destroy();
         }
 
-        /*if(rootEntity != null){
-            rootEntity.destroy();
-            rootEntity = null;
-        }*/
-
         timerManager.cleanTimers();
         tweenManager.cleanTweens();
 
@@ -106,27 +93,27 @@ class Scene implements IScene {
 
         onSystemAdded.clear();
         onSystemRemoved.clear();
-
-
-        if(is2D){
-            _init2D();
-        }
     }
 
     inline public function getEntityById(id:Int) : Entity {
         return _entitesMap.get(id);
     }
 
-    public function addEntity(entity:Entity) {
-        if(getEntityById(entity.id) != null)return;
+    public function createEntity() : Entity {
+        return addEntity(Entity.create());
+    }
+
+    public function addEntity<T:Entity>(entity:T) : T {
+        if(getEntityById(entity.id) != null)return entity;
 
         if(_isProcessing){
             _entitiesToAdd.push(entity);
             _dirtyProcess = true;
-            return;
+            return entity;
         }
 
         _addEntity(entity);
+        return entity;
     }
 
     private function _addEntity(entity:Entity) {
@@ -176,14 +163,17 @@ class Scene implements IScene {
         onEntityRemoved.emit(entity);
     }
 
-    public function addSystem(system:System) {
+    public function addSystem<T:System>(system:T) : T {
+        if(getSystem(system.__type__) != null)return system;
+
         if(_isProcessing){
             _systemsToAdd.push(system);
             _dirtyProcess = true;
-            return;
+            return system;
         }
 
         _addSystem(system);
+        return system;
     }
 
     private function _addSystem<T:System>(system:T) : T {

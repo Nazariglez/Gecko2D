@@ -1,8 +1,8 @@
 package;
 
+import gecko.Scene;
 import gecko.Gecko;
 import gecko.Screen;
-import gecko.Transform;
 import gecko.Entity;
 import gecko.Assets;
 import gecko.components.draw.ProgressBarComponent;

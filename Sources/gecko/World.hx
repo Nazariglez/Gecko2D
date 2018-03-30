@@ -3,7 +3,7 @@ package gecko;
 import gecko.utils.Event;
 
 class World {
-    public var currentScene(default, null):Scene = Scene.create();
+    public var currentScene(default, null):Scene = Scene.createWithDrawSystem();
     private var _nextScene:Scene;
     private var _destroyCurrentScene:Bool = false;
 
