@@ -25,8 +25,8 @@ class Point implements IAutoPool {
 	public function beforeDestroy(){
 		_observer = null;
 		isObserved = false;
-		_vec2.x = 0;
-		_vec2.y = 0;
+		_setX(0);
+		_setY(0);
 	}
 
 	inline private function _setX(value:Float32) {
@@ -51,7 +51,6 @@ class Point implements IAutoPool {
 	}
 
 	public function set(x:Float32, y:Float32) {
-		//if(y == null)y = x;
 		if(x != this._x || y != this._y){
 			_setX(x);
 			_setY(y);

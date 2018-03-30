@@ -39,15 +39,6 @@ class Game {
 
     public function _gotoMainScene() {
         Mouse.enable();
-
-        Mouse.onLeftPressed += function(x, y){
-            trace(x,y);
-        };
-
-        /*untyped js.Browser.window.goto = function(){
-            Gecko.world.changeScene(scenes.MainScene.create(), true);
-        };*/
-
         Gecko.world.changeScene(scenes.MainScene.create(), true);
     }
 

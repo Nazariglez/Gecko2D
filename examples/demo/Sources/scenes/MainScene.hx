@@ -29,7 +29,6 @@ class MainScene extends CustomScene {
     static var _examples:Array<ExamplesDef> = [];
 
     override public function init(closeButton:Bool = false) {
-        trace("start init main scene");
         super.init(closeButton);
 
         _addTitle(Screen.centerX, 60);
@@ -60,7 +59,6 @@ class MainScene extends CustomScene {
             }
         }
 
-        trace("end init mainscene");
     }
 
     override public function beforeDestroy() {
@@ -71,7 +69,6 @@ class MainScene extends CustomScene {
 
     private function _initExamples() {
         if(_examples.length == 0){
-            trace("INIT");
             _examples = [
                 {
                     name: "Draw Sprites",
@@ -184,10 +181,6 @@ class MainScene extends CustomScene {
 
         //trigger the callback when the button it's clicked
         mouse.onClick += callback;
-
-        mouse.onMove += function(x,y){
-            trace(mouse.entity.id, x,y);
-        };
 
         //add the entities to this scene
         addEntity(btn);

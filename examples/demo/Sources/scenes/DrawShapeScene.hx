@@ -24,7 +24,7 @@ class DrawShapeScene extends CustomScene {
         //triangles
         var trianglePoints = [Point.create(60, 0), Point.create(0, 120), Point.create(120, 120)];
         _createShape(100, 400, PolygonComponent.create(true, trianglePoints), Color.Blue); //fill
-        _createShape(300, 400, PolygonComponent.create(false, trianglePoints, 8), Color.Blue); //fill
+        _createShape(300, 400, PolygonComponent.create(false, trianglePoints, 8), Color.Blue);
 
         //hexagons
         var hexagonPoints = [

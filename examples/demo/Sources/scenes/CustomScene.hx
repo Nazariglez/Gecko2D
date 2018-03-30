@@ -42,6 +42,5 @@ class CustomScene extends Scene {
 
     private function _gotoMainScene(x:Float32, y:Float32) {
         Gecko.world.changeScene(MainScene.create(), true);
-        trace("here1");
     }
 }
