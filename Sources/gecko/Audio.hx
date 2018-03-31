@@ -7,6 +7,8 @@ import kha.audio1.AudioChannel;
 import kha.audio1.Audio in KAudio;
 
 class Audio implements IAutoPool {
+    public var id(default, null):Int = Gecko.getUniqueID();
+
     public var onFinish:Event<Void->Void>;
     public var onPlay:Event<Void->Void>;
     public var onStop:Event<Void->Void>;

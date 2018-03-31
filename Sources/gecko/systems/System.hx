@@ -8,7 +8,7 @@ using Lambda;
 
 @:allow(gecko.Scene)
 class System implements ISystem {
-    public var id:Int = Gecko.getUniqueID();
+    public var id(default, null):Int = Gecko.getUniqueID();
     public var enabled:Bool = true;
 
     public var scene(get, set):Scene;

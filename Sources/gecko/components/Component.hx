@@ -9,7 +9,7 @@ class Component implements IComponent {
     public var entity(get, set):Entity;
     private var _entity:Entity = null;
 
-    public var id:Int = Gecko.getUniqueID();
+    public var id(default, null):Int = Gecko.getUniqueID();
 
     public var name(get, set):String;
     private var _name:String = "";

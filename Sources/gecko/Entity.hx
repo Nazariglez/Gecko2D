@@ -13,7 +13,7 @@ using Lambda;
 //@:poolAmount(100)
     @:expose
 class Entity implements IEntity {
-    public var id:Int = Gecko.getUniqueID();
+    public var id(default, null):Int = Gecko.getUniqueID();
 
     public var isRoot(get, never):Bool;
     private var _isRoot:Bool = false;
