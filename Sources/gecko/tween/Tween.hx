@@ -238,7 +238,7 @@ class Tween implements IAutoPool {
         for(k in Reflect.fields(to)){
             var toVal:Null<Float32> = Reflect.getProperty(to, k);
             var fromVal:Null<Float32> = Reflect.getProperty(from, k);
-            var targetVal = Reflect.getProperty(targ, k);
+            var targetVal:Dynamic = Reflect.getProperty(targ, k);
 
             if(Reflect.isObject(toVal)){
                 _parse(toVal, fromVal, targetVal);
@@ -252,6 +252,7 @@ class Tween implements IAutoPool {
 
                 _to1[k] = toVal;
                 _from1[k] = fromVal == null ? targetVal : fromVal;
+
             }
         }
 
@@ -263,6 +264,7 @@ class Tween implements IAutoPool {
     }
 
     public function _apply(to:Map<String, Float32>, from:Map<String, Float32>, time:Float32, targ:Dynamic) {
+        //trace(targ, to, from);
         for(k in to.keys()){ //todo avoid to use map.keys() because create an array each time
             var b = from[k];
             var c = to[k] - b;
