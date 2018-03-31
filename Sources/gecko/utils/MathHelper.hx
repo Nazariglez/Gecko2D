@@ -18,4 +18,12 @@ class MathHelper {
     inline public static function clampInt(value:Int, min:Int, max:Int) : Int {
         return value < min ? min : value > max ? max : value;
     }
+
+    inline public static function lerp(value:Float32, start:Float32, end:Float32) : Float32 {
+        return (1 - value) * start + value * end;
+    }
+
+    inline public static function inverseLerp(value:Float32, start:Float32, end:Float32) : Float32 {
+        return (value-start)/(end-start);
+    }
 }

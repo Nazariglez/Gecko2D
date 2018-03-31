@@ -227,11 +227,10 @@ class Transform {
         }
 
         if(_dirtyAngle){
-            //todo fixme it's ok this? sin in cos, X on Y. Maybe i changed the vars in the refactor to ecs?
-            _skewCache.cosX = Math.cos(_rotation + _skew.y);
-            _skewCache.sinX = Math.sin(_rotation + _skew.y);
-            _skewCache.cosY = -Math.sin(_rotation - _skew.x);
-            _skewCache.sinY = Math.cos(_rotation - _skew.x);
+            _skewCache.cosX = Math.cos(_rotation + _skew.x);
+            _skewCache.sinX = Math.sin(_rotation + _skew.x);
+            _skewCache.sinY = -Math.sin(_rotation - _skew.y);
+            _skewCache.cosY = Math.cos(_rotation - _skew.y);
         }
 
         var _scX = _localScale.x * (_flip.x ? -1 : 1);
@@ -243,8 +242,8 @@ class Transform {
 
         _localMatrix._00 = _skewCache.cosX * _scX;
         _localMatrix._01 = _skewCache.sinX * _scX;
-        _localMatrix._10 = _skewCache.cosY * _scY;
-        _localMatrix._11 = _skewCache.sinY * _scY;
+        _localMatrix._10 = _skewCache.sinY * _scY;
+        _localMatrix._11 = _skewCache.cosY * _scY;
 
         var _aW = _anX * _size.x;
         var _aH = _anY * _size.y;

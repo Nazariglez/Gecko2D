@@ -12,7 +12,7 @@ class Timer implements IAutoPool {
     public var onInit:Event<Void->Void>;
     public var onEnd:Event<Void->Void>;
     public var onRepeat:Event<Int->Void>;
-    public var onUpdate:Event<Float32->Void>;
+    public var onUpdate:Event<Float32->Float32->Void>;
 
     public var time:Float32 = 0;
     public var destroyOnEnd:Bool = false;
@@ -68,7 +68,7 @@ class Timer implements IAutoPool {
             var ended = t >= time;
 
             elapsedTime = ended ? time : t;
-            onUpdate.emit(elapsedTime);
+            onUpdate.emit(elapsedTime, dt);
 
             if(ended){
                 if(loop || repeat > _repeat){
