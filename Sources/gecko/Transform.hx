@@ -6,6 +6,7 @@ import gecko.math.Vector2g;
 import gecko.math.Point;
 
 using gecko.utils.ArrayHelper;
+using gecko.utils.MathHelper;
 
 //todo https://www.gamedev.net/articles/programming/math-and-physics/making-a-game-engine-transformations-r3566/
 //todo https://www.gamedev.net/articles/programming/general-and-gameplay-programming/making-a-game-engine-core-design-principles-r3210
@@ -261,13 +262,7 @@ class Transform {
         if(_parent != null){
             var _parentTransform = _parent._worldMatrix;
 
-            _worldMatrix._00 = (_localMatrix._00 * _parentTransform._00) + (_localMatrix._01 * _parentTransform._10);
-            _worldMatrix._01 = (_localMatrix._00 * _parentTransform._01) + (_localMatrix._01 * _parentTransform._11);
-            _worldMatrix._10 = (_localMatrix._10 * _parentTransform._00) + (_localMatrix._11 * _parentTransform._10);
-            _worldMatrix._11 = (_localMatrix._10 * _parentTransform._01) + (_localMatrix._11 * _parentTransform._11);
-
-            _worldMatrix._20 = (_localMatrix._20 * _parentTransform._00) + (_localMatrix._21 * _parentTransform._10) + _parentTransform._20;
-            _worldMatrix._21 = (_localMatrix._20 * _parentTransform._01) + (_localMatrix._21 * _parentTransform._11) + _parentTransform._21;
+            _worldMatrix.inheritTransform(_localMatrix, _parentTransform);
 
             //set world position
             if(_dirtyPosition){

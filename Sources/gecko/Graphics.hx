@@ -18,11 +18,8 @@ using kha.graphics2.GraphicsExtension;
 class Graphics {
 	static public var emptyMatrix:Matrix = Matrix.identity();
 
-	public var buffer(get, null):Image;
-	private var _buffer:Image;
-
-	public var isRendering(get, null):Bool;
-	private var _isRendering:Bool = false;
+	public var buffer(default, null):Image;
+	public var isRendering(default, null):Bool;
 
 	public var g2:kha.graphics2.Graphics;
     public var g4:kha.graphics4.Graphics;
@@ -73,11 +70,11 @@ class Graphics {
 
 
 	public function setRenderTarget(buffer:Image) {
-		if(_isRendering){
+		if(isRendering){
 			Gecko.stop();
 			throw "You can't change the buffer while rendering";
 		}
-		_buffer = buffer;
+		this.buffer = buffer;
 	}
 
 	public function beginRenderTarget(img:Image) {
@@ -105,13 +102,13 @@ class Graphics {
 	}
 
     public function begin(clear:Bool = true, ?color:Color) {
-		_isRendering = true;
+		isRendering = true;
         buffer.g2.begin(clear, color);
     }
 
     public function end() {
         buffer.g2.end();
-		_isRendering = false;
+		isRendering = false;
     }
 
 	inline public function clear(color:Color = null) {
@@ -446,13 +443,5 @@ class Graphics {
 
 	inline function get_blendMode() : BlendMode {
 		return _blendMode;
-	}
-
-	inline function get_isRendering():Bool {
-		return _isRendering;
-	}
-
-	inline function get_buffer():Image {
-		return _buffer;
 	}
 }

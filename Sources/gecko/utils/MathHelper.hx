@@ -28,4 +28,15 @@ class MathHelper {
     inline public static function inverseLerp(value:Float32, start:Float32, end:Float32) : Float32 {
         return (value-start)/(end-start);
     }
+
+    inline public static function inheritTransform(matrix:Matrix, child:Matrix, parent:Matrix) {
+        matrix._00 = (child._00 * parent._00) + (child._01 * parent._10);
+        matrix._01 = (child._00 * parent._01) + (child._01 * parent._11);
+        matrix._10 = (child._10 * parent._00) + (child._11 * parent._10);
+        matrix._11 = (child._10 * parent._01) + (child._11 * parent._11);
+
+        matrix._20 = (child._20 * parent._00) + (child._21 * parent._10) + parent._20;
+        matrix._21 = (child._20 * parent._01) + (child._21 * parent._11) + parent._21;
+
+    }
 }
