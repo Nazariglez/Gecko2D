@@ -4,7 +4,7 @@ import gecko.macros.IAutoPool;
 import gecko.Float32;
 
 class HotKey implements IAutoPool {
-    public var key:KeyCode;
+    public var key:KeyCode = KeyCode.Unknown;
 
     public var wasPressed(get, null):Bool;
     public var wasReleased(get, null):Bool;
@@ -22,7 +22,7 @@ class HotKey implements IAutoPool {
     }
 
     public function beforeDestroy() {
-        key = null;
+        key = KeyCode.Unknown;
     }
 
     inline function get_downDuration() : Float32 {
