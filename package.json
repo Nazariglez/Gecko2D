@@ -16,6 +16,9 @@
     "type": "git",
     "url": "https://github.com/Nazariglez/Gecko2D.git"
   },
+  "engines": {
+    "node": ">=9.0.0"
+  },
   "author": "Nazariglez",
   "license": "ISC",
   "bugs": {
