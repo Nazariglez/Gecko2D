@@ -65,5 +65,13 @@ export function nodeVersion() : [number, number, number] {
     v = v.replace("v", "");
     
     let arr = v.split(/[\.||-]/);
-    return [parseInt(arr[0]), parseInt(arr[1]), parseInt(arr[3])];
+    return [parseInt(arr[0]), parseInt(arr[1]), parseInt(arr[2])];
+}
+
+export function getRequiredNodeVersion() : [number, number, number] {
+    let v = require("../package.json").engines.node;
+    v = v.replace(">=", "");
+
+    let arr = v.split(/[\.||-]/);
+    return [parseInt(arr[0]), parseInt(arr[1]), parseInt(arr[2])];
 }
