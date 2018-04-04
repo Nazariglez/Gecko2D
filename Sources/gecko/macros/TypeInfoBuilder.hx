@@ -42,7 +42,7 @@ class TypeInfoBuilder {
         }
 
         fields = fields.concat((macro class {
-            static public var __componentName__:String = $v{name};
+            static private var __componentName__:String = $v{name};
         }).fields);
 
         return fields;

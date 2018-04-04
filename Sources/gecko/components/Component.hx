@@ -6,6 +6,14 @@ import gecko.utils.Event;
 
 @:allow(gecko.Entity)
 class Component implements IComponent {
+    inline static public function getName(componentClass:Class<Component>) : String {
+        return _toClass(componentClass).__componentName__;
+    }
+
+    inline static private function _toClass(componentClass:Class<Component>) : ComponentClass {
+        return componentClass;
+    }
+
     public var entity(get, set):Entity;
     private var _entity:Entity = null;
 
@@ -63,5 +71,16 @@ class Component implements IComponent {
         }
 
         return _entity;
+    }
+}
+
+private abstract ComponentClass({public var __componentName__:String;}) {
+    public var __componentName__(get, never):String;
+    public inline function get___componentName__() {
+        return this.__componentName__;
+    }
+
+    @:from static public function fromComponent(c:Class<Component>) {
+        return cast c;
     }
 }

@@ -3,7 +3,7 @@ package gecko;
 import gecko.components.draw.DrawComponent;
 import gecko.utils.Event;
 import gecko.components.Component;
-import gecko.components.ComponentClass;
+import gecko.components.Component;
 
 using Lambda;
 
@@ -99,6 +99,29 @@ class Entity implements IEntity {
         }
     }
 
+    public function getFirstComponentOfType<T:Component>(componentClass:Class<Component>) : T {
+        var c:T = null;
+
+        for(i in 0..._componentsList.length) {
+            if(Std.is(_componentsList[i], componentClass)){
+                c = cast _componentsList[i];
+                break;
+            }
+        }
+
+        return c;
+    }
+
+    public function getAllComponentsOfType<T:Component>(componentClass:Class<Component>) : Array<T> {
+        var list:Array<T> = [];
+        for(c in _componentsList){
+            if(Std.is(c, componentClass)){
+                list.push(cast c);
+            }
+        }
+        return list;
+    }
+
     public function addComponent<T:Component>(component:T) : T {
         component.entity = this;
 
@@ -118,8 +141,7 @@ class Entity implements IEntity {
     }
 
     public function removeComponent<T:Component>(componentClass:Class<Component>) : T {
-        var clazz:ComponentClass = componentClass;
-        var c:T = cast _components.get(clazz.__componentName__);
+        var c:T = cast _components.get(Component.getName(componentClass));
         if(c != null){
             _removeComponent(c);
             return c;
@@ -151,19 +173,17 @@ class Entity implements IEntity {
 
     public inline function getComponent<T:Component>(componentClass:Class<Component>) : T {
         #if js
-        return cast untyped _components.h[componentClass.__componentName__];
+        return cast untyped _components.h[Component.getName(componentClass)];
         #else
-        var clazz:ComponentClass = componentClass;
-        return cast _components[clazz.__componentName__];
+        return cast _components[Component.getName(componentClass)];
         #end
     }
 
     public inline function hasComponent(componentClass:Class<Component>) : Bool {
         #if js
-        return untyped _components.h.hasOwnProperty(componentClass.__componentName__);
+        return untyped _components.h.hasOwnProperty(Component.getName(componentClass));
         #else
-        var clazz:ComponentClass = componentClass;
-        return _components.exists(clazz.__componentName__);
+        return _components.exists(Component.getName(componentClass));
         #end
     }
 
