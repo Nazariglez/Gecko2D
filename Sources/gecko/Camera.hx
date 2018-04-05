@@ -7,6 +7,8 @@ import gecko.math.Point;
 
 using gecko.utils.MathHelper;
 
+//todo merge _transform and _containerTransform to avoid extra clacultaions
+
 class Camera implements IAutoPool implements IUpdatable {
     public var id(default, null):Int = Gecko.getUniqueID();
 
@@ -83,7 +85,8 @@ class Camera implements IAutoPool implements IUpdatable {
             buffer.unload();
         }
 
-        buffer = Image.createRenderTarget(width, height);
+        var antialiasing = @:privateAccess Gecko._opts.antialiasing;
+        buffer = Image.createRenderTarget(width, height, antialiasing);
     }
 
     inline public function containsScreenPoint(p:Point) : Bool {

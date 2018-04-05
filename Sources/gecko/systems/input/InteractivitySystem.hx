@@ -75,15 +75,15 @@ class InteractivitySystem extends System implements IUpdatable {
         }
 
         if(!checkInDrawOrder){
-            _checkEntites(dt);
+            _checkEntites(dt, camera);
         }else{
             _checkEntitesInDrawOrder(dt);
         }
     }
 
-    inline private function _checkEntites(dt:Float32) {
+    inline private function _checkEntites(dt:Float32, camera:Camera) {
         for(e in getEntities()){
-            if(!e.enabled)continue;
+            if(!e.enabled || !e.transform.existsInCamera(camera))continue;
             _dispatchEntityEvents(e);
         }
     }

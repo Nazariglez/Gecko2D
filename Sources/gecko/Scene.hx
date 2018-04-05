@@ -54,7 +54,8 @@ class Scene implements IScene {
     private var _entitiesToAdd:Array<Entity> = [];
     private var _entitiesToRemove:Array<Entity> = [];
 
-    private var _lastCameraRendered:Int = -1;
+    private var _cameraRendering:Int = -1;
+    public var currentCameraRendering(default, null):Camera = null;
 
     //todo _entitiesByComponents:Map<ComponentClass, Array<Entity>> and populate with entitis with X components
 
@@ -357,7 +358,7 @@ class Scene implements IScene {
     }
 
     public function updateCameraTransform(camera:Camera) {
-        if(_lastCameraRendered != camera.id || camera.wasChanged){
+        if(_cameraRendering != camera.id || camera.wasChanged){
 
             //update only if the camera transform or the camera id changes
             //(if only exists one camera and not change ther matrix it's not neccesary update every frame)
@@ -367,7 +368,7 @@ class Scene implements IScene {
             }
 
             camera.wasChanged = false;
-            _lastCameraRendered = camera.id;
+            _cameraRendering = camera.id;
         }
     }
 
@@ -388,6 +389,8 @@ class Scene implements IScene {
 
     public function draw(g:Graphics) {
         _isProcessing = true;
+        currentCameraRendering = null;
+
         if(cameras.length > 0){
 
             //store the currentBuffer
@@ -395,7 +398,7 @@ class Scene implements IScene {
             var prevBuffer = g.buffer;
 
             for(_camera in cameras){
-
+                currentCameraRendering = _camera;
                 //update the matrix of the entities to draw
                 updateCameraTransform(_camera);
 

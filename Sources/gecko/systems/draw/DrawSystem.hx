@@ -7,6 +7,7 @@ import gecko.Float32;
 @:expose
 @:access(gecko.Transform)
 class DrawSystem extends System implements IDrawable implements IUpdatable {
+    private var _fixedToCamera:Array<DrawComponent> = [];
 
     public function init(){
         filter.is(DrawComponent);
@@ -41,8 +42,15 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
                 drawComponent.worldAlpha = parentDrawComponent.worldAlpha * drawComponent.alpha;
 
                 if(drawComponent.isVisible){
-                    g.apply(current.worldMatrix, drawComponent.color, drawComponent.worldAlpha);
-                    drawComponent.draw(g);
+                    if(current.fixedToCamera){
+                        //store to draw later
+                        if(current.existsInCamera(scene.currentCameraRendering)){
+                            _fixedToCamera.push(drawComponent);
+                        }
+                    }else{
+                        g.apply(current.worldMatrix, drawComponent.color, drawComponent.worldAlpha);
+                        drawComponent.draw(g);
+                    }
 
                     isRendered = true;
                 }
@@ -65,6 +73,13 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
             }
 
             //todo reset _nextChild to null to prevent collide with others systems?
+        }
+
+        //draw fixed to camera entities
+        while(_fixedToCamera.length > 0){
+            var drawComponent:DrawComponent = _fixedToCamera.shift();
+            g.apply(drawComponent.entity.transform.worldMatrix, drawComponent.color, drawComponent.worldAlpha);
+            drawComponent.draw(g);
         }
 
         g.reset();

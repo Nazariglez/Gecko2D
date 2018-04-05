@@ -21,10 +21,11 @@ class CustomScene extends Scene {
         }
     }
 
-    private function _addCloseButton() {
-        var btn = Entity.create();
+    private function _addCloseButton() : Entity {
+        var btn = createEntity();
         btn.transform.position.set(Screen.width-20, 20);
         btn.transform.anchor.set(1, 0);
+        btn.transform.fixedToCamera = true;
 
         var sprite = btn.addComponent(SpriteComponent.create("images/kenney/red_cross.png"));
 
@@ -39,7 +40,7 @@ class CustomScene extends Scene {
             sprite.color = Color.White;
         };
 
-        addEntity(btn);
+        return btn;
     }
 
     private function _gotoMainScene(x:Float32, y:Float32) {

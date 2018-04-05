@@ -1,5 +1,7 @@
 package scenes;
 
+import gecko.Entity;
+import gecko.components.input.MouseComponent;
 import gecko.Gecko;
 import gecko.Gecko;
 import gecko.components.draw.CircleComponent;
@@ -26,6 +28,8 @@ class Camera1Scene extends CustomScene {
         var BG_WIDTH = 2000;
         var BG_HEIGHT = 2000;
 
+        var cam = createCamera();
+
         var bg = createEntity();
         bg.addComponent(GridBackgroundComponent.create("images/kenney/starBackground.png", BG_WIDTH, BG_HEIGHT));
         bg.transform.position.set(BG_WIDTH/2, BG_HEIGHT/2);
@@ -34,12 +38,8 @@ class Camera1Scene extends CustomScene {
         player.addComponent(SpriteComponent.create("images/kenney/enemyUFO.png"));
         player.transform.position.set(BG_WIDTH/2, BG_HEIGHT/2);
 
-        var cam = createCamera(0, 0, Std.int(Screen.width/2), 0);
-        var cam2 = createCamera(Std.int(Screen.width/2), 0);
-
+        //follow the player movement
         cam.follow(player);
-        cam2.lookAt.set(BG_WIDTH/2, BG_HEIGHT/2);
-
 
         //Keyboard events
         Keyboard.enable();

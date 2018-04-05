@@ -145,6 +145,11 @@ class Transform {
 
     public var entity(default, null):Entity;
 
+    public var fixedToCamera(get, set):Bool;
+    private var _fixedToCamera:Bool = false;
+
+    private var _visibleOnCamera:Array<Int> = [];
+
     public function new(entity:Entity){
         this.entity = entity;
 
@@ -184,6 +189,18 @@ class Transform {
         _tmpPoint2 = Point.create();
 
         _dirty = _dirtyPosition = _dirtyAngle = _dirtyScale = true;
+    }
+
+    inline public function existsInCamera(camera:Camera) : Bool {
+        return (camera != null && _visibleOnCamera.length > 0) ? _visibleOnCamera.has(camera.id) : true;
+    }
+
+    public function addToCamera(camera:Camera) {
+        _visibleOnCamera.push(camera.id);
+    }
+
+    public function removeFromCamera(camera:Camera) {
+        _visibleOnCamera.remove(camera.id);
     }
 
     public function sortChildren(?handler:Transform->Transform->Int) {
@@ -246,6 +263,9 @@ class Transform {
         _depth = 0;
         _depthMode = DepthMode.DEFAULT;
 
+        _fixedToCamera = false;
+        _visibleOnCamera.clear();
+
         _dirty = _dirtyPosition = _dirtyAngle = _dirtyScale = true;
     }
 
@@ -297,7 +317,7 @@ class Transform {
             _localMatrix._21 -= _pW * _localMatrix._01 + _pH * _localMatrix._11;
         }
 
-        if(_parent != null){
+        if(!_fixedToCamera && _parent != null){
             _worldMatrix.inheritTransform(_localMatrix, _parent._worldMatrix);
 
             //set world position
@@ -723,6 +743,19 @@ class Transform {
 
     inline function get_depthMode():DepthMode {
         return _depthMode;
+    }
+
+    function set_fixedToCamera(value:Bool):Bool {
+        if(value == _fixedToCamera)return _fixedToCamera;
+        _fixedToCamera = value;
+
+        _dirty = true;
+
+        return _fixedToCamera;
+    }
+
+    inline function get_fixedToCamera():Bool {
+        return _fixedToCamera;
     }
 
 }
