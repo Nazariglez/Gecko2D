@@ -1,5 +1,7 @@
 package scenes;
 
+import gecko.components.draw.CircleComponent;
+import gecko.Camera;
 import gecko.Graphics;
 import gecko.Scene;
 import gecko.Gecko;
@@ -18,6 +20,7 @@ import scenes.DrawTextScene;
 import scenes.DrawShapeScene;
 import scenes.DrawNineSliceScene;
 import scenes.DrawScrollingSpriteScene;
+import scenes.Camera1Scene;
 
 typedef ExamplesDef = {
     name:String,
@@ -30,6 +33,9 @@ class MainScene extends CustomScene {
 
     override public function init(closeButton:Bool = false) {
         super.init(closeButton);
+
+        //var cam = createCamera(0, 0, Std.int(Screen.width/2), 0);
+        //var cam2 = createCamera(Std.int(Screen.width/2), 0);
 
         _addTitle(Screen.centerX, 60);
 
@@ -142,6 +148,12 @@ class MainScene extends CustomScene {
 
                     }
                 },
+                {
+                    name: "Camera 1",
+                    callback: function(){
+                        _gotoScene(Camera1Scene.create(true));
+                    }
+                }
             ];
         }
     }

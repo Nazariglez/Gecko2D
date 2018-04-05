@@ -11,6 +11,8 @@ import gecko.components.draw.ProgressBarComponent;
 class Game {
     private var _assetsToLoad:Array<String> = [
         //your assets here
+        "images/kenney/starBackground.png",
+        "images/kenney/enemyUFO.png",
         "images/kenney/green_panel.png",
         "images/kenney/grey_button08.png",
         "images/kenney/red_cross.png",

@@ -65,6 +65,15 @@ class InteractivitySystem extends System implements IUpdatable {
             }
         }
 
+        var camera = scene.getCameraFocused(_pointer);
+        if(camera != null){
+            scene.updateCameraTransform(camera);
+            _pointer.set(
+                _pointer.x - camera.x,
+                _pointer.y - camera.y
+            );
+        }
+
         if(!checkInDrawOrder){
             _checkEntites(dt);
         }else{
@@ -85,7 +94,7 @@ class InteractivitySystem extends System implements IUpdatable {
 
     private function _dispatchEntityEvents(e:Entity) {
         var transform:Transform = e.transform;
-        transform.screenToLocal(Mouse.position, _localPoint);
+        transform.screenToLocal(_pointer, _localPoint);
 
         var mouseComponent:MouseComponent = e.getComponent(MouseComponent);
         var draggableComponent:DraggableComponent = e.getComponent(DraggableComponent);
@@ -219,7 +228,7 @@ class InteractivitySystem extends System implements IUpdatable {
 
         if(draggableComponent != null && draggableComponent.isDragged){
             var parent = draggableComponent.entity.transform.parent;
-            parent.screenToLocal(Mouse.position, _localPoint);
+            parent.screenToLocal(_pointer, _localPoint);
 
             if(draggableComponent.bounds == null){
                 draggableComponent.entity.transform.position.copy(_localPoint);

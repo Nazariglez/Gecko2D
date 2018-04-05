@@ -17,6 +17,27 @@ enum DepthMode {
     DISABLED;
 }
 
+//todo remove from the updateTransform the _dirtyPosition and check it in the get_position
+
+    /*
+
+
+
+
+
+
+
+        FIXED TO CAMERA WHERE THE TRANSFORM IS UPDATED WITH THE ROOTTRANSFORM AND NOT THE PARENT
+        SEE PARSER
+
+
+
+
+
+
+
+     */
+
 @:allow(gecko.Entity)
 @:access(gecko.math.Point, gecko.math.Vector2g)
 class Transform {
@@ -28,10 +49,13 @@ class Transform {
         return 0;
     }
 
+    public var id(default, null):Int = Gecko.getUniqueID();
     public var lastUpdateID(default, null):Int = 0;
 
     public var parent(get, set):Transform;
     private var _parent:Transform;
+
+    private var _rootTransform:Transform = null;
 
     private var _children:Array<Transform> = [];
 
@@ -104,6 +128,9 @@ class Transform {
     private var _dirtyDepth:Bool = false;
     private var _dirtyPosition:Bool = true;
 
+    private var _tmpPoint1:Point;
+    private var _tmpPoint2:Point;
+
     public var onAddedToParent:Event<Transform->Void>;
     public var onRemovedFromParent:Event<Transform->Void>;
     public var onTransformChange:Event<Void->Void>;
@@ -152,6 +179,9 @@ class Transform {
 
         _localScale = Point.create(1, 1);
         _localScale.setObserver(_onSetLocalScale);
+
+        _tmpPoint1 = Point.create();
+        _tmpPoint2 = Point.create();
 
         _dirty = _dirtyPosition = _dirtyAngle = _dirtyScale = true;
     }
@@ -225,6 +255,14 @@ class Transform {
 
         if(_parent != null){
             _parent.updateTransform();
+
+            if(_parent._parent == null){
+                _rootTransform = _parent;
+            }else{
+                _rootTransform = _parent._rootTransform;
+            }
+        }else{
+            _rootTransform = this;
         }
 
         if(_dirtyAngle){
@@ -260,14 +298,25 @@ class Transform {
         }
 
         if(_parent != null){
-            var _parentTransform = _parent._worldMatrix;
-
-            _worldMatrix.inheritTransform(_localMatrix, _parentTransform);
+            _worldMatrix.inheritTransform(_localMatrix, _parent._worldMatrix);
 
             //set world position
             if(_dirtyPosition){
-                _position._setX(_parentTransform._00 * _localPosition.x + _parentTransform._10 * _localPosition.y + _parentTransform._20);
+                var _parentTransform = _rootTransform.worldMatrix; //(_parent.entity != null && _parent.entity.isRoot) ? _parent._localMatrix : _parent._worldMatrix;
+                /*if(_parent.entity != null && _parent.entity.isRoot){
+                    _position._setX(_localPosition.x);
+                    _position._setY(_localPosition.y);
+                }else{
+                    _position._setX(_parentTransform._00 * _localPosition.x + _parentTransform._10 * _localPosition.y + _parentTransform._20);
+                    _position._setY(_parentTransform._01 * _localPosition.x + _parentTransform._11 * _localPosition.y + _parentTransform._21);
+                }*/
+                /*_position._setX(_parentTransform._00 * _localPosition.x + _parentTransform._10 * _localPosition.y + _parentTransform._20);
                 _position._setY(_parentTransform._01 * _localPosition.x + _parentTransform._11 * _localPosition.y + _parentTransform._21);
+                */
+
+                _rootTransform.localToLocal(_parent, _localPosition, _tmpPoint1);
+                _position._setX(_tmpPoint1.x);
+                _position._setY(_tmpPoint1.y);
             }
 
             //set world scale
@@ -331,10 +380,28 @@ class Transform {
 
     private function _onSetPosition(p:Point) {
         if(_parent != null){
-            var pm = _parent.worldMatrix;
+            /*if(_parent.entity != null && _parent.entity.isRoot){
+                _localPosition._setX(_position.x);
+                _localPosition._setY(_position.y);
+            }else{
+                var pm = _parent.worldMatrix;
+                var id = 1 / ((pm._00 * pm._11) + (pm._10 * -pm._01));
+                _localPosition._setX((pm._11 * id * p.x) + (-pm._10 * id * p.y) + (((pm._21 * pm._10) - (pm._20 * pm._11)) * id));
+                _localPosition._setY((pm._00 * id * p.y) + (-pm._01 * id * p.x) + (((-pm._21 * pm._00) + (pm._20 * pm._01)) * id));
+            }*/
+            //var pm = _parent.worldMatrix;
+            /*var pm = _rootTransform.worldMatrix; //(_parent.entity != null && _parent.entity.isRoot) ? _parent._localMatrix : _parent._worldMatrix;
+
             var id = 1 / ((pm._00 * pm._11) + (pm._10 * -pm._01));
             _localPosition._setX((pm._11 * id * p.x) + (-pm._10 * id * p.y) + (((pm._21 * pm._10) - (pm._20 * pm._11)) * id));
             _localPosition._setY((pm._00 * id * p.y) + (-pm._01 * id * p.x) + (((-pm._21 * pm._00) + (pm._20 * pm._01)) * id));
+            */
+
+            _parent.localToLocal(_rootTransform, p, _tmpPoint2);
+            _localPosition._setX(_tmpPoint2.x);
+            _localPosition._setY(_tmpPoint2.y);
+
+
         }else{
             _localPosition._setX(p.x);
             _localPosition._setY(p.y);
@@ -382,6 +449,8 @@ class Transform {
     }
 
     public function localToScreen(point:Point, cachePoint:Point = null) : Point {
+        if(!_dirty)updateTransform();
+
         if(cachePoint == null){
             cachePoint = Point.create();
         }
@@ -389,14 +458,16 @@ class Transform {
         var xx = point.x;
         var yy = point.y;
 
-        cachePoint.x = worldMatrix._00 * xx + worldMatrix._10 * yy + worldMatrix._20;
-        cachePoint.y = worldMatrix._01 * xx + worldMatrix._11 * yy + worldMatrix._21;
+        cachePoint.x = _worldMatrix._00 * xx + _worldMatrix._10 * yy + _worldMatrix._20;
+        cachePoint.y = _worldMatrix._01 * xx + _worldMatrix._11 * yy + _worldMatrix._21;
 
         return cachePoint;
     }
 
 
     public function screenToLocal(point:Point, cachePoint:Point = null) : Point {
+        if(!_dirty)updateTransform();
+
         if(cachePoint == null){
             cachePoint = Point.create();
         }
@@ -404,9 +475,9 @@ class Transform {
         var xx = point.x;
         var yy = point.y;
 
-        var id = 1 / ((worldMatrix._00 * worldMatrix._11) + (worldMatrix._10 * -worldMatrix._01));
-        cachePoint.x = (worldMatrix._11 * id * xx) + (-worldMatrix._10 * id * yy) + (((worldMatrix._21 * worldMatrix._10) - (worldMatrix._20 * worldMatrix._11)) * id);
-        cachePoint.y = (worldMatrix._00 * id * yy) + (-worldMatrix._01 * id * xx) + (((-worldMatrix._21 * worldMatrix._00) + (worldMatrix._20 * worldMatrix._01)) * id);
+        var id = 1 / ((_worldMatrix._00 * _worldMatrix._11) + (_worldMatrix._10 * -_worldMatrix._01));
+        cachePoint.x = (_worldMatrix._11 * id * xx) + (-_worldMatrix._10 * id * yy) + (((_worldMatrix._21 * _worldMatrix._10) - (_worldMatrix._20 * _worldMatrix._11)) * id);
+        cachePoint.y = (_worldMatrix._00 * id * yy) + (-_worldMatrix._01 * id * xx) + (((-_worldMatrix._21 * _worldMatrix._00) + (_worldMatrix._20 * _worldMatrix._01)) * id);
 
         return cachePoint;
     }
