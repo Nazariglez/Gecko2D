@@ -1,19 +1,11 @@
 package scenes;
 
-import gecko.Entity;
-import gecko.components.input.MouseComponent;
-import gecko.Gecko;
-import gecko.Gecko;
-import gecko.components.draw.CircleComponent;
-import gecko.Assets;
-import gecko.Color;
 import gecko.Graphics;
 import gecko.Float32;
 import gecko.input.KeyCode;
 import gecko.input.Keyboard;
 import gecko.components.draw.SpriteComponent;
 import gecko.components.draw.ScrollingSpriteComponent;
-import gecko.Screen;
 
 using gecko.utils.MathHelper;
 
@@ -41,16 +33,13 @@ class Camera1Scene extends CustomScene {
         //follow the player movement
         cam.follow(player);
 
-        //Keyboard events
-        Keyboard.enable();
-
         var t = timerManager.createTimer(1);
         t.loop = true;
         t.onUpdate += function(elapsed:Float32, dt:Float32) {
-            if(Keyboard.isDown(KeyCode.Left)) player.transform.position.x -= 100*dt;
-            if(Keyboard.isDown(KeyCode.Right)) player.transform.position.x += 100*dt;
-            if(Keyboard.isDown(KeyCode.Up)) player.transform.position.y -= 100*dt;
-            if(Keyboard.isDown(KeyCode.Down)) player.transform.position.y += 100*dt;
+            if(Keyboard.isDown(KeyCode.Left)) player.transform.position.x -= 150*dt;
+            if(Keyboard.isDown(KeyCode.Right)) player.transform.position.x += 150*dt;
+            if(Keyboard.isDown(KeyCode.Up)) player.transform.position.y -= 150*dt;
+            if(Keyboard.isDown(KeyCode.Down)) player.transform.position.y += 150*dt;
             if(Keyboard.isDown(KeyCode.Z)) cam.rotation += (10).toRadians() * dt;
             if(Keyboard.isDown(KeyCode.X)) cam.rotation -= (10).toRadians() * dt;
 

@@ -204,6 +204,7 @@ class Scene implements IScene {
     }
 
     private function _addCamera(camera:Camera) {
+        camera.scene = this;
         cameras.push(camera);
         onCameraAdded.emit(camera);
     }
@@ -221,6 +222,7 @@ class Scene implements IScene {
     }
 
     private function _removeCamera(camera:Camera) {
+        camera.scene = null;
         cameras.remove(camera);
         onCameraRemoved.emit(camera);
     }

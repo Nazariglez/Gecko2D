@@ -1,5 +1,6 @@
 package gecko;
 
+import gecko.utils.Event;
 import gecko.macros.IAutoPool;
 import gecko.resources.Image;
 import gecko.math.Matrix;
@@ -7,10 +8,13 @@ import gecko.math.Point;
 
 using gecko.utils.MathHelper;
 
-//todo merge _transform and _containerTransform to avoid extra clacultaions
+//todo merge _transform and _containerTransform to avoid extra calculations
 
 class Camera implements IAutoPool implements IUpdatable {
     public var id(default, null):Int = Gecko.getUniqueID();
+
+    public var scene(get, set):Scene;
+    private var _scene:Scene = null;
 
     private var _transform:Transform;
     private var _containerTransform:Transform;
@@ -41,9 +45,15 @@ class Camera implements IAutoPool implements IUpdatable {
     public var wasChanged(get, set):Bool;
     private var _wasChanged:Bool = true;
 
+    public var onAddedToScene:Event<Camera->Scene->Void>;
+    public var onRemovedFromScene:Event<Camera->Scene->Void>;
+
     public function new(){
         _containerTransform = new Transform(null);
         _transform = new Transform(null);
+
+        onAddedToScene = Event.create();
+        onRemovedFromScene = Event.create();
     }
 
     public function init(x:Int = 0, y:Int = 0, width:Int = 0, height:Int = 0){
@@ -103,6 +113,10 @@ class Camera implements IAutoPool implements IUpdatable {
     }
 
     public function beforeDestroy() {
+        if(scene != null){
+            scene.removeCamera(this);
+        }
+
         buffer.unload();
         buffer = null;
 
@@ -117,6 +131,9 @@ class Camera implements IAutoPool implements IUpdatable {
         _dirty = true;
 
         _wasChanged = true;
+
+        onAddedToScene.clear();
+        onRemovedFromScene.clear();
 
         @:privateAccess _containerTransform._reset();
         @:privateAccess _transform._reset();
@@ -170,4 +187,23 @@ class Camera implements IAutoPool implements IUpdatable {
         return _wasChanged = value;
     }
 
+    inline function get_scene():Scene {
+        return _scene;
+    }
+
+    function set_scene(value:Scene):Scene {
+        if(value == _scene)return _scene;
+
+        if(_scene != null){
+            onRemovedFromScene.emit(this, _scene);
+        }
+
+        _scene = value;
+
+        if(_scene != null){
+            onAddedToScene.emit(this, _scene);
+        }
+
+        return _scene;
+    }
 }

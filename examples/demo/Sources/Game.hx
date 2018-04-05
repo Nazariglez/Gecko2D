@@ -1,5 +1,6 @@
 package;
 
+import gecko.input.Keyboard;
 import gecko.input.Mouse;
 import gecko.Gecko;
 import gecko.Screen;
@@ -41,6 +42,8 @@ class Game {
 
     public function _gotoMainScene() {
         Mouse.enable();
+        Keyboard.enable();
+
         Gecko.world.changeScene(scenes.MainScene.create(), true);
     }
 
