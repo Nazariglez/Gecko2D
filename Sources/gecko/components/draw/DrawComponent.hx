@@ -14,9 +14,10 @@ class DrawComponent extends Component implements IDrawable implements IUpdatable
     public var isVisible(get, null):Bool;
 
     public function update(dt:Float32){}
-    //public function preDraw(g:Graphics){} //pipeline shader and blends
-    //public function postDraw(g:Graphics){}
+
+    public function preDraw(g:Graphics){}
     public function draw(graphics:Graphics){}
+    public function postDraw(g:Graphics){}
 
     override public function beforeDestroy() {
         super.beforeDestroy();
