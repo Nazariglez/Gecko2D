@@ -1,7 +1,7 @@
 # development gecko config.
 name = "Gecko2D-Game"
 sources = ["Sources"]
-shaders = ["Sources/Shaders/**"]    #shaders directory
+shaders = []                        #shaders directory
 libraries = []                      #libs at Libraries folder or haxelib
 output = "build"                    #build output
 debug = true                        #compile in debug mode

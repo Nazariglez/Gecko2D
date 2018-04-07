@@ -1,43 +1,82 @@
 package;
 
-import gecko.Scene;
+import gecko.components.draw.CircleComponent;
 import gecko.Color;
-import gecko.Graphics;
-import gecko.Assets;
-import gecko.components.draw.SpriteComponent;
+import gecko.components.draw.RectangleComponent;
+import gecko.Scene;
+import gecko.Gecko;
 import gecko.Screen;
 import gecko.Entity;
-import gecko.Gecko;
+import gecko.Assets;
+import gecko.components.draw.ProgressBarComponent;
 
 class Game {
+    private var _assetsToLoad:Array<String> = [
+        //your assets here
+        "Ubuntu-B.ttf"
+    ];
+
     public function new(){
-        Assets.load([
-            "rabbit.png"
-        ], _onLoaded).start();
+        var scene = Gecko.currentScene;
 
-        Gecko.onDraw += function(g:Graphics) {
-            g.color = Color.Red;
-            g.fillRect(Screen.centerX, Screen.centerY, 3 , 3);
-        };
+        var container = scene.createEntity();
+        //container.transform.size.set(500, 500);
+        container.transform.position.set(Screen.centerX, Screen.centerY);
+        var rect = container.addComponent(RectangleComponent.create(true, 500, 500));
+        rect.color = Color.Beige;
 
-        gecko.input.Mouse.enable();
-        /*untyped js.Browser.window.goto = function(){
-            _onLoaded();
-        };*/
+        for(i in 0...11){
+            var child = scene.createEntity();
+            child.transform.parent = container.transform;
+            child.transform.localPosition.set(i * 50, i * 50);
+            var circle = child.addComponent(CircleComponent.create(true, 20));
+            circle.color = Color.random();
 
-        gecko.input.Mouse.onRightReleased += function(x, y){
-            _onLoaded();
-        };
+            for(n in 0...3){
+                var child2 = scene.createEntity();
+                child2.transform.parent = child.transform;
+                child2.transform.localPosition.set(child.transform.size.x/2, n*20);
+                var circle2 = child2.addComponent(CircleComponent.create(true, 5));
+                circle2.color = Color.random();
+            }
+        }
     }
 
-    private function _onLoaded() {
-        /*var e = Entity.create();
-        e.addComponent(SpriteComponent.create("rabbit.png"));
-        e.transform.position.set(Screen.centerX, Screen.centerY);
+    public function _gotoMainScene() {
+        Gecko.world.changeScene(scenes.MainScene.create());
+    }
 
-        Gecko.currentScene.addEntity(e);*/
-        var scene = gecko.math.Random.getFloat() < 0.5 ? TestScene.create() : TestScene2.create();
+    //Add a loaderbar an go to mainScene when the load finish
+    public function _loadAssets() {
+        var entity = Entity.create();
+        entity.transform.position.set(Screen.centerX, Screen.centerY);
+        entity.transform.size.set(500, 40);
 
-        Gecko.world.changeScene(scene, true);
+        var progressBar = entity.addComponent(ProgressBarComponent.create());
+
+        Gecko.currentScene.addEntity(entity);
+
+        var loader = Assets.load(_assetsToLoad);
+        loader.onProgressEnd += function(progress:Int, assetName:String){
+            progressBar.progress = progress; //update the loaderBar
+        };
+
+        loader.onComplete += function(){
+            //added a little delay before go to the mainScene
+            var timer = Gecko.currentScene.timerManager.createTimer(0.5);
+            timer.destroyOnEnd = true;
+
+            timer.onEnd += function(){
+                Gecko.currentScene.removeEntity(entity);
+                entity.destroy();
+
+                _gotoMainScene();
+            };
+
+            timer.start();
+        };
+
+        //start load
+        loader.start();
     }
 }
