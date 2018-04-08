@@ -22,6 +22,8 @@ class Rect implements IAutoPool {
 	public var bottom(get, null): Float32;
 	public var left(get, null): Float32;
 	public var right(get, null): Float32;
+	public var centerX(get, null): Float32;
+	public var centerY(get, null): Float32;
 
 	public function new(){}
 
@@ -105,5 +107,13 @@ class Rect implements IAutoPool {
 
 	inline function get_right() : Float32 {
 		return x + width;
+	}
+
+	inline function get_centerX():Float32 {
+		return x + width/2;
+	}
+
+	inline function get_centerY():Float32 {
+		return y + height/2;
 	}
 }

@@ -51,6 +51,7 @@ class Camera implements IAutoPool implements IUpdatable {
 
     public var bounds:Rect = null;
     public var deadzone:Rect = null;
+    public var style:CameraStyle = CameraStyle.LOCKON;
 
     public var onAddedToScene:Event<Camera->Scene->Void>;
     public var onRemovedFromScene:Event<Camera->Scene->Void>;
@@ -93,18 +94,47 @@ class Camera implements IAutoPool implements IUpdatable {
     }
 
     public function update(dt:Float32) {
+        var sx = (width/_containerTransform.scale.x)/2;
+        var sy = (height/_containerTransform.scale.y)/2;
+
         if(target != null){
             var pos = target.transform.position;
 
-            lookAt.set(
-                followLerp.x.lerp(lookAt.x, pos.x),
-                followLerp.y.lerp(lookAt.y, pos.y)
-            );
+            if(deadzone != null){
+                /*var xx = lookAt.x;
+                var yy = lookAt.y;
+
+                var edge = pos.x - lookAt.x + sx;
+                //trace("x edge", edge, edge < deadzone.left, edge > deadzone.right);
+
+                if(edge < deadzone.left){
+                    xx = followLerp.x.lerp(lookAt.x, pos.x + deadzone.left);
+                }else if(edge > deadzone.right){
+                    xx = followLerp.x.lerp(lookAt.x, pos.x - deadzone.right);
+                    //xx = followLerp.x.lerp(lookAt.x, pos.x + deadzone.left/2);
+                    trace("out x");
+                }
+
+                edge = pos.y - lookAt.y + sy;
+                //trace("y edge", edge, deadzone.top, edge > deadzone.bottom);
+
+                if(edge < deadzone.top || edge > deadzone.bottom){
+                    //yy = followLerp.y.lerp(lookAt.y, pos.y);
+                    trace("out y");
+                }
+
+                lookAt.set(xx, yy);*/
+            }else{
+                lookAt.set(
+                    followLerp.x.lerp(lookAt.x, pos.x),
+                    followLerp.y.lerp(lookAt.y, pos.y)
+                );
+            }
         }
 
         if(bounds != null){
-            var sx = (width/_containerTransform.scale.x)/2;
-            var sy = (height/_containerTransform.scale.y)/2;
+            //var sx = (width/_containerTransform.scale.x)/2;
+            //var sy = (height/_containerTransform.scale.y)/2;
 
             var left = lookAt.x - sx;
             var right = lookAt.x + sx;
@@ -134,10 +164,30 @@ class Camera implements IAutoPool implements IUpdatable {
         lookAt.copy(entity.transform.position);
     }
 
-    public function follow(entity:Entity, lerpX:Float32 = 1, lerpY:Float32 = 1) {
+    public function follow(entity:Entity, ?style:CameraStyle, lerpX:Float32 = 1, lerpY:Float32 = 1) {
         target = entity;
         lookAtEntity(target);
         followLerp.set(lerpX, lerpY);
+
+        this.style = style != null ? style : CameraStyle.LOCKON;
+
+        switch(this.style){
+            case CameraStyle.LOCKON:
+                deadzone = null;
+
+            case CameraStyle.PLATFORMER:
+                var ww = width/8;
+                var hh = height/3;
+                deadzone = Rect.create((width - ww) / 2, (height - hh) / 2 - hh * 0.25, ww, hh);
+
+            case CameraStyle.TOPDOWN:
+                var size = Math.max(width, height)/4;
+                deadzone = Rect.create((width - size) / 2, (height - size) / 2, size, size);
+
+            case CameraStyle.TOPDOWN_TIGHT:
+                var size = Math.max(width, height)/8;
+                deadzone = Rect.create((width - size) / 2, (height - size) / 2, size, size);
+        }
     }
 
     public function unfollow() {
@@ -272,4 +322,11 @@ class Camera implements IAutoPool implements IUpdatable {
 
         return _scene;
     }
+}
+
+enum CameraStyle {
+    LOCKON;
+    PLATFORMER;
+    TOPDOWN;
+    TOPDOWN_TIGHT;
 }
