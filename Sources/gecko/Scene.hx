@@ -406,7 +406,12 @@ class Scene implements IScene {
 
                 //draw to the camera buffer
                 g.setRenderTarget(_camera.buffer);
-                g.begin(true, _camera.bgColor);
+
+                if(_camera.bgColor != null){
+                    g.begin(true, _camera.bgColor);
+                }else{
+                    g.begin();
+                }
 
                 for(sys in _drawableSystems){
                     if(sys.enabled){
@@ -422,7 +427,9 @@ class Scene implements IScene {
             g.begin();
 
             for(_camera in cameras){
+                _camera.preDraw(g);
                 g.drawImage(_camera.buffer, _camera.x, _camera.y);
+                _camera.postDraw(g);
             }
 
         }else{

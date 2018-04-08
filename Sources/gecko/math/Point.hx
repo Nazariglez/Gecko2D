@@ -58,6 +58,30 @@ class Point implements IAutoPool {
 		}
 	}
 
+	inline public function setFloor(x:Float32, y:Float32) {
+		set(Math.floor(x), Math.floor(y));
+	}
+
+	inline public function setCeil(x:Float32, y:Float32) {
+		set(Math.ceil(x), Math.ceil(y));
+	}
+
+	inline public function setRound(x:Float32, y:Float32) {
+		set(Math.round(x), Math.round(y));
+	}
+
+	inline public function floor() {
+		set(Math.floor(_x), Math.floor(_y));
+	}
+
+	inline public function ceil() {
+		set(Math.ceil(_x), Math.ceil(_y));
+	}
+
+	inline public function round() {
+		set(Math.round(_x), Math.round(_y));
+	}
+
 	public inline function clone() : Point {
 		return Point.create(x, y);
 	}

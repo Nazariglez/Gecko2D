@@ -1,5 +1,6 @@
 package gecko;
 
+import gecko.math.Rect;
 import gecko.utils.Event;
 import gecko.macros.IAutoPool;
 import gecko.resources.Image;
@@ -11,7 +12,7 @@ using gecko.utils.MathHelper;
 //todo merge _transform and _containerTransform to avoid extra calculations
 
     //TODO add bounds, deadzone and pltaform modes
-    
+
 class Camera implements IAutoPool implements IUpdatable {
     public var id(default, null):Int = Gecko.getUniqueID();
 
@@ -39,7 +40,7 @@ class Camera implements IAutoPool implements IUpdatable {
     public var y:Int = 0;
     public var width(default, null):Int = 0;
     public var height(default, null):Int = 0;
-    public var bgColor:Color = Color.Black;
+    public var bgColor:Null<Color> = null;
 
     public var target(default, null):Entity;
 
@@ -47,6 +48,9 @@ class Camera implements IAutoPool implements IUpdatable {
 
     public var wasChanged(get, set):Bool;
     private var _wasChanged:Bool = true;
+
+    public var bounds:Rect = null;
+    public var deadzone:Rect = null;
 
     public var onAddedToScene:Event<Camera->Scene->Void>;
     public var onRemovedFromScene:Event<Camera->Scene->Void>;
@@ -59,9 +63,11 @@ class Camera implements IAutoPool implements IUpdatable {
         onRemovedFromScene = Event.create();
     }
 
-    public function init(x:Int = 0, y:Int = 0, width:Int = 0, height:Int = 0){
+    public function init(x:Int = 0, y:Int = 0, width:Int = 0, height:Int = 0, ?color:Color){
         this.x = x;
         this.y = y;
+
+        this.bgColor = color;
 
         resize(
             width == 0 ? Std.int(Screen.width) - x : width,
@@ -95,7 +101,34 @@ class Camera implements IAutoPool implements IUpdatable {
                 followLerp.y.lerp(lookAt.y, pos.y)
             );
         }
+
+        if(bounds != null){
+            var sx = (width/_containerTransform.scale.x)/2;
+            var sy = (height/_containerTransform.scale.y)/2;
+
+            var left = lookAt.x - sx;
+            var right = lookAt.x + sx;
+
+            var top = lookAt.y - sy;
+            var bottom = lookAt.y + sy;
+
+            if(left < bounds.left){
+                lookAt.x = bounds.left + sx;
+            }else if(right > bounds.right){
+                lookAt.x = bounds.right - sx;
+            }
+
+            if(top < bounds.top){
+                lookAt.y = bounds.top + sy;
+            }else if(bottom > bounds.bottom){
+                lookAt.y = bounds.bottom - sy;
+            }
+        }
+
     }
+
+    public function preDraw(g:Graphics) {}
+    public function postDraw(g:Graphics) {}
 
     inline public function lookAtEntity(entity:Entity) {
         lookAt.copy(entity.transform.position);
