@@ -10,6 +10,8 @@ using gecko.utils.MathHelper;
 
 //todo merge _transform and _containerTransform to avoid extra calculations
 
+    //TODO add bounds, deadzone and pltaform modes
+    
 class Camera implements IAutoPool implements IUpdatable {
     public var id(default, null):Int = Gecko.getUniqueID();
 
@@ -20,6 +22,7 @@ class Camera implements IAutoPool implements IUpdatable {
     private var _containerTransform:Transform;
 
     public var lookAt(default, null):Point;
+    public var followLerp(default, null):Point;
     //public var scale(get, null):Point;
 
     public var rotation(get, set):Float32;
@@ -38,7 +41,7 @@ class Camera implements IAutoPool implements IUpdatable {
     public var height(default, null):Int = 0;
     public var bgColor:Color = Color.Black;
 
-    public var followTarget(default, null):Entity;
+    public var target(default, null):Entity;
 
     private var _dirty:Bool = true;
 
@@ -73,18 +76,39 @@ class Camera implements IAutoPool implements IUpdatable {
         lookAt = Point.create(0,0);
         lookAt.setObserver(_onSetLookAt);
         lookAt.set(this.width/2, this.height/2);
+
+        followLerp = Point.create(1,1);
         
         _dirty = true;
     }
 
-    public function update(delta:Float32) {
-        if(followTarget != null){
-            lookAt.copy(followTarget.transform.position);
+    private function _onSetPoint(p:Point) {
+        _dirty = true;
+    }
+
+    public function update(dt:Float32) {
+        if(target != null){
+            var pos = target.transform.position;
+
+            lookAt.set(
+                followLerp.x.lerp(lookAt.x, pos.x),
+                followLerp.y.lerp(lookAt.y, pos.y)
+            );
         }
     }
 
-    public function follow(entity:Entity) {
-        followTarget = entity;
+    inline public function lookAtEntity(entity:Entity) {
+        lookAt.copy(entity.transform.position);
+    }
+
+    public function follow(entity:Entity, lerpX:Float32 = 1, lerpY:Float32 = 1) {
+        target = entity;
+        lookAtEntity(target);
+        followLerp.set(lerpX, lerpY);
+    }
+
+    public function unfollow() {
+        target = null;
     }
 
     public function resize(width:Int, height:Int) {
@@ -119,6 +143,15 @@ class Camera implements IAutoPool implements IUpdatable {
 
         buffer.unload();
         buffer = null;
+
+        target = null;
+
+        lookAt.destroy();
+        lookAt = null;
+
+
+        followLerp.destroy();
+        followLerp = null;
 
         x = 0;
         y = 0;

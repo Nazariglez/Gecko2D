@@ -31,15 +31,17 @@ class Camera1Scene extends CustomScene {
         player.transform.position.set(BG_WIDTH/2, BG_HEIGHT/2);
 
         //follow the player movement
-        cam.follow(player);
+        cam.follow(player, 0.2, 0.2);
+
+        //untyped js.Browser.window.lerp = cam.followLerp;
 
         var t = timerManager.createTimer(1);
         t.loop = true;
         t.onUpdate += function(elapsed:Float32, dt:Float32) {
-            if(Keyboard.isDown(KeyCode.Left)) player.transform.position.x -= 150*dt;
-            if(Keyboard.isDown(KeyCode.Right)) player.transform.position.x += 150*dt;
-            if(Keyboard.isDown(KeyCode.Up)) player.transform.position.y -= 150*dt;
-            if(Keyboard.isDown(KeyCode.Down)) player.transform.position.y += 150*dt;
+            if(Keyboard.isDown(KeyCode.Left)) player.transform.position.x -= 350*dt;
+            if(Keyboard.isDown(KeyCode.Right)) player.transform.position.x += 350*dt;
+            if(Keyboard.isDown(KeyCode.Up)) player.transform.position.y -= 350*dt;
+            if(Keyboard.isDown(KeyCode.Down)) player.transform.position.y += 350*dt;
             if(Keyboard.isDown(KeyCode.Z)) cam.rotation += (10).toRadians() * dt;
             if(Keyboard.isDown(KeyCode.X)) cam.rotation -= (10).toRadians() * dt;
 
