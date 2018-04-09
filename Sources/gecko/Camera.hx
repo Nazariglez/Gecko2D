@@ -94,36 +94,42 @@ class Camera implements IAutoPool implements IUpdatable {
     }
 
     public function update(dt:Float32) {
-        var sx = (width/_containerTransform.scale.x)/2;
-        var sy = (height/_containerTransform.scale.y)/2;
-
         if(target != null){
             var pos = target.transform.position;
 
             if(deadzone != null){
-                /*var xx = lookAt.x;
+                var sx = width/2;
+                var sy = height/2;
+
+                var xx = lookAt.x;
                 var yy = lookAt.y;
 
-                var edge = pos.x - lookAt.x + sx;
-                //trace("x edge", edge, edge < deadzone.left, edge > deadzone.right);
+                var offset = (lookAt.x - sx + deadzone.left) - pos.x;
+                if(offset > 0){
+                    xx = followLerp.x.lerp(lookAt.x, lookAt.x - offset);
+                }else{
 
-                if(edge < deadzone.left){
-                    xx = followLerp.x.lerp(lookAt.x, pos.x + deadzone.left);
-                }else if(edge > deadzone.right){
-                    xx = followLerp.x.lerp(lookAt.x, pos.x - deadzone.right);
-                    //xx = followLerp.x.lerp(lookAt.x, pos.x + deadzone.left/2);
-                    trace("out x");
+                    offset = (lookAt.x - sx + deadzone.right) - pos.x;
+                    if(offset < 0){
+                        xx = followLerp.x.lerp(lookAt.x, lookAt.x - offset);
+                    }
+
                 }
 
-                edge = pos.y - lookAt.y + sy;
-                //trace("y edge", edge, deadzone.top, edge > deadzone.bottom);
+                offset = (lookAt.y - sy + deadzone.top) - pos.y;
+                if(offset > 0){
+                    yy = followLerp.y.lerp(lookAt.y, lookAt.y - offset);
+                }else{
 
-                if(edge < deadzone.top || edge > deadzone.bottom){
-                    //yy = followLerp.y.lerp(lookAt.y, pos.y);
-                    trace("out y");
+                    offset = (lookAt.y - sy + deadzone.bottom) - pos.y;
+                    if(offset < 0){
+                        yy = followLerp.y.lerp(lookAt.y, lookAt.y - offset);
+                    }
+
                 }
 
-                lookAt.set(xx, yy);*/
+                lookAt.set(xx,yy);
+
             }else{
                 lookAt.set(
                     followLerp.x.lerp(lookAt.x, pos.x),
@@ -133,8 +139,8 @@ class Camera implements IAutoPool implements IUpdatable {
         }
 
         if(bounds != null){
-            //var sx = (width/_containerTransform.scale.x)/2;
-            //var sy = (height/_containerTransform.scale.y)/2;
+            var sx = (width/_containerTransform.scale.x)/2;
+            var sy = (height/_containerTransform.scale.y)/2;
 
             var left = lookAt.x - sx;
             var right = lookAt.x + sx;
