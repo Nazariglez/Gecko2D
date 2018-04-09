@@ -4,6 +4,14 @@ import gecko.macros.IAutoPool;
 import gecko.Float32;
 
 class Rect implements IAutoPool {
+	inline public static function fromSquare(side): Rect {
+		return Rect.fromRectangle(side, side);
+	}
+
+	inline public static function fromRectangle(width, height): Rect {
+		return Rect.create(0, 0, width, height);
+	}
+
 	//todo add observer?
 	public var x: Float32 = 0;
 	public var y: Float32 = 0;
@@ -14,6 +22,8 @@ class Rect implements IAutoPool {
 	public var bottom(get, null): Float32;
 	public var left(get, null): Float32;
 	public var right(get, null): Float32;
+	public var centerX(get, null): Float32;
+	public var centerY(get, null): Float32;
 
 	public function new(){}
 
@@ -83,15 +93,6 @@ class Rect implements IAutoPool {
 			|| contains(rect.x + rect.width, rect.y + rect.height);
 	}
 
-	// Static Constructors
-	inline public static function fromSquare(side): Rect {
-		return Rect.fromRectangle(side, side);
-	}
-
-	inline public static function fromRectangle(width, height): Rect {
-		return Rect.create(0, 0, width, height);
-	}
-
 	inline function get_top() : Float32 {
 		return y;
 	}
@@ -106,5 +107,13 @@ class Rect implements IAutoPool {
 
 	inline function get_right() : Float32 {
 		return x + width;
+	}
+
+	inline function get_centerX():Float32 {
+		return x + width/2;
+	}
+
+	inline function get_centerY():Float32 {
+		return y + height/2;
 	}
 }

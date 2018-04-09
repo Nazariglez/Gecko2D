@@ -28,10 +28,13 @@ class Transform {
         return 0;
     }
 
+    public var id(default, null):Int = Gecko.getUniqueID();
     public var lastUpdateID(default, null):Int = 0;
 
     public var parent(get, set):Transform;
     private var _parent:Transform;
+
+    private var _rootTransform:Transform = null;
 
     private var _children:Array<Transform> = [];
 
@@ -104,6 +107,9 @@ class Transform {
     private var _dirtyDepth:Bool = false;
     private var _dirtyPosition:Bool = true;
 
+    private var _tmpPoint1:Point;
+    private var _tmpPoint2:Point;
+
     public var onAddedToParent:Event<Transform->Void>;
     public var onRemovedFromParent:Event<Transform->Void>;
     public var onTransformChange:Event<Void->Void>;
@@ -117,6 +123,11 @@ class Transform {
     };
 
     public var entity(default, null):Entity;
+
+    public var fixedToCamera(get, set):Bool;
+    private var _fixedToCamera:Bool = false;
+
+    private var _visibleOnCamera:Array<Int> = [];
 
     public function new(entity:Entity){
         this.entity = entity;
@@ -153,7 +164,22 @@ class Transform {
         _localScale = Point.create(1, 1);
         _localScale.setObserver(_onSetLocalScale);
 
+        _tmpPoint1 = Point.create();
+        _tmpPoint2 = Point.create();
+
         _dirty = _dirtyPosition = _dirtyAngle = _dirtyScale = true;
+    }
+
+    inline public function existsInCamera(camera:Camera) : Bool {
+        return (camera != null && _visibleOnCamera.length > 0) ? _visibleOnCamera.has(camera.id) : true;
+    }
+
+    public function addToCamera(camera:Camera) {
+        _visibleOnCamera.push(camera.id);
+    }
+
+    public function removeFromCamera(camera:Camera) {
+        _visibleOnCamera.remove(camera.id);
     }
 
     public function sortChildren(?handler:Transform->Transform->Int) {
@@ -216,6 +242,9 @@ class Transform {
         _depth = 0;
         _depthMode = DepthMode.DEFAULT;
 
+        _fixedToCamera = false;
+        _visibleOnCamera.clear();
+
         _dirty = _dirtyPosition = _dirtyAngle = _dirtyScale = true;
     }
 
@@ -225,6 +254,14 @@ class Transform {
 
         if(_parent != null){
             _parent.updateTransform();
+
+            if(_parent._parent == null){ //todo check _fixedToCamera
+                _rootTransform = _parent;
+            }else{
+                _rootTransform = _parent._rootTransform;
+            }
+        }else{
+            _rootTransform = this;
         }
 
         if(_dirtyAngle){
@@ -259,16 +296,8 @@ class Transform {
             _localMatrix._21 -= _pW * _localMatrix._01 + _pH * _localMatrix._11;
         }
 
-        if(_parent != null){
-            var _parentTransform = _parent._worldMatrix;
-
-            _worldMatrix.inheritTransform(_localMatrix, _parentTransform);
-
-            //set world position
-            if(_dirtyPosition){
-                _position._setX(_parentTransform._00 * _localPosition.x + _parentTransform._10 * _localPosition.y + _parentTransform._20);
-                _position._setY(_parentTransform._01 * _localPosition.x + _parentTransform._11 * _localPosition.y + _parentTransform._21);
-            }
+        if(!_fixedToCamera && _parent != null){
+            _worldMatrix.inheritTransform(_localMatrix, _parent._worldMatrix);
 
             //set world scale
             if(_dirtyScale){
@@ -284,11 +313,6 @@ class Transform {
         }else{
             _worldMatrix.setFrom(_localMatrix);
 
-            if(_dirtyPosition){
-                _position._setX(_localPosition.x);
-                _position._setY(_localPosition.y);
-            }
-
             if(_dirtyScale){
                 _scale._setX(_localScale.x);
                 _scale._setY(_localScale.y);
@@ -301,7 +325,7 @@ class Transform {
 
         _dirtyAngle = false;
         _dirtyScale = false;
-        _dirtyPosition = false;
+        //_dirtyPosition = false;
         _dirty = false;
 
         onTransformChange.emit();
@@ -330,11 +354,12 @@ class Transform {
     }
 
     private function _onSetPosition(p:Point) {
-        if(_parent != null){
-            var pm = _parent.worldMatrix;
-            var id = 1 / ((pm._00 * pm._11) + (pm._10 * -pm._01));
-            _localPosition._setX((pm._11 * id * p.x) + (-pm._10 * id * p.y) + (((pm._21 * pm._10) - (pm._20 * pm._11)) * id));
-            _localPosition._setY((pm._00 * id * p.y) + (-pm._01 * id * p.x) + (((-pm._21 * pm._00) + (pm._20 * pm._01)) * id));
+        if(_parent != null && !_fixedToCamera){
+
+            _parent.localToLocal(_rootTransform, p, _tmpPoint2);
+            _localPosition._setX(_tmpPoint2.x);
+            _localPosition._setY(_tmpPoint2.y);
+
         }else{
             _localPosition._setX(p.x);
             _localPosition._setY(p.y);
@@ -382,6 +407,8 @@ class Transform {
     }
 
     public function localToScreen(point:Point, cachePoint:Point = null) : Point {
+        if(!_dirty)updateTransform();
+
         if(cachePoint == null){
             cachePoint = Point.create();
         }
@@ -389,14 +416,16 @@ class Transform {
         var xx = point.x;
         var yy = point.y;
 
-        cachePoint.x = worldMatrix._00 * xx + worldMatrix._10 * yy + worldMatrix._20;
-        cachePoint.y = worldMatrix._01 * xx + worldMatrix._11 * yy + worldMatrix._21;
+        cachePoint.x = _worldMatrix._00 * xx + _worldMatrix._10 * yy + _worldMatrix._20;
+        cachePoint.y = _worldMatrix._01 * xx + _worldMatrix._11 * yy + _worldMatrix._21;
 
         return cachePoint;
     }
 
 
     public function screenToLocal(point:Point, cachePoint:Point = null) : Point {
+        if(!_dirty)updateTransform();
+
         if(cachePoint == null){
             cachePoint = Point.create();
         }
@@ -404,9 +433,9 @@ class Transform {
         var xx = point.x;
         var yy = point.y;
 
-        var id = 1 / ((worldMatrix._00 * worldMatrix._11) + (worldMatrix._10 * -worldMatrix._01));
-        cachePoint.x = (worldMatrix._11 * id * xx) + (-worldMatrix._10 * id * yy) + (((worldMatrix._21 * worldMatrix._10) - (worldMatrix._20 * worldMatrix._11)) * id);
-        cachePoint.y = (worldMatrix._00 * id * yy) + (-worldMatrix._01 * id * xx) + (((-worldMatrix._21 * worldMatrix._00) + (worldMatrix._20 * worldMatrix._01)) * id);
+        var id = 1 / ((_worldMatrix._00 * _worldMatrix._11) + (_worldMatrix._10 * -_worldMatrix._01));
+        cachePoint.x = (_worldMatrix._11 * id * xx) + (-_worldMatrix._10 * id * yy) + (((_worldMatrix._21 * _worldMatrix._10) - (_worldMatrix._20 * _worldMatrix._11)) * id);
+        cachePoint.y = (_worldMatrix._00 * id * yy) + (-_worldMatrix._01 * id * xx) + (((-_worldMatrix._21 * _worldMatrix._00) + (_worldMatrix._20 * _worldMatrix._01)) * id);
 
         return cachePoint;
     }
@@ -468,6 +497,21 @@ class Transform {
 
     function get_position():Point {
         if(_dirty)updateTransform();
+
+        //set world position
+        if(_dirtyPosition){
+            if(_parent != null && !_fixedToCamera){
+                var _parentTransform = _rootTransform.worldMatrix;
+                _rootTransform.localToLocal(_parent, _localPosition, _tmpPoint1);
+                _position._setX(_tmpPoint1.x);
+                _position._setY(_tmpPoint1.y);
+            }else{
+                _position._setX(_localPosition.x);
+                _position._setY(_localPosition.y);
+            }
+
+            _dirtyPosition = false;
+        }
 
         return _position;
     }
@@ -652,6 +696,19 @@ class Transform {
 
     inline function get_depthMode():DepthMode {
         return _depthMode;
+    }
+
+    function set_fixedToCamera(value:Bool):Bool {
+        if(value == _fixedToCamera)return _fixedToCamera;
+        _fixedToCamera = value;
+
+        _dirty = true;
+
+        return _fixedToCamera;
+    }
+
+    inline function get_fixedToCamera():Bool {
+        return _fixedToCamera;
     }
 
 }

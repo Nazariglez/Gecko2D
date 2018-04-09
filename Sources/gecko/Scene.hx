@@ -1,5 +1,6 @@
 package gecko;
 
+import gecko.math.Point;
 import gecko.tween.TweenManager;
 import gecko.timer.TimerManager;
 import gecko.components.draw.DrawComponent;
@@ -9,14 +10,19 @@ import gecko.systems.draw.DrawSystem;
 import gecko.systems.System;
 import gecko.components.Component;
 
+using gecko.utils.ArrayHelper;
+
 class Scene implements IScene {
-    public var id:Int = Gecko.getUniqueID();
+    public var id(default, null):Int = Gecko.getUniqueID();
 
     public var name(get, set):String;
     private var _name:String = "";
 
     public var rootEntity(default, null):Entity;
-    //public var cameras:Array<Camera> //TODO cameras
+
+    public var cameras:Array<Camera> = [];
+    private var _camerasToAdd:Array<Camera> = [];
+    private var _camerasToRemove:Array<Camera> = [];
 
     private var _dirtySortSystems:Bool = false;
     private var _isProcessing:Bool = false;
@@ -40,10 +46,16 @@ class Scene implements IScene {
     public var onSystemAdded:Event<System->Void> = Event.create();
     public var onSystemRemoved:Event<System->Void> = Event.create();
 
+    public var onCameraAdded:Event<Camera->Void> = Event.create();
+    public var onCameraRemoved:Event<Camera->Void> = Event.create();
+
     private var _systemsToAdd:Array<System> = [];
     private var _systemsToRemove:Array<System> = [];
     private var _entitiesToAdd:Array<Entity> = [];
     private var _entitiesToRemove:Array<Entity> = [];
+
+    private var _cameraRendering:Int = -1;
+    public var currentCameraRendering(default, null):Camera = null;
 
     //todo _entitiesByComponents:Map<ComponentClass, Array<Entity>> and populate with entitis with X components
 
@@ -85,6 +97,12 @@ class Scene implements IScene {
             e.destroy();
         }
 
+        while(cameras.length > 0){
+            var c = cameras[0];
+            _removeCamera(c);
+            c.destroy();
+        }
+
         timerManager.cleanTimers();
         tweenManager.cleanTweens();
 
@@ -93,10 +111,19 @@ class Scene implements IScene {
 
         onSystemAdded.clear();
         onSystemRemoved.clear();
+
+        onCameraAdded.clear();
+        onCameraRemoved.clear();
+
+        @:privateAccess rootEntity.transform._reset();
     }
 
     inline public function getEntityById(id:Int) : Entity {
         return _entitesMap.get(id);
+    }
+
+    public function createCamera(x:Int = 0, y:Int = 0, width:Int = 0, height:Int = 0) : Camera {
+        return addCamera(Camera.create(x,y,width,height));
     }
 
     public function createEntity() : Entity {
@@ -161,6 +188,43 @@ class Scene implements IScene {
         entities.remove(entity);
         _entitesMap.remove(entity.id);
         onEntityRemoved.emit(entity);
+    }
+
+    public function addCamera(camera:Camera) : Camera {
+        if(cameras.has(camera))return camera;
+
+        if(_isProcessing){
+            _camerasToAdd.push(camera);
+            _dirtyProcess = true;
+            return camera;
+        }
+
+        _addCamera(camera);
+        return camera;
+    }
+
+    private function _addCamera(camera:Camera) {
+        camera.scene = this;
+        cameras.push(camera);
+        onCameraAdded.emit(camera);
+    }
+
+    public function removeCamera(camera:Camera) {
+        if(cameras.has(camera))return;
+
+        if(_isProcessing){
+            _camerasToRemove.push(camera);
+            _dirtyProcess = true;
+            return;
+        }
+
+        _removeCamera(camera);
+    }
+
+    private function _removeCamera(camera:Camera) {
+        camera.scene = null;
+        cameras.remove(camera);
+        onCameraRemoved.emit(camera);
     }
 
     public function addSystem<T:System>(system:T) : T {
@@ -264,6 +328,14 @@ class Scene implements IScene {
                 _removeSystem(_systemsToRemove.pop());
             }
 
+            while(_camerasToAdd.length != 0){
+                _addCamera(_camerasToAdd.pop());
+            }
+
+            while(_camerasToRemove.length != 0){
+                _removeCamera(_camerasToRemove.pop());
+            }
+
             _dirtyProcess = false;
         }
 
@@ -274,6 +346,12 @@ class Scene implements IScene {
         timerManager.tick();
         tweenManager.tick();
 
+        if(cameras.length > 0){
+            for(_camera in cameras){
+                _camera.update(delta);
+            }
+        }
+
         for(sys in _updatableSystems){
             if(sys.enabled){
                 sys.update(delta);
@@ -281,11 +359,84 @@ class Scene implements IScene {
         }
     }
 
+    public function updateCameraTransform(camera:Camera) {
+        if(_cameraRendering != camera.id || camera.wasChanged){
+
+            //update only if the camera transform or the camera id changes
+            //(if only exists one camera and not change ther matrix it's not neccesary update every frame)
+            rootEntity.transform.worldMatrix.setFrom(camera.matrix);
+            for(i in 0...rootEntity.transform.getChildrenLength()){
+                @:privateAccess rootEntity.transform.getChild(i)._setDirty(true, true, true);
+            }
+
+            camera.wasChanged = false;
+            _cameraRendering = camera.id;
+        }
+    }
+
+    public function getCameraFocused(p:Point) : Camera {
+        var camera = null;
+
+        if(cameras.length > 0){
+            for(i in 0...cameras.length) {
+                if(cameras[i].containsScreenPoint(p)){
+                    camera = cameras[i];
+                    break;
+                }
+            }
+        }
+
+        return camera;
+    }
+
     public function draw(g:Graphics) {
         _isProcessing = true;
-        for(sys in _drawableSystems){
-            if(sys.enabled){
-                sys.draw(g);
+        currentCameraRendering = null;
+
+        if(cameras.length > 0){
+
+            //store the currentBuffer
+            g.end();
+            var prevBuffer = g.buffer;
+
+            for(_camera in cameras){
+                currentCameraRendering = _camera;
+                //update the matrix of the entities to draw
+                updateCameraTransform(_camera);
+
+                //draw to the camera buffer
+                g.setRenderTarget(_camera.buffer);
+
+                if(_camera.bgColor != null){
+                    g.begin(true, _camera.bgColor);
+                }else{
+                    g.begin();
+                }
+
+                for(sys in _drawableSystems){
+                    if(sys.enabled){
+                        sys.draw(g);
+                    }
+                }
+
+                g.end();
+            }
+
+            //recover the previous buffer and draw the camera buffers on it
+            g.setRenderTarget(prevBuffer);
+            g.begin();
+
+            for(_camera in cameras){
+                _camera.preDraw(g);
+                g.drawImage(_camera.buffer, _camera.x, _camera.y);
+                _camera.postDraw(g);
+            }
+
+        }else{
+            for(sys in _drawableSystems){
+                if(sys.enabled){
+                    sys.draw(g);
+                }
             }
         }
         _isProcessing = false;

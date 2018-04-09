@@ -1,5 +1,6 @@
 package;
 
+import gecko.input.Keyboard;
 import gecko.input.Mouse;
 import gecko.Gecko;
 import gecko.Screen;
@@ -11,6 +12,8 @@ import gecko.components.draw.ProgressBarComponent;
 class Game {
     private var _assetsToLoad:Array<String> = [
         //your assets here
+        "images/kenney/starBackground.png",
+        "images/kenney/enemyUFO.png",
         "images/kenney/green_panel.png",
         "images/kenney/grey_button08.png",
         "images/kenney/red_cross.png",
@@ -39,6 +42,8 @@ class Game {
 
     public function _gotoMainScene() {
         Mouse.enable();
+        Keyboard.enable();
+
         Gecko.world.changeScene(scenes.MainScene.create(), true);
     }
 

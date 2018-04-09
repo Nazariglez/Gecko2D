@@ -5,6 +5,12 @@ import gecko.resources.Texture;
 import gecko.Assets;
 
 class SpriteComponent extends DrawComponent {
+    static public function createFromTexture(texture:Texture) : SpriteComponent {
+        var sprite = SpriteComponent.create("");
+        sprite.texture = texture;
+        return sprite;
+    }
+
     public var texture(get, set):Texture;
     private var _texture:Texture;
 
