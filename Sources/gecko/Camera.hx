@@ -1,5 +1,6 @@
 package gecko;
 
+import gecko.math.Random;
 import gecko.math.Rect;
 import gecko.utils.Event;
 import gecko.macros.IAutoPool;
@@ -10,8 +11,6 @@ import gecko.math.Point;
 using gecko.utils.MathHelper;
 
 //todo merge _transform and _containerTransform to avoid extra calculations
-
-    //TODO add bounds, deadzone and pltaform modes
 
 class Camera implements IAutoPool implements IUpdatable {
     public var id(default, null):Int = Gecko.getUniqueID();
@@ -53,8 +52,14 @@ class Camera implements IAutoPool implements IUpdatable {
     public var deadzone:Rect = null;
     public var style:CameraStyle = CameraStyle.LOCKON;
 
+    private var _shakeDuration:Float32 = 0;
+    private var _shakeIntensity:Float32 = 0;
+    private var _shakeAxisX:Bool = true;
+    private var _shakeAxisY:Bool = true;
+
     public var onAddedToScene:Event<Camera->Scene->Void>;
     public var onRemovedFromScene:Event<Camera->Scene->Void>;
+    public var onShakeEnd:Event<Camera->Void>;
 
     public function new(){
         _containerTransform = new Transform(null);
@@ -62,6 +67,7 @@ class Camera implements IAutoPool implements IUpdatable {
 
         onAddedToScene = Event.create();
         onRemovedFromScene = Event.create();
+        onShakeEnd = Event.create();
     }
 
     public function init(x:Int = 0, y:Int = 0, width:Int = 0, height:Int = 0, ?color:Color){
@@ -91,6 +97,13 @@ class Camera implements IAutoPool implements IUpdatable {
 
     private function _onSetPoint(p:Point) {
         _dirty = true;
+    }
+
+    public function shake(intensity:Float32 = 0.02, duration:Float32 = 0.5, axisX:Bool = true, axisY:Bool = true) {
+        _shakeIntensity = intensity;
+        _shakeDuration = duration;
+        _shakeAxisX = axisX;
+        _shakeAxisY = axisY;
     }
 
     public function update(dt:Float32) {
@@ -158,6 +171,29 @@ class Camera implements IAutoPool implements IUpdatable {
                 lookAt.y = bounds.top + sy;
             }else if(bottom > bounds.bottom){
                 lookAt.y = bounds.bottom - sy;
+            }
+        }
+
+        if(_shakeDuration > 0){
+            var xx = lookAt.x;
+            var yy = lookAt.y;
+
+            if(_shakeAxisX){
+                var ww = width * _shakeIntensity;
+                xx += Random.getFloatIn(-ww, ww) * _containerTransform.scale.x;
+            }
+
+            if(_shakeAxisX){
+                var hh = height * _shakeIntensity;
+                yy += Random.getFloatIn(-hh, hh) * _containerTransform.scale.y;
+            }
+
+            lookAt.set(xx, yy);
+
+            _shakeDuration -= dt;
+
+            if(_shakeDuration <= 0){
+                onShakeEnd.emit(this);
             }
         }
 
@@ -242,6 +278,16 @@ class Camera implements IAutoPool implements IUpdatable {
         followLerp.destroy();
         followLerp = null;
 
+        if(bounds != null){
+            bounds.destroy();
+            bounds = null;
+        }
+
+        if(deadzone != null){
+            deadzone.destroy();
+            deadzone = null;
+        }
+
         x = 0;
         y = 0;
         width = 0;
@@ -256,6 +302,7 @@ class Camera implements IAutoPool implements IUpdatable {
 
         onAddedToScene.clear();
         onRemovedFromScene.clear();
+        onShakeEnd.clear();
 
         @:privateAccess _containerTransform._reset();
         @:privateAccess _transform._reset();
