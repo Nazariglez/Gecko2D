@@ -1,7 +1,6 @@
 package gecko.input;
 
 import gecko.utils.Event;
-import gecko.macros.IAutoPool;
 import gecko.Float32;
 
 using StringTools;
@@ -16,7 +15,7 @@ private typedef ComboData = { //todo pool this
     var keys:Array<KeyCode>;
 }
 
-class ComboKey implements IAutoPool {
+class ComboKey extends BaseObject {
     public var combo(default, null):String = "";
     public var length(get, null):Int;
 
@@ -29,6 +28,8 @@ class ComboKey implements IAutoPool {
     public var onTrigger:Event<Void->Void>;
 
     public function new(){
+        super();
+
         onTrigger = Event.create();
     }
 
@@ -39,7 +40,9 @@ class ComboKey implements IAutoPool {
         Keyboard.onPressed += _onKeyPress;
     }
 
-    public function beforeDestroy() {
+    override public function beforeDestroy() {
+        super.beforeDestroy();
+
         onTrigger.clear();
 
         while(_comboData.pop() != null){}

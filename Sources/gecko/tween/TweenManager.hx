@@ -1,13 +1,10 @@
 package gecko.tween;
 
-import gecko.macros.IAutoPool;
 import gecko.Float32;
 
-class TweenManager implements IAutoPool {
+class TweenManager extends BaseObject {
     public var tweens:Array<Tween> = [];
     private var _tweensToDelete:Array<Tween> = [];
-
-    public function new(){}
 
     public function tick() {
         for(t in tweens){
@@ -67,7 +64,9 @@ class TweenManager implements IAutoPool {
         tweens.remove(tween);
     }
 
-    public function beforeDestroy(){
+    override public function beforeDestroy(){
+        super.beforeDestroy();
+
         cleanTweens();
     }
 }

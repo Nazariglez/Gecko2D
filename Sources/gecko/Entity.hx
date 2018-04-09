@@ -1,8 +1,8 @@
 package gecko;
 
+import gecko.BaseObject;
 import gecko.components.draw.DrawComponent;
 import gecko.utils.Event;
-import gecko.components.Component;
 import gecko.components.Component;
 
 using Lambda;
@@ -10,11 +10,11 @@ using Lambda;
 //todo toString for debug
 //todo serialize && unserialize to save and load from text
 
-//@:poolAmount(100)
-    @:expose
-class Entity implements IEntity {
-    public var id(default, null):Int = Gecko.getUniqueID();
-
+#if !macro
+@:autoBuild(gecko.macros.TypeInfoBuilder.buildEntity())
+@:build(gecko.macros.TypeInfoBuilder.buildEntity())
+#end
+class Entity extends BaseObject {
     public var isRoot(get, never):Bool;
     private var _isRoot:Bool = false;
 
@@ -40,6 +40,8 @@ class Entity implements IEntity {
     public var onRemovedFromScene:Event<Entity->Scene->Void>;
 
     public function new() {
+        super();
+
         transform = new Transform(this);
 
         onComponentAdded = Event.create();
@@ -48,7 +50,9 @@ class Entity implements IEntity {
         onRemovedFromScene = Event.create();
     }
 
-    public function beforeDestroy(){
+    override public function beforeDestroy(){
+        super.beforeDestroy();
+
         if(scene != null){
             scene.removeEntity(this);
         }

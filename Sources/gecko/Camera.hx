@@ -3,7 +3,6 @@ package gecko;
 import gecko.math.Random;
 import gecko.math.Rect;
 import gecko.utils.Event;
-import gecko.macros.IAutoPool;
 import gecko.resources.Image;
 import gecko.math.Matrix;
 import gecko.math.Point;
@@ -12,9 +11,7 @@ using gecko.utils.MathHelper;
 
 //todo merge _transform and _containerTransform to avoid extra calculations
 
-class Camera implements IAutoPool implements IUpdatable {
-    public var id(default, null):Int = Gecko.getUniqueID();
-
+class Camera extends BaseObject implements IUpdatable {
     public var scene(get, set):Scene;
     private var _scene:Scene = null;
 
@@ -62,6 +59,8 @@ class Camera implements IAutoPool implements IUpdatable {
     public var onShakeEnd:Event<Camera->Void>;
 
     public function new(){
+        super();
+
         _containerTransform = new Transform(null);
         _transform = new Transform(null);
 
@@ -261,7 +260,9 @@ class Camera implements IAutoPool implements IUpdatable {
         _wasChanged = true;
     }
 
-    public function beforeDestroy() {
+    override public function beforeDestroy() {
+        super.beforeDestroy();
+
         if(scene != null){
             scene.removeCamera(this);
         }

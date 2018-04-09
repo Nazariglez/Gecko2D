@@ -1,13 +1,10 @@
 package gecko.timer;
 
-import gecko.macros.IAutoPool;
 import gecko.Float32;
 
-class TimerManager implements IAutoPool {
+class TimerManager extends BaseObject {
     public var timers:Array<Timer> = [];
     private var _timersToDelete:Array<Timer> = [];
-
-    public function new(){}
 
     public function tick() {
         for(t in timers){
@@ -67,7 +64,9 @@ class TimerManager implements IAutoPool {
         timers.remove(timer);
     }
 
-    public function beforeDestroy(){
+    override public function beforeDestroy(){
+        super.beforeDestroy();
+
         cleanTimers();
     }
 }

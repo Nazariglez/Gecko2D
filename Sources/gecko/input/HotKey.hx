@@ -1,9 +1,8 @@
 package gecko.input;
 
-import gecko.macros.IAutoPool;
 import gecko.Float32;
 
-class HotKey implements IAutoPool {
+class HotKey extends BaseObject {
     public var key:KeyCode = KeyCode.Unknown;
 
     public var wasPressed(get, null):Bool;
@@ -15,13 +14,12 @@ class HotKey implements IAutoPool {
     public var isAltDown(get, null):Bool;
     public var isShiftDown(get, null):Bool;
 
-    public function new(){}
-
     public function init(key:KeyCode) {
         this.key = key;
     }
 
-    public function beforeDestroy() {
+    override public function beforeDestroy() {
+        super.beforeDestroy();
         key = KeyCode.Unknown;
     }
 

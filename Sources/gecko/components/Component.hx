@@ -4,8 +4,13 @@ import gecko.utils.Event;
 
 //todo macro clone all fields to use with prefabs?
 
+
+#if !macro
+@:autoBuild(gecko.macros.TypeInfoBuilder.buildComponent())
+@:build(gecko.macros.TypeInfoBuilder.buildComponent())
+#end
 @:allow(gecko.Entity)
-class Component implements IComponent {
+class Component extends BaseObject {
     inline static public function getName(componentClass:Class<Component>) : String {
         return _toClass(componentClass).__componentName__;
     }
@@ -17,8 +22,6 @@ class Component implements IComponent {
     public var entity(get, set):Entity;
     private var _entity:Entity = null;
 
-    public var id(default, null):Int = Gecko.getUniqueID();
-
     public var name(get, set):String;
     private var _name:String = "";
 
@@ -26,11 +29,15 @@ class Component implements IComponent {
     public var onRemovedFromEntity:Event<Entity->Void>;
 
     public function new(){
+        super();
+
         onAddedToEntity = Event.create();
         onRemovedFromEntity = Event.create();
     }
 
-    public function beforeDestroy(){
+    override public function beforeDestroy(){
+        super.beforeDestroy();
+
         if(entity != null){
             entity.removeComponent(__type__);
         }

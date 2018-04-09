@@ -1,9 +1,8 @@
 package gecko.math;
 
-import gecko.macros.IAutoPool;
 import gecko.Float32;
 
-class Rect implements IAutoPool {
+class Rect extends BaseObject {
 	inline public static function fromSquare(side): Rect {
 		return Rect.fromRectangle(side, side);
 	}
@@ -25,13 +24,13 @@ class Rect implements IAutoPool {
 	public var centerX(get, null): Float32;
 	public var centerY(get, null): Float32;
 
-	public function new(){}
-
 	public function init(x: Float32 = 0, y: Float32 = 0, width: Float32 = 0, height: Float32 = 0) {
 		set(x, y, width, height);
 	}
 
-	public function beforeDestroy(){
+	override public function beforeDestroy(){
+		super.beforeDestroy();
+
 		clear();
 	}
 

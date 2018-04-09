@@ -12,9 +12,11 @@ import gecko.components.Component;
 
 using gecko.utils.ArrayHelper;
 
-class Scene implements IScene {
-    public var id(default, null):Int = Gecko.getUniqueID();
-
+#if !macro
+@:autoBuild(gecko.macros.TypeInfoBuilder.buildScene())
+@:build(gecko.macros.TypeInfoBuilder.buildScene())
+#end
+class Scene extends BaseObject {
     public var name(get, set):String;
     private var _name:String = "";
 
@@ -75,6 +77,8 @@ class Scene implements IScene {
     }
 
     public function new(){
+        super();
+
         timerManager = TimerManager.create();
         tweenManager = TweenManager.create();
 
@@ -84,7 +88,9 @@ class Scene implements IScene {
         @:privateAccess rootEntity._isRoot = true;
     }
 
-    public function beforeDestroy(){
+    override public function beforeDestroy(){
+        super.beforeDestroy();
+
         while(_systemsList.length > 0){
             var sys = _systemsList[0];
             _removeSystem(sys);

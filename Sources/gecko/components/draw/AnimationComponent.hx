@@ -4,7 +4,6 @@ import gecko.Graphics;
 import gecko.utils.Event;
 import gecko.math.Rect;
 import gecko.Float32;
-import gecko.macros.IAutoPool;
 import gecko.resources.Texture;
 
 using Lambda;
@@ -167,7 +166,7 @@ class AnimationComponent extends DrawComponent {
         var anim:AnimationData = animations[_index];
         if(!anim.isStarted){
             anim.isStarted = true;
-            onStart.emit(anim.id);
+            onStart.emit(anim.name);
         }
 
         anim.elapsedTime += Gecko.ticker.delta; //use raw delta
@@ -178,10 +177,10 @@ class AnimationComponent extends DrawComponent {
                 anim.index = 0;
                 isPlaying = false;
                 anim.isStarted = false;
-                onEnd.emit(anim.id);
+                onEnd.emit(anim.name);
                 return;
             }else{
-                onLoop.emit(anim.id);
+                onLoop.emit(anim.name);
             }
         }
 
@@ -216,8 +215,8 @@ class AnimationComponent extends DrawComponent {
 
 
 
-class AnimationData implements IAutoPool {
-    public var id:String = "";
+class AnimationData extends BaseObject {
+    public var name:String = "";
     public var loop:Bool = false;
     public var time:Float32 = 1;
 
@@ -227,7 +226,7 @@ class AnimationData implements IAutoPool {
     public var isStarted:Bool = false;
     public var elapsedTime:Float32 = 0;
 
-    public static function createFromGrid(id:String, time:Float32, texture:Texture, rows:Int, cols:Int, ?frames:Array<Int>, total:Int = 0, loop:Bool = false) : AnimationData {
+    public static function createFromGrid(name:String, time:Float32, texture:Texture, rows:Int, cols:Int, ?frames:Array<Int>, total:Int = 0, loop:Bool = false) : AnimationData {
         var ww = texture.width/cols;
         var hh = texture.height/rows;
         var xx = texture.frame.x;
@@ -251,28 +250,26 @@ class AnimationData implements IAutoPool {
                 _frames.push(textures[f]);
             }
         }else{
-            throw 'Animation $id: Invalid grid data';
+            throw 'Animation $name: Invalid grid data';
         }
 
-        return AnimationData.create(id, time, _frames, loop);
+        return AnimationData.create(name, time, _frames, loop);
     }
 
-    public static function createFromAssets(id:String, time:Float32, frames:Array<String>, loop:Bool = false) : AnimationData {
+    public static function createFromAssets(name:String, time:Float32, frames:Array<String>, loop:Bool = false) : AnimationData {
         var _frames = frames.map(function(str){
             var texture = Assets.textures.get(str);
             if(texture == null){
-                throw 'Animation $id: Invalid texture name $str';
+                throw 'Animation $name: Invalid texture name $str';
             }
             return texture;
         }).array();
 
-        return AnimationData.create(id, time, _frames, loop);
+        return AnimationData.create(name, time, _frames, loop);
     }
 
-    public function new(){}
-
-    public function init(id:String, time:Float32, frames:Array<Texture>, loop:Bool = false){
-        this.id = id;
+    public function init(name:String, time:Float32, frames:Array<Texture>, loop:Bool = false){
+        this.name = name;
         this.time = time;
         this.frames = frames;
     }
@@ -289,8 +286,10 @@ class AnimationData implements IAutoPool {
         return frames[index];
     }
 
-    public function beforeDestroy() {
-        id = "";
+    override public function beforeDestroy() {
+        super.beforeDestroy();
+
+        name = "";
         loop = false;
         time = 1;
         frames = [];

@@ -2,9 +2,8 @@ package gecko.timer;
 
 import gecko.utils.Chain;
 import gecko.utils.Event;
-import gecko.macros.IAutoPool;
 
-class TimerGroup implements IAutoPool {
+class TimerGroup extends BaseObject {
     public var onProgress:Event<Timer->Void>;
     public var onRepeat:Event<Int->Void>;
     public var onEnd:Event<Void->Void>;
@@ -25,6 +24,8 @@ class TimerGroup implements IAutoPool {
     private var _unsubscribeAll:Array<Void->Void> = [];
 
     public function new(){
+        super();
+
         onProgress = Event.create();
         onRepeat = Event.create();
         onEnd = Event.create();
@@ -159,7 +160,9 @@ class TimerGroup implements IAutoPool {
         }
     }
 
-    public function beforeDestroy(){
+    override public function beforeDestroy(){
+        super.beforeDestroy();
+
         var t = timers.pop();
         while(t != null){
             t.destroy();

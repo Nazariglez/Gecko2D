@@ -1,11 +1,10 @@
 package gecko.math;
 
-import gecko.macros.IAutoPool;
 import kha.math.Vector2;
 import gecko.Float32;
 
 //@:poolAmount(100)
-class Point implements IAutoPool {
+class Point extends BaseObject {
 	private var _vec2:Vector2 = new Vector2(); //used to draw polyigons in the kha api avoiding allocate new vectors each tme
 	
 	public var x(get, set):Float32;
@@ -16,13 +15,13 @@ class Point implements IAutoPool {
 	private var _observer:Point -> Void;
 	public var isObserved(default, null):Bool;
 
-	public function new(){}
-
 	public function init(x:Float32 = 0, y:Float32 = 0) {
 		set(x,y);
 	}
 
-	public function beforeDestroy(){
+	override public function beforeDestroy(){
+		super.beforeDestroy();
+
 		_observer = null;
 		isObserved = false;
 		_setX(0);

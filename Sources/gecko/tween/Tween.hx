@@ -1,10 +1,9 @@
 package gecko.tween;
 
 import gecko.utils.Event;
-import gecko.macros.IAutoPool;
 import gecko.Float32;
 
-class Tween implements IAutoPool {
+class Tween extends BaseObject {
     inline static public function interpolate(from:Float32, to:Float32, totalTime:Float32, elapsedTime:Float32, easing:Ease) : Float32 {
         return from + ((to - from) * easing(elapsedTime/totalTime));
     }
@@ -50,6 +49,8 @@ class Tween implements IAutoPool {
     private var _subtarget:Array<Dynamic> = [];
 
     public function new() {
+        super();
+
         onStart = Event.create();
         onStop = Event.create();
         onInit = Event.create();
@@ -297,7 +298,9 @@ class Tween implements IAutoPool {
         _yoyo = false;
     }
 
-    public function beforeDestroy(){
+    override public function beforeDestroy(){
+        super.beforeDestroy();
+
         if(manager != null){
             remove();
         }
