@@ -1,8 +1,7 @@
 package scenes;
 
-import gecko.Screen;
-import gecko.Color;
-import gecko.components.draw.RectangleComponent;
+import gecko.Camera;
+import gecko.components.misc.BehaviorComponent;
 import gecko.Camera.CameraStyle;
 import gecko.math.Rect;
 import gecko.Graphics;
@@ -25,6 +24,8 @@ class Camera1Scene extends CustomScene {
         var BG_WIDTH = 2000;
         var BG_HEIGHT = 2000;
 
+        var cam = createCamera();
+
         var bg = createEntity();
         bg.addComponent(GridBackgroundComponent.create("images/kenney/starBackground.png", BG_WIDTH, BG_HEIGHT));
         bg.transform.position.set(BG_WIDTH/2, BG_HEIGHT/2);
@@ -32,27 +33,35 @@ class Camera1Scene extends CustomScene {
         var player = createEntity();
         player.addComponent(SpriteComponent.create("images/kenney/enemyUFO.png"));
         player.transform.position.set(BG_WIDTH/2, BG_HEIGHT/2);
+        player.addComponent(PlayerMovement.create(cam));
 
-        var cam = createCamera();
         cam.follow(player, CameraStyle.LOCKON, 0.4, 0.4);
         cam.bounds = Rect.create(0, 0, BG_WIDTH, BG_HEIGHT);
+    }
+}
 
-        var t = timerManager.createTimer(1);
-        t.loop = true;
-        t.onUpdate += function(elapsed:Float32, dt:Float32) {
-            if(Keyboard.isDown(KeyCode.Left)) player.transform.position.x -= 350*dt;
-            if(Keyboard.isDown(KeyCode.Right)) player.transform.position.x += 350*dt;
-            if(Keyboard.isDown(KeyCode.Up)) player.transform.position.y -= 350*dt;
-            if(Keyboard.isDown(KeyCode.Down)) player.transform.position.y += 350*dt;
-            if(Keyboard.isDown(KeyCode.Z)) cam.rotation += (10).toRadians() * dt;
-            if(Keyboard.isDown(KeyCode.X)) cam.rotation -= (10).toRadians() * dt;
+class PlayerMovement extends BehaviorComponent {
+    public var cam:Camera;
 
-            if(Keyboard.isDown(KeyCode.A) && cam.zoom > 0.5) cam.zoom -= 0.1*dt;
-            if(Keyboard.isDown(KeyCode.S) && cam.zoom < 1.5) cam.zoom += 0.1*dt;
+    public function init(cam:Camera) {
+        this.cam = cam;
+    }
 
-        };
+    override public function update(dt:Float32) {
+        if(Keyboard.isDown(KeyCode.Left)) entity.transform.position.x -= 350*dt;
+        if(Keyboard.isDown(KeyCode.Right)) entity.transform.position.x += 350*dt;
+        if(Keyboard.isDown(KeyCode.Up)) entity.transform.position.y -= 350*dt;
+        if(Keyboard.isDown(KeyCode.Down)) entity.transform.position.y += 350*dt;
+        if(Keyboard.isDown(KeyCode.Z)) cam.rotation += (10).toRadians() * dt;
+        if(Keyboard.isDown(KeyCode.X)) cam.rotation -= (10).toRadians() * dt;
 
-        t.start();
+        if(Keyboard.isDown(KeyCode.A) && cam.zoom > 0.5) cam.zoom -= 0.1*dt;
+        if(Keyboard.isDown(KeyCode.S) && cam.zoom < 1.5) cam.zoom += 0.1*dt;
+    }
+
+    override public function beforeDestroy() {
+        super.beforeDestroy();
+        cam = null;
     }
 }
 
