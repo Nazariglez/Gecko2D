@@ -2,9 +2,8 @@ package gecko.tween;
 
 import gecko.utils.Chain;
 import gecko.utils.Event;
-import gecko.macros.IAutoPool;
 
-class TweenGroup implements IAutoPool {
+class TweenGroup extends BaseObject {
     public var onProgress:Event<Tween->Void>;
     public var onRepeat:Event<Int->Void>;
     public var onYoyo:Event<Void->Void>;
@@ -27,6 +26,8 @@ class TweenGroup implements IAutoPool {
     private var _unsubscribeAll:Array<Void->Void> = [];
 
     public function new() {
+        super();
+
         onProgress = Event.create();
         onRepeat = Event.create();
         onYoyo = Event.create();
@@ -175,7 +176,9 @@ class TweenGroup implements IAutoPool {
         }
     }
 
-    public function beforeDestroy() {
+    override public function beforeDestroy() {
+        super.beforeDestroy();
+
         var t = tweens.pop();
         while(t != null){
             t.destroy();

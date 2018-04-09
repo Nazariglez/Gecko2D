@@ -1,5 +1,6 @@
 package gecko;
 
+import gecko.math.Point;
 import gecko.math.Vector2;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.DepthStencilFormat;
@@ -60,6 +61,14 @@ class Screen {
             Gecko.onWindowResize += _changeWindowSize;
             _initiated = true;
         }
+    }
+    
+    inline static public function getRealScreenPoint(x:Float32, y:Float32, outPoint:Point) {
+        var id = 1 / ((matrix._00 * matrix._11) + (matrix._10 * -matrix._01));
+        outPoint.set(
+            (matrix._11 * id * x) + (-matrix._10 * id * y) + (((matrix._21 * matrix._10) - (matrix._20 * matrix._11)) * id),
+            (matrix._00 * id * y) + (-matrix._01 * id * x) + (((-matrix._21 * matrix._00) + (matrix._20 * matrix._01)) * id)
+        );
     }
 
     static public function setAnchor(anchor:AnchorMode) {

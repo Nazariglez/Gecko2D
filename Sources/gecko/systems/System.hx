@@ -6,9 +6,12 @@ import gecko.components.Component;
 
 using Lambda;
 
+#if !macro
+@:autoBuild(gecko.macros.TypeInfoBuilder.buildSystem())
+@:build(gecko.macros.TypeInfoBuilder.buildSystem())
+#end
 @:allow(gecko.Scene)
-class System implements ISystem {
-    public var id(default, null):Int = Gecko.getUniqueID();
+class System extends BaseObject {
     public var enabled:Bool = true;
 
     public var scene(get, set):Scene;
@@ -31,6 +34,8 @@ class System implements ISystem {
     public var onRemovedFromScene:Event<Scene->Void>;
 
     public function new(){
+        super();
+
         onEntityAdded = Event.create();
         onEntityRemoved = Event.create();
         onAddedToScene = Event.create();
@@ -44,7 +49,9 @@ class System implements ISystem {
     public function update(delta:Float32){}
     public function draw(graphics:Graphics){}
 
-    public function beforeDestroy(){
+    override public function beforeDestroy(){
+        super.beforeDestroy();
+
         removeAllEntities();
         scene = null;
         filter.clear();

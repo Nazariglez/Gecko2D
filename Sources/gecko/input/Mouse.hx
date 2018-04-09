@@ -4,12 +4,13 @@ import gecko.utils.Event;
 import kha.input.Mouse as KhaMouse;
 import gecko.math.Point;
 import gecko.Float32;
+import gecko.Screen;
 
 class Mouse {
     static public var isEnabled(default, null):Bool = false;
     static public var isLocked(get, null):Bool;
 
-    static public var position:Point = Point.create(0, 0);
+    static public var position(default, null):Point = Point.create(0, 0);
     static public var x(get, set):Float32;
     static public var y(get, set):Float32;
 
@@ -111,26 +112,23 @@ class Mouse {
     }
 
     static private function _buttonDownHandler(button:Int, x:Int, y:Int) {
-        position.x = x;
-        position.y = y;
+        Screen.getRealScreenPoint(x, y, position);
         _pressedButtons[button] = true;
         _downButtons[button] = 0;
     }
 
     static private function _buttonUpHandler(button:Int, x:Int, y:Int) {
-        position.x = x;
-        position.y = y;
+        Screen.getRealScreenPoint(x, y, position);
         _pressedButtons[button] = false;
         _downButtons[button] = -1;
         _releasedButtons[button] =  true;
     }
 
     static private function _moveHandler(x:Int, y:Int, movementX:Int, movementY:Int) {
-        position.x = x;
-        position.y = y;
+        Screen.getRealScreenPoint(x, y, position);
         Mouse.movementX = movementX;
         Mouse.movementY = movementY;
-        onMove.emit(x, y);
+        onMove.emit(position.x, position.y);
     }
 
     static private function _wheelHandler(delta:Int) {

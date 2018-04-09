@@ -127,7 +127,7 @@ class Touch {
             _pointers.set(index, Point.create(0,0));
         }
 
-        _pointers[index].set(x, y);
+        Screen.getRealScreenPoint(x, y, _pointers[index]);
     }
 
     static private function _upHandler(index:Int, x:Int, y:Int) {
@@ -136,11 +136,11 @@ class Touch {
 
         _released.set(index, true);
 
-        _pointers[index].set(x, y);
+        Screen.getRealScreenPoint(x, y, _pointers[index]);
     }
 
     static private function _moveHandler(index:Int, x:Int, y:Int) {
-        _pointers[index].set(x, y);
-        onMove.emit(index, x, y);
+        Screen.getRealScreenPoint(x, y, _pointers[index]);
+        onMove.emit(index, _pointers[index].x, _pointers[index].y);
     }
 }

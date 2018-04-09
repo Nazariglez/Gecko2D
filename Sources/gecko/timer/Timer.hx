@@ -1,10 +1,9 @@
 package gecko.timer;
 
 import gecko.Float32;
-import gecko.macros.IAutoPool;
 import gecko.utils.Event;
 
-class Timer implements IAutoPool {
+class Timer extends BaseObject {
     public var onStart:Event<Void->Void>;
     public var onStop:Event<Void->Void>;
     public var onPause:Event<Void->Void>;
@@ -31,6 +30,8 @@ class Timer implements IAutoPool {
     private var _repeat:Int = 0;
 
     public function new(){
+        super();
+
         onStart = Event.create();
         onStop = Event.create();
         onPause = Event.create();
@@ -155,7 +156,9 @@ class Timer implements IAutoPool {
         manager.removeTimer(this);
     }
 
-    public function beforeDestroy(){
+    override public function beforeDestroy(){
+        super.beforeDestroy();
+
         if(manager != null){
             remove();
         }
