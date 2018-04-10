@@ -6,13 +6,13 @@ class TweenManager extends BaseObject {
     public var tweens:Array<Tween> = [];
     private var _tweensToDelete:Array<Tween> = [];
 
-    public function tick() {
+    public function tick(delta:Float32) {
         for(t in tweens){
             if(!t.isActive){
                 continue;
             }
 
-            t.update(Gecko.ticker.delta);
+            t.update(delta);
 
             if(t.isEnded && t.destroyOnEnd) {
                 t.destroy();

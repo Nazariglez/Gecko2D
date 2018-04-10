@@ -349,8 +349,8 @@ class Scene extends BaseObject {
     }
 
     public function update(delta:Float32) {
-        timerManager.tick();
-        tweenManager.tick();
+        timerManager.tick(delta);
+        tweenManager.tick(delta);
 
         if(cameras.length > 0){
             for(_camera in cameras){

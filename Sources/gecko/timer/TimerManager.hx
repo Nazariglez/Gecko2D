@@ -6,13 +6,13 @@ class TimerManager extends BaseObject {
     public var timers:Array<Timer> = [];
     private var _timersToDelete:Array<Timer> = [];
 
-    public function tick() {
+    public function tick(delta:Float32) {
         for(t in timers){
             if(!t.isActive){
                 continue;
             }
 
-            t.update(Gecko.ticker.delta);
+            t.update(delta);
 
             if(t.isEnded && t.destroyOnEnd) {
                 t.destroy();

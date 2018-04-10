@@ -4,7 +4,6 @@ import gecko.tween.TweenManager;
 import gecko.timer.TimerManager;
 import gecko.utils.FPSCounter;
 import gecko.utils.Event;
-import gecko.systems.draw.DrawSystem;
 import gecko.math.Random;
 import kha.WindowMode;
 import kha.Scheduler;
@@ -34,8 +33,6 @@ class Gecko {
     static public var isProcessing(default, null):Bool = false;
 
     static private var _updateTaskId:Int = -1;
-    static public var fixedTicker:FPSCounter;
-    static public var ticker:FPSCounter;
     static public var renderTicker:FPSCounter;
 
     static private var _countUniqueID:Int = 0;
@@ -95,15 +92,11 @@ class Gecko {
 
         _initWorld();
 
-        //clear the ticker
-        fixedTicker = new FPSCounter(true);
-        onStop += fixedTicker.clear;
-
-        ticker = new FPSCounter();
-        onStop += ticker.clear;
-
+        //render ticker to measure the fps
         renderTicker = new FPSCounter();
         onStop += renderTicker.clear;
+
+        onStop += @:privateAccess Time._clear;
 
         isIniaited = true;
 
@@ -241,14 +234,16 @@ class Gecko {
         }
         #end
 
-        fixedTicker.tick();
-        ticker.tick();
+        @:privateAccess Time._tick();
 
-        timerManager.tick();
-        tweenManager.tick();
+        var delta = _opts.useFixedDelta ? Time.fixedDelta : Time.delta;
 
-        onUpdate.emit(_opts.useFixedDelta ? fixedTicker.delta : ticker.delta);
-        onSystemUpdate.emit(ticker.delta);
+        timerManager.tick(delta);
+        tweenManager.tick(delta);
+
+        onUpdate.emit(delta);
+
+        onSystemUpdate.emit(Time.delta);
 
         isProcessing = false;
 
