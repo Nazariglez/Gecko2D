@@ -123,7 +123,7 @@ function _action(args:string[], cb:ActionCallback) {
     let kmakeBasic:KhaMakeConfig = {
         target: "",
         projectfile: C.KHAFILE_RELATIVE_PATH,
-        to: C.TEMP_BUILD_PATH,
+        to: config.output,
         kha: config.core.kha,
         haxe: config.core.haxe,
         build: path.resolve(C.CURRENT_PATH, config.output),
@@ -276,10 +276,17 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
             return;
         }
 
-        err = _moveBuild(config.target, config.build, config.debug, config.engineConfig);
-        if(err){
-            cb(err);
-            return;
+        if(config.target === "html5"){
+            err = _moveHTML5Build(
+                path.join(config.engineConfig.output, "html5"),
+                path.join(config.engineConfig.output, "html5-build"),
+                config.debug,
+                config.engineConfig
+            );
+            if(err){
+                cb(err);
+                return;
+            }
         }
 
         cb();
@@ -314,7 +321,6 @@ function _moveBuild(target:string, to:string, debug:boolean, config?:Config) : E
 }
 
 function _moveHTML5Build(from:string, to:string, debug:boolean, config:Config) : Error {
-    //todo uglify html5 in !debug mode
     //todo if exists a custom html file copy and replace vars
     let err:Error;
 

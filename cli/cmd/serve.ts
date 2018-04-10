@@ -78,7 +78,7 @@ function _action(args:string[], cb:ActionCallback) {
         return;
     }
 
-    const buildPath = path.join(config.output, "html5");
+    const buildPath = path.join(config.output, "html5-build");
     console.log(colors.blue(`Serving '${colors.magenta(buildPath)}' on '${colors.magenta(config.html5.serve_port.toString())}'`))
 
     const serv = new nodeStatic.Server(path.resolve(C.CURRENT_PATH, buildPath), {cache: 0});

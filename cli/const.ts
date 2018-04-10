@@ -3,7 +3,7 @@ import * as path from "path";
 export const ENGINE_NAME = "gecko";
 export const FLAG_PREFIX = "flag_";
 export const CURRENT_PATH = process.cwd();
-export const TEMP_RELATIVE_PATH = "./kha_build";
+export const TEMP_RELATIVE_PATH = "./build";
 export const KHAFILE_RELATIVE_PATH = "./khafile.js";
 export const KHAFILE_PATH = path.resolve(CURRENT_PATH, KHAFILE_RELATIVE_PATH);
 export const TEMP_PATH = path.join(CURRENT_PATH, TEMP_RELATIVE_PATH);

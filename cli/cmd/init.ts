@@ -35,8 +35,6 @@ function _parseArgs(args:string[]) : buildParseArgs {
         isUrl: false
     };
 
-    console.log(args);
-
     if(!args.length){
         return parsed;
     }

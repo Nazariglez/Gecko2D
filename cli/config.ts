@@ -45,7 +45,7 @@ graphics = "${graphics.windows[0]}"         #windows graphics [${graphics.window
 
 [core]
 clean_temp = false              #clean temporal files after compile
-compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at ${C.TEMP_RELATIVE_PATH}
+compile = true                  #if false, the game will not be compiled, and the "resources" to compile will stay at the build directory
 compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
 ffmpeg = ""                     #ffmpeg drivers path (could be absolute)
 haxe = ""
