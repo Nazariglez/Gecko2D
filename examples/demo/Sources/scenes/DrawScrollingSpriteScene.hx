@@ -3,7 +3,6 @@ package scenes;
 import gecko.Screen;
 import gecko.Float32;
 import gecko.components.draw.ScrollingSpriteComponent;
-import gecko.Entity;
 
 class DrawScrollingSpriteScene extends CustomScene {
     override public function init(closeButton:Bool = false) {
@@ -23,10 +22,8 @@ class DrawScrollingSpriteScene extends CustomScene {
     }
 
     private function _createScrollingSprite(sprite:String, x:Float32, y:Float32, width:Float32, height:Float32) : ScrollingSpriteComponent {
-        var e = Entity.create();
+        var e = createEntity();
         e.transform.position.set(x, y);
-
-        addEntity(e);
 
         return e.addComponent(ScrollingSpriteComponent.create(sprite, width, height));
     }

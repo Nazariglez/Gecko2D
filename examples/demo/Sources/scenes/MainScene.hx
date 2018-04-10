@@ -164,13 +164,13 @@ class MainScene extends CustomScene {
 
     private function _createButton(text:String, x:Float32, y:Float32, callback:Float32->Float32->Void) {
         //Button sprite
-        var btn = Entity.create();
+        var btn = createEntity();
         btn.transform.position.set(x, y);
 
         var nineSlice = btn.addComponent(NineSliceComponent.create("images/kenney/green_panel.png", 160, 50));
 
         //button text
-        var txt = Entity.create();
+        var txt = createEntity();
         txt.transform.position.set(x, y);
         txt.addComponent(TextComponent.create(text, "Ubuntu-B.ttf", 20));
 
@@ -193,16 +193,11 @@ class MainScene extends CustomScene {
 
         //trigger the callback when the button it's clicked
         mouse.onClick += callback;
-
-        //add the entities to this scene
-        addEntity(btn);
-        addEntity(txt);
     }
 
     private function _addTitle(x:Float32, y:Float32) {
-        var entity = Entity.create();
+        var entity = createEntity();
         entity.transform.position.set(x, y);
         entity.addComponent(TextComponent.create("Gecko2D Demo", "Ubuntu-B.ttf", 70));
-        addEntity(entity);
     }
 }

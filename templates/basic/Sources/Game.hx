@@ -22,18 +22,18 @@ class Game {
     }
 
     public function _gotoMainScene() {
-        Gecko.world.changeScene(scenes.MainScene.create());
+        Gecko.world.changeScene(scenes.MainScene.create(), true);
     }
 
     //Add a loaderbar an go to mainScene when the load finish
     public function _loadAssets() {
-        var entity = Entity.create();
+        var currentScene = Gecko.currentScene;
+
+        var entity = currentScene.createEntity();
         entity.transform.position.set(Screen.centerX, Screen.centerY);
         entity.transform.size.set(500, 40);
 
         var progressBar = entity.addComponent(ProgressBarComponent.create());
-
-        Gecko.currentScene.addEntity(entity);
 
         var loader = Assets.load(_assetsToLoad);
         loader.onProgressEnd += function(progress:Int, assetName:String){
@@ -42,13 +42,10 @@ class Game {
 
         loader.onComplete += function(){
             //added a little delay before go to the mainScene
-            var timer = Gecko.currentScene.timerManager.createTimer(0.5);
+            var timer = currentScene.timerManager.createTimer(0.5);
             timer.destroyOnEnd = true;
 
             timer.onEnd += function(){
-                Gecko.currentScene.removeEntity(entity);
-                entity.destroy();
-
                 _gotoMainScene();
             };
 

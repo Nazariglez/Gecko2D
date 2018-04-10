@@ -47,14 +47,12 @@ class Game {
         Gecko.world.changeScene(scenes.MainScene.create(), true);
     }
 
-    //Add a loaderbar an go to mainScene when the load finish
+    //Add a loaderbar and go to mainScene when the load finish
     public function _loadAssets() {
-        var entity = Entity.create();
+        var entity = Gecko.currentScene.createEntity();
         entity.transform.position.set(Screen.centerX, Screen.centerY);
         entity.transform.size.set(500, 40);
         var loaderBar = entity.addComponent(ProgressBarComponent.create());
-
-        Gecko.currentScene.addEntity(entity);
 
         var loader = Assets.load(_assetsToLoad);
         loader.onProgressEnd += function(progress:Int, assetName:String){
@@ -67,9 +65,6 @@ class Game {
             timer.destroyOnEnd = true;
 
             timer.onEnd += function(){
-                Gecko.currentScene.removeEntity(entity);
-                entity.destroy();
-
                 _gotoMainScene();
             };
 

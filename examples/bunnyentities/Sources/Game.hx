@@ -1,6 +1,5 @@
 package;
 
-import gecko.Scene;
 import gecko.Float32;
 import gecko.components.draw.TextComponent;
 import gecko.components.draw.SpriteComponent;
@@ -37,7 +36,7 @@ class Game {
 
         Mouse.onRightPressed += function(x:Float32, y:Float32){
             _addBunny(500);
-        }
+        };
 
         _addBackgroundText();
         _addBunny();
@@ -69,10 +68,8 @@ class Game {
     }
 
     private function _addBackgroundText() {
-        var textEntity = Entity.create();
+        var textEntity = Gecko.currentScene.createEntity();
         textEntity.addComponent(TextComponent.create("Left click to add 100 bunnies.\nRight click to add 500 bunnies.", "Ubuntu-B.ttf", 30, "center"));
         textEntity.transform.position.set(Screen.centerX, Screen.centerY);
-
-        Gecko.currentScene.addEntity(textEntity);
     }
 }

@@ -4,9 +4,8 @@ import gecko.Scene;
 import gecko.input.Mouse;
 import gecko.components.draw.TextComponent;
 import gecko.Screen;
-import gecko.Entity;
 import gecko.resources.Texture;
-import gecko.render.Graphics;
+import gecko.Graphics;
 import gecko.Color;
 import gecko.Gecko;
 import gecko.Assets;
@@ -115,9 +114,8 @@ class Game {
     }
 
     private function _addBackgroundText() {
-        var textEntity = Entity.create();
+        var textEntity = Gecko.currentScene.createEntity();
         textEntity.transform.position.set(Screen.centerX, Screen.centerY);
         textEntity.addComponent(TextComponent.create("Left click to add 500 bunnies.\nRight click to add 1000 bunnies.", "Ubuntu-B.ttf", 30, "center"));
-        Gecko.currentScene.addEntity(textEntity);
     }
 }
