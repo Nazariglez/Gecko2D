@@ -1,8 +1,5 @@
 package scenes;
 
-import gecko.components.draw.CircleComponent;
-import gecko.Camera;
-import gecko.Graphics;
 import gecko.Scene;
 import gecko.Gecko;
 import gecko.Color;
@@ -10,10 +7,7 @@ import gecko.components.input.MouseComponent;
 import gecko.components.draw.NineSliceComponent;
 import gecko.Float32;
 import gecko.Screen;
-import gecko.Entity;
-import gecko.math.Point;
 import gecko.components.draw.TextComponent;
-import gecko.Transform;
 
 import scenes.DrawSpriteScene;
 import scenes.DrawTextScene;
@@ -21,6 +15,7 @@ import scenes.DrawShapeScene;
 import scenes.DrawNineSliceScene;
 import scenes.DrawScrollingSpriteScene;
 import scenes.Camera1Scene;
+import scenes.DrawAnimationScene;
 
 typedef ExamplesDef = {
     name:String,
@@ -91,7 +86,7 @@ class MainScene extends CustomScene {
                 {
                     name: "Draw Animations",
                     callback: function(){
-
+                        _gotoScene(DrawAnimationScene.create(true));
                     }
                 },
                 {

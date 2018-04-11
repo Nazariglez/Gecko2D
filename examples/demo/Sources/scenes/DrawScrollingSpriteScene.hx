@@ -6,6 +6,7 @@ import gecko.components.draw.ScrollingSpriteComponent;
 
 class DrawScrollingSpriteScene extends CustomScene {
     override public function init(closeButton:Bool = false) {
+        super.init(closeButton);
 
         //background
         var scroll1 = _createScrollingSprite("images/opengameart/mountain.png", Screen.centerX, Screen.centerY, Screen.width, Screen.height);
@@ -17,8 +18,6 @@ class DrawScrollingSpriteScene extends CustomScene {
         var scroll3 = _createScrollingSprite("images/opengameart/carbon_fiber.png", 550, Screen.centerY, 400, 300);
         scroll3.speed.set(20, 20);
         scroll3.scale.set(0.5, 0.5);
-
-        super.init(closeButton);
     }
 
     private function _createScrollingSprite(sprite:String, x:Float32, y:Float32, width:Float32, height:Float32) : ScrollingSpriteComponent {

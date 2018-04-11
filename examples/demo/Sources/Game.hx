@@ -12,6 +12,7 @@ import gecko.components.draw.ProgressBarComponent;
 class Game {
     private var _assetsToLoad:Array<String> = [
         //your assets here
+        "Ubuntu-B.ttf",
         "images/kenney/starBackground.png",
         "images/kenney/enemyUFO.png",
         "images/kenney/green_panel.png",
@@ -26,9 +27,29 @@ class Game {
         "images/kenney/snake.png",
         "images/kenney/penguin.png",
         "images/kenney/pig.png",
+
         "images/opengameart/mountain.png",
         "images/opengameart/carbon_fiber.png",
-        "Ubuntu-B.ttf",
+
+        "images/kenney/pixelExplosion00.png",
+        "images/kenney/pixelExplosion01.png",
+        "images/kenney/pixelExplosion02.png",
+        "images/kenney/pixelExplosion03.png",
+        "images/kenney/pixelExplosion04.png",
+        "images/kenney/pixelExplosion05.png",
+        "images/kenney/pixelExplosion06.png",
+        "images/kenney/pixelExplosion07.png",
+        "images/kenney/pixelExplosion08.png",
+
+        "images/kenney/wingMan1.png",
+        "images/kenney/wingMan2.png",
+        "images/kenney/wingMan3.png",
+        "images/kenney/wingMan4.png",
+        "images/kenney/wingMan5.png",
+
+        "images/opengameart/golem-walk.png",
+        "images/opengameart/golem-atk.png",
+        "images/opengameart/golem-die.png",
         //"audio/Retro-Beat.wav"
     ];
 

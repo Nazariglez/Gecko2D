@@ -1,5 +1,6 @@
 package gecko.components.draw;
 
+import gecko.Assets;
 import gecko.Graphics;
 import gecko.utils.Event;
 import gecko.math.Rect;
@@ -72,16 +73,20 @@ class AnimationComponent extends DrawComponent {
         }
     }
 
-    inline public function addAnimFromGrid(id:String, time:Float32, texture:Texture, rows:Int, cols:Int, ?frames:Array<Int>, total:Int = 0, loop:Bool = false) : AnimationData {
-        return _add(AnimationData.createFromGrid(id, time, texture, rows, cols, frames, total, loop));
+    inline public function addAnimFromGridAssets(name:String, time:Float32, texture:String, rows:Int, cols:Int, ?frames:Array<Int>, total:Int = 0, loop:Bool = false) : AnimationData {
+        return _add(AnimationData.createFromGrid(name, time, Assets.textures.get(texture), rows, cols, frames, total, loop));
     }
 
-    inline public function addAnimFromAssets(id:String, time:Float32, frames:Array<String>, loop:Bool = false) : AnimationData {
-        return _add(AnimationData.createFromAssets(id, time, frames, loop));
+    inline public function addAnimFromGrid(name:String, time:Float32, texture:Texture, rows:Int, cols:Int, ?frames:Array<Int>, total:Int = 0, loop:Bool = false) : AnimationData {
+        return _add(AnimationData.createFromGrid(name, time, texture, rows, cols, frames, total, loop));
     }
 
-    inline public function addAnim(id:String, time:Float32, frames:Array<Texture>, loop:Bool){
-        return _add(AnimationData.create(id, time, frames, loop));
+    inline public function addAnimFromAssets(name:String, time:Float32, frames:Array<String>, loop:Bool = false) : AnimationData {
+        return _add(AnimationData.createFromAssets(name, time, frames, loop));
+    }
+
+    inline public function addAnim(name:String, time:Float32, frames:Array<Texture>, loop:Bool){
+        return _add(AnimationData.create(name, time, frames, loop));
     }
 
     private function _add(anim:AnimationData) : AnimationData {
@@ -89,9 +94,9 @@ class AnimationComponent extends DrawComponent {
         return anim;
     }
 
-    private function _getIndexByID(id:String):Int {
+    private function _getIndexByName(name:String):Int {
         for(i in 0...animations.length){
-            if(animations[i].id == id){
+            if(animations[i].name == name){
                 return i;
             }
         }
@@ -99,20 +104,20 @@ class AnimationComponent extends DrawComponent {
     }
 
     public function setTextureFrame(id:String, frame:Int = 0){
-        var anim:AnimationData = animations[_getIndexByID(id)];
+        var anim:AnimationData = animations[_getIndexByName(id)];
         anim.index = frame;
         texture = anim.getCurrentTexture();
     }
 
-    public function play(?id:String, loop:Bool = false, resetFrameIndex:Bool = false) {
+    public function play(?name:String, loop:Bool = false, resetFrameIndex:Bool = false) {
         if(animations.length == 0){
             return;
         }
 
         isPlaying = true;
 
-        if(id != null){
-            _index = _getIndexByID(id);
+        if(name != null){
+            _index = _getIndexByName(name);
         }else if(_index == -1){
             _index = 0;
         }
@@ -121,7 +126,9 @@ class AnimationComponent extends DrawComponent {
         anim.reset(resetFrameIndex);
         anim.loop = loop;
 
-        onPlay.emit(id);
+        texture = anim.getCurrentTexture();
+
+        onPlay.emit(name);
     }
 
     public function stop() {
@@ -131,7 +138,7 @@ class AnimationComponent extends DrawComponent {
 
         isPlaying = false;
 
-        onStop.emit(animations[_index].id);
+        onStop.emit(animations[_index].name);
     }
 
     public function pause() {
@@ -141,7 +148,7 @@ class AnimationComponent extends DrawComponent {
 
         isPaused = true;
 
-        onPause.emit(animations[_index].id);
+        onPause.emit(animations[_index].name);
     }
 
     public function resume() {
@@ -151,11 +158,11 @@ class AnimationComponent extends DrawComponent {
 
         isPaused = false;
 
-        onResume.emit(animations[_index].id);
+        onResume.emit(animations[_index].name);
     }
 
-    public function getAnimId() : String {
-        return _index != -1 ? animations[_index].id : "";
+    public function getAnimName() : String {
+        return _index != -1 ? animations[_index].name : "";
     }
 
     override public function update(dt:Float32) {
