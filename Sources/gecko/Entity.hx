@@ -33,6 +33,7 @@ class Entity extends BaseObject {
 
     private var _components:Map<String,Component> = new Map();
     private var _componentsList:Array<Component> = [];
+    private var _componentTypes:Map<String, Array<Component>> = new Map();
 
     public var onComponentAdded:Event<Entity->Component->Void>;
     public var onComponentRemoved:Event<Entity->Component->Void>;
@@ -103,27 +104,12 @@ class Entity extends BaseObject {
         }
     }
 
-    public function getFirstComponentOfType<T:Component>(componentClass:Class<Component>) : T {
-        var c:T = null;
-
-        for(i in 0..._componentsList.length) {
-            if(Std.is(_componentsList[i], componentClass)){
-                c = cast _componentsList[i];
-                break;
-            }
-        }
-
-        return c;
+    inline public function hasComponentOfType(componentClass:Class<Component>) : Bool {
+        return _componentTypes.exists(Component.getName(componentClass));
     }
 
-    public function getAllComponentsOfType<T:Component>(componentClass:Class<Component>) : Array<T> {
-        var list:Array<T> = [];
-        for(c in _componentsList){
-            if(Std.is(c, componentClass)){
-                list.push(cast c);
-            }
-        }
-        return list;
+    inline public function getComponentsOfType<T:Component>(componentClass:Class<Component>) : Array<T> {
+        return cast _componentTypes.get(Component.getName(componentClass));
     }
 
     public function addComponent<T:Component>(component:T) : T {
@@ -138,6 +124,18 @@ class Entity extends BaseObject {
 
         _components.set(component.__typeName__, component);
         _componentsList.push(component);
+
+        var types = Component.getBaseTypes(component.__type__);
+        if(types.length != 0){
+            for(t in types){
+                if(!_componentTypes.exists(t)){
+                    _componentTypes.set(t, [component]);
+                }else{
+                    var arr = _componentTypes.get(t);
+                    arr.push(component);
+                }
+            }
+        }
 
         onComponentAdded.emit(this, component);
 
@@ -159,6 +157,18 @@ class Entity extends BaseObject {
 
         if(_renderer != null && c.__type__ == _renderer.__type__){
             _renderer = null;
+        }
+
+        var types = Component.getBaseTypes(c.__type__);
+        if(types.length != 0){
+            for(t in types){
+                var arr = _componentTypes.get(t);
+                arr.remove(c);
+
+                if(arr.length == 0){
+                    _componentTypes.remove(t);
+                }
+            }
         }
 
         c.entity = null;

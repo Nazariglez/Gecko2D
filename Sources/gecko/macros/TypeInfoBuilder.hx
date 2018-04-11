@@ -4,6 +4,8 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
 
+using Lambda;
+
 //todo set __className__ as private and use @:private access in the ecs?
 class TypeInfoBuilder {
     static public macro function buildComponent() : Array<Field> {
@@ -12,16 +14,22 @@ class TypeInfoBuilder {
         var path = clazz.pack.concat([clazz.name]);
         var name = path.join(".");
 
+        var baseTypes:Array<String> = [];
         var existsParent = false;
         var _cls = clazz;
         while(_cls.superClass != null){
             _cls = _cls.superClass.t.get();
+            if(_cls.meta.has(":isBaseComponent")){
+                var isBaseComponent = _cls.meta.extract(":isBaseComponent");
+                baseTypes.push(_cls.pack.concat([_cls.name]).join("."));
+            }
+
             for(f in _cls.fields.get()){
                 if(f.name == "__type__"){
                     existsParent = true;
                 }
             }
-            if(existsParent)break;
+            //if(existsParent)break;
         }
 
         if(existsParent){
@@ -41,8 +49,26 @@ class TypeInfoBuilder {
             fields = fields.concat(_extend);
         }
 
+        //basecomponent info
+        if(clazz.meta.has(":isBaseComponent")){
+            var isBaseComponent = clazz.meta.extract(":isBaseComponent");
+            baseTypes.push(name);
+        }
+
+        if(baseTypes.length > 0){
+            fields = fields.concat((macro class {
+                static private var __componentTypes__(default, never):Array<String> = $v{baseTypes};
+            }).fields);
+        }else{
+            fields = fields.concat((macro class {
+                static private var __componentTypes__(default, never):Array<String> = [];
+            }).fields);
+        }
+
+
+        //store component name
         fields = fields.concat((macro class {
-            static private var __componentName__:String = $v{name};
+            static private var __componentName__(default, never):String = $v{name};
         }).fields);
 
         return fields;

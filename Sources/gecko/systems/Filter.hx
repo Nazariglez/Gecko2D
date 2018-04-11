@@ -5,6 +5,8 @@ import gecko.components.Component;
 private typedef MatchQuery = {
     is:Class<Component>,
     equal:Class<Component>,
+    base:Array<Class<Component>>,
+    baseAll:Array<Class<Component>>,
     any:Array<Class<Component>>,
     all:Array<Class<Component>>,
     not:Array<Class<Component>>
@@ -21,6 +23,8 @@ class Filter {
         _query = {
             is:null,
             equal:null,
+            base: [], //any
+            baseAll: [],
             any: [],
             all: [],
             not: [] //todo not filter
@@ -35,6 +39,16 @@ class Filter {
 
     public function equal(cls:Class<Component>) : Filter {
         _query.equal = cls;
+        return this;
+    }
+
+    public function base(clss:Array<Class<Component>>) : Filter {
+        _query.base = clss;
+        return this;
+    }
+
+    public function baseAll(clss:Array<Class<Component>>) : Filter {
+        _query.base = clss;
         return this;
     }
 
@@ -62,13 +76,20 @@ class Filter {
         return this;
     }
 
-    public function not(cls:Class<Component>) : Filter {
-        //todo
+    public function addBase(cls:Class<Component>) : Filter {
+        if(_query.base.indexOf(cls) == -1){
+            _query.base.push(cls);
+        }
         return this;
     }
 
+    /*public function not(cls:Class<Component>) : Filter {
+        //todo
+        return this;
+    }*/
+
     private inline function _isEmptyQuery() : Bool {
-        return _query.is == null && _query.equal == null && _query.any.length == 0 && _query.all.length == 0;
+        return _query.is == null && _query.equal == null && _query.any.length == 0 && _query.all.length == 0 && _query.base.length == 0;
     }
 
     public function testEntity(entity:Entity) : Bool {
@@ -91,21 +112,13 @@ class Filter {
             }
 
             if(_query.equal != null){
-                var valid = false;
-                for(c in components){
-                    if(_query.equal == c.__type__){
-                        valid = true;
-                        break;
-                    }
-                }
-
-                if(!valid)return false;
+                if(!entity.hasComponent(_query.equal))return false;
             }
 
             if(_query.any.length != 0){
                 var valid = false;
-                for(c in components){
-                    if(_query.any.indexOf(c.__type__) != -1){
+                for(qc in _query.any){
+                    if(entity.hasComponent(qc)){
                         valid = true;
                         break;
                     }
@@ -115,17 +128,39 @@ class Filter {
             }
 
             if(_query.all.length != 0){
+                var valid = true;
                 for(qc in _query.all){
-                    var valid = false;
-                    for(c in components){
-                        if(c.__type__ == qc){
-                            valid = true;
-                            break;
-                        }
+                    if(!entity.hasComponent(qc)){
+                        valid = false;
+                        break;
                     }
-
-                    if(!valid)return false;
                 }
+
+                if(!valid)return false;
+            }
+
+            if(_query.base.length != 0){
+                var valid = false;
+                for(qc in _query.base){
+                    if(entity.hasComponentOfType(qc)){
+                        valid = true;
+                        break;
+                    }
+                }
+
+                if(!valid)return false;
+            }
+
+            if(_query.baseAll.length != 0){
+                var valid = true;
+                for(qc in _query.base){
+                    if(!entity.hasComponentOfType(qc)){
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if(!valid)return false;
             }
 
             return true;
@@ -134,7 +169,7 @@ class Filter {
         return false;
     }
 
-    public function getValidComponents(entity:Entity) : Array<Class<Component>> {
+    /*public function getValidComponents(entity:Entity) : Array<Class<Component>> {
         return [];
-    }
+    }*/
 }

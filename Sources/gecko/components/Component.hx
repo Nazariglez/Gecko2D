@@ -15,6 +15,10 @@ class Component extends BaseObject {
         return _toClass(componentClass).__componentName__;
     }
 
+    inline static public function getBaseTypes(componentClass:Class<Component>) : Array<String> {
+        return _toClass(componentClass).__componentTypes__;
+    }
+
     inline static private function _toClass(componentClass:Class<Component>) : ComponentClass {
         return componentClass;
     }
@@ -81,10 +85,16 @@ class Component extends BaseObject {
     }
 }
 
-private abstract ComponentClass({public var __componentName__:String;}) {
+private abstract ComponentClass({ public var __componentName__:String; private var __componentTypes__:Array<String>; }) {
     public var __componentName__(get, never):String;
+    public var __componentTypes__(get, never):Array<String>;
+
     public inline function get___componentName__() {
         return this.__componentName__;
+    }
+
+    public inline function get___componentTypes__() {
+        return this.__componentTypes__;
     }
 
     @:from static public function fromComponent(c:Class<Component>) {
