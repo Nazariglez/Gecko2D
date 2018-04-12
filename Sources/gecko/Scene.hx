@@ -4,7 +4,6 @@ import gecko.math.Point;
 import gecko.tween.TweenManager;
 import gecko.timer.TimerManager;
 import gecko.components.draw.DrawComponent;
-import gecko.systems.SystemClass;
 import gecko.utils.Event;
 import gecko.systems.draw.DrawSystem;
 import gecko.systems.System;
@@ -269,8 +268,7 @@ class Scene extends BaseObject {
     }
 
     inline public function getSystem<T:System>(systemClass:Class<System>) : T {
-        var clazz:SystemClass = systemClass;
-        return cast _systems.get(clazz.__systemName__);
+        return cast _systems.get(System.getName(systemClass));
     }
 
     private function _sortSystems(a:System, b:System) {
@@ -280,8 +278,7 @@ class Scene extends BaseObject {
     }
 
     public function removeSystem(systemClass:Class<System>) {
-        var clazz:SystemClass = systemClass;
-        var sys = _systems.get(clazz.__systemName__);
+        var sys = _systems.get(System.getName(systemClass));
         if(sys != null){
             if(_isProcessing){
                 _systemsToRemove.push(sys);

@@ -186,7 +186,7 @@ class TypeInfoBuilder {
         }
 
         fields = fields.concat((macro class {
-            static public var __systemName__:String = $v{name};
+            static private var __systemName__:String = $v{name};
         }).fields);
 
         return fields;
