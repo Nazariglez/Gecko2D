@@ -62,8 +62,8 @@ class Entity extends BaseObject {
 
         for(name in _components.keys()){
             var component = _components.get(name);
-            _removeComponent(component);
-            component.destroy();
+            _removeComponent(component, true);
+            //component.destroy();
         }
 
         for(tag in _tags.keys()){
@@ -142,16 +142,16 @@ class Entity extends BaseObject {
         return cast component;
     }
 
-    public function removeComponent<T:Component>(componentClass:Class<Component>) : T {
+    public function removeComponent<T:Component>(componentClass:Class<Component>, destroy:Bool = false) : T {
         var c:T = cast _components.get(Component.getName(componentClass));
         if(c != null){
-            _removeComponent(c);
-            return c;
+            _removeComponent(c, destroy);
+            return destroy ? null : c;
         }
         return null;
     }
 
-    private function _removeComponent(c:Component){
+    private function _removeComponent(c:Component, destroy:Bool = false){
         _components.remove(c.__typeName__);
         _componentsList.remove(c);
 
@@ -173,11 +173,15 @@ class Entity extends BaseObject {
 
         c.entity = null;
         onComponentRemoved.emit(this, c);
+
+        if(destroy){
+            c.destroy();
+        }
     }
 
-    public function removeAllComponents() {
+    public function removeAllComponents(destroy:Bool = false) {
         for(c in _components){
-            removeComponent(c.__type__);
+            removeComponent(c.__type__, destroy);
         }
     }
 
