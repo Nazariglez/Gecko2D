@@ -48,7 +48,7 @@ class Gecko {
 
     static private var _onKhaInitCallbacks:Array<Void->Void> = [];
 
-    static public var time(get, null):Float32;
+    static public var bgColor(get, null):Color;
 
     static private var _destroyCallbacks:Array<Void->Void> = [];
 
@@ -257,11 +257,11 @@ class Gecko {
 
         graphics.setRenderTarget(Screen.buffer);
 
-        graphics.begin();
+        graphics.begin(_opts.bgColor);
         onDraw.emit(graphics);
         graphics.end();
 
-        f.g2.begin(true, _opts.bgColor);
+        f.g2.begin(_opts.bgColor);
         f.g2.transformation.setFrom(Screen.matrix);
         f.g2.drawImage(Screen.buffer, 0, 0);
         f.g2.end();
@@ -283,8 +283,7 @@ class Gecko {
         return world.currentScene;
     }
 
-    inline static function get_time():Float32 {
-        return kha.Scheduler.realTime();
+    inline static function get_bgColor() : Color {
+        return _opts.bgColor;
     }
-
 }

@@ -149,11 +149,11 @@ class InteractivitySystem extends System implements IUpdatable {
                     //click events
                     if(sendClick){
                         var lastClick = @:privateAccess mouseComponent._lastClickTime;
-                        if(lastClick != -1 && Gecko.time - lastClick < mouseComponent.doubleClickTreshold){
+                        if(lastClick != -1 && Time.realTime - lastClick < mouseComponent.doubleClickTreshold){
                             @:privateAccess mouseComponent._lastClickTime = -1;
                             mouseComponent.onDoubleClick.emit(_localPoint.x, _localPoint.y);
                         }else{
-                            @:privateAccess mouseComponent._lastClickTime = Gecko.time;
+                            @:privateAccess mouseComponent._lastClickTime = Time.realTime;
                             mouseComponent.onClick.emit(_localPoint.x, _localPoint.y);
                         }
                     }
