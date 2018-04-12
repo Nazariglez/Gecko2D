@@ -10,7 +10,7 @@ class MotionSystem extends System implements IUpdatable {
     }
 
     override public function update(dt:Float32) {
-        for(e in getEntities()){
+        eachEntity(function(e:Entity){
             var transform:Transform = e.transform;
             var movement:MovementComponent = e.getComponent(MovementComponent);
             var rotation:RotationComponent = e.getComponent(RotationComponent);
@@ -55,15 +55,15 @@ class MotionSystem extends System implements IUpdatable {
 
                 //speed update the current position
                 transform.position.set(
-                    transform.position.x + movement.speed.x*dt,
-                    transform.position.y + movement.speed.y*dt
+                    transform.localPosition.x + movement.speed.x*dt,
+                    transform.localPosition.y + movement.speed.y*dt
                 );
             }
 
             if(rotation != null){
                 rotation.speed += rotation.acceleration*dt;
-                transform.rotation += rotation.speed*dt;
+                transform.localRotation += rotation.speed*dt;
             }
-        }
+        });
     }
 }

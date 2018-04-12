@@ -24,11 +24,9 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
     }
 
     override public function update(dt:Float32) {
-        for(e in getEntities()){
-            if(e.enabled){
-                e.getDrawComponent().update(dt);
-            }
-        }
+        eachEntity(function(e:Entity){
+            e.getDrawComponent().update(dt);
+        });
     }
 
     override public function draw(g:Graphics) {

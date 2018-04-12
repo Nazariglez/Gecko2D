@@ -8,13 +8,11 @@ class BehaviorSystem extends System implements IUpdatable {
     }
 
     override public function update(dt:Float32) {
-        for(e in getEntities()){
-            if(!e.enabled)return;
-
+        eachEntity(function(e:Entity){
             var components:Array<BehaviorComponent> = e.getComponentsOfType(BehaviorComponent);
             for(c in components){
                 c.update(dt);
             }
-        }
+        });
     }
 }

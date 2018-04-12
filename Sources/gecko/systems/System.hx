@@ -61,6 +61,13 @@ class System extends BaseObject {
         onRemovedFromScene.clear();
     }
 
+    inline public function eachEntity(handler:Entity->Void) {
+        for(e in getEntities()){
+            if(!e.enabled)continue;
+
+            handler(e);
+        }
+    }
 
     public inline function getEntities() : Array<Entity> {
         return _entitiesList;
