@@ -46,7 +46,7 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
             return;
         }
 
-        g.apply(t.worldMatrix, drawComponent.color, drawComponent.worldAlpha);
+        g.apply(t.worldMatrix, drawComponent.color, drawComponent.alpha);
 
         drawComponent.preDraw(g);
 
@@ -57,9 +57,9 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
 
             var parentDrawComponent:DrawComponent = current.parent.entity.getDrawComponent();
             if(parentDrawComponent != null){
-                drawComponent.worldAlpha = parentDrawComponent.worldAlpha * drawComponent.alpha;
+                drawComponent.alpha = parentDrawComponent.alpha * drawComponent.localAlpha;
             }else{
-                drawComponent.worldAlpha = drawComponent.alpha;
+                drawComponent.alpha = drawComponent.localAlpha;
             }
 
             if(entity != null && hasEntity(entity) && drawComponent.visible){
@@ -69,7 +69,7 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
             }
         }
 
-        g.apply(t.worldMatrix, drawComponent.color, drawComponent.worldAlpha);
+        g.apply(t.worldMatrix, drawComponent.color, drawComponent.alpha);
         drawComponent.postDraw(g);
     }
 

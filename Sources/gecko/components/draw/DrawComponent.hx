@@ -12,7 +12,7 @@ class DrawComponent extends Component implements IDrawable implements IUpdatable
     public var color:Color = Color.White;
     public var alpha:Float32 = 1;
 
-    public var worldAlpha:Float32 = 1;
+    public var localAlpha:Float32 = 1;
     public var isVisible(get, null):Bool;
 
     public function update(dt:Float32){}
@@ -60,11 +60,11 @@ class DrawComponent extends Component implements IDrawable implements IUpdatable
         visible = true;
         color = Color.White;
         alpha = 1;
-        worldAlpha = 1;
+        localAlpha = 1;
     }
 
     inline function get_isVisible():Bool {
-        return visible && worldAlpha > 0;
+        return visible && alpha > 0;
     }
 
     //TODO generate texture
