@@ -617,11 +617,11 @@ class Transform {
     }
 
     inline function get_top():Float32 {
-        return position.y - height * anchor.x;
+        return position.y - height * anchor.y;
     }
 
     inline function get_bottom():Float32 {
-        return position.y + height * anchor.y;
+        return position.y + height * (1-anchor.y);
     }
 
     inline function get_left():Float32 {
@@ -629,15 +629,15 @@ class Transform {
     }
 
     inline function get_right():Float32 {
-        return position.x + width * anchor.x;
+        return position.x + width * (1-anchor.x);
     }
 
     inline function get_localTop():Float32 {
-        return localPosition.y - localHeight * anchor.x;
+        return localPosition.y - localHeight * anchor.y;
     }
 
     inline function get_localBottom():Float32 {
-        return localPosition.y + localHeight * anchor.y;
+        return localPosition.y + localHeight * (1-anchor.y);
     }
 
     inline function get_localLeft():Float32 {
@@ -645,7 +645,7 @@ class Transform {
     }
 
     inline function get_localRight():Float32 {
-        return localPosition.x + localWidth * anchor.x;
+        return localPosition.x + localWidth * (1-anchor.x);
     }
 
     function get_localMatrix():Matrix {
@@ -700,8 +700,8 @@ class Transform {
 
     function set_fixedToCamera(value:Bool):Bool {
         if(value == _fixedToCamera)return _fixedToCamera;
-        _fixedToCamera = value;
 
+        _fixedToCamera = value;
         _dirty = true;
 
         return _fixedToCamera;
