@@ -19,12 +19,9 @@ class TweenManager extends BaseObject {
             }
         }
 
-        if(_tweensToDelete.length > 0){
-            var t = _tweensToDelete.pop();
-            while(t != null){
-                _remove(t);
-                t = _tweensToDelete.pop();
-            }
+        while(_tweensToDelete.length > 0){
+            var t = _tweensToDelete.shift();
+            _remove(t);
         }
     }
 
@@ -47,16 +44,14 @@ class TweenManager extends BaseObject {
     }
 
     public function cleanTweens() {
-        var t:Tween = _tweensToDelete.pop();
-        while(t != null){
+        while(_tweensToDelete.length > 0){
+            var t = _tweensToDelete.shift();
             t.destroy();
-            t = _tweensToDelete.pop();
         }
 
-        t = tweens.pop();
-        while(t != null) {
+        while(tweens.length > 0){
+            var t = tweens.shift();
             t.destroy();
-            t = tweens.pop();
         }
     }
 

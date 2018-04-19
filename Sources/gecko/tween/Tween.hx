@@ -3,6 +3,8 @@ package gecko.tween;
 import gecko.utils.Event;
 import gecko.Float32;
 
+using gecko.utils.ArrayHelper;
+
 class Tween extends BaseObject {
     inline static public function interpolate(from:Float32, to:Float32, totalTime:Float32, elapsedTime:Float32, easing:Ease) : Float32 {
         return from + ((to - from) * easing(elapsedTime/totalTime));
@@ -278,6 +280,7 @@ class Tween extends BaseObject {
     }
 
     public function clear(){
+        target = null;
         time = 0;
         isActive = false;
         easing = Easing.linear;
@@ -296,6 +299,10 @@ class Tween extends BaseObject {
         _elapsedTime = 0;
         _repeat = 0;
         _yoyo = false;
+
+        _subtarget.clear();
+        _subtargetFrom.clear();
+        _subtargetTo.clear();
     }
 
     override public function beforeDestroy(){
