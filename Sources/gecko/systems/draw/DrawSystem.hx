@@ -48,9 +48,10 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
 
         g.apply(t.worldMatrix, drawComponent.color, drawComponent.alpha);
 
-        drawComponent.preDraw(g);
-
-        drawComponent.draw(g);
+        if(drawComponent.isVisible){
+            drawComponent.preDraw(g);
+            drawComponent.draw(g);
+        }
 
         for(current in t._children){
             var entity:Entity = current.entity;
@@ -62,15 +63,17 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
                 drawComponent.alpha = drawComponent.localAlpha;
             }
 
-            if(entity != null && hasEntity(entity) && drawComponent.visible){
+            if(entity != null && hasEntity(entity)){
                 if(drawComponent.isVisible){
                     _draw(g, current, entity.getDrawComponent());
                 }
             }
         }
 
-        g.apply(t.worldMatrix, drawComponent.color, drawComponent.alpha);
-        drawComponent.postDraw(g);
+        if(drawComponent.isVisible){
+            g.apply(t.worldMatrix, drawComponent.color, drawComponent.alpha);
+            drawComponent.postDraw(g);
+        }
     }
 
     /* iterative tree wal without pre and post render. Needs adapt to exec functions on pre and post draw
