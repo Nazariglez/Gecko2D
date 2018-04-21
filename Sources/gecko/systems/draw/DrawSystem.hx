@@ -46,31 +46,22 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
             return;
         }
 
-        g.apply(t.worldMatrix, drawComponent.color, drawComponent.alpha);
-
         if(drawComponent.isVisible){
+            g.apply(t.worldMatrix, drawComponent.color, drawComponent.alpha);
+
             drawComponent.preDraw(g);
             drawComponent.draw(g);
-        }
 
-        for(current in t._children){
-            var entity:Entity = current.entity;
+            for(current in t._children){
+                var entity:Entity = current.entity;
 
-            var parentDrawComponent:DrawComponent = current.parent.entity.getDrawComponent();
-            if(parentDrawComponent != null){
-                drawComponent.alpha = parentDrawComponent.alpha * drawComponent.localAlpha;
-            }else{
-                drawComponent.alpha = drawComponent.localAlpha;
-            }
-
-            if(entity != null && hasEntity(entity)){
-                if(drawComponent.isVisible){
-                    _draw(g, current, entity.getDrawComponent());
+                if(entity != null && hasEntity(entity)){
+                    if(drawComponent.isVisible){
+                        _draw(g, current, entity.getDrawComponent());
+                    }
                 }
             }
-        }
 
-        if(drawComponent.isVisible){
             g.apply(t.worldMatrix, drawComponent.color, drawComponent.alpha);
             drawComponent.postDraw(g);
         }
