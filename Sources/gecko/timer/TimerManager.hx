@@ -5,8 +5,10 @@ import gecko.Float32;
 class TimerManager extends BaseObject {
     public var timers:Array<Timer> = [];
     private var _timersToDelete:Array<Timer> = [];
+    private var _isProcessing:Bool = false;
 
     public function tick(delta:Float32) {
+        _isProcessing = true;
         for(t in timers){
             if(!t.isActive){
                 continue;
@@ -19,13 +21,12 @@ class TimerManager extends BaseObject {
             }
         }
 
-        if(_timersToDelete.length > 0){
-            var t = _timersToDelete.pop();
-            while(t != null){
-                _remove(t);
-                t = _timersToDelete.pop();
-            }
+        while(_timersToDelete.length > 0){
+            var t = _timersToDelete.shift();
+            _remove(t);
         }
+
+        _isProcessing = false;
     }
 
     inline public function createTimer(time:Float32, delay:Float32 = 0, loop:Bool = false, repeat:Int = 0) : Timer {
@@ -37,7 +38,11 @@ class TimerManager extends BaseObject {
     }
 
     inline public function removeTimer(timer:Timer) {
-        _timersToDelete.push(timer);
+        if(_isProcessing){
+            _timersToDelete.push(timer);
+        }else{
+            _remove(timer);
+        }
     }
 
     public function clear(){
@@ -47,16 +52,14 @@ class TimerManager extends BaseObject {
     }
 
     public function cleanTimers() {
-        var t:Timer = _timersToDelete.pop();
-        while(t != null){
+        while(timers.length > 0){
+            var t = timers.shift();
             t.destroy();
-            t = _timersToDelete.pop();
         }
 
-        t = timers.pop();
-        while(t != null){
+        while(_timersToDelete.length > 0){
+            var t = _timersToDelete.shift();
             t.destroy();
-            t = timers.pop();
         }
     }
 
@@ -68,5 +71,7 @@ class TimerManager extends BaseObject {
         super.beforeDestroy();
 
         cleanTimers();
+
+        _isProcessing = false;
     }
 }
