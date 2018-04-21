@@ -187,13 +187,21 @@ class Camera extends BaseObject implements IUpdatable {
                 yy += Random.getFloatIn(-hh, hh) * _containerTransform.scale.y;
             }
 
-            lookAt.set(xx, yy);
+            //lookAt.set(xx, yy);
+            _transform.position.set(
+                -xx + width/2, -yy + height/2
+            );
 
             _shakeDuration -= dt;
 
             if(_shakeDuration <= 0){
+                _transform.position.set(
+                    -lookAt.x + width/2, -lookAt.y + height/2
+                );
                 onShakeEnd.emit(this);
             }
+
+            _dirty = true;
         }
 
     }
