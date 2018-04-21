@@ -6,6 +6,8 @@ import gecko.Float32;
 import gecko.math.Rect;
 import gecko.components.Component;
 
+using gecko.utils.ArrayHelper;
+
 //todo read this https://noonat.github.io/intersect/#aabb-vs-segment
 
 enum HitBoxSide {
@@ -187,6 +189,8 @@ class HitBoxComponent extends Component {
         onCollidingWith.clear();
         onCollideStart.clear();
         onCollideStop.clear();
+
+        collidingWith.clear();
     }
 
     inline public function isCollidingWith(e:Entity) {

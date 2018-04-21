@@ -66,9 +66,7 @@ class Entity extends BaseObject {
             //component.destroy();
         }
 
-        for(tag in _tags.keys()){
-            _tags.remove(tag);
-        }
+        removeAllTags();
 
         _isRoot = false;
 
