@@ -1,5 +1,5 @@
 # development gecko config.
-name = "Gecko2D-KhaShmup"
+name = "Gecko2D-Flappy"
 sources = ["Sources"]
 shaders = []                        #shaders directory
 libraries = []                      #libs at Libraries folder or haxelib
