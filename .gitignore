@@ -7,5 +7,6 @@ kha_build
 examples/**/Libraries/gecko
 examples/**/korefile.js
 examples/**/khafile.js
+examples/test
 
 !*/.gitkeep
