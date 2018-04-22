@@ -16,21 +16,21 @@ import GameState;
 using gecko.utils.ArrayHelper;
 
 class PipeSpawnerComponent extends BehaviorComponent {
-    public var speed:Float32 = 120;
+    public var speed:Float32 = 0;
 
     private var _pipes:Array<Entity> = [];
     private var _pipesToRemove:Array<Entity> = [];
     private var _triggers:Array<Entity> = [];
     private var _triggersToRemove:Array<Entity> = [];
 
-    private var _spawnTime:Float32 = 1.8;
+    private var _spawnTime:Float32 = Config.SpawnTimeBetweenPipes;
     private var _elapsed:Float32 = 0;
 
     public var isRunning(default, null):Bool = false;
     public var collideCallback:Entity->Void;
     public var passPipe:Entity->Void;
 
-    public function init(speed:Float32 = 120, collidePipeCallback:Entity->Void, passPipeCallback:Entity->Void) {
+    public function init(speed:Float32, collidePipeCallback:Entity->Void, passPipeCallback:Entity->Void) {
         this.speed = speed;
         this.collideCallback = collidePipeCallback;
         this.passPipe = passPipeCallback;
@@ -87,7 +87,7 @@ class PipeSpawnerComponent extends BehaviorComponent {
     }
 
     private function _createPipe() {
-        var margin = 120;
+        var margin = Config.GapBetweenPipes;
 
         var pipeBottom = _getPipe();
         pipeBottom.transform.anchor.set(0,1);
@@ -128,9 +128,10 @@ class PipeSpawnerComponent extends BehaviorComponent {
             hitbox.onCollideStop -= passPipe;
         };
 
-        var rect:RectangleComponent = passTrigger.addComponent(RectangleComponent.create(true, passTrigger.transform.size.x, passTrigger.transform.size.y));
-        rect.color = Color.Red;
-        rect.alpha = 0.5;
+        //display collision rect
+        //var rect:RectangleComponent = passTrigger.addComponent(RectangleComponent.create(true, passTrigger.transform.size.x, passTrigger.transform.size.y));
+        //rect.color = Color.Red;
+        //rect.alpha = 0.5;
 
         _triggers.push(passTrigger);
     }
@@ -155,9 +156,8 @@ class PipeSpawnerComponent extends BehaviorComponent {
         _triggersToRemove.clear();
 
         _elapsed = 0;
-        _spawnTime = 1.8;
+        _spawnTime = Config.SpawnTimeBetweenPipes;
 
-        speed = 120;
         isRunning = false;
         collideCallback = null;
         passPipe = null;

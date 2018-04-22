@@ -19,7 +19,7 @@ class JumpComponent extends BehaviorComponent {
 
     public var isJumping(default, null):Bool = false;
 
-    public function init(jumpingHeight:Float32 = 60, jumpingTime:Float32 = 0.26) {
+    public function init(jumpingHeight:Float32, jumpingTime:Float32) {
         _jumpingHeight = jumpingHeight;
         _jumpingTime = jumpingTime;
 

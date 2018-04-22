@@ -30,6 +30,8 @@ import GameState;
 
 using gecko.utils.MathHelper;
 
+//todo fixme on osx the entity invisible
+
 class MainScene extends Scene {
     private var _floor:Entity;
     private var _pipesContainer:Entity;
@@ -38,9 +40,7 @@ class MainScene extends Scene {
     private var _tapText:Entity;
     private var _tapTextTween:Tween;
 
-    private var _speed:Float32 = 120;
     public var points:Int = 0;
-
 
     public function init() {
         addSystem(DrawSystem.create());
@@ -60,7 +60,7 @@ class MainScene extends Scene {
         _pipesContainer.transform.size.set(Screen.width, Screen.height);
         _pipesContainer.transform.position.set(Screen.centerX, Screen.centerY);
         _pipesContainer.addComponent(DrawComponent.create());
-        var p:PipeSpawnerComponent = _pipesContainer.addComponent(PipeSpawnerComponent.create(_speed, _onCollideWithPipe, _onPassedPipe));
+        var p:PipeSpawnerComponent = _pipesContainer.addComponent(PipeSpawnerComponent.create(Config.PipesSpeed, _onCollideWithPipe, _onPassedPipe));
         p.start();
 
         //floor to collide at the bottom of the screen
@@ -130,7 +130,7 @@ class MainScene extends Scene {
         GameState.State = FlappyState.Playing;
 
         var scroll:ScrollingSpriteComponent = _floor.getComponent(ScrollingSpriteComponent);
-        scroll.speed.x = 70;
+        scroll.speed.x = Config.PipesSpeed;
 
         _displayTapText(false);
 
@@ -169,16 +169,17 @@ class MainScene extends Scene {
         ];
 
         var entity = createEntity();
-        entity.addComponent(JumpComponent.create());
+        entity.addComponent(JumpComponent.create(Config.PlayerJumpHeight, Config.PlayerJumpTime));
         entity.transform.anchor.set(1, 0.5);
         entity.transform.scale.set(1.2, 1.2);
         entity.transform.position.set(Screen.centerX, Screen.centerY);
 
         entity.addTag("player");
 
-        var animComponent = entity.addComponent(AnimationComponent.create());
+        var animComponent:AnimationComponent = entity.addComponent(AnimationComponent.create());
         animComponent.addAnimFromAssets("doge", 0.5, animFrames);
 
+        //animComponent.setTextureFrame("doge", 0);
         animComponent.play("doge", true);
 
         var offsetX = entity.transform.size.x * 0.1;
@@ -226,7 +227,6 @@ class MainScene extends Scene {
         _tapTextTween = null;
 
         points = 0;
-        _speed = 120;
 
         Mouse.onLeftPressed -= _initGame;
         Mouse.onLeftPressed -= _restartGame;

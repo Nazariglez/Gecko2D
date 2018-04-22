@@ -191,7 +191,8 @@ class AnimationComponent extends DrawComponent {
             }
         }
 
-        var index = Math.floor((anim.elapsedTime*anim.frames.length) / anim.time);
+        var index:Int = Math.floor((anim.elapsedTime*anim.frames.length) / anim.time);
+        //trace("index", index, anim.index, index != anim.index, anim.elapsedTime, anim.frames.length, anim.time, (anim.elapsedTime*anim.frames.length) / anim.time);
         if(index != anim.index){
             anim.index = index;
             texture = anim.getCurrentTexture();
