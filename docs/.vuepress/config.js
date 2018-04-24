@@ -1,9 +1,10 @@
 module.exports = {
-    dest: 'Gecko2D',
     title: "Gecko2D",
     description: "A flexible and powerful Cross-Platform 2D Game Framework",
+    base: '/Gecko2D/',
     
     themeConfig: {
+        docsDir: 'docs',
         nav: [
             { text: 'Home', link: '/' },
             { 
