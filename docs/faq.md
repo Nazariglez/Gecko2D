@@ -1,4 +1,8 @@
-# Frequently asked questions
+---
+title: "FAQs"
+---
+
+# Frequently Asked Questions
 
 ## Which platforms are supported?
 

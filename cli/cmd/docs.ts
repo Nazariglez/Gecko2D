@@ -16,7 +16,7 @@ export const cmd:Command = {
 function _action(args:string[], cb:ActionCallback) {
     console.log(colors.yellow(`Serving documentation on '${colors.magenta(PORT.toString())}'`))
 
-    const serv = new nodeStatic.Server(DOCS_PATH, {cache: 0});
+    const serv = new nodeStatic.Server(DOCS_PATH + "/.vuepress/dist", {cache: 0});
     const htmlServer = http.createServer((req, res)=>{
         req.addListener("end", ()=>serv.serve(req, res)).resume();
     });

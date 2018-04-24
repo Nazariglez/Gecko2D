@@ -1,6 +1,7 @@
-# Gecko2D 
-
-> A Cross-platform Game Framework
+---
+home: true
+footer: MIT Licensed | Copyright © 2018-present Nazarí González
+---
 
 Gecko2D is a flexible and powerful cross-platform game framework that will allow you to create games easily and deploy it
 to browsers, mobile devices, desktop, and even consoles.
@@ -10,12 +11,12 @@ compilation, using Javascript and WebGL when compile to browsers, and C++ when c
 
 This framework aims to be a solid foundation for all your games, allowing you to port your games to others platforms using the same source code, saving time and money.
 
-# Basic Features
-
-# Showcase
+# Samples
+Samples can be found [here](https://github.com/Nazariglez/Gecko2D/tree/master/examples).
 
 # Contributing
-Want to contribute? Great! Here are some ways you can contribute:
+Contributions are welcome! Feel free to fix, improve or test features you want. Just try to coordinate with the community before work on anything to avoid duplicate or not wanted features.
 
-- Check out the issues and look for the label ["Help Wanted"](https://github.com/Nazariglez/Gecko2D/labels/Help%20Wanted)
-- //todo
+::: warning Gecko2D it's under development.
+Some issues may occur until we reach a major version.
+::: 
