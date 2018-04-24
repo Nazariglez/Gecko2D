@@ -1,4 +1,5 @@
 module.exports = {
+    dest: 'Gecko2D',
     title: "Gecko2D",
     description: "A flexible and powerful Cross-Platform 2D Game Framework",
     
