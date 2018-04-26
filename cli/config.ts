@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as toml from 'toml';
 import * as colors from 'colors';
 import * as fs from 'fs-extra';
-import {trimLineSpaces} from './utils';
+import {trimLineSpaces, createFolder} from './utils';
 
 export const platform = {
     HTML5: "html5",
@@ -248,4 +248,38 @@ export function generateKhafileContent(config:Config) : string {
     kfile += "resolve(p);";
 
     return trimLineSpaces(kfile);
+}
+
+export function createKhaFile(configFile:string = "") : Error {
+    const file = getConfigFile(configFile);
+    if(!file){
+        return new Error("Not found any config file.");
+    }
+
+    const config = parseConfig(file);
+    if(!config){
+        return new Error("Invalid config file");
+    }
+
+    let err = _generateKhafile(config);
+    if(err){
+        return err;
+    }
+
+    return null;
+}
+
+function _generateKhafile(config:Config) : Error {
+    let err = createFolder(C.TEMP_PATH);
+    if(err){
+        return err;
+    }
+
+    try {
+        fs.writeFileSync(C.KHAFILE_PATH, generateKhafileContent(config), {encoding: "UTF-8"});        
+    } catch(e){
+        err = e
+    }
+
+    return err
 }

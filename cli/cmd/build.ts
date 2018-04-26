@@ -3,10 +3,11 @@ import * as path from 'path';
 import {Command, ActionCallback} from "../cli";
 import * as C from "../const";
 import {existsConfigFile, createFolder} from "../utils";
-import {parseConfig, Config, generateKhafileContent, platform, getConfigFile, ConfigHTML5} from "../config";
+import {parseConfig, Config, generateKhafileContent, platform, getConfigFile, ConfigHTML5, createKhaFile} from "../config";
 import {exec, execSync} from 'child_process';
 import {series, eachSeries} from 'async';
 import * as colors from 'colors';
+import { create } from 'domain';
 
 const usage = `compile the current project
           ${C.ENGINE_NAME} build [ target ] [ -c config ]
@@ -92,7 +93,7 @@ function _action(args:string[], cb:ActionCallback) {
 
     args = parsed.args;
 
-    const file = getConfigFile(parsed.config);
+    const file = getConfigFile(parsed.config, true);
     if(!file){
         cb(new Error("Not found any config file."));
         return;
@@ -114,7 +115,7 @@ function _action(args:string[], cb:ActionCallback) {
     }
 
     let platformList = Object.keys(platform);
-    let err = _generateKhafile(config);
+    let err = createKhaFile(parsed.config);
     if(err){
         cb(err);
         return;
@@ -131,20 +132,6 @@ function _action(args:string[], cb:ActionCallback) {
         engineConfig: config,
         ffmpeg: config.core.ffmpeg ? path.resolve(config.core.ffmpeg) : ""
     };
-
-    /*let existsTarget = false;
-    for(let i = 0; i < platformList.length; i++){
-        let target = platform[platformList[i]];
-        if(config[target]) {
-            existsTarget = true;
-            break;
-        }
-    }
-
-    if(!existsTarget){
-        cb(new Error("No one platform it's defined as target in the config file."));
-        return;
-    }*/
 
     let list = parsed.target ? [_getPlatformByValue(parsed.target)] : platformList;
 
@@ -194,21 +181,6 @@ function _getPlatformByValue(v:string) : string {
         }
     }
     return key;
-}
-
-function _generateKhafile(config:Config) : Error {
-    let err = createFolder(C.TEMP_PATH);
-    if(err){
-        return err;
-    }
-
-    try {
-        fs.writeFileSync(C.KHAFILE_PATH, generateKhafileContent(config), {encoding: "UTF-8"});        
-    } catch(e){
-        err = e
-    }
-
-    return err
 }
 
 interface KhaMakeConfig {

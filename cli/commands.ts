@@ -8,6 +8,7 @@ import * as serve from './cmd/serve';
 import * as watch from './cmd/watch';
 import * as docs from './cmd/docs';
 import * as dir from './cmd/dir';
+import * as khafile from "./cmd/khafile";
 
 export const commands:Command[] = [
     build,
@@ -18,7 +19,8 @@ export const commands:Command[] = [
     serve,
     watch,
     docs,
-    dir
+    dir,
+    khafile
 ].map(c => c.cmd).sort((a, b)=>{
     if(a.name < b.name) return -1;
     if(a.name > b.name) return 1;

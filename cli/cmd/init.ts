@@ -3,7 +3,7 @@ import * as path from 'path';
 import {Command, ActionCallback} from "../cli";
 import * as C from "../const";
 import {existsConfigFile, copyEngineToProject} from "../utils";
-import {defaultConfig} from "../config";
+import {defaultConfig, createKhaFile} from "../config";
 import * as colors from 'colors';
 import * as isUrl from 'is-url';
 
@@ -72,6 +72,12 @@ function _action(args:string[], cb:ActionCallback) {
     }
 
     let err = _createProject(parsed.template || "basic", parsed.isUrl);
+    if(err){
+        cb(err);
+        return;
+    }
+
+    err = createKhaFile();
     if(err){
         cb(err);
         return;
