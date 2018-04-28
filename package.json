@@ -1,6 +1,6 @@
 {
   "name": "gecko2d",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "",
   "main": "main.js",
   "preferGlobal": true,
@@ -11,9 +11,9 @@
     "update-kha": "git submodule foreach --recursive git pull origin master",
     "dev": "node scripts/devkhamake.js && webpack --config webpack.config.js --progress --colors --watch",
     "build": "node scripts/khamake.js && webpack --config webpack.config.js --progress --colors",
-    "docs": "vuepress build docs",
-    "ghpages": "npm run docs && cd docs/.vuepress/dist && git init && git add -A && git commit -m 'deploy pages' && git push -f git@github.com:nazariglez/Gecko2D.git master:gh-pages",
-    "prepublish": "npm run build",
+    "docs": "baseDir=false vuepress build docs",
+    "ghpages": "vuepress build docs && cd docs/.vuepress/dist && git init && git add -A && git commit -m 'deploy pages' && git push -f git@github.com:nazariglez/Gecko2D.git master:gh-pages && npm run docs",
+    "prepare": "npm run build",
     "postpublish": "npm run ghpages"
   },
   "repository": {
@@ -42,10 +42,10 @@
     "cross-spawn": "^6.0.5",
     "fs-extra": "^4.0.2",
     "is-url": "^1.2.2",
+    "khamake": "github:kode/khamake#2c4dd0b9a573ab88f243692a4a20c2129e31ff27",
     "node-static": "^0.7.10",
     "node-watch": "^0.5.5",
     "toml": "^2.3.3",
-    "uglify-js": "^3.1.5",
-    "khamake": "github:kode/khamake#2c4dd0b9a573ab88f243692a4a20c2129e31ff27"
+    "uglify-js": "^3.1.5"
   }
 }
