@@ -89,9 +89,14 @@ function _action(args:string[], cb:ActionCallback) {
 
 function _createProject(template:string, isUrl:boolean = false) : Error {
     //todo if template isUrl downaload from github.com
-    const templatePath = path.join(C.TEMPLATES_PATH, template);
+    let templatePath = path.join(C.TEMPLATES_PATH, template);
     if(!fs.pathExistsSync(templatePath)){
-        return new Error(`Game template '${template}' not found.`);
+        const examplesPath = path.join(C.EXAMPLES_PATH, template);
+        if(fs.pathExistsSync(examplesPath)){
+            templatePath = examplesPath;
+        }else{
+            return new Error(`Game template '${template}' not found.`);
+        }
     }
 
     return _copyGameTemplate(templatePath);

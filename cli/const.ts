@@ -15,6 +15,7 @@ export const KHA_PATH = path.join(ENGINE_PATH, "Kha");
 export const KHA_MAKE_PATH = path.join(KHA_PATH, (process.platform === 'win32') ? "make.bat" : "make.sh");
 export const HAXE_PATH = path.join(KHA_PATH, "Tools", "haxe");
 export const TEMPLATES_PATH = path.join(ENGINE_PATH, "templates");
+export const EXAMPLES_PATH = path.join(ENGINE_PATH, "examples");
 export const GAME_TEMPLATE_PATH = path.join(TEMPLATES_PATH, "game");
 export const BUILD_TEMPLATES_PATH = path.join(ENGINE_PATH, "build_templates");
 export const HTML5_TEMPLATE_PATH = path.join(BUILD_TEMPLATES_PATH, "html5");
