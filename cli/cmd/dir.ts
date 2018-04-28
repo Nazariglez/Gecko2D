@@ -1,5 +1,5 @@
 import {Command, ActionCallback} from '../cli';
-import {ENGINE_NAME} from '../const';
+import {ENGINE_NAME, ENGINE_PATH, KHA_PATH} from '../const';
 import * as path from 'path';
 
 const usage = `print the directory where ${ENGINE_NAME} is installed
@@ -23,9 +23,9 @@ function _action(args:string[], cb:ActionCallback) {
     }
 
     if(kha){
-        console.log(path.join(process.cwd(), "Kha"));
+        console.log(KHA_PATH);
     }else{
-        console.log(process.cwd());
+        console.log(ENGINE_PATH);
     }
 
     cb(null, args);
