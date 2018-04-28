@@ -207,6 +207,10 @@ export function generateKhafileContent(config:Config) : string {
 
     if(config.libraries&&config.libraries.length){
         config.libraries.forEach((s)=>{
+            if(process.platform === "win32"){
+                s = s.split("\\").join("\\\\");
+            }
+            
             kfile += `p.addLibrary("${s}");\n`;
         });
     }
