@@ -11,7 +11,10 @@
     "update-kha": "git submodule foreach --recursive git pull origin master",
     "dev": "node scripts/devkhamake.js && webpack --config webpack.config.js --progress --colors --watch",
     "build": "node scripts/khamake.js && webpack --config webpack.config.js --progress --colors",
-    "prepublish": "npm run build"
+    "docs": "vuepress build docs",
+    "ghpages": "npm run docs && cd docs/.vuepress/dist && git init && git add -A && git commit -m 'deploy pages' && git push -f git@github.com:nazariglez/Gecko2D.git master:gh-pages",
+    "prepublish": "npm run build",
+    "postpublish": "npm run ghpages"
   },
   "repository": {
     "type": "git",
