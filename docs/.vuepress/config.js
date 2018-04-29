@@ -6,6 +6,7 @@ module.exports = {
     base: baseDir,
     
     themeConfig: {
+        repo: "Nazariglez/Gecko2D",
         docsDir: 'docs',
         nav: [
             { text: 'Home', link: '/' },
@@ -13,8 +14,14 @@ module.exports = {
                 text: 'Guide', 
                 link: '/guide/',
             },
-            { text: 'FAQs', link: '/faq.html' },
-            { text: 'Github', link: 'https://github.com/Nazariglez/Gecko2D' },
-        ]
+            { 
+                text: 'Examples', 
+                link: '/examples/',
+            },
+            { text: 'FAQs', link: '/faq.html' }
+        ],
+        sidebar: {
+            "/examples/": require("./examples.json")
+        }
     }
 };
