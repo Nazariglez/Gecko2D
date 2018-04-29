@@ -1,7 +1,7 @@
 {
   "name": "gecko2d",
   "version": "0.0.19",
-  "description": "",
+  "description": "A flexible and powerful Cross-Platform 2D Game Framework",
   "main": "main.js",
   "preferGlobal": true,
   "bin": {

@@ -11,14 +11,17 @@ module.exports = {
         nav: [
             { text: 'Home', link: '/' },
             { 
-                text: 'Guide', 
-                link: '/guide/',
+                text: 'Getting Started', 
+                link: '/getting-started/',
+            },
+            {
+                text: 'Guide',
+                link: '/guide/'
             },
             { 
                 text: 'Examples', 
                 link: '/examples/',
-            },
-            { text: 'FAQs', link: '/faq.html' }
+            }
         ],
         sidebar: {
             "/examples/": require("./examples.json")
