@@ -35,18 +35,6 @@ EReg.prototype = {
 	,__class__: EReg
 };
 var Game = function() {
-	haxe_Log.trace("welcome!",{ fileName : "Game.hx", lineNumber : 8, className : "Game", methodName : "new"});
-	var scene = gecko_Gecko.world.currentScene;
-	var obj = gecko_systems_draw_DrawSystem.__pool__.get();
-	obj.init();
-	obj.isAlreadyDestroyed = false;
-	scene.addSystem(obj);
-	var e = scene.createEntity();
-	var obj1 = gecko_components_draw_CircleComponent.__pool__.get();
-	obj1.init(true,60,2,0);
-	obj1.isAlreadyDestroyed = false;
-	e.addComponent(obj1);
-	e.transform.get_position().set(gecko_Screen.centerX,gecko_Screen.centerY);
 };
 $hxClasses["Game"] = Game;
 Game.__name__ = true;
@@ -5350,124 +5338,6 @@ gecko_components_draw_DrawComponent.prototype = $extend(gecko_components_Compone
 	}
 	,__class__: gecko_components_draw_DrawComponent
 	,__properties__: $extend(gecko_components_Component.prototype.__properties__,{get_isVisible:"get_isVisible",set_alpha:"set_alpha",get_alpha:"get_alpha",set_localAlpha:"set_localAlpha",get_localAlpha:"get_localAlpha"})
-});
-var gecko_components_draw_CircleComponent = function() {
-	this.diameter = 4;
-	this.segments = 0;
-	this.strength = 2;
-	this.fill = false;
-	this._radius = 1;
-	gecko_components_draw_DrawComponent.call(this);
-};
-$hxClasses["gecko.components.draw.CircleComponent"] = gecko_components_draw_CircleComponent;
-gecko_components_draw_CircleComponent.__name__ = true;
-gecko_components_draw_CircleComponent.create = function(fill,radius,strength,segments) {
-	if(segments == null) {
-		segments = 0;
-	}
-	if(strength == null) {
-		strength = 2;
-	}
-	if(radius == null) {
-		radius = 1;
-	}
-	var obj = gecko_components_draw_CircleComponent.__pool__.get();
-	obj.init(fill,radius,strength,segments);
-	obj.isAlreadyDestroyed = false;
-	return obj;
-};
-gecko_components_draw_CircleComponent.getPool = function() {
-	return gecko_components_draw_CircleComponent.__pool__;
-};
-gecko_components_draw_CircleComponent.__super__ = gecko_components_draw_DrawComponent;
-gecko_components_draw_CircleComponent.prototype = $extend(gecko_components_draw_DrawComponent.prototype,{
-	init: function(fill,radius,strength,segments) {
-		if(segments == null) {
-			segments = 0;
-		}
-		if(strength == null) {
-			strength = 2;
-		}
-		if(radius == null) {
-			radius = 1;
-		}
-		this.set_radius(radius);
-		this.fill = fill;
-		this.strength = strength;
-		this.segments = segments;
-		this.onAddedToEntity.handlers.push($bind(this,this._setTransformSize));
-	}
-	,draw: function(g) {
-		if(this.fill) {
-			var cx = this._radius;
-			var cy = this._radius;
-			var radius = this._radius;
-			kha_graphics2_GraphicsExtension.fillCircle(g.buffer.get_g2(),cx,cy,radius,null);
-		} else {
-			var cx1 = this._radius;
-			var cy1 = this._radius;
-			var radius1 = this._radius;
-			var strength = this.strength;
-			var segments = this.segments;
-			kha_graphics2_GraphicsExtension.drawCircle(g.buffer.get_g2(),cx1,cy1,radius1,strength,segments);
-		}
-	}
-	,beforeDestroy: function() {
-		gecko_components_draw_DrawComponent.prototype.beforeDestroy.call(this);
-		HxOverrides.remove(this.onAddedToEntity.handlers,$bind(this,this._setTransformSize));
-		this.set_radius(1);
-		this.fill = false;
-		this.strength = 2;
-	}
-	,_setTransformSize: function(e) {
-		if(e.transform != null) {
-			e.transform.get_size().set(this.diameter,this.diameter);
-		}
-	}
-	,get_radius: function() {
-		return this._radius;
-	}
-	,set_radius: function(value) {
-		if(value == this._radius) {
-			return this._radius;
-		}
-		this._radius = value;
-		this.diameter = this._radius * 2;
-		if(this._entity != null && this._entity.transform != null) {
-			this._entity.transform.get_size().set(this.diameter,this.diameter);
-		}
-		return this._radius;
-	}
-	,destroy: function() {
-		if(this.isAlreadyDestroyed) {
-			return;
-		}
-		if(!this.__flagToDestroy__) {
-			this.__flagToDestroy__ = true;
-			gecko_Gecko._destroyCallbacks.push($bind(this,this.destroy));
-			return;
-		}
-		this.isAlreadyDestroyed = true;
-		this.beforeDestroy();
-		gecko_components_draw_CircleComponent.__pool__.safePut(this);
-		this.__flagToDestroy__ = false;
-	}
-	,destroyInmediate: function() {
-		if(this.isAlreadyDestroyed) {
-			return;
-		}
-		this.isAlreadyDestroyed = true;
-		this.beforeDestroy();
-		gecko_components_draw_CircleComponent.__pool__.safePut(this);
-	}
-	,get___typeName__: function() {
-		return "gecko.components.draw.CircleComponent";
-	}
-	,get___type__: function() {
-		return gecko_components_draw_CircleComponent;
-	}
-	,__class__: gecko_components_draw_CircleComponent
-	,__properties__: $extend(gecko_components_draw_DrawComponent.prototype.__properties__,{set_radius:"set_radius",get_radius:"get_radius"})
 });
 var gecko_math_Point = function() {
 	this._y = 0;
@@ -29110,9 +28980,6 @@ gecko_components_Component.__componentName__ = "gecko.components.Component";
 gecko_components_draw_DrawComponent.__componentTypes__ = [];
 gecko_components_draw_DrawComponent.__componentName__ = "gecko.components.draw.DrawComponent";
 gecko_components_draw_DrawComponent.__pool__ = new gecko_utils_Pool(gecko_components_draw_DrawComponent,{ amount : 1});
-gecko_components_draw_CircleComponent.__pool__ = new gecko_utils_Pool(gecko_components_draw_CircleComponent,{ amount : 1});
-gecko_components_draw_CircleComponent.__componentTypes__ = [];
-gecko_components_draw_CircleComponent.__componentName__ = "gecko.components.draw.CircleComponent";
 gecko_math_Point.__pool__ = new gecko_utils_Pool(gecko_math_Point,{ amount : 1});
 gecko_math_Rect.__pool__ = new gecko_utils_Pool(gecko_math_Rect,{ amount : 1});
 gecko_render_BlendMode.Add = gecko_render_BlendMode.Create(kha_graphics4_BlendingFactor.BlendOne,kha_graphics4_BlendingFactor.BlendOne);
