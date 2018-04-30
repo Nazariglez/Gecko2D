@@ -26,8 +26,21 @@ class Game {
         gecko.Assets.load(_spritesToLoad, _onLoadAssets).start();
     }
 
+    //Create an add the sprite
+    private function _createSprite(spriteName:String, x:Float32, y:Float32) {
+        //create an entity in the current scene
+        var entity = Gecko.currentScene.createEntity();
+
+        //add a spriteComponent using the sprite name
+        entity.addComponent(SpriteComponent.create(spriteName));
+
+        //set the position and the scale
+        entity.transform.position.set(x, y);
+        entity.transform.scale.set(0.4, 0.4);
+    }
+
     private function _onLoadAssets(){
-        //Draw sprites in a grid
+        //Draw 9 sprites in a grid
         var minX = 155;
         var minY = 110;
 
@@ -37,19 +50,10 @@ class Game {
         var i = 0;
         for(x in 0...3){
             for(y in 0...3){
-                _addSprite(_spritesToLoad[i], minX + gapX*x, minY + gapY*y);
+                _createSprite(_spritesToLoad[i], minX + gapX*x, minY + gapY*y);
 
                 i++;
             }
         }
-    }
-
-    //Create an add the sprite
-    private function _addSprite(spriteName:String, x:Float32, y:Float32) {
-        var e = Gecko.currentScene.createEntity();
-        e.addComponent(SpriteComponent.create(spriteName));
-
-        e.transform.position.set(x, y);
-        e.transform.scale.set(0.4, 0.4); //scale because they're too big
     }
 }
