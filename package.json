@@ -12,7 +12,7 @@
     "dev": "node scripts/devkhamake.js && webpack --config webpack.config.js --progress --colors --watch",
     "build": "node scripts/khamake.js && webpack --config webpack.config.js --progress --colors",
     "localdocs": "baseDir=false npm run docs",
-    "docs": "node scripts/examples.js && vuepress build docs && node scripts/examples.js",
+    "docs": "node scripts/examples.js && vuepress build docs && node scripts/examples.js --build",
     "ghpages": "npm run docs && cd docs/.vuepress/dist && git init && git add -A && git commit -m 'deploy pages' && git push -f git@github.com:nazariglez/Gecko2D.git master:gh-pages && npm run localdocs",
     "prepare": "npm run build",
     "postpublish": "npm run ghpages"

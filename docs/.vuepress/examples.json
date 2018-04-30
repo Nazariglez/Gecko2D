@@ -1,4 +1,10 @@
 [
   "",
-  "drawsprites"
+  {
+    "title": "Basics",
+    "collapsable": true,
+    "children": [
+      "drawsprites"
+    ]
+  }
 ]
