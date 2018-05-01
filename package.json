@@ -14,8 +14,7 @@
     "localdocs": "baseDir=false npm run docs",
     "docs": "node scripts/examples.js && vuepress build docs && node scripts/examples.js",
     "ghpages": "npm run docs && cd docs/.vuepress/dist && git init && git add -A && git commit -m 'deploy pages' && git push -f git@github.com:nazariglez/Gecko2D.git master:gh-pages && npm run localdocs",
-    "prepublishOnly": "npm run build",
-    "postpublish": "npm run ghpages"
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -25,7 +24,7 @@
     "node": ">=9.0.0"
   },
   "author": "Nazariglez",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Nazariglez/Gecko2D/issues"
   },
