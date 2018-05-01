@@ -1,3 +1,4 @@
+///<reference path="../../Kha/Tools/khamake/src/Options.ts" />
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import {Command, ActionCallback} from "../cli";
@@ -8,6 +9,9 @@ import {exec, execSync} from 'child_process';
 import {series, eachSeries} from 'async';
 import * as colors from 'colors';
 import { create } from 'domain';
+import { Options } from '../../Kha/Tools/khamake/src/Options';
+
+declare const __non_webpack_require__:any;
 
 const usage = `compile the current project
           ${C.ENGINE_NAME} build [ target ] [ -c config ]
@@ -206,69 +210,83 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
         }
         console.log(colors.cyan(txt));
     }
-
-    let cmd = `${C.KHA_MAKE_PATH} ${config.target}`;
-
-    if(config.engineConfig.core.compile){
-        cmd += ` --compile`;
-    }
-    
-    if(config.graphics){
-        cmd += ` -g ${config.graphics}`;
-    }
-
-    cmd += ` --projectfile ${config.projectfile}`;
-    cmd += ` --to ${config.to}`;
-
-    if(config.ffmpeg){
-        cmd += ` --ffmpeg "${config.ffmpeg}"`;
-    }
-    
-    if(config.debug){
-        cmd += ` --debug`; 
-    }
     
     console.log(colors.yellow(" - - - - "));
-    console.log("Exec:", cmd);
-    console.log(colors.yellow(" - - - - "));
-    
-    let k = exec(cmd, {maxBuffer: 1024 * 1024 * 15}, (err:Error, stdout:string, stderr:string)=>{
-        console.log(colors.yellow(" - - - - \n"));
 
-        if(stderr){
-            cb(new Error(`Error: ${stderr}`));
-            return;
+    let options:any = {
+        from: C.CURRENT_PATH,
+        to: config.to,
+        projectfile: config.projectfile,
+        target: config.target,
+        vr: 'none',
+        pch: false,
+        intermediate: '',
+        graphics: config.graphics,
+        visualstudio: 'vs2017',
+        kha: config.kha,
+        haxe: config.haxe,
+        ogg: '',
+        aac: '',
+        mp3: '',
+        h264: '',
+        webm: '',
+        wmv: '',
+        theora: '',
+        kfx: '',
+        krafix: '',
+        ffmpeg: config.ffmpeg,
+        nokrafix: false,
+        embedflashassets: false,
+        compile: config.engineConfig.core.compile,
+        run: false,
+        init: false,
+        name: config.engineConfig.name,
+        server: false,
+        port: 8080,
+        debug: config.debug,
+        silent: false,
+        watch: false
+    };
+
+    const khamakeApi = __non_webpack_require__(path.join(C.KHA_PATH, 'Tools/khamake/out/main.js'));
+
+    let errString = "";
+    await khamakeApi.run(options, {
+        info: msg => {
+            console.log(msg);
+        },
+        error: msgErr => {
+            errString += msgErr + '\n';
         }
-
-        if(err){
-            cb(err);
-            return;
-        }
-
-        err = createFolder(C.TEMP_PATH);
-        if(err){
-            cb(err);
-            return;
-        }
-
-        if(config.target === "html5"){
-            err = _moveHTML5Build(
-                path.join(config.engineConfig.output, "html5"),
-                path.join(config.engineConfig.output, "html5-build"),
-                config.debug,
-                config.engineConfig
-            );
-            if(err){
-                cb(err);
-                return;
-            }
-        }
-
-        cb();
     });
 
-    //k.stdout.on('data', d => console.log(d.toString()));
-    k.stdout.pipe(process.stdout);
+    console.log(colors.yellow(" - - - - \n"));
+
+    if(errString){
+        cb(new Error(`Error: ${errString}`));
+        return;
+    }
+
+    let err = createFolder(C.TEMP_PATH);
+    if(err){
+        cb(err);
+        return;
+    }
+
+    if(config.target === "html5"){
+        err = _moveHTML5Build(
+            path.join(config.engineConfig.output, "html5"),
+            path.join(config.engineConfig.output, "html5-build"),
+            config.debug,
+            config.engineConfig
+        );
+        if(err){
+            cb(err);
+            return;
+        }
+    }
+
+    cb();
 }
 
 const releaseDestination = {

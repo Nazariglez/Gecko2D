@@ -1,6 +1,6 @@
 {
   "name": "gecko2d",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "A flexible and powerful Cross-Platform 2D Game Framework",
   "main": "main.js",
   "preferGlobal": true,
@@ -14,7 +14,7 @@
     "localdocs": "baseDir=false npm run docs",
     "docs": "node scripts/examples.js && vuepress build docs && node scripts/examples.js",
     "ghpages": "npm run docs && cd docs/.vuepress/dist && git init && git add -A && git commit -m 'deploy pages' && git push -f git@github.com:nazariglez/Gecko2D.git master:gh-pages && npm run localdocs",
-    "prepare": "npm run build",
+    "prepublishOnly": "npm run build",
     "postpublish": "npm run ghpages"
   },
   "repository": {
