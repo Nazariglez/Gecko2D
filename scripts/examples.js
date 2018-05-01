@@ -120,7 +120,7 @@ ${example.code}
     
         child.on("close", fn);
     }else{
-        console.log("Generating example docs...");
+        console.log("Generating example docs:", example.name);
         fn();
     }
     
@@ -149,7 +149,7 @@ ${example.code}
     let keys = Object.keys(categories);
     for(let i = 0; i < keys.length; i++){
         let data = categories[keys[i]];
-        data.children.sort((a,b)=>(a.data.priority || 0) - (b.data.priority || 0));
+        //data.children.sort((a,b)=>(a.data.priority || 0) - (b.data.priority || 0));
         sidebar.push(data);
     }
 

@@ -4,6 +4,7 @@
     "title": "Basics",
     "collapsable": true,
     "children": [
+      "drawshapes",
       "drawsprites"
     ]
   }
