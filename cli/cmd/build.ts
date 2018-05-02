@@ -248,7 +248,8 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
         watch: false
     };
 
-    const khamakeApi = __non_webpack_require__(path.join(C.KHA_PATH, 'Tools/khamake/out/main.js'));
+    //const khamakeApi = __non_webpack_require__(path.join(C.KHA_PATH, 'Tools/khamake/out/main.js'));
+    const khamakeApi = __non_webpack_require__('khamake/out/main.js');
 
     let errString = "";
     await khamakeApi.run(options, {

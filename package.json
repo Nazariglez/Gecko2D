@@ -1,6 +1,6 @@
 {
   "name": "gecko2d",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "A flexible and powerful Cross-Platform 2D Game Framework",
   "main": "main.js",
   "preferGlobal": true,
@@ -13,9 +13,7 @@
     "build": "node scripts/khamake.js && webpack --config webpack.config.js --progress --colors",
     "localdocs": "baseDir=false npm run docs",
     "docs": "node scripts/examples.js && vuepress build docs && node scripts/examples.js",
-    "ghpages": "npm run docs && cd docs/.vuepress/dist && git init && git add -A && git commit -m 'deploy pages' && git push -f git@github.com:nazariglez/Gecko2D.git master:gh-pages && npm run localdocs",
-    "prepublishOnly": "npm run build",
-    "postpublish": "npm run ghpages"
+    "ghpages": "npm run docs && cd docs/.vuepress/dist && git init && git add -A && git commit -m 'deploy pages' && git push -f git@github.com:nazariglez/Gecko2D.git master:gh-pages && npm run localdocs"
   },
   "repository": {
     "type": "git",
@@ -44,7 +42,7 @@
     "fs-extra": "^4.0.2",
     "is-url": "^1.2.2",
     "js-yaml": "^3.11.0",
-    "khamake": "github:kode/khamake#2c4dd0b9a573ab88f243692a4a20c2129e31ff27",
+    "khamake": "github:Nazariglez/khamake#0b52c087b459a127dca7d39ee025e492c57cb89e",
     "node-static": "^0.7.10",
     "node-watch": "^0.5.5",
     "toml": "^2.3.3",
