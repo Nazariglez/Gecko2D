@@ -1,6 +1,6 @@
 ---
 example: true
-title: Draw Sprites
+title: Shapes
 category: Basics
 priority: 0
 ---
