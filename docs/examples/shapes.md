@@ -2,7 +2,8 @@
 title: Shapes
 ---
 # Shapes
-<iframe src="/builds/shapes/index.html" width="800" height="600" frameBorder="0" style="width:100%; max-height: 600px"></iframe>
+
+<iframe src="/builds/shapes/index.html" width="800" height="600" frameBorder="0" style="width: 100vw; height:75vw; max-width:100%; max-height:600px"></iframe>
 
 ```haxe
 package;
@@ -62,5 +63,5 @@ class Game {
 }
 ```
 
-            
+
 [Source Code](https://github.com/Nazariglez/Gecko2D/tree/master/examples/shapes)
