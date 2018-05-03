@@ -4,6 +4,7 @@
     "title": "Basics",
     "collapsable": true,
     "children": [
+      "animation",
       "nineslice",
       "scrollingsprite",
       "shapes",
