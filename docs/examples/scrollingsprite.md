@@ -19,14 +19,14 @@ class Game {
         //add the draw system
         Gecko.currentScene.addSystem(DrawSystem.create());
 
-        trace("lele");
-
+        //Load the sprites
         Assets.load([
             "images/opengameart/mountain.png",
             "images/opengameart/carbon_fiber.png"
         ], _onLoadAssets).start();
     }
 
+    //create an entity with a scrolling-component using spritename, position and size
     private function _createScrollingSprite(sprite:String, x:Float32, y:Float32, width:Float32, height:Float32) : ScrollingSpriteComponent {
         //create a new entity in the currentScene
         var entity = Gecko.currentScene.createEntity();
@@ -39,7 +39,6 @@ class Game {
     }
 
     private function _onLoadAssets() {
-        trace("lolo");
         //create a scrollingSprite using the spriteName, position, and size
         var scroll1 = _createScrollingSprite("images/opengameart/mountain.png", Screen.centerX, Screen.centerY, Screen.width, Screen.height);
         scroll1.speed.x = 20;

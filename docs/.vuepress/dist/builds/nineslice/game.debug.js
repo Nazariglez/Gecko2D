@@ -36,32 +36,44 @@ EReg.prototype = {
 	,__class__: EReg
 };
 var Game = function() {
+	this._spritesToLoad = ["images/kenney/grey_button08.png","images/kenney/green_panel.png"];
 	var tmp = gecko_Gecko.world.currentScene;
 	var obj = gecko_systems_draw_DrawSystem.__pool__.get();
 	obj.init();
 	obj.isAlreadyDestroyed = false;
 	tmp.addSystem(obj);
-	gecko_Assets.load(["images/opengameart/mountain.png","images/opengameart/carbon_fiber.png"],$bind(this,this._onLoadAssets)).start();
+	gecko_Assets.load(this._spritesToLoad,$bind(this,this._onLoadAssets)).start();
 };
 $hxClasses["Game"] = Game;
 Game.__name__ = true;
 Game.prototype = {
-	_createScrollingSprite: function(sprite,x,y,width,height) {
+	_spritesToLoad: null
+	,_createNineSlice: function(x,y,width,height) {
 		var entity = gecko_Gecko.world.currentScene.createEntity();
 		entity.transform.get_position().set(x,y);
-		var obj = gecko_components_draw_ScrollingSpriteComponent.__pool__.get();
-		obj.init(sprite,width,height);
+		var texture = this._getRandomSprite();
+		var obj = gecko_components_draw_NineSliceComponent.__pool__.get();
+		obj.init(texture,width,height,null);
 		obj.isAlreadyDestroyed = false;
-		return entity.addComponent(obj);
+		entity.addComponent(obj);
+		entity.transform.get_anchor().set(0,0);
 	}
 	,_onLoadAssets: function() {
-		var scroll1 = this._createScrollingSprite("images/opengameart/mountain.png",gecko_Screen.centerX,gecko_Screen.centerY,gecko_Screen.buffer.get_width(),gecko_Screen.buffer.get_height());
-		scroll1.speed.set_x(20);
-		var scroll2 = this._createScrollingSprite("images/opengameart/carbon_fiber.png",150,gecko_Screen.centerY,200,500);
-		scroll2.speed.set_y(-30);
-		var scroll3 = this._createScrollingSprite("images/opengameart/carbon_fiber.png",550,gecko_Screen.centerY,400,300);
-		scroll3.speed.set(20,20);
-		scroll3.scale.set(0.5,0.5);
+		this._createNineSlice(50,50,200,100);
+		this._createNineSlice(50,170,100,400);
+		this._createNineSlice(170,170,400,400);
+		this._createNineSlice(270,50,60,100);
+		this._createNineSlice(350,50,40,40);
+		this._createNineSlice(350,110,40,40);
+		this._createNineSlice(410,50,120,100);
+		this._createNineSlice(550,50,200,40);
+		this._createNineSlice(550,110,200,40);
+		this._createNineSlice(590,170,160,80);
+		this._createNineSlice(590,270,60,300);
+		this._createNineSlice(670,270,80,300);
+	}
+	,_getRandomSprite: function() {
+		return this._spritesToLoad[kha_math_Random.getUpTo(this._spritesToLoad.length - 1)];
 	}
 	,__class__: Game
 };
@@ -5970,177 +5982,263 @@ gecko_components_draw_DrawComponent.prototype = $extend(gecko_components_Compone
 	,__class__: gecko_components_draw_DrawComponent
 	,__properties__: $extend(gecko_components_Component.prototype.__properties__,{get_isVisible:"get_isVisible",set_alpha:"set_alpha",get_alpha:"get_alpha",set_localAlpha:"set_localAlpha",get_localAlpha:"get_localAlpha"})
 });
-var gecko_components_draw_ScrollingSpriteComponent = function() {
-	this._sizeScrollY = 0;
-	this._sizeScrollX = 0;
-	this._dh = 0;
-	this._dw = 0;
+var gecko_components_draw_NineSliceComponent = function() {
+	this._height = 0;
+	this._width = 0;
 	this._sh = 0;
 	this._sw = 0;
-	this._sy = 0;
-	this._sx = 0;
-	this._yy = 0;
-	this._xx = 0;
-	this._offsetY = 0;
-	this._offsetX = 0;
-	this._lenY = 0;
-	this._lenX = 0;
-	this._scrollY = 0;
-	this._scrollX = 0;
+	this._centerH = 0;
+	this._centerW = 0;
+	this._right = 0;
+	this._left = 0;
+	this._bottom = 0;
+	this._top = 0;
 	gecko_components_draw_DrawComponent.call(this);
 };
-$hxClasses["gecko.components.draw.ScrollingSpriteComponent"] = gecko_components_draw_ScrollingSpriteComponent;
-gecko_components_draw_ScrollingSpriteComponent.__name__ = true;
-gecko_components_draw_ScrollingSpriteComponent.create = function(texture,width,height) {
-	var obj = gecko_components_draw_ScrollingSpriteComponent.__pool__.get();
-	obj.init(texture,width,height);
+$hxClasses["gecko.components.draw.NineSliceComponent"] = gecko_components_draw_NineSliceComponent;
+gecko_components_draw_NineSliceComponent.__name__ = true;
+gecko_components_draw_NineSliceComponent.create = function(texture,width,height,options) {
+	if(height == null) {
+		height = 0;
+	}
+	if(width == null) {
+		width = 0;
+	}
+	var obj = gecko_components_draw_NineSliceComponent.__pool__.get();
+	obj.init(texture,width,height,options);
 	obj.isAlreadyDestroyed = false;
 	return obj;
 };
-gecko_components_draw_ScrollingSpriteComponent.getPool = function() {
-	return gecko_components_draw_ScrollingSpriteComponent.__pool__;
+gecko_components_draw_NineSliceComponent.getPool = function() {
+	return gecko_components_draw_NineSliceComponent.__pool__;
 };
-gecko_components_draw_ScrollingSpriteComponent.__super__ = gecko_components_draw_DrawComponent;
-gecko_components_draw_ScrollingSpriteComponent.prototype = $extend(gecko_components_draw_DrawComponent.prototype,{
+gecko_components_draw_NineSliceComponent.__super__ = gecko_components_draw_DrawComponent;
+gecko_components_draw_NineSliceComponent.prototype = $extend(gecko_components_draw_DrawComponent.prototype,{
 	_texture: null
-	,scale: null
-	,position: null
-	,speed: null
-	,_width: null
-	,_height: null
-	,_scrollX: null
-	,_scrollY: null
-	,_lenX: null
-	,_lenY: null
-	,_offsetX: null
-	,_offsetY: null
-	,_xx: null
-	,_yy: null
-	,_sx: null
-	,_sy: null
+	,_options: null
+	,_top: null
+	,_bottom: null
+	,_left: null
+	,_right: null
+	,_centerW: null
+	,_centerH: null
 	,_sw: null
 	,_sh: null
-	,_dw: null
-	,_dh: null
-	,_sizeScrollX: null
-	,_sizeScrollY: null
-	,init: function(texture,width,height) {
-		this.set_width(width);
-		this.set_height(height);
+	,_width: null
+	,_height: null
+	,init: function(texture,width,height,options) {
+		if(height == null) {
+			height = 0;
+		}
+		if(width == null) {
+			width = 0;
+		}
 		var _this = gecko_Assets.textures;
 		this.set_texture(__map_reserved[texture] != null ? _this.getReserved(texture) : _this.h[texture]);
-		var obj = gecko_math_Point.__pool__.get();
-		obj.init(1,1);
-		obj.isAlreadyDestroyed = false;
-		this.scale = obj;
-		var obj1 = gecko_math_Point.__pool__.get();
-		obj1.init(0,0);
-		obj1.isAlreadyDestroyed = false;
-		this.position = obj1;
-		var obj2 = gecko_math_Point.__pool__.get();
-		obj2.init(0,0);
-		obj2.isAlreadyDestroyed = false;
-		this.speed = obj2;
+		this._options = options;
+		this._width = width != 0 ? width : this._texture._width;
+		this._height = height != 0 ? height : this._texture._height;
 		this.onAddedToEntity.handlers.push($bind(this,this._setTransformSize));
+	}
+	,beforeDestroy: function() {
+		gecko_components_draw_DrawComponent.prototype.beforeDestroy.call(this);
+		this._options = null;
+		this.set_texture(null);
+		HxOverrides.remove(this.onAddedToEntity.handlers,$bind(this,this._setTransformSize));
 	}
 	,_setTransformSize: function(e) {
 		if(e.transform != null) {
 			e.transform.get_size().set(this._width,this._height);
 		}
-		HxOverrides.remove(this.onAddedToEntity.handlers,$bind(this,this._setTransformSize));
-	}
-	,beforeDestroy: function() {
-		gecko_components_draw_DrawComponent.prototype.beforeDestroy.call(this);
-		this.scale.destroy();
-		this.position.destroy();
-		this.speed.destroy();
-		this.set_texture(null);
-	}
-	,update: function(dt) {
-		if(this._texture == null) {
-			return;
-		}
-		if(this.speed._x != 0) {
-			var _g = this.position;
-			_g.set_x(_g._x + this.speed._x * dt);
-		}
-		if(this.speed._y != 0) {
-			var _g1 = this.position;
-			_g1.set_y(_g1._y + this.speed._y * dt);
-		}
-		this._sizeScrollX = this._entity.transform.get_size()._x / this.scale._x;
-		this._sizeScrollY = this._entity.transform.get_size()._y / this.scale._y;
-		this._scrollX = this.position._x % this._texture._width;
-		this._scrollX = this._scrollX < 0 ? this._texture._width + this._scrollX : this._scrollX;
-		this._scrollY = this.position._y % this._texture._height;
-		this._scrollY = this._scrollY < 0 ? this._texture._height + this._scrollY : this._scrollY;
-		this._lenX = Math.ceil((this._sizeScrollX + this._scrollX) / this._texture._width);
-		this._lenY = Math.ceil((this._sizeScrollY + this._scrollY) / this._texture._height);
-		this._offsetX = this._sizeScrollX - (this._lenX * this._texture._width - this._scrollX);
-		this._offsetY = this._sizeScrollY - (this._lenY * this._texture._height - this._scrollY);
 	}
 	,draw: function(g) {
 		if(this._texture == null) {
 			return;
 		}
-		this._yy = 0;
-		var _g1 = 0;
-		var _g = this._lenY;
-		while(_g1 < _g) {
-			var y = _g1++;
-			if(this._yy >= this._entity.transform.get_size()._y) {
-				continue;
-			}
-			this._xx = 0;
-			this._sx = this._scrollX;
-			if(y == 0) {
-				this._sy = this._scrollY;
-			} else {
-				this._sy = 0;
-			}
-			if(y == this._lenY - 1) {
-				this._sh = this._texture._height + this._offsetY - this._sy;
-			} else {
-				this._sh = this._texture._height - this._sy;
-			}
-			this._dh = this._sh * this.scale._y;
-			var _g3 = 0;
-			var _g2 = this._lenX;
-			while(_g3 < _g2) {
-				var x = _g3++;
-				if(this._xx >= this._entity.transform.get_size()._x) {
-					continue;
-				}
-				if(x == this._lenX - 1) {
-					this._sw = this._texture._width + this._offsetX - this._sx;
-				} else {
-					this._sw = this._texture._width - this._sx;
-				}
-				this._dw = this._sw * this.scale._x;
-				var texture = this._texture;
-				var sx = this._sx;
-				var sy = this._sy;
-				var sw = this._sw;
-				var sh = this._sh;
-				var dx = this._xx;
-				var dy = this._yy;
-				var dw = this._dw;
-				var dh = this._dh;
-				if(texture.trim != null) {
-					g._swtTemp = texture.trim.width + texture.trim.x - sx;
-					g._swtTemp = sw < g._swtTemp ? sw : g._swtTemp;
-					g._shtTemp = texture.trim.height + texture.trim.y - sy;
-					g._shtTemp = sh < g._shtTemp ? sh : g._shtTemp;
-					g._dwTemp = dw - texture.trim.x;
-					g._dhTemp = dh - texture.trim.y;
-					g.buffer.get_g2().drawScaledSubImage(texture.image,texture.frame.x - texture.trim.x + sx,texture.frame.y - texture.trim.y + sy,g._swtTemp,g._shtTemp,dx,dy,dw,dh);
-				} else {
-					g.buffer.get_g2().drawScaledSubImage(texture.image,texture.frame.x + sx,texture.frame.y + sy,sw < texture.frame.width ? sw : texture.frame.width,sh < texture.frame.height ? sh : texture.frame.height,dx,dy,dw,dh);
-				}
-				this._xx += this._dw;
-				this._sx = 0;
-			}
-			this._yy += this._dh;
+		if(this._options != null) {
+			this._top = this._options.top;
+			this._bottom = this._options.bottom;
+			this._left = this._options.left;
+			this._right = this._options.right;
+		} else {
+			this._top = this._texture._height / 3;
+			this._bottom = this._texture._height / 3;
+			this._left = this._texture._width / 3;
+			this._right = this._texture._width / 3;
+		}
+		this._centerW = this._texture._width - (this._left + this._right);
+		this._centerH = this._texture._height - (this._top + this._bottom);
+		this._sw = this._entity.transform.get_size()._x - (this._left + this._right);
+		this._sh = this._entity.transform.get_size()._y - (this._top + this._bottom);
+		var texture = this._texture;
+		var sw = this._left;
+		var sh = this._top;
+		var dw = this._left;
+		var dh = this._top;
+		if(texture.trim != null) {
+			g._swtTemp = texture.trim.width + texture.trim.x;
+			g._swtTemp = sw < g._swtTemp ? sw : g._swtTemp;
+			g._shtTemp = texture.trim.height + texture.trim.y;
+			g._shtTemp = sh < g._shtTemp ? sh : g._shtTemp;
+			g._dwTemp = dw - texture.trim.x;
+			g._dhTemp = dh - texture.trim.y;
+			g.buffer.get_g2().drawScaledSubImage(texture.image,texture.frame.x - texture.trim.x,texture.frame.y - texture.trim.y,g._swtTemp,g._shtTemp,0,0,dw,dh);
+		} else {
+			var tmp = sw < texture.frame.width ? sw : texture.frame.width;
+			var tmp1 = sh < texture.frame.height ? sh : texture.frame.height;
+			g.buffer.get_g2().drawScaledSubImage(texture.image,texture.frame.x,texture.frame.y,tmp,tmp1,0,0,dw,dh);
+		}
+		var texture1 = this._texture;
+		var sx = this._left;
+		var sw1 = this._centerW;
+		var sh1 = this._top;
+		var dx = this._left;
+		var dw1 = this._sw;
+		var dh1 = this._top;
+		if(texture1.trim != null) {
+			g._swtTemp = texture1.trim.width + texture1.trim.x - sx;
+			g._swtTemp = sw1 < g._swtTemp ? sw1 : g._swtTemp;
+			g._shtTemp = texture1.trim.height + texture1.trim.y;
+			g._shtTemp = sh1 < g._shtTemp ? sh1 : g._shtTemp;
+			g._dwTemp = dw1 - texture1.trim.x;
+			g._dhTemp = dh1 - texture1.trim.y;
+			g.buffer.get_g2().drawScaledSubImage(texture1.image,texture1.frame.x - texture1.trim.x + sx,texture1.frame.y - texture1.trim.y,g._swtTemp,g._shtTemp,dx,0,dw1,dh1);
+		} else {
+			g.buffer.get_g2().drawScaledSubImage(texture1.image,texture1.frame.x + sx,texture1.frame.y,sw1 < texture1.frame.width ? sw1 : texture1.frame.width,sh1 < texture1.frame.height ? sh1 : texture1.frame.height,dx,0,dw1,dh1);
+		}
+		var texture2 = this._texture;
+		var sx1 = this._left + this._centerW;
+		var sw2 = this._right;
+		var sh2 = this._top;
+		var dx1 = this._left + this._sw;
+		var dw2 = this._right;
+		var dh2 = this._top;
+		if(texture2.trim != null) {
+			g._swtTemp = texture2.trim.width + texture2.trim.x - sx1;
+			g._swtTemp = sw2 < g._swtTemp ? sw2 : g._swtTemp;
+			g._shtTemp = texture2.trim.height + texture2.trim.y;
+			g._shtTemp = sh2 < g._shtTemp ? sh2 : g._shtTemp;
+			g._dwTemp = dw2 - texture2.trim.x;
+			g._dhTemp = dh2 - texture2.trim.y;
+			g.buffer.get_g2().drawScaledSubImage(texture2.image,texture2.frame.x - texture2.trim.x + sx1,texture2.frame.y - texture2.trim.y,g._swtTemp,g._shtTemp,dx1,0,dw2,dh2);
+		} else {
+			g.buffer.get_g2().drawScaledSubImage(texture2.image,texture2.frame.x + sx1,texture2.frame.y,sw2 < texture2.frame.width ? sw2 : texture2.frame.width,sh2 < texture2.frame.height ? sh2 : texture2.frame.height,dx1,0,dw2,dh2);
+		}
+		var texture3 = this._texture;
+		var sy = this._top;
+		var sw3 = this._left;
+		var sh3 = this._centerH;
+		var dy = this._top;
+		var dw3 = this._left;
+		var dh3 = this._sh;
+		if(texture3.trim != null) {
+			g._swtTemp = texture3.trim.width + texture3.trim.x;
+			g._swtTemp = sw3 < g._swtTemp ? sw3 : g._swtTemp;
+			g._shtTemp = texture3.trim.height + texture3.trim.y - sy;
+			g._shtTemp = sh3 < g._shtTemp ? sh3 : g._shtTemp;
+			g._dwTemp = dw3 - texture3.trim.x;
+			g._dhTemp = dh3 - texture3.trim.y;
+			g.buffer.get_g2().drawScaledSubImage(texture3.image,texture3.frame.x - texture3.trim.x,texture3.frame.y - texture3.trim.y + sy,g._swtTemp,g._shtTemp,0,dy,dw3,dh3);
+		} else {
+			g.buffer.get_g2().drawScaledSubImage(texture3.image,texture3.frame.x,texture3.frame.y + sy,sw3 < texture3.frame.width ? sw3 : texture3.frame.width,sh3 < texture3.frame.height ? sh3 : texture3.frame.height,0,dy,dw3,dh3);
+		}
+		var texture4 = this._texture;
+		var sx2 = this._left;
+		var sy1 = this._top;
+		var sw4 = this._centerW;
+		var sh4 = this._centerH;
+		var dx2 = this._left;
+		var dy1 = this._top;
+		var dw4 = this._sw;
+		var dh4 = this._sh;
+		if(texture4.trim != null) {
+			g._swtTemp = texture4.trim.width + texture4.trim.x - sx2;
+			g._swtTemp = sw4 < g._swtTemp ? sw4 : g._swtTemp;
+			g._shtTemp = texture4.trim.height + texture4.trim.y - sy1;
+			g._shtTemp = sh4 < g._shtTemp ? sh4 : g._shtTemp;
+			g._dwTemp = dw4 - texture4.trim.x;
+			g._dhTemp = dh4 - texture4.trim.y;
+			g.buffer.get_g2().drawScaledSubImage(texture4.image,texture4.frame.x - texture4.trim.x + sx2,texture4.frame.y - texture4.trim.y + sy1,g._swtTemp,g._shtTemp,dx2,dy1,dw4,dh4);
+		} else {
+			g.buffer.get_g2().drawScaledSubImage(texture4.image,texture4.frame.x + sx2,texture4.frame.y + sy1,sw4 < texture4.frame.width ? sw4 : texture4.frame.width,sh4 < texture4.frame.height ? sh4 : texture4.frame.height,dx2,dy1,dw4,dh4);
+		}
+		var texture5 = this._texture;
+		var sx3 = this._left + this._centerW;
+		var sy2 = this._top;
+		var sw5 = this._right;
+		var sh5 = this._top;
+		var dx3 = this._left + this._sw;
+		var dy2 = this._top;
+		var dw5 = this._right;
+		var dh5 = this._sh;
+		if(texture5.trim != null) {
+			g._swtTemp = texture5.trim.width + texture5.trim.x - sx3;
+			g._swtTemp = sw5 < g._swtTemp ? sw5 : g._swtTemp;
+			g._shtTemp = texture5.trim.height + texture5.trim.y - sy2;
+			g._shtTemp = sh5 < g._shtTemp ? sh5 : g._shtTemp;
+			g._dwTemp = dw5 - texture5.trim.x;
+			g._dhTemp = dh5 - texture5.trim.y;
+			g.buffer.get_g2().drawScaledSubImage(texture5.image,texture5.frame.x - texture5.trim.x + sx3,texture5.frame.y - texture5.trim.y + sy2,g._swtTemp,g._shtTemp,dx3,dy2,dw5,dh5);
+		} else {
+			g.buffer.get_g2().drawScaledSubImage(texture5.image,texture5.frame.x + sx3,texture5.frame.y + sy2,sw5 < texture5.frame.width ? sw5 : texture5.frame.width,sh5 < texture5.frame.height ? sh5 : texture5.frame.height,dx3,dy2,dw5,dh5);
+		}
+		var texture6 = this._texture;
+		var sy3 = this._top + this._centerH;
+		var sw6 = this._left;
+		var sh6 = this._bottom;
+		var dy3 = this._top + this._sh;
+		var dw6 = this._left;
+		var dh6 = this._bottom;
+		if(texture6.trim != null) {
+			g._swtTemp = texture6.trim.width + texture6.trim.x;
+			g._swtTemp = sw6 < g._swtTemp ? sw6 : g._swtTemp;
+			g._shtTemp = texture6.trim.height + texture6.trim.y - sy3;
+			g._shtTemp = sh6 < g._shtTemp ? sh6 : g._shtTemp;
+			g._dwTemp = dw6 - texture6.trim.x;
+			g._dhTemp = dh6 - texture6.trim.y;
+			g.buffer.get_g2().drawScaledSubImage(texture6.image,texture6.frame.x - texture6.trim.x,texture6.frame.y - texture6.trim.y + sy3,g._swtTemp,g._shtTemp,0,dy3,dw6,dh6);
+		} else {
+			g.buffer.get_g2().drawScaledSubImage(texture6.image,texture6.frame.x,texture6.frame.y + sy3,sw6 < texture6.frame.width ? sw6 : texture6.frame.width,sh6 < texture6.frame.height ? sh6 : texture6.frame.height,0,dy3,dw6,dh6);
+		}
+		var texture7 = this._texture;
+		var sx4 = this._left;
+		var sy4 = this._top + this._centerH;
+		var sw7 = this._centerW;
+		var sh7 = this._bottom;
+		var dx4 = this._left;
+		var dy4 = this._top + this._sh;
+		var dw7 = this._sw;
+		var dh7 = this._bottom;
+		if(texture7.trim != null) {
+			g._swtTemp = texture7.trim.width + texture7.trim.x - sx4;
+			g._swtTemp = sw7 < g._swtTemp ? sw7 : g._swtTemp;
+			g._shtTemp = texture7.trim.height + texture7.trim.y - sy4;
+			g._shtTemp = sh7 < g._shtTemp ? sh7 : g._shtTemp;
+			g._dwTemp = dw7 - texture7.trim.x;
+			g._dhTemp = dh7 - texture7.trim.y;
+			g.buffer.get_g2().drawScaledSubImage(texture7.image,texture7.frame.x - texture7.trim.x + sx4,texture7.frame.y - texture7.trim.y + sy4,g._swtTemp,g._shtTemp,dx4,dy4,dw7,dh7);
+		} else {
+			g.buffer.get_g2().drawScaledSubImage(texture7.image,texture7.frame.x + sx4,texture7.frame.y + sy4,sw7 < texture7.frame.width ? sw7 : texture7.frame.width,sh7 < texture7.frame.height ? sh7 : texture7.frame.height,dx4,dy4,dw7,dh7);
+		}
+		var texture8 = this._texture;
+		var sx5 = this._left + this._centerW;
+		var sy5 = this._top + this._centerH;
+		var sw8 = this._right;
+		var sh8 = this._bottom;
+		var dx5 = this._left + this._sw;
+		var dy5 = this._top + this._sh;
+		var dw8 = this._right;
+		var dh8 = this._bottom;
+		if(texture8.trim != null) {
+			g._swtTemp = texture8.trim.width + texture8.trim.x - sx5;
+			g._swtTemp = sw8 < g._swtTemp ? sw8 : g._swtTemp;
+			g._shtTemp = texture8.trim.height + texture8.trim.y - sy5;
+			g._shtTemp = sh8 < g._shtTemp ? sh8 : g._shtTemp;
+			g._dwTemp = dw8 - texture8.trim.x;
+			g._dhTemp = dh8 - texture8.trim.y;
+			g.buffer.get_g2().drawScaledSubImage(texture8.image,texture8.frame.x - texture8.trim.x + sx5,texture8.frame.y - texture8.trim.y + sy5,g._swtTemp,g._shtTemp,dx5,dy5,dw8,dh8);
+		} else {
+			g.buffer.get_g2().drawScaledSubImage(texture8.image,texture8.frame.x + sx5,texture8.frame.y + sy5,sw8 < texture8.frame.width ? sw8 : texture8.frame.width,sh8 < texture8.frame.height ? sh8 : texture8.frame.height,dx5,dy5,dw8,dh8);
 		}
 	}
 	,get_texture: function() {
@@ -6152,9 +6250,11 @@ gecko_components_draw_ScrollingSpriteComponent.prototype = $extend(gecko_compone
 		}
 		this._texture = value;
 		if(this._texture != null && this._entity != null && this._entity.transform != null) {
+			this._width = this._texture._width;
+			this._height = this._texture._height;
 			this._entity.transform.get_size().set(this._width,this._height);
 		}
-		return this._texture = value;
+		return this._texture;
 	}
 	,get_width: function() {
 		return this._width;
@@ -6165,14 +6265,14 @@ gecko_components_draw_ScrollingSpriteComponent.prototype = $extend(gecko_compone
 		}
 		return this._width = value;
 	}
+	,get_height: function() {
+		return this._height;
+	}
 	,set_height: function(value) {
 		if(this._entity != null && this._entity.transform != null) {
 			this._entity.transform.get_size().set_y(value / this._entity.transform.get_scale()._y);
 		}
 		return this._height = value;
-	}
-	,get_height: function() {
-		return this._height;
 	}
 	,destroy: function() {
 		if(this.isAlreadyDestroyed) {
@@ -6185,7 +6285,7 @@ gecko_components_draw_ScrollingSpriteComponent.prototype = $extend(gecko_compone
 		}
 		this.isAlreadyDestroyed = true;
 		this.beforeDestroy();
-		gecko_components_draw_ScrollingSpriteComponent.__pool__.safePut(this);
+		gecko_components_draw_NineSliceComponent.__pool__.safePut(this);
 		this.__flagToDestroy__ = false;
 	}
 	,destroyInmediate: function() {
@@ -6194,15 +6294,15 @@ gecko_components_draw_ScrollingSpriteComponent.prototype = $extend(gecko_compone
 		}
 		this.isAlreadyDestroyed = true;
 		this.beforeDestroy();
-		gecko_components_draw_ScrollingSpriteComponent.__pool__.safePut(this);
+		gecko_components_draw_NineSliceComponent.__pool__.safePut(this);
 	}
 	,get___typeName__: function() {
-		return "gecko.components.draw.ScrollingSpriteComponent";
+		return "gecko.components.draw.NineSliceComponent";
 	}
 	,get___type__: function() {
-		return gecko_components_draw_ScrollingSpriteComponent;
+		return gecko_components_draw_NineSliceComponent;
 	}
-	,__class__: gecko_components_draw_ScrollingSpriteComponent
+	,__class__: gecko_components_draw_NineSliceComponent
 	,__properties__: $extend(gecko_components_draw_DrawComponent.prototype.__properties__,{set_height:"set_height",get_height:"get_height",set_width:"set_width",get_width:"get_width",set_texture:"set_texture",get_texture:"get_texture"})
 });
 var gecko_math_Point = function() {
@@ -11106,13 +11206,13 @@ js_html_compat_Uint8Array._subarray = function(start,end) {
 	return a;
 };
 var kha__$Assets_ImageList = function() {
-	this.names = ["images_opengameart_carbon_fiber","images_opengameart_mountain"];
-	this.images_opengameart_mountainDescription = { files : ["assets/images/opengameart/mountain.png"], original_height : 256, type : "image", original_width : 256, name : "images_opengameart_mountain"};
-	this.images_opengameart_mountainName = "images_opengameart_mountain";
-	this.images_opengameart_mountain = null;
-	this.images_opengameart_carbon_fiberDescription = { files : ["assets/images/opengameart/carbon_fiber.png"], original_height : 250, type : "image", original_width : 250, name : "images_opengameart_carbon_fiber"};
-	this.images_opengameart_carbon_fiberName = "images_opengameart_carbon_fiber";
-	this.images_opengameart_carbon_fiber = null;
+	this.names = ["images_kenney_green_panel","images_kenney_grey_button08"];
+	this.images_kenney_grey_button08Description = { files : ["assets/images/kenney/grey_button08.png"], original_height : 49, type : "image", original_width : 49, name : "images_kenney_grey_button08"};
+	this.images_kenney_grey_button08Name = "images_kenney_grey_button08";
+	this.images_kenney_grey_button08 = null;
+	this.images_kenney_green_panelDescription = { files : ["assets/images/kenney/green_panel.png"], original_height : 100, type : "image", original_width : 100, name : "images_kenney_green_panel"};
+	this.images_kenney_green_panelName = "images_kenney_green_panel";
+	this.images_kenney_green_panel = null;
 };
 $hxClasses["kha._Assets.ImageList"] = kha__$Assets_ImageList;
 kha__$Assets_ImageList.__name__ = true;
@@ -11120,47 +11220,47 @@ kha__$Assets_ImageList.prototype = {
 	get: function(name) {
 		return Reflect.field(this,name);
 	}
-	,images_opengameart_carbon_fiber: null
-	,images_opengameart_carbon_fiberName: null
-	,images_opengameart_carbon_fiberDescription: null
-	,images_opengameart_carbon_fiberLoad: function(done,failure) {
+	,images_kenney_green_panel: null
+	,images_kenney_green_panelName: null
+	,images_kenney_green_panelDescription: null
+	,images_kenney_green_panelLoad: function(done,failure) {
 		var tmp;
 		if(failure != null) {
 			tmp = failure;
 		} else {
 			var f = haxe_Log.trace;
 			tmp = function(v) {
-				f(v,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_opengameart_carbon_fiberLoad"});
+				f(v,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_kenney_green_panelLoad"});
 			};
 		}
-		kha_Assets.loadImage("images_opengameart_carbon_fiber",function(image) {
+		kha_Assets.loadImage("images_kenney_green_panel",function(image) {
 			done();
-		},tmp,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_opengameart_carbon_fiberLoad"});
+		},tmp,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_kenney_green_panelLoad"});
 	}
-	,images_opengameart_carbon_fiberUnload: function() {
-		this.images_opengameart_carbon_fiber.unload();
-		this.images_opengameart_carbon_fiber = null;
+	,images_kenney_green_panelUnload: function() {
+		this.images_kenney_green_panel.unload();
+		this.images_kenney_green_panel = null;
 	}
-	,images_opengameart_mountain: null
-	,images_opengameart_mountainName: null
-	,images_opengameart_mountainDescription: null
-	,images_opengameart_mountainLoad: function(done,failure) {
+	,images_kenney_grey_button08: null
+	,images_kenney_grey_button08Name: null
+	,images_kenney_grey_button08Description: null
+	,images_kenney_grey_button08Load: function(done,failure) {
 		var tmp;
 		if(failure != null) {
 			tmp = failure;
 		} else {
 			var f = haxe_Log.trace;
 			tmp = function(v) {
-				f(v,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_opengameart_mountainLoad"});
+				f(v,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_kenney_grey_button08Load"});
 			};
 		}
-		kha_Assets.loadImage("images_opengameart_mountain",function(image) {
+		kha_Assets.loadImage("images_kenney_grey_button08",function(image) {
 			done();
-		},tmp,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_opengameart_mountainLoad"});
+		},tmp,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_kenney_grey_button08Load"});
 	}
-	,images_opengameart_mountainUnload: function() {
-		this.images_opengameart_mountain.unload();
-		this.images_opengameart_mountain = null;
+	,images_kenney_grey_button08Unload: function() {
+		this.images_kenney_grey_button08.unload();
+		this.images_kenney_grey_button08 = null;
 	}
 	,names: null
 	,__class__: kha__$Assets_ImageList
@@ -11178,37 +11278,13 @@ kha__$Assets_SoundList.prototype = {
 	,__class__: kha__$Assets_SoundList
 };
 var kha__$Assets_BlobList = function() {
-	this.names = ["images_opengameart_readme_md"];
-	this.images_opengameart_readme_mdDescription = { files : ["assets/images/opengameart/readme.md"], type : "blob", name : "images_opengameart_readme_md"};
-	this.images_opengameart_readme_mdName = "images_opengameart_readme_md";
-	this.images_opengameart_readme_md = null;
+	this.names = [];
 };
 $hxClasses["kha._Assets.BlobList"] = kha__$Assets_BlobList;
 kha__$Assets_BlobList.__name__ = true;
 kha__$Assets_BlobList.prototype = {
 	get: function(name) {
 		return Reflect.field(this,name);
-	}
-	,images_opengameart_readme_md: null
-	,images_opengameart_readme_mdName: null
-	,images_opengameart_readme_mdDescription: null
-	,images_opengameart_readme_mdLoad: function(done,failure) {
-		var tmp;
-		if(failure != null) {
-			tmp = failure;
-		} else {
-			var f = haxe_Log.trace;
-			tmp = function(v) {
-				f(v,{ fileName : "AssetsBuilder.hx", lineNumber : 138, className : "kha._Assets.BlobList", methodName : "images_opengameart_readme_mdLoad"});
-			};
-		}
-		kha_Assets.loadBlob("images_opengameart_readme_md",function(blob) {
-			done();
-		},tmp,{ fileName : "AssetsBuilder.hx", lineNumber : 138, className : "kha._Assets.BlobList", methodName : "images_opengameart_readme_mdLoad"});
-	}
-	,images_opengameart_readme_mdUnload: function() {
-		this.images_opengameart_readme_md.unload();
-		this.images_opengameart_readme_md = null;
 	}
 	,names: null
 	,__class__: kha__$Assets_BlobList
@@ -31792,9 +31868,9 @@ gecko_components_Component.__componentName__ = "gecko.components.Component";
 gecko_components_draw_DrawComponent.__componentTypes__ = [];
 gecko_components_draw_DrawComponent.__componentName__ = "gecko.components.draw.DrawComponent";
 gecko_components_draw_DrawComponent.__pool__ = new gecko_utils_Pool(gecko_components_draw_DrawComponent,{ amount : 1});
-gecko_components_draw_ScrollingSpriteComponent.__pool__ = new gecko_utils_Pool(gecko_components_draw_ScrollingSpriteComponent,{ amount : 1});
-gecko_components_draw_ScrollingSpriteComponent.__componentTypes__ = [];
-gecko_components_draw_ScrollingSpriteComponent.__componentName__ = "gecko.components.draw.ScrollingSpriteComponent";
+gecko_components_draw_NineSliceComponent.__pool__ = new gecko_utils_Pool(gecko_components_draw_NineSliceComponent,{ amount : 1});
+gecko_components_draw_NineSliceComponent.__componentTypes__ = [];
+gecko_components_draw_NineSliceComponent.__componentName__ = "gecko.components.draw.NineSliceComponent";
 gecko_math_Point.__pool__ = new gecko_utils_Pool(gecko_math_Point,{ amount : 1});
 gecko_math_Rect.__pool__ = new gecko_utils_Pool(gecko_math_Rect,{ amount : 1});
 gecko_render_BlendMode.Add = gecko_render_BlendMode.Create(kha_graphics4_BlendingFactor.BlendOne,kha_graphics4_BlendingFactor.BlendOne);
