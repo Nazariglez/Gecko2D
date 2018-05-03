@@ -2,5 +2,5 @@
 example: true
 title: Animation
 category: Basics
-priority: 0
+priority: 3
 ---

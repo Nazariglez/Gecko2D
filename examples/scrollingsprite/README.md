@@ -2,5 +2,5 @@
 example: true
 title: Scrolling Sprite
 category: Basics
-priority: 0
+priority: 2
 ---

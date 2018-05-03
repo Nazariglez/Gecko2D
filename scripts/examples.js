@@ -130,6 +130,7 @@ ${example.code}
         throw new Error(err);
     }
 
+    let examplesPriorities = {};
     let categories = {};
 
     examples.forEach(example => {
@@ -143,13 +144,15 @@ ${example.code}
         }
 
         categories[category].children.push(example.name);
+
+        examplesPriorities[example.name] = example.data.priority;
     });
 
     let sidebar = [""];
     let keys = Object.keys(categories);
     for(let i = 0; i < keys.length; i++){
         let data = categories[keys[i]];
-        //data.children.sort((a,b)=>(a.data.priority || 0) - (b.data.priority || 0));
+        data.children.sort( (a,b)=> examplesPriorities[a] - examplesPriorities[b] );
         sidebar.push(data);
     }
 

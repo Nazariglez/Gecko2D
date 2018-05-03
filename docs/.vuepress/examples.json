@@ -4,11 +4,11 @@
     "title": "Basics",
     "collapsable": true,
     "children": [
-      "animation",
-      "nineslice",
-      "scrollingsprite",
       "shapes",
-      "sprites"
+      "sprites",
+      "scrollingsprite",
+      "animation",
+      "nineslice"
     ]
   }
 ]
