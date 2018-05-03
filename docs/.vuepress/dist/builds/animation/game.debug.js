@@ -12109,7 +12109,7 @@ js_html_compat_Uint8Array._subarray = function(start,end) {
 	return a;
 };
 var kha__$Assets_ImageList = function() {
-	this.names = ["images_kenney_pixelExplosion00","images_kenney_pixelExplosion01","images_kenney_pixelExplosion03","images_kenney_pixelExplosion02","images_kenney_pixelExplosion04","images_kenney_pixelExplosion05","images_kenney_pixelExplosion07","images_kenney_pixelExplosion06","images_kenney_pixelExplosion08","images_kenney_wingMan1","images_kenney_wingMan2","images_kenney_wingMan3","images_kenney_wingMan4","images_kenney_wingMan5","images_opengameart_golem_atk","images_opengameart_golem_die","images_opengameart_golem_walk"];
+	this.names = ["images_kenney_pixelExplosion00","images_kenney_pixelExplosion01","images_kenney_pixelExplosion02","images_kenney_pixelExplosion03","images_kenney_pixelExplosion04","images_kenney_pixelExplosion05","images_kenney_pixelExplosion06","images_kenney_pixelExplosion07","images_kenney_pixelExplosion08","images_kenney_wingMan1","images_kenney_wingMan2","images_kenney_wingMan3","images_kenney_wingMan4","images_kenney_wingMan5","images_opengameart_golem_atk","images_opengameart_golem_die","images_opengameart_golem_walk"];
 	this.images_opengameart_golem_walkDescription = { files : ["assets/images/opengameart/golem-walk.png"], original_height : 256, type : "image", original_width : 448, name : "images_opengameart_golem_walk"};
 	this.images_opengameart_golem_walkName = "images_opengameart_golem_walk";
 	this.images_opengameart_golem_walk = null;
@@ -12137,24 +12137,24 @@ var kha__$Assets_ImageList = function() {
 	this.images_kenney_pixelExplosion08Description = { files : ["assets/images/kenney/pixelExplosion08.png"], original_height : 91, type : "image", original_width : 96, name : "images_kenney_pixelExplosion08"};
 	this.images_kenney_pixelExplosion08Name = "images_kenney_pixelExplosion08";
 	this.images_kenney_pixelExplosion08 = null;
-	this.images_kenney_pixelExplosion06Description = { files : ["assets/images/kenney/pixelExplosion06.png"], original_height : 91, type : "image", original_width : 96, name : "images_kenney_pixelExplosion06"};
-	this.images_kenney_pixelExplosion06Name = "images_kenney_pixelExplosion06";
-	this.images_kenney_pixelExplosion06 = null;
 	this.images_kenney_pixelExplosion07Description = { files : ["assets/images/kenney/pixelExplosion07.png"], original_height : 91, type : "image", original_width : 96, name : "images_kenney_pixelExplosion07"};
 	this.images_kenney_pixelExplosion07Name = "images_kenney_pixelExplosion07";
 	this.images_kenney_pixelExplosion07 = null;
+	this.images_kenney_pixelExplosion06Description = { files : ["assets/images/kenney/pixelExplosion06.png"], original_height : 91, type : "image", original_width : 96, name : "images_kenney_pixelExplosion06"};
+	this.images_kenney_pixelExplosion06Name = "images_kenney_pixelExplosion06";
+	this.images_kenney_pixelExplosion06 = null;
 	this.images_kenney_pixelExplosion05Description = { files : ["assets/images/kenney/pixelExplosion05.png"], original_height : 91, type : "image", original_width : 96, name : "images_kenney_pixelExplosion05"};
 	this.images_kenney_pixelExplosion05Name = "images_kenney_pixelExplosion05";
 	this.images_kenney_pixelExplosion05 = null;
 	this.images_kenney_pixelExplosion04Description = { files : ["assets/images/kenney/pixelExplosion04.png"], original_height : 91, type : "image", original_width : 96, name : "images_kenney_pixelExplosion04"};
 	this.images_kenney_pixelExplosion04Name = "images_kenney_pixelExplosion04";
 	this.images_kenney_pixelExplosion04 = null;
-	this.images_kenney_pixelExplosion02Description = { files : ["assets/images/kenney/pixelExplosion02.png"], original_height : 91, type : "image", original_width : 96, name : "images_kenney_pixelExplosion02"};
-	this.images_kenney_pixelExplosion02Name = "images_kenney_pixelExplosion02";
-	this.images_kenney_pixelExplosion02 = null;
 	this.images_kenney_pixelExplosion03Description = { files : ["assets/images/kenney/pixelExplosion03.png"], original_height : 91, type : "image", original_width : 96, name : "images_kenney_pixelExplosion03"};
 	this.images_kenney_pixelExplosion03Name = "images_kenney_pixelExplosion03";
 	this.images_kenney_pixelExplosion03 = null;
+	this.images_kenney_pixelExplosion02Description = { files : ["assets/images/kenney/pixelExplosion02.png"], original_height : 91, type : "image", original_width : 96, name : "images_kenney_pixelExplosion02"};
+	this.images_kenney_pixelExplosion02Name = "images_kenney_pixelExplosion02";
+	this.images_kenney_pixelExplosion02 = null;
 	this.images_kenney_pixelExplosion01Description = { files : ["assets/images/kenney/pixelExplosion01.png"], original_height : 91, type : "image", original_width : 96, name : "images_kenney_pixelExplosion01"};
 	this.images_kenney_pixelExplosion01Name = "images_kenney_pixelExplosion01";
 	this.images_kenney_pixelExplosion01 = null;
@@ -12210,27 +12210,6 @@ kha__$Assets_ImageList.prototype = {
 		this.images_kenney_pixelExplosion01.unload();
 		this.images_kenney_pixelExplosion01 = null;
 	}
-	,images_kenney_pixelExplosion03: null
-	,images_kenney_pixelExplosion03Name: null
-	,images_kenney_pixelExplosion03Description: null
-	,images_kenney_pixelExplosion03Load: function(done,failure) {
-		var tmp;
-		if(failure != null) {
-			tmp = failure;
-		} else {
-			var f = haxe_Log.trace;
-			tmp = function(v) {
-				f(v,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_kenney_pixelExplosion03Load"});
-			};
-		}
-		kha_Assets.loadImage("images_kenney_pixelExplosion03",function(image) {
-			done();
-		},tmp,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_kenney_pixelExplosion03Load"});
-	}
-	,images_kenney_pixelExplosion03Unload: function() {
-		this.images_kenney_pixelExplosion03.unload();
-		this.images_kenney_pixelExplosion03 = null;
-	}
 	,images_kenney_pixelExplosion02: null
 	,images_kenney_pixelExplosion02Name: null
 	,images_kenney_pixelExplosion02Description: null
@@ -12251,6 +12230,27 @@ kha__$Assets_ImageList.prototype = {
 	,images_kenney_pixelExplosion02Unload: function() {
 		this.images_kenney_pixelExplosion02.unload();
 		this.images_kenney_pixelExplosion02 = null;
+	}
+	,images_kenney_pixelExplosion03: null
+	,images_kenney_pixelExplosion03Name: null
+	,images_kenney_pixelExplosion03Description: null
+	,images_kenney_pixelExplosion03Load: function(done,failure) {
+		var tmp;
+		if(failure != null) {
+			tmp = failure;
+		} else {
+			var f = haxe_Log.trace;
+			tmp = function(v) {
+				f(v,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_kenney_pixelExplosion03Load"});
+			};
+		}
+		kha_Assets.loadImage("images_kenney_pixelExplosion03",function(image) {
+			done();
+		},tmp,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_kenney_pixelExplosion03Load"});
+	}
+	,images_kenney_pixelExplosion03Unload: function() {
+		this.images_kenney_pixelExplosion03.unload();
+		this.images_kenney_pixelExplosion03 = null;
 	}
 	,images_kenney_pixelExplosion04: null
 	,images_kenney_pixelExplosion04Name: null
@@ -12294,27 +12294,6 @@ kha__$Assets_ImageList.prototype = {
 		this.images_kenney_pixelExplosion05.unload();
 		this.images_kenney_pixelExplosion05 = null;
 	}
-	,images_kenney_pixelExplosion07: null
-	,images_kenney_pixelExplosion07Name: null
-	,images_kenney_pixelExplosion07Description: null
-	,images_kenney_pixelExplosion07Load: function(done,failure) {
-		var tmp;
-		if(failure != null) {
-			tmp = failure;
-		} else {
-			var f = haxe_Log.trace;
-			tmp = function(v) {
-				f(v,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_kenney_pixelExplosion07Load"});
-			};
-		}
-		kha_Assets.loadImage("images_kenney_pixelExplosion07",function(image) {
-			done();
-		},tmp,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_kenney_pixelExplosion07Load"});
-	}
-	,images_kenney_pixelExplosion07Unload: function() {
-		this.images_kenney_pixelExplosion07.unload();
-		this.images_kenney_pixelExplosion07 = null;
-	}
 	,images_kenney_pixelExplosion06: null
 	,images_kenney_pixelExplosion06Name: null
 	,images_kenney_pixelExplosion06Description: null
@@ -12335,6 +12314,27 @@ kha__$Assets_ImageList.prototype = {
 	,images_kenney_pixelExplosion06Unload: function() {
 		this.images_kenney_pixelExplosion06.unload();
 		this.images_kenney_pixelExplosion06 = null;
+	}
+	,images_kenney_pixelExplosion07: null
+	,images_kenney_pixelExplosion07Name: null
+	,images_kenney_pixelExplosion07Description: null
+	,images_kenney_pixelExplosion07Load: function(done,failure) {
+		var tmp;
+		if(failure != null) {
+			tmp = failure;
+		} else {
+			var f = haxe_Log.trace;
+			tmp = function(v) {
+				f(v,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_kenney_pixelExplosion07Load"});
+			};
+		}
+		kha_Assets.loadImage("images_kenney_pixelExplosion07",function(image) {
+			done();
+		},tmp,{ fileName : "AssetsBuilder.hx", lineNumber : 130, className : "kha._Assets.ImageList", methodName : "images_kenney_pixelExplosion07Load"});
+	}
+	,images_kenney_pixelExplosion07Unload: function() {
+		this.images_kenney_pixelExplosion07.unload();
+		this.images_kenney_pixelExplosion07 = null;
 	}
 	,images_kenney_pixelExplosion08: null
 	,images_kenney_pixelExplosion08Name: null

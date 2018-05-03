@@ -88,11 +88,18 @@ title: ${example.data.title || example.name}
 ---
 # ${example.data.title || example.name}
 <iframe src="${baseDir}/builds/${example.name}/index.html" width="800" height="600" frameBorder="0" style="width:100%; max-height: 600px"></iframe>
+`;
 
+            if(example.data.source !== false){
+                readmeContent += `
 \`\`\`haxe
 ${example.code}
 \`\`\`
+`;
+            }
 
+            readmeContent += `${example.text.trim()}
+            
 [Source Code](https://github.com/Nazariglez/Gecko2D/tree/master/examples/${example.name})
 `;
 

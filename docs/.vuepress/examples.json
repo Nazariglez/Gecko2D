@@ -10,5 +10,13 @@
       "animation",
       "nineslice"
     ]
+  },
+  {
+    "title": "Demos",
+    "collapsable": true,
+    "children": [
+      "flappy",
+      "khashmup"
+    ]
   }
 ]
