@@ -1,3 +1,11 @@
+---
+title: Flappy
+example: true
+category: Demos
+priority: 0
+source: false
+---
+
 Flappy Doge
 ===========
 

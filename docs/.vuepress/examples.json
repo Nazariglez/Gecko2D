@@ -1,4 +1,25 @@
 [
   "",
-  "drawsprites"
+  {
+    "title": "Basics",
+    "collapsable": true,
+    "children": [
+      "basic",
+      "shapes",
+      "sprites",
+      "scrollingsprite",
+      "animation",
+      "nineslice",
+      "text",
+      "parenttransform"
+    ]
+  },
+  {
+    "title": "Demos",
+    "collapsable": true,
+    "children": [
+      "flappy",
+      "khashmup"
+    ]
+  }
 ]

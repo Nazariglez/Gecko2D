@@ -11,9 +11,6 @@ compilation, using Javascript and WebGL when compile to browsers, and C++ when c
 
 This framework aims to be a solid foundation for all your games, allowing you to port your games to others platforms using the same source code, saving time and money.
 
-# Samples
-Samples can be found [here](https://github.com/Nazariglez/Gecko2D/tree/master/examples).
-
 # Contributing
 Contributions are welcome! Feel free to fix, improve or test features you want. Just try to coordinate with the community before work on anything to avoid duplicate or not wanted features.
 

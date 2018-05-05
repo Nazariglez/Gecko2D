@@ -7,11 +7,12 @@ const _async = require("async");
 const spawn = require("cross-spawn");
 const execSync = require("child_process").execSync;
 
-let baseDir = (process.env.baseDir === false || process.env.baseDir === 'false') ? "" : '/Gecko2D/'; 
+//let baseDir = (process.env.baseDir === false || process.env.baseDir === 'false') ? "" : '/Gecko2D/';
+let canBuild = process.argv.length >= 3 && process.argv[2] === "--build";
 
 const examplesDir = path.resolve(__dirname, "../examples");
-let examplesToCheck = fs.readdirSync(examplesDir);
 
+let examplesToCheck = fs.readdirSync(examplesDir);
 let examples = [];
 for(let i = 0; i < examplesToCheck.length; i++){
     let example = examplesToCheck[i];
@@ -64,56 +65,104 @@ for(let i = 0; i < examplesToCheck.length; i++){
 }
 
 _async.eachSeries(examples, function(example, next){
-    console.log("Compiling example:", example.name);
     let errMsg = null;
-    
-    let child = spawn("node", [path.resolve(__dirname, "../main.js"), "build","html5"], {cwd: example.dir});
-    child.stderr.on("data", d => console.log(d.toString()));
-    child.stdout.on("data", d => console.log(d.toString()));
-    
-    child.on("error", function(err){
-        errMsg = err;
-    });
 
-    child.on("close", function(){
+    let fn = function(){
         if(errMsg){
             return next(errMsg);
         }
 
-        let buildDir = path.resolve(__dirname, "../docs/.vuepress/dist/builds", example.name);
-        try {
-            fs.copySync(path.join(example.dir, "build/html5-build"), buildDir);
-        }catch(e){
-            return next(e);
-        }
+        if(canBuild){
 
-        var readmeContent = `---
+            let buildDir = path.resolve(__dirname, "../docs/.vuepress/dist/builds", example.name);
+            try {
+                fs.copySync(path.join(example.dir, "build/html5-build"), buildDir);
+            }catch(e){
+                return next(e);
+            }
+
+        }else{
+
+            var readmeContent = `---
 title: ${example.data.title || example.name}
 ---
 # ${example.data.title || example.name}
-<iframe src="${baseDir}/builds/${example.name}/index.html" width="800" height="600" frameBorder="0" style="width:100%; max-height: 600px"></iframe>
 
+<iframe :src="$withBase('/builds/${example.name}/index.html')" width="800" height="600" frameBorder="0" style="width: 100vw; height:75vw; max-width:100%; max-height:600px"></iframe>
+`;
+
+            if(example.data.source !== false){
+                readmeContent += `
 \`\`\`haxe
 ${example.code}
 \`\`\`
+`;
+            }
+
+            readmeContent += `${example.text.trim()}
 
 [Source Code](https://github.com/Nazariglez/Gecko2D/tree/master/examples/${example.name})
 `;
 
-        try {
-            fs.writeFileSync(path.resolve(__dirname, "../docs/examples", example.name + ".md"), readmeContent, 'utf8');
-        }catch(e){
-            return next(e);
+            try {
+                fs.writeFileSync(path.resolve(__dirname, "../docs/examples", example.name + ".md"), readmeContent, 'utf8');
+            }catch(e){
+                return next(e);
+            }
+
         }
 
         next();
-    });
+    };
+
+    if(canBuild){
+        console.log("Compiling example:", example.name);
+    
+        let child = spawn("node", [path.resolve(__dirname, "../main.js"), "build","html5"], {cwd: example.dir});
+        child.stderr.on("data", d => console.log(d.toString()));
+        //child.stdout.on("data", d => console.log(d.toString()));
+        
+        child.on("error", function(err){
+            errMsg = err;
+        });
+    
+        child.on("close", fn);
+    }else{
+        console.log("Generating example docs:", example.name);
+        fn();
+    }
+    
 
 }, function(err){
     if(err){
         throw new Error(err);
     }
 
-    let names = ([""]).concat(examples.map(example => example.name));
-    fs.writeFileSync(path.resolve(__dirname, "../docs/.vuepress/examples.json"), JSON.stringify(names, null, 2), 'utf8');
+    let examplesPriorities = {};
+    let categories = {};
+
+    examples.forEach(example => {
+        let category = example.data.category || "Uncategorized";
+        if(!categories[category]){
+            categories[category] = {
+                title: category,
+                collapsable: true,
+                children: []
+            };
+        }
+
+        categories[category].children.push(example.name);
+
+        examplesPriorities[example.name] = example.data.priority;
+    });
+
+    let sidebar = [""];
+    let keys = Object.keys(categories);
+    for(let i = 0; i < keys.length; i++){
+        let data = categories[keys[i]];
+        data.children.sort( (a,b)=> examplesPriorities[a] - examplesPriorities[b] );
+        sidebar.push(data);
+    }
+
+    fs.writeFileSync(path.resolve(__dirname, "../docs/.vuepress/examples.json"), JSON.stringify(sidebar, null, 2), 'utf8');
 });

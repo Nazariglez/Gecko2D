@@ -1,0 +1,3 @@
+- golem-atk.png from https://opengameart.org/content/lpc-golem
+- golem-die.png from https://opengameart.org/content/lpc-golem
+- golem-walk.png from https://opengameart.org/content/lpc-golem

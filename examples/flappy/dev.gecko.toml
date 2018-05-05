@@ -4,7 +4,7 @@ sources = ["Sources"]
 shaders = []                        #shaders directory
 libraries = []                      #libs at Libraries folder or haxelib
 output = "build"                    #build output
-debug = true                        #compile in debug mode
+debug = false                        #compile in debug mode
 
 [html5]
 webgl = true

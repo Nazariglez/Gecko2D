@@ -1,3 +1,11 @@
+---
+title: KhaShmup
+example: true
+category: Demos
+priority: 0
+source: false
+---
+
 KhaShmup
 ====
 
