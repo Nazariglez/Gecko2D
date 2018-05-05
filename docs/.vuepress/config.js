@@ -21,6 +21,10 @@ module.exports = {
             { 
                 text: 'Examples', 
                 link: '/examples/',
+            },
+            {
+                text: 'API',
+                link: '/api'
             }
         ],
         sidebar: {

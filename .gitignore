@@ -8,5 +8,9 @@ examples/**/Libraries/gecko
 examples/**/korefile.js
 examples/**/khafile.js
 examples/test
+build_templates/docs/**/khafile.js
+build_templates/docs/**/korefile.js
+build_templates/docs/build
+
 
 !*/.gitkeep
