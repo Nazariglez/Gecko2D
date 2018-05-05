@@ -3,7 +3,7 @@ title: Parent Transform
 ---
 # Parent Transform
 
-<iframe src="/builds/parenttransform/index.html" width="800" height="600" frameBorder="0" style="width: 100vw; height:75vw; max-width:100%; max-height:600px"></iframe>
+<iframe :src="$withBase('/builds/parenttransform/index.html')" width="800" height="600" frameBorder="0" style="width: 100vw; height:75vw; max-width:100%; max-height:600px"></iframe>
 
 ```haxe
 package;
@@ -52,7 +52,9 @@ class Game {
             }
         }
 
+        //attach to the onUpdate event of gecko a simple function
         Gecko.onUpdate += function(delta:Float32) {
+            //rotate the container using delta time
             container.transform.rotation += 1 * delta;
         };
     }

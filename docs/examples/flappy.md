@@ -3,7 +3,7 @@ title: Flappy
 ---
 # Flappy
 
-<iframe src="/builds/flappy/index.html" width="800" height="600" frameBorder="0" style="width: 100vw; height:75vw; max-width:100%; max-height:600px"></iframe>
+<iframe :src="$withBase('/builds/flappy/index.html')" width="800" height="600" frameBorder="0" style="width: 100vw; height:75vw; max-width:100%; max-height:600px"></iframe>
 Flappy Doge
 ===========
 

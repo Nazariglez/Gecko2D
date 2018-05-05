@@ -7,7 +7,7 @@ const _async = require("async");
 const spawn = require("cross-spawn");
 const execSync = require("child_process").execSync;
 
-let baseDir = (process.env.baseDir === false || process.env.baseDir === 'false') ? "" : '/Gecko2D/'; 
+//let baseDir = (process.env.baseDir === false || process.env.baseDir === 'false') ? "" : '/Gecko2D/';
 let canBuild = process.argv.length >= 3 && process.argv[2] === "--build";
 
 const examplesDir = path.resolve(__dirname, "../examples");
@@ -88,7 +88,7 @@ title: ${example.data.title || example.name}
 ---
 # ${example.data.title || example.name}
 
-<iframe src="${baseDir}/builds/${example.name}/index.html" width="800" height="600" frameBorder="0" style="width: 100vw; height:75vw; max-width:100%; max-height:600px"></iframe>
+<iframe :src="$withBase('/builds/${example.name}/index.html')" width="800" height="600" frameBorder="0" style="width: 100vw; height:75vw; max-width:100%; max-height:600px"></iframe>
 `;
 
             if(example.data.source !== false){
