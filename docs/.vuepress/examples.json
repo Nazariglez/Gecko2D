@@ -10,7 +10,8 @@
       "scrollingsprite",
       "animation",
       "nineslice",
-      "text"
+      "text",
+      "parenttransform"
     ]
   },
   {
