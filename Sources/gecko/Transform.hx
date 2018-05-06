@@ -265,10 +265,10 @@ class Transform {
         }
 
         if(_dirtyAngle){
-            _skewCache.cosX = Math.cos(_rotation + _skew.x);
-            _skewCache.sinX = Math.sin(_rotation + _skew.x);
-            _skewCache.sinY = -Math.sin(_rotation - _skew.y);
-            _skewCache.cosY = Math.cos(_rotation - _skew.y);
+            _skewCache.cosX = Math.cos(_localRotation + _skew.x);
+            _skewCache.sinX = Math.sin(_localRotation + _skew.x);
+            _skewCache.sinY = -Math.sin(_localRotation - _skew.y);
+            _skewCache.cosY = Math.cos(_localRotation - _skew.y);
         }
 
         var _scX = _localScale.x * (_flip.x ? -1 : 1);
