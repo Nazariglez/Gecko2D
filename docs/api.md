@@ -19,4 +19,4 @@ pageClass: api-docs
   }
 </script>
 
-<iframe id="api-docs-iframe" :src="$withBase('/api_docs')" frameBorder="0" style="width: 100%; height: 100%;"></iframe>
+<iframe id="api-docs-iframe" :src="$withBase('/api_docs/index.html')" frameBorder="0" style="width: 100%; height: 100%;"></iframe>

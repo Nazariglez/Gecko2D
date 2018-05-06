@@ -2,9 +2,9 @@
 name = "Gecko2D-Game"
 sources = ["Sources"]
 shaders = []                        #shaders directory
-libraries = []                      #libs at Libraries folder or haxelib
+libraries = ["dox"]                      #libs at Libraries folder or haxelib
 output = "build"                    #build output
-debug = true                        #compile in debug mode
+debug = false                        #compile in debug mode
 
 [html5]
 webgl = true
@@ -25,7 +25,12 @@ graphics = "direct3d11"         #windows graphics [direct3d11 | direct3d9 | dire
 [core]
 clean_temp = false              #clean temporal files after compile
 compile = false                 #if false, the game will not be compiled, and the "resources" to compile will stay at the build directory
-compiler_parameters = []        #haxe compiler parameters (ex: "-dce full")
+compiler_parameters = [
+    "-xml docs/gecko.xml",
+    "--macro include('gecko')",
+    "-D doc-gen",
+    "--no-output"
+]
 ffmpeg = ""                     #ffmpeg drivers path (could be absolute)
 haxe = ""
 kha = ""

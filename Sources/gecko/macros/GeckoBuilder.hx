@@ -1,9 +1,12 @@
 package gecko.macros;
 
+#if macro
 import haxe.macro.Context;
 import haxe.macro.Expr;
+#end
 
 class GeckoBuilder {
+    #if macro
     public static macro function build() : Array<Field> {
         var fields = Context.getBuildFields();
         var defines = Context.getDefines();
@@ -49,5 +52,5 @@ class GeckoBuilder {
             pos: Context.currentPos(),
         });
     }
-
+    #end
 }

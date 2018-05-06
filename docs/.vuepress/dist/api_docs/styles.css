@@ -260,7 +260,7 @@ table.params th {
 }
 /**
  * Stuff for input-block-level:
- * http://stackoverflow.com/questions/13306670/bootstrap-prepended-and-appended-input-how-to-max-input-field-width
+ * https://stackoverflow.com/questions/13306670/bootstrap-prepended-and-appended-input-how-to-max-input-field-width
  */
 .input-append.input-block-level,
 .input-prepend.input-block-level {
