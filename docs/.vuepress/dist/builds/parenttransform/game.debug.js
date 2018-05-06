@@ -9665,7 +9665,7 @@ haxe_io_Bytes.prototype = {
 		if(this.data == null) {
 			this.data = new DataView(this.b.buffer,this.b.byteOffset,this.b.byteLength);
 		}
-		return this.data.getFloat32(pos,true);
+		return this.data.getFloat(pos,true);
 	}
 	,setDouble: function(pos,v) {
 		if(this.data == null) {
@@ -9677,7 +9677,7 @@ haxe_io_Bytes.prototype = {
 		if(this.data == null) {
 			this.data = new DataView(this.b.buffer,this.b.byteOffset,this.b.byteLength);
 		}
-		this.data.setFloat32(pos,v,true);
+		this.data.setFloat(pos,v,true);
 	}
 	,getUInt16: function(pos) {
 		if(this.data == null) {
@@ -10760,7 +10760,7 @@ js_html_compat_DataView.prototype = {
 			return v;
 		}
 	}
-	,getFloat32: function(byteOffset,littleEndian) {
+	,getFloat: function(byteOffset,littleEndian) {
 		return haxe_io_FPHelper.i32ToFloat(this.getInt32(byteOffset,littleEndian));
 	}
 	,getFloat64: function(byteOffset,littleEndian) {
@@ -10804,7 +10804,7 @@ js_html_compat_DataView.prototype = {
 			this.buf.a[p++] = value & 255;
 		}
 	}
-	,setFloat32: function(byteOffset,value,littleEndian) {
+	,setFloat: function(byteOffset,value,littleEndian) {
 		this.setUint32(byteOffset,haxe_io_FPHelper.floatToI32(value),littleEndian);
 	}
 	,setFloat64: function(byteOffset,value,littleEndian) {
@@ -10819,10 +10819,10 @@ js_html_compat_DataView.prototype = {
 	}
 	,__class__: js_html_compat_DataView
 };
-var js_html_compat_Float32Array = function() { };
-$hxClasses["js.html.compat.Float32Array"] = js_html_compat_Float32Array;
-js_html_compat_Float32Array.__name__ = true;
-js_html_compat_Float32Array._new = function(arg1,offset,length) {
+var js_html_compat_FloatArray = function() { };
+$hxClasses["js.html.compat.FloatArray"] = js_html_compat_FloatArray;
+js_html_compat_FloatArray.__name__ = true;
+js_html_compat_FloatArray._new = function(arg1,offset,length) {
 	var arr;
 	if(typeof(arg1) == "number") {
 		arr = [];
@@ -10880,11 +10880,11 @@ js_html_compat_Float32Array._new = function(arg1,offset,length) {
 	} else {
 		throw new js__$Boot_HaxeError("TODO " + Std.string(arg1));
 	}
-	arr.subarray = js_html_compat_Float32Array._subarray;
-	arr.set = js_html_compat_Float32Array._set;
+	arr.subarray = js_html_compat_FloatArray._subarray;
+	arr.set = js_html_compat_FloatArray._set;
 	return arr;
 };
-js_html_compat_Float32Array._set = function(arg,offset) {
+js_html_compat_FloatArray._set = function(arg,offset) {
 	if(js_Boot.__instanceof(arg.buffer,js_html_compat_ArrayBuffer)) {
 		var a = arg;
 		if(arg.byteLength + offset > this.byteLength) {
@@ -10911,8 +10911,8 @@ js_html_compat_Float32Array._set = function(arg,offset) {
 		throw new js__$Boot_HaxeError("TODO");
 	}
 };
-js_html_compat_Float32Array._subarray = function(start,end) {
-	var a = js_html_compat_Float32Array._new(this.slice(start,end));
+js_html_compat_FloatArray._subarray = function(start,end) {
+	var a = js_html_compat_FloatArray._new(this.slice(start,end));
 	a.byteOffset = start * 4;
 	return a;
 };
@@ -12531,7 +12531,7 @@ kha_Sound.prototype = {
 		var soundBytes = output.getBytes();
 		var count = soundBytes.length / 4 | 0;
 		if(header.channel == 1) {
-			var this1 = new Float32Array(count * 2);
+			var this1 = new FloatArray(count * 2);
 			this.uncompressedData = this1;
 			var _g1 = 0;
 			var _g = count;
@@ -12541,7 +12541,7 @@ kha_Sound.prototype = {
 				this.uncompressedData[i * 2 + 1] = soundBytes.getFloat(i * 4);
 			}
 		} else {
-			var this2 = new Float32Array(count);
+			var this2 = new FloatArray(count);
 			this.uncompressedData = this2;
 			var _g11 = 0;
 			var _g2 = count;
@@ -12921,7 +12921,7 @@ kha_WebGLImage.prototype = $extend(kha_Image.prototype,{
 		case 0:case 1:
 			return new Uint8Array(bytes.b.bufferValue);
 		case 2:case 4:case 5:case 6:
-			return new Float32Array(bytes.b.bufferValue);
+			return new FloatArray(bytes.b.bufferValue);
 		default:
 			return new Uint8Array(bytes.b.bufferValue);
 		}
@@ -13122,33 +13122,33 @@ kha_WindowOptions.prototype = {
 	,windowedModeOptions: null
 	,__class__: kha_WindowOptions
 };
-var kha_arrays__$Float32Array_Float32Array_$Impl_$ = {};
-$hxClasses["kha.arrays._Float32Array.Float32Array_Impl_"] = kha_arrays__$Float32Array_Float32Array_$Impl_$;
-kha_arrays__$Float32Array_Float32Array_$Impl_$.__name__ = true;
-kha_arrays__$Float32Array_Float32Array_$Impl_$.__properties__ = {get_length:"get_length"};
-kha_arrays__$Float32Array_Float32Array_$Impl_$._new = function(elements) {
-	var this1 = new Float32Array(elements);
+var kha_arrays__$FloatArray_FloatArray_$Impl_$ = {};
+$hxClasses["kha.arrays._FloatArray.FloatArray_Impl_"] = kha_arrays__$FloatArray_FloatArray_$Impl_$;
+kha_arrays__$FloatArray_FloatArray_$Impl_$.__name__ = true;
+kha_arrays__$FloatArray_FloatArray_$Impl_$.__properties__ = {get_length:"get_length"};
+kha_arrays__$FloatArray_FloatArray_$Impl_$._new = function(elements) {
+	var this1 = new FloatArray(elements);
 	return this1;
 };
-kha_arrays__$Float32Array_Float32Array_$Impl_$.get_length = function(this1) {
+kha_arrays__$FloatArray_FloatArray_$Impl_$.get_length = function(this1) {
 	return this1.length;
 };
-kha_arrays__$Float32Array_Float32Array_$Impl_$.set = function(this1,index,value) {
+kha_arrays__$FloatArray_FloatArray_$Impl_$.set = function(this1,index,value) {
 	return this1[index] = value;
 };
-kha_arrays__$Float32Array_Float32Array_$Impl_$.get = function(this1,index) {
+kha_arrays__$FloatArray_FloatArray_$Impl_$.get = function(this1,index) {
 	return this1[index];
 };
-kha_arrays__$Float32Array_Float32Array_$Impl_$.data = function(this1) {
+kha_arrays__$FloatArray_FloatArray_$Impl_$.data = function(this1) {
 	return this1;
 };
-kha_arrays__$Float32Array_Float32Array_$Impl_$.arrayRead = function(this1,index) {
+kha_arrays__$FloatArray_FloatArray_$Impl_$.arrayRead = function(this1,index) {
 	return this1[index];
 };
-kha_arrays__$Float32Array_Float32Array_$Impl_$.arrayWrite = function(this1,index,value) {
+kha_arrays__$FloatArray_FloatArray_$Impl_$.arrayWrite = function(this1,index,value) {
 	return this1[index] = value;
 };
-kha_arrays__$Float32Array_Float32Array_$Impl_$.subarray = function(this1,start,end) {
+kha_arrays__$FloatArray_FloatArray_$Impl_$.subarray = function(this1,start,end) {
 	return this1.subarray(start,end);
 };
 var kha_arrays__$Uint32Array_Uint32Array_$Impl_$ = {};
@@ -13275,9 +13275,9 @@ kha_audio2_Audio1._init = function() {
 	kha_audio2_Audio1.internalSoundChannels = this3;
 	var this4 = new Array(16);
 	kha_audio2_Audio1.internalStreamChannels = this4;
-	var this5 = new Float32Array(512);
+	var this5 = new FloatArray(512);
 	kha_audio2_Audio1.sampleCache1 = this5;
-	var this6 = new Float32Array(512);
+	var this6 = new FloatArray(512);
 	kha_audio2_Audio1.sampleCache2 = this6;
 	kha_audio2_Audio.audioCallback = kha_audio2_Audio1.mix;
 };
@@ -13297,9 +13297,9 @@ kha_audio2_Audio1.min = function(a,b) {
 };
 kha_audio2_Audio1.mix = function(samples,buffer) {
 	if(kha_audio2_Audio1.sampleCache1.length < samples) {
-		var this1 = new Float32Array(samples);
+		var this1 = new FloatArray(samples);
 		kha_audio2_Audio1.sampleCache1 = this1;
-		var this2 = new Float32Array(samples);
+		var this2 = new FloatArray(samples);
 		kha_audio2_Audio1.sampleCache2 = this2;
 	}
 	var _g1 = 0;
@@ -13500,7 +13500,7 @@ kha_audio2_AudioChannel.prototype = {
 };
 var kha_audio2_Buffer = function(size,channels,samplesPerSecond) {
 	this.size = size;
-	var this1 = new Float32Array(size);
+	var this1 = new FloatArray(size);
 	this.data = this1;
 	this.channels = channels;
 	this.samplesPerSecond = samplesPerSecond;
@@ -14609,7 +14609,7 @@ kha_audio2_ogg_vorbis_Reader.readAll = function(bytes,output,useFloat) {
 	var header = decoder.header;
 	var count = 0;
 	var bufferSize = 4096;
-	var this1 = new Float32Array(bufferSize * header.channel);
+	var this1 = new FloatArray(bufferSize * header.channel);
 	var buffer = this1;
 	while(true) {
 		var n = decoder.read(buffer,bufferSize,header.channel,header.sampleRate,useFloat);
@@ -27020,7 +27020,7 @@ var kha_graphics4_VertexBuffer = function(vertexCount,structure,usage,instanceDa
 		}
 	}
 	this.buffer = kha_SystemImpl.gl.createBuffer();
-	var this1 = new Float32Array(vertexCount * this.myStride / 4 | 0);
+	var this1 = new FloatArray(vertexCount * this.myStride / 4 | 0);
 	this._data = this1;
 	this.sizes = [];
 	this.offsets = [];
@@ -28346,7 +28346,7 @@ kha_internal_HdrFormat.parse = function(bytes) {
 	var scanline_width = width;
 	var num_scanlines = height;
 	kha_internal_HdrFormat.readPixelsRawRLE(kha_internal_HdrFormat.buffer,data,0,scanline_width,num_scanlines);
-	var this2 = new Float32Array(width * height * 4);
+	var this2 = new FloatArray(width * height * 4);
 	var floatData = this2;
 	var offset = 0;
 	while(offset < data.length) {
@@ -29183,7 +29183,7 @@ kha_js_WebAudioSound.prototype = $extend(kha_Sound.prototype,{
 		kha_audio2_Audio._context.decodeAudioData(this.compressedData.b.bufferValue,function(buffer) {
 			var ch0 = buffer.getChannelData(0);
 			var len = ch0.length;
-			var this1 = new Float32Array(len * 2);
+			var this1 = new FloatArray(len * 2);
 			_gthis.uncompressedData = this1;
 			if(buffer.numberOfChannels == 1) {
 				var idx = 0;
@@ -29252,9 +29252,9 @@ kha_js_graphics4_ConstantLocation.prototype = {
 	,__class__: kha_js_graphics4_ConstantLocation
 };
 var kha_js_graphics4_Graphics = function(renderTarget) {
-	var this1 = new Float32Array(9);
+	var this1 = new FloatArray(9);
 	this.matrix3Cache = this1;
-	var this11 = new Float32Array(16);
+	var this11 = new FloatArray(16);
 	this.matrixCache = this11;
 	this.isDepthAttachment = false;
 	this.isCubeMap = false;
@@ -31164,27 +31164,27 @@ kha_network_Session.prototype = {
 var kha_network_SyncBuilder = function() { };
 $hxClasses["kha.network.SyncBuilder"] = kha_network_SyncBuilder;
 kha_network_SyncBuilder.__name__ = true;
-var kha_simd_Float32x4 = function(_0,_1,_2,_3) {
+var kha_simd_Floatx4 = function(_0,_1,_2,_3) {
 	this._0 = _0;
 	this._1 = _1;
 	this._2 = _2;
 	this._3 = _3;
 };
-$hxClasses["kha.simd.Float32x4"] = kha_simd_Float32x4;
-kha_simd_Float32x4.__name__ = true;
-kha_simd_Float32x4.create = function() {
-	return new kha_simd_Float32x4(0,0,0,0);
+$hxClasses["kha.simd.Floatx4"] = kha_simd_Floatx4;
+kha_simd_Floatx4.__name__ = true;
+kha_simd_Floatx4.create = function() {
+	return new kha_simd_Floatx4(0,0,0,0);
 };
-kha_simd_Float32x4.loadAllFast = function(t) {
-	return new kha_simd_Float32x4(t,t,t,t);
+kha_simd_Floatx4.loadAllFast = function(t) {
+	return new kha_simd_Floatx4(t,t,t,t);
 };
-kha_simd_Float32x4.load = function(a,b,c,d) {
-	return new kha_simd_Float32x4(a,b,c,d);
+kha_simd_Floatx4.load = function(a,b,c,d) {
+	return new kha_simd_Floatx4(a,b,c,d);
 };
-kha_simd_Float32x4.loadFast = function(a,b,c,d) {
-	return new kha_simd_Float32x4(a,b,c,d);
+kha_simd_Floatx4.loadFast = function(a,b,c,d) {
+	return new kha_simd_Floatx4(a,b,c,d);
 };
-kha_simd_Float32x4.get = function(t,index) {
+kha_simd_Floatx4.get = function(t,index) {
 	var value = 0;
 	switch(index) {
 	case 0:
@@ -31202,7 +31202,7 @@ kha_simd_Float32x4.get = function(t,index) {
 	}
 	return value;
 };
-kha_simd_Float32x4.getFast = function(t,index) {
+kha_simd_Floatx4.getFast = function(t,index) {
 	switch(index) {
 	case 0:
 		return t._0;
@@ -31215,39 +31215,39 @@ kha_simd_Float32x4.getFast = function(t,index) {
 	}
 	return 0;
 };
-kha_simd_Float32x4.abs = function(t) {
-	return new kha_simd_Float32x4(Math.abs(t._0),Math.abs(t._1),Math.abs(t._2),Math.abs(t._3));
+kha_simd_Floatx4.abs = function(t) {
+	return new kha_simd_Floatx4(Math.abs(t._0),Math.abs(t._1),Math.abs(t._2),Math.abs(t._3));
 };
-kha_simd_Float32x4.add = function(a,b) {
-	return new kha_simd_Float32x4(a._0 + b._0,a._1 + b._1,a._2 + b._2,a._3 + b._3);
+kha_simd_Floatx4.add = function(a,b) {
+	return new kha_simd_Floatx4(a._0 + b._0,a._1 + b._1,a._2 + b._2,a._3 + b._3);
 };
-kha_simd_Float32x4.div = function(a,b) {
-	return new kha_simd_Float32x4(a._0 / b._0,a._1 / b._1,a._2 / b._2,a._3 / b._3);
+kha_simd_Floatx4.div = function(a,b) {
+	return new kha_simd_Floatx4(a._0 / b._0,a._1 / b._1,a._2 / b._2,a._3 / b._3);
 };
-kha_simd_Float32x4.mul = function(a,b) {
-	return new kha_simd_Float32x4(a._0 * b._0,a._1 * b._1,a._2 * b._2,a._3 * b._3);
+kha_simd_Floatx4.mul = function(a,b) {
+	return new kha_simd_Floatx4(a._0 * b._0,a._1 * b._1,a._2 * b._2,a._3 * b._3);
 };
-kha_simd_Float32x4.neg = function(t) {
-	return new kha_simd_Float32x4(-t._0,-t._1,-t._2,-t._3);
+kha_simd_Floatx4.neg = function(t) {
+	return new kha_simd_Floatx4(-t._0,-t._1,-t._2,-t._3);
 };
-kha_simd_Float32x4.reciprocalApproximation = function(t) {
-	return new kha_simd_Float32x4(0,0,0,0);
+kha_simd_Floatx4.reciprocalApproximation = function(t) {
+	return new kha_simd_Floatx4(0,0,0,0);
 };
-kha_simd_Float32x4.reciprocalSqrtApproximation = function(t) {
-	return new kha_simd_Float32x4(0,0,0,0);
+kha_simd_Floatx4.reciprocalSqrtApproximation = function(t) {
+	return new kha_simd_Floatx4(0,0,0,0);
 };
-kha_simd_Float32x4.sub = function(a,b) {
-	return new kha_simd_Float32x4(a._0 - b._0,a._1 - b._1,a._2 - b._2,a._3 - b._3);
+kha_simd_Floatx4.sub = function(a,b) {
+	return new kha_simd_Floatx4(a._0 - b._0,a._1 - b._1,a._2 - b._2,a._3 - b._3);
 };
-kha_simd_Float32x4.sqrt = function(t) {
-	return new kha_simd_Float32x4(Math.sqrt(t._0),Math.sqrt(t._1),Math.sqrt(t._2),Math.sqrt(t._3));
+kha_simd_Floatx4.sqrt = function(t) {
+	return new kha_simd_Floatx4(Math.sqrt(t._0),Math.sqrt(t._1),Math.sqrt(t._2),Math.sqrt(t._3));
 };
-kha_simd_Float32x4.prototype = {
+kha_simd_Floatx4.prototype = {
 	_0: null
 	,_1: null
 	,_2: null
 	,_3: null
-	,__class__: kha_simd_Float32x4
+	,__class__: kha_simd_Floatx4
 };
 var kha_vr_Pose = function() {
 	this.Orientation = new kha_math_Quaternion();
@@ -31329,7 +31329,7 @@ if(ArrayBuffer.prototype.slice == null) {
 	ArrayBuffer.prototype.slice = js_html_compat_ArrayBuffer.sliceImpl;
 }
 var DataView = $global.DataView || js_html_compat_DataView;
-var Float32Array = $global.Float32Array || js_html_compat_Float32Array._new;
+var FloatArray = $global.FloatArray || js_html_compat_FloatArray._new;
 var Uint8Array = $global.Uint8Array || js_html_compat_Uint8Array._new;
 gecko_Assets.images = new haxe_ds_StringMap();
 gecko_Assets.videos = new haxe_ds_StringMap();
@@ -31643,7 +31643,7 @@ haxe_io_FPHelper.i64tmp = (function($this) {
 	return $r;
 }(this));
 js_Boot.__toStr = ({ }).toString;
-js_html_compat_Float32Array.BYTES_PER_ELEMENT = 4;
+js_html_compat_FloatArray.BYTES_PER_ELEMENT = 4;
 js_html_compat_Uint8Array.BYTES_PER_ELEMENT = 1;
 kha_Assets.images = new kha__$Assets_ImageList();
 kha_Assets.sounds = new kha__$Assets_SoundList();

@@ -10,7 +10,7 @@ package;
 
 import gecko.Gecko;
 import gecko.Screen;
-import gecko.Float32;
+
 import gecko.Assets;
 import gecko.systems.draw.DrawSystem;
 import gecko.components.draw.ScrollingSpriteComponent;
@@ -28,7 +28,7 @@ class Game {
     }
 
     //create an entity with a scrolling-component using spritename, position and size
-    private function _createScrollingSprite(sprite:String, x:Float32, y:Float32, width:Float32, height:Float32) : ScrollingSpriteComponent {
+    private function _createScrollingSprite(sprite:String, x:Float, y:Float, width:Float, height:Float) : ScrollingSpriteComponent {
         //create a new entity in the currentScene
         var entity = Gecko.currentScene.createEntity();
 

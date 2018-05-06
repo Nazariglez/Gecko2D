@@ -9,7 +9,7 @@ title: Animation
 package;
 
 import gecko.Screen;
-import gecko.Float32;
+
 import gecko.Assets;
 import gecko.Gecko;
 import gecko.systems.draw.DrawSystem;
@@ -54,7 +54,7 @@ class Game {
         ], _onLoadAssets).start();
     }
 
-    private function _createAnimatedEntity(x:Float32, y:Float32, sx:Float32 = 1, sy:Float32 = 1) : AnimationComponent {
+    private function _createAnimatedEntity(x:Float, y:Float, sx:Float = 1, sy:Float = 1) : AnimationComponent {
         //create a new entity in the current scene
         var entity = Gecko.currentScene.createEntity();
 
