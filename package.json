@@ -24,7 +24,7 @@
     "node": ">=9.0.0"
   },
   "author": "Nazariglez",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Nazariglez/Gecko2D/issues"
   },
