@@ -1,6 +1,6 @@
 package gecko.input;
 
-import gecko.Float32;
+
 
 class HotKey extends BaseObject {
     public var key:KeyCode = KeyCode.Unknown;
@@ -8,7 +8,7 @@ class HotKey extends BaseObject {
     public var wasPressed(get, null):Bool;
     public var wasReleased(get, null):Bool;
     public var isDown(get, null):Bool;
-    public var downDuration(get, null):Float32;
+    public var downDuration(get, null):Float;
 
     public var isControlDown(get, null):Bool;
     public var isAltDown(get, null):Bool;
@@ -23,7 +23,7 @@ class HotKey extends BaseObject {
         key = KeyCode.Unknown;
     }
 
-    inline function get_downDuration() : Float32 {
+    inline function get_downDuration() : Float {
         return Keyboard.downDuration(key);
     }
 

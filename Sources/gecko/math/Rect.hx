@@ -1,6 +1,6 @@
 package gecko.math;
 
-import gecko.Float32;
+
 
 class Rect extends BaseObject {
 	inline public static function fromSquare(side): Rect {
@@ -12,19 +12,19 @@ class Rect extends BaseObject {
 	}
 
 	//todo add observer?
-	public var x: Float32 = 0;
-	public var y: Float32 = 0;
-	public var width: Float32 = 0;
-	public var height: Float32 = 0;
+	public var x: Float = 0;
+	public var y: Float = 0;
+	public var width: Float = 0;
+	public var height: Float = 0;
 
-	public var top(get, null): Float32;
-	public var bottom(get, null): Float32;
-	public var left(get, null): Float32;
-	public var right(get, null): Float32;
-	public var centerX(get, null): Float32;
-	public var centerY(get, null): Float32;
+	public var top(get, null): Float;
+	public var bottom(get, null): Float;
+	public var left(get, null): Float;
+	public var right(get, null): Float;
+	public var centerX(get, null): Float;
+	public var centerY(get, null): Float;
 
-	public function init(x: Float32 = 0, y: Float32 = 0, width: Float32 = 0, height: Float32 = 0) {
+	public function init(x: Float = 0, y: Float = 0, width: Float = 0, height: Float = 0) {
 		set(x, y, width, height);
 	}
 
@@ -35,7 +35,7 @@ class Rect extends BaseObject {
 	}
 
 	// Methods
-	public function set(x: Float32, y: Float32, width: Float32, height: Float32) {
+	public function set(x: Float, y: Float, width: Float, height: Float) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -60,7 +60,7 @@ class Rect extends BaseObject {
 		return Rect.create(x, y, width, height);
 	}
 
-	public function contains(x: Float32, y: Float32) : Bool {
+	public function contains(x: Float, y: Float) : Bool {
 		if(this.width <= 0 || this.height <= 0){
 			return false;
 		}
@@ -92,27 +92,27 @@ class Rect extends BaseObject {
 			|| contains(rect.x + rect.width, rect.y + rect.height);
 	}
 
-	inline function get_top() : Float32 {
+	inline function get_top() : Float {
 		return y;
 	}
 
-	inline function get_bottom() : Float32 {
+	inline function get_bottom() : Float {
 		return y + height;
 	}
 
-	inline function get_left() : Float32 {
+	inline function get_left() : Float {
 		return x;
 	}
 
-	inline function get_right() : Float32 {
+	inline function get_right() : Float {
 		return x + width;
 	}
 
-	inline function get_centerX():Float32 {
+	inline function get_centerX():Float {
 		return x + width/2;
 	}
 
-	inline function get_centerY():Float32 {
+	inline function get_centerY():Float {
 		return y + height/2;
 	}
 }

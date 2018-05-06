@@ -1,6 +1,6 @@
 package gecko.tween;
 
-import gecko.Float32;
+
 
 class TweenManager extends BaseObject {
     public var tweens:Array<Tween> = [];
@@ -8,7 +8,7 @@ class TweenManager extends BaseObject {
 
     private var _isProcessing:Bool = false;
 
-    public function tick(delta:Float32) {
+    public function tick(delta:Float) {
         _isProcessing = true;
         for(t in tweens){
             if(!t.isActive){
@@ -30,7 +30,7 @@ class TweenManager extends BaseObject {
         _isProcessing = false;
     }
 
-    inline public function createTween(target:Dynamic, valuesTo:Dynamic, time:Float32, ?easing:Ease) : Tween {
+    inline public function createTween(target:Dynamic, valuesTo:Dynamic, time:Float, ?easing:Ease) : Tween {
         return Tween.create(target, valuesTo, time, easing, this);
     }
 

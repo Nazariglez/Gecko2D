@@ -1,13 +1,13 @@
 package gecko.timer;
 
-import gecko.Float32;
+
 
 class TimerManager extends BaseObject {
     public var timers:Array<Timer> = [];
     private var _timersToDelete:Array<Timer> = [];
     private var _isProcessing:Bool = false;
 
-    public function tick(delta:Float32) {
+    public function tick(delta:Float) {
         _isProcessing = true;
         for(t in timers){
             if(!t.isActive){
@@ -29,7 +29,7 @@ class TimerManager extends BaseObject {
         _isProcessing = false;
     }
 
-    inline public function createTimer(time:Float32, delay:Float32 = 0, loop:Bool = false, repeat:Int = 0) : Timer {
+    inline public function createTimer(time:Float, delay:Float = 0, loop:Bool = false, repeat:Int = 0) : Timer {
         return Timer.create(time, delay, loop, repeat, this);
     }
 

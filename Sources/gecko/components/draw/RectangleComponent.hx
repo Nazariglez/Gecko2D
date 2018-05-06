@@ -5,16 +5,16 @@ import gecko.Entity;
 import gecko.components.draw.DrawComponent;
 
 class RectangleComponent extends DrawComponent {
-    public var width(get, set):Float32;
-    private var _width:Float32 = 0;
+    public var width(get, set):Float;
+    private var _width:Float = 0;
 
-    public var height(get, set):Float32;
-    private var _height:Float32 = 0;
+    public var height(get, set):Float;
+    private var _height:Float = 0;
 
     public var strength:Int = 2;
     public var fill:Bool = false;
 
-    public function init(fill:Bool, width:Float32, height:Float32, strength:Int = 2) {
+    public function init(fill:Bool, width:Float, height:Float, strength:Int = 2) {
         this.width = width;
         this.height = height;
         this.fill = fill;
@@ -48,15 +48,15 @@ class RectangleComponent extends DrawComponent {
         onAddedToEntity -= _setTransformSize;
     }
 
-    inline function get_width():Float32 {
+    inline function get_width():Float {
         return _width;
     }
 
-    inline function get_height():Float32 {
+    inline function get_height():Float {
         return _height;
     }
 
-    function set_width(value:Float32):Float32 {
+    function set_width(value:Float):Float {
         if(value == _width)return _width;
 
         _width = value;
@@ -68,7 +68,7 @@ class RectangleComponent extends DrawComponent {
         return _width;
     }
 
-    function set_height(value:Float32):Float32 {
+    function set_height(value:Float):Float {
         if(value == _height)return _height;
 
         _height = value;

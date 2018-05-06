@@ -1,14 +1,14 @@
 package gecko.systems.collision.aabb;
 
 import gecko.components.collision.aabb.HitBoxComponent;
-import gecko.Float32;
+
 
 class AABBSystem extends System implements IUpdatable {
     public function init(){
         filter.equal(HitBoxComponent);
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         eachEntity(function(e:Entity){
             var box1:HitBoxComponent = e.getComponent(HitBoxComponent);
 

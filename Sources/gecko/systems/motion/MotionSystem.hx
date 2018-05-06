@@ -2,14 +2,14 @@ package gecko.systems.motion;
 
 import gecko.components.motion.RotationComponent;
 import gecko.components.motion.MovementComponent;
-import gecko.Float32;
+
 
 class MotionSystem extends System implements IUpdatable {
     public function init(){
         filter.any([MovementComponent, RotationComponent]);
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         eachEntity(function(e:Entity){
             var transform:Transform = e.transform;
             var movement:MovementComponent = e.getComponent(MovementComponent);

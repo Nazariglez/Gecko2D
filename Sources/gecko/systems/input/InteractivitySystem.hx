@@ -35,7 +35,7 @@ class InteractivitySystem extends System implements IUpdatable {
         filter.any([MouseComponent, DraggableComponent]);
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         if(!Mouse.isEnabled && !Touch.isEnabled)return;
 
         if(Mouse.isEnabled){
@@ -81,14 +81,14 @@ class InteractivitySystem extends System implements IUpdatable {
         }
     }
 
-    inline private function _checkEntites(dt:Float32, camera:Camera) {
+    inline private function _checkEntites(dt:Float, camera:Camera) {
         eachEntity(function(e:Entity){
             if(!e.transform.existsInCamera(camera))return;
             _dispatchEntityEvents(e);
         });
     }
 
-    private function _checkEntitesInDrawOrder(dt:Float32) {
+    private function _checkEntitesInDrawOrder(dt:Float) {
         //todo drawOrder and stopPropagate
     }
 

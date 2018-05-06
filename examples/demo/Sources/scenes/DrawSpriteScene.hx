@@ -1,7 +1,7 @@
 package scenes;
 
 import gecko.components.draw.SpriteComponent;
-import gecko.Float32;
+
 
 class DrawSpriteScene extends CustomScene {
     override public function init(closeButton:Bool = false) {
@@ -39,7 +39,7 @@ class DrawSpriteScene extends CustomScene {
     }
 
     //Create an add the sprite
-    private function _addSprite(sprite:String, x:Float32, y:Float32) {
+    private function _addSprite(sprite:String, x:Float, y:Float) {
         var e = createEntity();
         e.addComponent(SpriteComponent.create(sprite));
 

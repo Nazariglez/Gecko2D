@@ -18,7 +18,7 @@ class World {
         _nextScene = sceneIn;
     }
 
-    public function update(delta:Float32) {
+    public function update(delta:Float) {
         if(_nextScene != null){
             var scene = currentScene;
 

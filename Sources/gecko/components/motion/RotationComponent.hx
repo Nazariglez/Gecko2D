@@ -1,12 +1,12 @@
 package gecko.components.motion;
 
-import gecko.Float32;
+
 
 class RotationComponent extends Component {
-    public var speed:Float32;
-    public var acceleration:Float32;
+    public var speed:Float;
+    public var acceleration:Float;
 
-    public function init(speed:Float32, acceleration:Float32 = 0) {
+    public function init(speed:Float, acceleration:Float = 0) {
         this.speed = speed;
         this.acceleration = acceleration;
     }

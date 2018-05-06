@@ -2,7 +2,7 @@ package;
 
 import gecko.Gecko;
 import gecko.Color;
-import gecko.Float32;
+
 import gecko.math.Point;
 import gecko.components.draw.CircleComponent;
 import gecko.components.draw.RectangleComponent;
@@ -41,7 +41,7 @@ class Game {
     }
 
     //create a generic entitiy to add a shape draw component
-    private function _createShape(x:Float32, y:Float32, shapeComponent:DrawComponent, color:Color) {
+    private function _createShape(x:Float, y:Float, shapeComponent:DrawComponent, color:Color) {
         //create an entity in the current scene
         var entity = Gecko.currentScene.createEntity();
 

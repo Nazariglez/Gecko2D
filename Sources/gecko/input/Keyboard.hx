@@ -1,6 +1,6 @@
 package gecko.input;
 
-import gecko.Float32;
+
 import gecko.utils.Event;
 import kha.input.Keyboard as KhaKeyboard;
 
@@ -10,7 +10,7 @@ class Keyboard {
 
     static public var onPressed:Event<KeyCode->Void>;
     static public var onReleased:Event<KeyCode->Void>;
-    static public var onDown:Event<KeyCode->Float32->Void>;
+    static public var onDown:Event<KeyCode->Float->Void>;
 
     private function new(){
         onPressed = Event.create();
@@ -22,7 +22,7 @@ class Keyboard {
 
     static private var _pressedKeys:Map<KeyCode, Bool> = new Map();
     static private var _releasedKeys:Map<KeyCode, Bool> = new Map();
-    static private var _downKeys:Map<KeyCode, Float32> = new Map();
+    static private var _downKeys:Map<KeyCode, Float> = new Map();
 
     static private var _hotKeys:Map<KeyCode, HotKey> = new Map();
     static private var _combos:Map<String, ComboKey> = new Map();
@@ -75,7 +75,7 @@ class Keyboard {
         }
     }
 
-    static public function update(delta:Float32){ //TODO AVOID USE .keys(), it's better use arrays
+    static public function update(delta:Float){ //TODO AVOID USE .keys(), it's better use arrays
         for(key in _pressedKeys.keys()){
             onPressed.emit(key);
             _pressedKeys.remove(key);
@@ -113,14 +113,14 @@ class Keyboard {
         return _releasedKeys.exists(key);
     }
 
-    static public function isDown(key:KeyCode, duration:Float32 = -1) : Bool {
+    static public function isDown(key:KeyCode, duration:Float = -1) : Bool {
         if(duration != -1){
             return _downKeys.exists(key) && _downKeys[key] <= duration;
         }
         return _downKeys.exists(key);
     }
 
-    inline static public function downDuration(key:KeyCode) : Float32 {
+    inline static public function downDuration(key:KeyCode) : Float {
         return _downKeys.exists(key) ? _downKeys[key] : -1;
     }
 }

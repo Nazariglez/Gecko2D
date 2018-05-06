@@ -2,7 +2,7 @@ package gecko.systems.draw;
 
 import gecko.Graphics;
 import gecko.components.draw.DrawComponent;
-import gecko.Float32;
+
 
 using gecko.utils.ArrayHelper;
 
@@ -23,7 +23,7 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
         _fixedToCamera.clear();
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         eachEntity(function(e:Entity){
             e.getDrawComponent().update(dt);
         });

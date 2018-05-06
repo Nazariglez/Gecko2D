@@ -4,7 +4,7 @@ import gecko.Assets;
 import gecko.Graphics;
 import gecko.utils.Event;
 import gecko.math.Rect;
-import gecko.Float32;
+
 import gecko.resources.Texture;
 
 using Lambda;
@@ -73,19 +73,19 @@ class AnimationComponent extends DrawComponent {
         }
     }
 
-    inline public function addAnimFromGridAssets(name:String, time:Float32, texture:String, rows:Int, cols:Int, ?frames:Array<Int>, total:Int = 0, loop:Bool = false) : AnimationData {
+    inline public function addAnimFromGridAssets(name:String, time:Float, texture:String, rows:Int, cols:Int, ?frames:Array<Int>, total:Int = 0, loop:Bool = false) : AnimationData {
         return _add(AnimationData.createFromGrid(name, time, Assets.textures.get(texture), rows, cols, frames, total, loop));
     }
 
-    inline public function addAnimFromGrid(name:String, time:Float32, texture:Texture, rows:Int, cols:Int, ?frames:Array<Int>, total:Int = 0, loop:Bool = false) : AnimationData {
+    inline public function addAnimFromGrid(name:String, time:Float, texture:Texture, rows:Int, cols:Int, ?frames:Array<Int>, total:Int = 0, loop:Bool = false) : AnimationData {
         return _add(AnimationData.createFromGrid(name, time, texture, rows, cols, frames, total, loop));
     }
 
-    inline public function addAnimFromAssets(name:String, time:Float32, frames:Array<String>, loop:Bool = false) : AnimationData {
+    inline public function addAnimFromAssets(name:String, time:Float, frames:Array<String>, loop:Bool = false) : AnimationData {
         return _add(AnimationData.createFromAssets(name, time, frames, loop));
     }
 
-    inline public function addAnim(name:String, time:Float32, frames:Array<Texture>, loop:Bool){
+    inline public function addAnim(name:String, time:Float, frames:Array<Texture>, loop:Bool){
         return _add(AnimationData.create(name, time, frames, loop));
     }
 
@@ -165,7 +165,7 @@ class AnimationComponent extends DrawComponent {
         return _index != -1 ? animations[_index].name : "";
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         if(!isPlaying || isPaused || _texture == null || _index == -1 || animations.length == 0){
             return;
         }
@@ -226,15 +226,15 @@ class AnimationComponent extends DrawComponent {
 class AnimationData extends BaseObject {
     public var name:String = "";
     public var loop:Bool = false;
-    public var time:Float32 = 1;
+    public var time:Float = 1;
 
     public var frames:Array<Texture> = [];
     public var index:Int = 0;
 
     public var isStarted:Bool = false;
-    public var elapsedTime:Float32 = 0;
+    public var elapsedTime:Float = 0;
 
-    public static function createFromGrid(name:String, time:Float32, texture:Texture, rows:Int, cols:Int, ?frames:Array<Int>, total:Int = 0, loop:Bool = false) : AnimationData {
+    public static function createFromGrid(name:String, time:Float, texture:Texture, rows:Int, cols:Int, ?frames:Array<Int>, total:Int = 0, loop:Bool = false) : AnimationData {
         var ww = texture.width/cols;
         var hh = texture.height/rows;
         var xx = texture.frame.x;
@@ -264,7 +264,7 @@ class AnimationData extends BaseObject {
         return AnimationData.create(name, time, _frames, loop);
     }
 
-    public static function createFromAssets(name:String, time:Float32, frames:Array<String>, loop:Bool = false) : AnimationData {
+    public static function createFromAssets(name:String, time:Float, frames:Array<String>, loop:Bool = false) : AnimationData {
         var _frames = frames.map(function(str){
             var texture = Assets.textures.get(str);
             if(texture == null){
@@ -276,7 +276,7 @@ class AnimationData extends BaseObject {
         return AnimationData.create(name, time, _frames, loop);
     }
 
-    public function init(name:String, time:Float32, frames:Array<Texture>, loop:Bool = false){
+    public function init(name:String, time:Float, frames:Array<Texture>, loop:Bool = false){
         this.name = name;
         this.time = time;
         this.frames = frames;

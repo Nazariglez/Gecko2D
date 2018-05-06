@@ -2,7 +2,7 @@ package scenes;
 
 import gecko.components.draw.PolygonComponent;
 import gecko.math.Point;
-import gecko.Float32;
+
 import gecko.components.draw.DrawComponent;
 import gecko.Color;
 import gecko.components.draw.CircleComponent;
@@ -42,7 +42,7 @@ class DrawShapeScene extends CustomScene {
     }
 
     //create a generic entitiy to add a shape draw component
-    private function _createShape(x:Float32, y:Float32, shapeComponent:DrawComponent, color:Color) {
+    private function _createShape(x:Float, y:Float, shapeComponent:DrawComponent, color:Color) {
         var e = createEntity();
         e.transform.position.set(x, y);
         e.addComponent(shapeComponent);

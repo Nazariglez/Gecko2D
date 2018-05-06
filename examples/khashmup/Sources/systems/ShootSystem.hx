@@ -7,7 +7,7 @@ import gecko.components.motion.MovementComponent;
 import gecko.components.draw.SpriteComponent;
 import gecko.input.Keyboard;
 import gecko.Entity;
-import gecko.Float32;
+
 import gecko.IUpdatable;
 import gecko.systems.System;
 
@@ -19,7 +19,7 @@ class ShootSystem extends System implements IUpdatable {
         filter.equal(ShootComponent);
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         eachEntity(function(e:Entity){
             var shootComponent:ShootComponent = e.getComponent(ShootComponent);
             shootComponent.update(dt);
@@ -36,7 +36,7 @@ class ShootSystem extends System implements IUpdatable {
         });
     }
 
-    public function shoot(x:Float32, y:Float32, speedY:Float32) {
+    public function shoot(x:Float, y:Float, speedY:Float) {
         if(scene == null)return;
 
         var shot = scene.createEntity();

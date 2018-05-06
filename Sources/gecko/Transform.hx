@@ -41,11 +41,11 @@ class Transform {
     private var _branch:Int = 0;
     private var _nextChild:Transform = null;
 
-    public var width(get, set):Float32;
-    public var localWidth(get, set):Float32;
+    public var width(get, set):Float;
+    public var localWidth(get, set):Float;
 
-    public var height(get, set):Float32;
-    public var localHeight(get, set):Float32;
+    public var height(get, set):Float;
+    public var localHeight(get, set):Float;
 
     public var localPosition(get, null):Point;
     private var _localPosition:Point;
@@ -74,20 +74,20 @@ class Transform {
     public var flip(get, null):Vector2g<Bool>;
     private var _flip:Vector2g<Bool>;
 
-    public var rotation(get, set):Float32;
-    private var _rotation:Float32 = 0;
+    public var rotation(get, set):Float;
+    private var _rotation:Float = 0;
 
-    public var localRotation(get, set):Float32;
-    private var _localRotation:Float32 = 0;
+    public var localRotation(get, set):Float;
+    private var _localRotation:Float = 0;
 
-    public var top(get, null):Float32;
-    public var localTop(get, null):Float32;
-    public var bottom(get, null):Float32;
-    public var localBottom(get, null):Float32;
-    public var left(get, null):Float32;
-    public var localLeft(get, null):Float32;
-    public var right(get, null):Float32;
-    public var localRight(get, null):Float32;
+    public var top(get, null):Float;
+    public var localTop(get, null):Float;
+    public var bottom(get, null):Float;
+    public var localBottom(get, null):Float;
+    public var left(get, null):Float;
+    public var localLeft(get, null):Float;
+    public var right(get, null):Float;
+    public var localRight(get, null):Float;
 
     public var depthMode(get, set):DepthMode;
     private var _depthMode:DepthMode = DepthMode.DEFAULT;
@@ -551,12 +551,12 @@ class Transform {
         return _flip;
     }
 
-    function get_rotation():Float32 {
+    function get_rotation():Float {
         if(_dirty)updateTransform();
         return _rotation;
     }
 
-    function set_rotation(value:Float32):Float32 {
+    function set_rotation(value:Float):Float {
         if(value == _rotation)return _rotation;
         _rotation = value;
 
@@ -571,12 +571,12 @@ class Transform {
         return _rotation;
     }
 
-    function get_localRotation():Float32 {
+    function get_localRotation():Float {
         if(_dirty)updateTransform();
         return _localRotation;
     }
 
-    function set_localRotation(value:Float32):Float32 {
+    function set_localRotation(value:Float):Float {
         if(value == _localRotation)return _localRotation;
         _localRotation = value;
         _setDirty(true, false, true);
@@ -584,67 +584,67 @@ class Transform {
         return _localRotation;
     }
 
-    inline function get_width():Float32 {
+    inline function get_width():Float {
         return scale.x * size.x;
     }
 
-    inline function get_localWidth():Float32 {
+    inline function get_localWidth():Float {
         return localScale.x * size.x;
     }
 
-    inline function set_width(value:Float32):Float32 {
+    inline function set_width(value:Float):Float {
         return scale.x = value / size.x;
     }
 
-    inline function set_localWidth(value:Float32):Float32 {
+    inline function set_localWidth(value:Float):Float {
         return localScale.x = value / size.x;
     }
 
-    inline function get_height():Float32 {
+    inline function get_height():Float {
         return scale.y * size.y;
     }
 
-    inline function get_localHeight():Float32 {
+    inline function get_localHeight():Float {
         return localScale.y * size.y;
     }
 
-    inline function set_height(value:Float32):Float32 {
+    inline function set_height(value:Float):Float {
         return scale.y = value / size.y;
     }
 
-    inline function set_localHeight(value:Float32):Float32 {
+    inline function set_localHeight(value:Float):Float {
         return localScale.y = value / size.y;
     }
 
-    inline function get_top():Float32 {
+    inline function get_top():Float {
         return position.y - height * anchor.y;
     }
 
-    inline function get_bottom():Float32 {
+    inline function get_bottom():Float {
         return position.y + height * (1-anchor.y);
     }
 
-    inline function get_left():Float32 {
+    inline function get_left():Float {
         return position.x - width * anchor.x;
     }
 
-    inline function get_right():Float32 {
+    inline function get_right():Float {
         return position.x + width * (1-anchor.x);
     }
 
-    inline function get_localTop():Float32 {
+    inline function get_localTop():Float {
         return localPosition.y - localHeight * anchor.y;
     }
 
-    inline function get_localBottom():Float32 {
+    inline function get_localBottom():Float {
         return localPosition.y + localHeight * (1-anchor.y);
     }
 
-    inline function get_localLeft():Float32 {
+    inline function get_localLeft():Float {
         return localPosition.x - localWidth * anchor.x;
     }
 
-    inline function get_localRight():Float32 {
+    inline function get_localRight():Float {
         return localPosition.x + localWidth * (1-anchor.x);
     }
 
@@ -714,8 +714,8 @@ class Transform {
 }
 
 private typedef SkewCache = {
-    var cosX:Float32;
-    var sinX:Float32;
-    var cosY:Float32;
-    var sinY:Float32;
+    var cosX:Float;
+    var sinX:Float;
+    var cosY:Float;
+    var sinY:Float;
 };

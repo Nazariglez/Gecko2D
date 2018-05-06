@@ -8,7 +8,7 @@ import gecko.components.collision.aabb.HitBoxComponent;
 import gecko.math.Point;
 import gecko.components.draw.SpriteComponent;
 import gecko.Entity;
-import gecko.Float32;
+
 import gecko.components.misc.BehaviorComponent;
 
 import GameState;
@@ -16,21 +16,21 @@ import GameState;
 using gecko.utils.ArrayHelper;
 
 class PipeSpawnerComponent extends BehaviorComponent {
-    public var speed:Float32 = 0;
+    public var speed:Float = 0;
 
     private var _pipes:Array<Entity> = [];
     private var _pipesToRemove:Array<Entity> = [];
     private var _triggers:Array<Entity> = [];
     private var _triggersToRemove:Array<Entity> = [];
 
-    private var _spawnTime:Float32 = Config.SpawnTimeBetweenPipes;
-    private var _elapsed:Float32 = 0;
+    private var _spawnTime:Float = Config.SpawnTimeBetweenPipes;
+    private var _elapsed:Float = 0;
 
     public var isRunning(default, null):Bool = false;
     public var collideCallback:Entity->Void;
     public var passPipe:Entity->Void;
 
-    public function init(speed:Float32, collidePipeCallback:Entity->Void, passPipeCallback:Entity->Void) {
+    public function init(speed:Float, collidePipeCallback:Entity->Void, passPipeCallback:Entity->Void) {
         this.speed = speed;
         this.collideCallback = collidePipeCallback;
         this.passPipe = passPipeCallback;
@@ -45,7 +45,7 @@ class PipeSpawnerComponent extends BehaviorComponent {
         isRunning = false;
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         if(!isRunning || GameState.State != FlappyState.Playing)return;
 
         if(_elapsed >= _spawnTime){

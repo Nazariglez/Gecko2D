@@ -5,27 +5,27 @@ import gecko.utils.Event;
 import gecko.components.Component;
 
 class MouseComponent extends Component {
-    public var onRightPressed:Event<Float32->Float32->Void>;
-    public var onRightReleased:Event<Float32->Float32->Void>;
-    public var onRightReleasedOutside:Event<Float32->Float32->Void>;
-    public var onRightDown:Event<Float32->Float32->Void>;
+    public var onRightPressed:Event<Float->Float->Void>;
+    public var onRightReleased:Event<Float->Float->Void>;
+    public var onRightReleasedOutside:Event<Float->Float->Void>;
+    public var onRightDown:Event<Float->Float->Void>;
 
-    public var onLeftPressed:Event<Float32->Float32->Void>;
-    public var onLeftReleased:Event<Float32->Float32->Void>;
-    public var onLeftReleasedOutside:Event<Float32->Float32->Void>;
-    public var onLeftDown:Event<Float32->Float32->Void>;
+    public var onLeftPressed:Event<Float->Float->Void>;
+    public var onLeftReleased:Event<Float->Float->Void>;
+    public var onLeftReleasedOutside:Event<Float->Float->Void>;
+    public var onLeftDown:Event<Float->Float->Void>;
 
-    public var onCenterPressed:Event<Float32->Float32->Void>;
-    public var onCenterReleased:Event<Float32->Float32->Void>;
-    public var onCenterReleasedOutside:Event<Float32->Float32->Void>;
-    public var onCenterDown:Event<Float32->Float32->Void>;
+    public var onCenterPressed:Event<Float->Float->Void>;
+    public var onCenterReleased:Event<Float->Float->Void>;
+    public var onCenterReleasedOutside:Event<Float->Float->Void>;
+    public var onCenterDown:Event<Float->Float->Void>;
 
-    public var onOver:Event<Float32->Float32->Void>;
-    public var onOut:Event<Float32->Float32->Void>;
-    public var onMove:Event<Float32->Float32->Void>; //todo
+    public var onOver:Event<Float->Float->Void>;
+    public var onOut:Event<Float->Float->Void>;
+    public var onMove:Event<Float->Float->Void>; //todo
 
-    public var onClick:Event<Float32->Float32->Void>;
-    public var onDoubleClick:Event<Float32->Float32->Void>;
+    public var onClick:Event<Float->Float->Void>;
+    public var onDoubleClick:Event<Float->Float->Void>;
 
     public var isOver:Bool = false;
     public var isRightDown:Bool = false;
@@ -34,9 +34,9 @@ class MouseComponent extends Component {
 
     public var box:Rect; //todo add a box to use instead the transform size
 
-    public var doubleClickTreshold:Float32 = 0;
+    public var doubleClickTreshold:Float = 0;
 
-    private var _lastClickTime:Float32 = -1;
+    private var _lastClickTime:Float = -1;
 
     public function new() {
         super();
@@ -63,7 +63,7 @@ class MouseComponent extends Component {
         onDoubleClick = Event.create();
     }
 
-    public function init(doubleClickTreshold:Float32 = 0.3){
+    public function init(doubleClickTreshold:Float = 0.3){
         this.doubleClickTreshold = doubleClickTreshold;
     }
 

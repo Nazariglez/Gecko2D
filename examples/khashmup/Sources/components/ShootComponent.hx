@@ -1,25 +1,25 @@
 package components;
 
 import gecko.IUpdatable;
-import gecko.Float32;
+
 import gecko.input.KeyCode;
 import gecko.components.Component;
 
 class ShootComponent extends Component implements IUpdatable {
     public var key:KeyCode;
-    public var delay:Float32 = 0;
-    public var speed:Float32 = 0;
+    public var delay:Float = 0;
+    public var speed:Float = 0;
 
-    private var _time:Float32 = 0;
+    private var _time:Float = 0;
 
-    public function init(shootKey:KeyCode, shotSpeed:Float32 = 720, timeInterval:Float32 = 0.25) {
+    public function init(shootKey:KeyCode, shotSpeed:Float = 720, timeInterval:Float = 0.25) {
         key = shootKey;
         delay = timeInterval;
         speed = shotSpeed;
         _time = 0;
     }
 
-    public function update(dt:Float32) {
+    public function update(dt:Float) {
         if(_time > 0)_time -= dt;
     }
 

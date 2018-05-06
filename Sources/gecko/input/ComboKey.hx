@@ -1,7 +1,7 @@
 package gecko.input;
 
 import gecko.utils.Event;
-import gecko.Float32;
+
 
 using StringTools;
 
@@ -19,11 +19,11 @@ class ComboKey extends BaseObject {
     public var combo(default, null):String = "";
     public var length(get, null):Int;
 
-    public var timeTreshold:Float32;
+    public var timeTreshold:Float;
 
     private var _comboData:Array<ComboData> = [];
     private var _index:Int = 0;
-    private var _time:Float32 = -1;
+    private var _time:Float = -1;
 
     public var onTrigger:Event<Void->Void>;
 
@@ -33,7 +33,7 @@ class ComboKey extends BaseObject {
         onTrigger = Event.create();
     }
 
-    public function init(combo:String, timeTreshold:Float32 = 750){
+    public function init(combo:String, timeTreshold:Float = 750){
         this.combo = combo;
         this.timeTreshold = timeTreshold;
         _parseCombo();

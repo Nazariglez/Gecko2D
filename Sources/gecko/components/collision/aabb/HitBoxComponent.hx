@@ -2,7 +2,7 @@ package gecko.components.collision.aabb;
 
 import gecko.Entity;
 import gecko.utils.Event;
-import gecko.Float32;
+
 import gecko.math.Rect;
 import gecko.components.Component;
 
@@ -26,10 +26,10 @@ class HitBoxComponent extends Component {
     public var onCollideStart:Event<Entity->Void>;
     public var onCollideStop:Event<Entity->Void>;
 
-    public var top(default, null):Float32 = 0;
-    public var bottom(default, null):Float32 = 0;
-    public var left(default, null):Float32 = 0;
-    public var right(default, null):Float32 = 0;
+    public var top(default, null):Float = 0;
+    public var bottom(default, null):Float = 0;
+    public var left(default, null):Float = 0;
+    public var right(default, null):Float = 0;
 
     public var collidingWith:Array<Entity> = [];
 
@@ -55,7 +55,7 @@ class HitBoxComponent extends Component {
     }
 
     public function getCollisionSide(box:HitBoxComponent) : HitBoxSide {
-        var min, value:Float32;
+        var min, value:Float;
 
         var side = HitBoxSide.Top;
         min = getTopDepth(box);
@@ -94,7 +94,7 @@ class HitBoxComponent extends Component {
     public function updateBounds() {
         if(entity == null || entity.transform == null)return;
 
-        var x, y, w, h:Float32;
+        var x, y, w, h:Float;
         if(box != null){
             x = box.x;
             y = box.y;
@@ -155,19 +155,19 @@ class HitBoxComponent extends Component {
         return false;
     }
 
-    inline public function getTopDepth(box:HitBoxComponent) : Float32 {
+    inline public function getTopDepth(box:HitBoxComponent) : Float {
         return Math.abs(bottom - box.top);
     }
 
-    inline public function getBottomDepth(box:HitBoxComponent) : Float32 {
+    inline public function getBottomDepth(box:HitBoxComponent) : Float {
         return Math.abs(top - box.bottom);
     }
 
-    inline public function getLeftDepth(box:HitBoxComponent) : Float32 {
+    inline public function getLeftDepth(box:HitBoxComponent) : Float {
         return Math.abs(right - box.left);
     }
 
-    inline public function getRightDepth(box:HitBoxComponent) : Float32 {
+    inline public function getRightDepth(box:HitBoxComponent) : Float {
         return Math.abs(left - box.right);
     }
 

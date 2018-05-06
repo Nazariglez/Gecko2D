@@ -22,10 +22,10 @@ class Camera extends BaseObject implements IUpdatable {
     public var followLerp(default, null):Point;
     //public var scale(get, null):Point;
 
-    public var rotation(get, set):Float32;
+    public var rotation(get, set):Float;
 
-    public var zoom(get, set):Float32;
-    private var _zoom:Float32 = 1;
+    public var zoom(get, set):Float;
+    private var _zoom:Float = 1;
 
     public var matrix(get, null):Matrix;
     private var _matrix:Matrix = Matrix.identity();
@@ -49,8 +49,8 @@ class Camera extends BaseObject implements IUpdatable {
     public var deadzone:Rect = null;
     public var style:CameraStyle = CameraStyle.LOCKON;
 
-    private var _shakeDuration:Float32 = 0;
-    private var _shakeIntensity:Float32 = 0;
+    private var _shakeDuration:Float = 0;
+    private var _shakeIntensity:Float = 0;
     private var _shakeAxisX:Bool = true;
     private var _shakeAxisY:Bool = true;
 
@@ -98,14 +98,14 @@ class Camera extends BaseObject implements IUpdatable {
         _dirty = true;
     }
 
-    public function shake(intensity:Float32 = 0.02, duration:Float32 = 0.5, axisX:Bool = true, axisY:Bool = true) {
+    public function shake(intensity:Float = 0.02, duration:Float = 0.5, axisX:Bool = true, axisY:Bool = true) {
         _shakeIntensity = intensity;
         _shakeDuration = duration;
         _shakeAxisX = axisX;
         _shakeAxisY = axisY;
     }
 
-    public function update(dt:Float32) {
+    public function update(dt:Float) {
         if(target != null){
             var pos = target.transform.position;
 
@@ -213,7 +213,7 @@ class Camera extends BaseObject implements IUpdatable {
         lookAt.copy(entity.transform.position);
     }
 
-    public function follow(entity:Entity, ?style:CameraStyle, lerpX:Float32 = 1, lerpY:Float32 = 1) {
+    public function follow(entity:Entity, ?style:CameraStyle, lerpX:Float = 1, lerpY:Float = 1) {
         target = entity;
         lookAtEntity(target);
         followLerp.set(lerpX, lerpY);
@@ -332,11 +332,11 @@ class Camera extends BaseObject implements IUpdatable {
         return _transform.scale;
     }*/
 
-    inline function get_zoom():Float32 {
+    inline function get_zoom():Float {
         return _zoom;
     }
 
-    function set_zoom(value:Float32):Float32 {
+    function set_zoom(value:Float):Float {
         _dirty = true;
         _containerTransform.scale.set(value, value);
         return _zoom = value;
@@ -347,11 +347,11 @@ class Camera extends BaseObject implements IUpdatable {
         return _matrix;
     }
 
-    inline function get_rotation():Float32 {
+    inline function get_rotation():Float {
         return _containerTransform.rotation;
     }
 
-    function set_rotation(value:Float32):Float32 {
+    function set_rotation(value:Float):Float {
         _dirty = true;
         return _containerTransform.rotation = value;
     }

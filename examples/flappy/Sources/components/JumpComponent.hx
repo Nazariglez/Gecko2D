@@ -5,28 +5,28 @@ import gecko.tween.Tween;
 import gecko.tween.Easing;
 import gecko.input.MouseButton;
 import gecko.input.Mouse;
-import gecko.Float32;
+
 
 import GameState;
 
 using gecko.utils.MathHelper;
 
 class JumpComponent extends BehaviorComponent {
-    private var _jumpingHeight:Float32 = 0;
-    private var _jumpingTime:Float32 = 0;
+    private var _jumpingHeight:Float = 0;
+    private var _jumpingTime:Float = 0;
 
     private var _tween:Tween;
 
     public var isJumping(default, null):Bool = false;
 
-    public function init(jumpingHeight:Float32, jumpingTime:Float32) {
+    public function init(jumpingHeight:Float, jumpingTime:Float) {
         _jumpingHeight = jumpingHeight;
         _jumpingTime = jumpingTime;
 
         isJumping = false;
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         if(GameState.State == FlappyState.Playing || GameState.State == FlappyState.Idle){
             if(Mouse.wasPressed(MouseButton.LEFT)){
                 isJumping = true;

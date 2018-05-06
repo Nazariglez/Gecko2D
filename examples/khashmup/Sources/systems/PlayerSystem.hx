@@ -4,7 +4,7 @@ import gecko.components.motion.MovementComponent;
 import gecko.Entity;
 import gecko.math.Rect;
 import gecko.input.Keyboard;
-import gecko.Float32;
+
 import gecko.IUpdatable;
 import gecko.systems.System;
 
@@ -19,7 +19,7 @@ class PlayerSystem extends System implements IUpdatable {
         this.bounds = bounds;
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         eachEntity(function(e:Entity){
             var player:PlayerComponent = e.getComponent(PlayerComponent);
             var movement:MovementComponent = e.getComponent(MovementComponent);

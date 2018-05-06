@@ -4,7 +4,7 @@ import gecko.input.KeyCode;
 import gecko.input.Keyboard;
 import gecko.components.draw.TextComponent;
 import gecko.Screen;
-import gecko.Float32;
+
 import gecko.components.draw.AnimationComponent;
 
 class DrawAnimationScene extends CustomScene {
@@ -82,7 +82,7 @@ class DrawAnimationScene extends CustomScene {
         }
     }
 
-    private function _createAnimatedEntity(x:Float32, y:Float32, sx:Float32 = 1, sy:Float32 = 1) : AnimationComponent {
+    private function _createAnimatedEntity(x:Float, y:Float, sx:Float = 1, sy:Float = 1) : AnimationComponent {
         var e = createEntity();
         e.transform.position.set(x, y);
         e.transform.scale.set(sx, sy);

@@ -22,8 +22,8 @@ class Gecko {
     static public var graphics:Graphics;
     static private var _opts:GeckoOptions;
 
-    static public var onSystemUpdate:Event<Float32->Void> = Event.create();
-    static public var onUpdate:Event<Float32->Void> = Event.create();
+    static public var onSystemUpdate:Event<Float->Void> = Event.create();
+    static public var onUpdate:Event<Float->Void> = Event.create();
     static public var onDraw:Event<Graphics->Void> = Event.create();
     static public var onStart:Event<Void->Void> = Event.create();
     static public var onStop:Event<Void->Void> = Event.create();

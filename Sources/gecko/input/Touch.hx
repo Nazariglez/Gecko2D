@@ -1,6 +1,6 @@
 package gecko.input;
 
-import gecko.Float32;
+
 import gecko.math.Point;
 import gecko.utils.Event;
 import kha.input.Surface;
@@ -8,14 +8,14 @@ import kha.input.Surface;
 class Touch {
     static private var _instance:Touch = new Touch();
 
-    static public var onPressed:Event<Int->Float32->Float32->Void>;
-    static public var onReleased:Event<Int->Float32->Float32->Void>;
-    static public var onDown:Event<Int->Float32->Float32->Void>;
-    static public var onMove:Event<Int->Float32->Float32->Void>;
+    static public var onPressed:Event<Int->Float->Float->Void>;
+    static public var onReleased:Event<Int->Float->Float->Void>;
+    static public var onDown:Event<Int->Float->Float->Void>;
+    static public var onMove:Event<Int->Float->Float->Void>;
 
     static private var _pressed:Map<Int, Bool> = new Map();
     static private var _released:Map<Int, Bool> = new Map();
-    static private var _down:Map<Int, Float32> = new Map();
+    static private var _down:Map<Int, Float> = new Map();
 
     static public var pointers:Array<Point> = [];
     static private var _pointers:Map<Int, Point> = new Map();
@@ -60,7 +60,7 @@ class Touch {
         return (_pointers.exists(touch)&&_down.exists(touch)) ? _pointers[touch] : null;
     }
 
-    static public function update(delta:Float32) {
+    static public function update(delta:Float) {
         for(index in _pressed.keys()) {
             onPressed.emit(index, _pointers[index].x, _pointers[index].y);
             _pressed.remove(index);
@@ -88,7 +88,7 @@ class Touch {
         return _released.exists(touch);
     }
 
-    static public function isDown(touch:Int, duration:Float32 = -1) : Bool {
+    static public function isDown(touch:Int, duration:Float = -1) : Bool {
         if(duration != -1) {
             return _down.exists(touch) && _down[touch] >= duration;
         }
@@ -96,7 +96,7 @@ class Touch {
         return _down.exists(touch);
     }
 
-    inline static public function downDuration(touch:Int) : Float32 {
+    inline static public function downDuration(touch:Int) : Float {
         return _down.exists(touch) ? _down[touch] : -1;
     }
 

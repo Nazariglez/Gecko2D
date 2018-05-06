@@ -1,7 +1,7 @@
 package gecko;
 
 import gecko.Color;
-import gecko.Float32;
+
 import gecko.math.Matrix;
 import gecko.math.Point;
 import gecko.render.BlendMode;
@@ -45,17 +45,17 @@ class Graphics {
 
     public var matrix(get, set):Matrix;
 
-	private var _swtTemp:Float32;
-	private var _shtTemp:Float32;
-	private var _dwTemp:Float32;
-	private var _dhTemp:Float32;
+	private var _swtTemp:Float;
+	private var _shtTemp:Float;
+	private var _dwTemp:Float;
+	private var _dhTemp:Float;
 
-	private var _temp1:Float32;
-	private var _temp2:Float32;
-	private var _temp3:Float32;
-	private var _temp4:Float32;
-	private var _temp5:Float32;
-	private var _temp6:Float32;
+	private var _temp1:Float;
+	private var _temp2:Float;
+	private var _temp3:Float;
+	private var _temp4:Float;
+	private var _temp5:Float;
+	private var _temp6:Float;
 
     public function new(){}
 
@@ -121,7 +121,7 @@ class Graphics {
         matrix = Graphics.emptyMatrix;
     }
 
-	public function apply(transform:Matrix, color:Color, alpha:Float32){
+	public function apply(transform:Matrix, color:Color, alpha:Float){
 		this.color = color;
 		this.alpha = alpha;
 		this.matrix = transform;
@@ -131,11 +131,11 @@ class Graphics {
 		buffer.g2.drawLine(x1, y1, x2, y2, strength);
 	}
 
-    public inline function drawImage(img:Image, x:Float32, y:Float32) : Void {
+    public inline function drawImage(img:Image, x:Float, y:Float) : Void {
 		buffer.g2.drawImage(img, x, y);
 	}
 
-	public inline function drawTexture(texture:Texture, x:Float32, y:Float32) : Void {
+	public inline function drawTexture(texture:Texture, x:Float, y:Float) : Void {
 		if(texture.rotated){
 			_swtTemp = texture.frame.width*texture.pivot.x;
 			_shtTemp = texture.frame.height*texture.pivot.y;
@@ -160,11 +160,11 @@ class Graphics {
 		}
 	}
 
-	public inline function drawSubImage(img: Image, x: Float32, y: Float32, sx: Float32, sy: Float32, sw: Float32, sh: Float32): Void {
+	public inline function drawSubImage(img: Image, x: Float, y: Float, sx: Float, sy: Float, sw: Float, sh: Float): Void {
 		buffer.g2.drawSubImage(img, x, y, sx, sy, sw, sh);
 	}
 
-	private inline function _drawSubTextureRotated(texture: Texture, x: Float32, y: Float32, sx: Float32, sy: Float32, sw: Float32, sh: Float32) : Void {
+	private inline function _drawSubTextureRotated(texture: Texture, x: Float, y: Float, sx: Float, sy: Float, sw: Float, sh: Float) : Void {
 		_temp3 = texture.frame.width*texture.pivot.x;
 		_temp4 = texture.frame.height*texture.pivot.y;
 		buffer.g2.pushTransformation(kha.math.FastMatrix3.translation(-_temp3, -_temp4));
@@ -211,7 +211,7 @@ class Graphics {
 		buffer.g2.popTransformation();
 	}
 
-	private inline function _drawSubTexture(texture:Texture, x:Float32, y:Float32, sx:Float32, sy:Float32, sw:Float32, sh:Float32) {
+	private inline function _drawSubTexture(texture:Texture, x:Float, y:Float, sx:Float, sy:Float, sw:Float, sh:Float) {
 		if(texture.trimmed){
 				_swtTemp = (sx > texture.trim.x ? sx-texture.trim.x : 0);
 				_shtTemp = (sy > texture.trim.y ? sy-texture.trim.y : 0);
@@ -253,7 +253,7 @@ class Graphics {
 			}
 	}
 
-	public inline function drawSubTexture(texture: Texture, x: Float32, y: Float32, sx: Float32, sy: Float32, sw: Float32, sh: Float32): Void {
+	public inline function drawSubTexture(texture: Texture, x: Float, y: Float, sx: Float, sy: Float, sw: Float, sh: Float): Void {
 		if(texture.rotated){
 			_drawSubTextureRotated(texture, x, y, sx, sy, sw, sh);
 		}else{
@@ -261,11 +261,11 @@ class Graphics {
 		}
 	}
 
-	public inline function drawScaledImage(img: Image, dx: Float32, dy: Float32, dw: Float32, dh: Float32): Void {
+	public inline function drawScaledImage(img: Image, dx: Float, dy: Float, dw: Float, dh: Float): Void {
 		buffer.g2.drawScaledImage(img, dx, dy, dw, dh);
 	}
 
-	public inline function drawScaledTexture(texture: Texture, dx: Float32, dy: Float32, dw: Float32, dh: Float32): Void {
+	public inline function drawScaledTexture(texture: Texture, dx: Float, dy: Float, dw: Float, dh: Float): Void {
 		if(texture.trimmed){
 			buffer.g2.drawScaledSubImage(
 				texture.image, 
@@ -283,11 +283,11 @@ class Graphics {
 		}
 	}
 
-	public inline function drawScaledSubImage(image: Image, sx: Float32, sy: Float32, sw: Float32, sh: Float32, dx: Float32, dy: Float32, dw: Float32, dh: Float32): Void {
+	public inline function drawScaledSubImage(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float): Void {
 		buffer.g2.drawScaledSubImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
 	}
 
-	public inline function drawScaledSubTexture(texture: Texture, sx: Float32, sy: Float32, sw: Float32, sh: Float32, dx: Float32, dy: Float32, dw: Float32, dh: Float32): Void {
+	public inline function drawScaledSubTexture(texture: Texture, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float): Void {
 		if(texture.trimmed){
 			_swtTemp = texture.trim.width+texture.trim.x-sx;
 			_swtTemp = sw < _swtTemp ? sw : _swtTemp;

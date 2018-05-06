@@ -4,7 +4,7 @@ import gecko.render.VerticalTextAlign;
 import gecko.Graphics;
 import gecko.render.HorizontalTextAlign;
 import gecko.resources.Font;
-import gecko.Float32;
+
 
 class TextComponent extends DrawComponent {
     public var font(default, null):Font;
@@ -29,12 +29,12 @@ class TextComponent extends DrawComponent {
 
     private var _splitRegex = ~/(?:\r\n|\r|\n)/g;
     private var _parsedText:Array<String> = [];
-    private var _parsedLineHeight:Float32 = 0;
+    private var _parsedLineHeight:Float = 0;
     private var _parsedAlign:HorizontalTextAlign;
-    private var _parsedOriginX:Float32 = 0;
+    private var _parsedOriginX:Float = 0;
 
-    public var width(default, null):Float32 = 0;
-    public var height(default, null):Float32 = 0;
+    public var width(default, null):Float = 0;
+    public var height(default, null):Float = 0;
 
     public function init(text:String, fontName:String, fontSize:Int, align:String = "left") {
         this.fontName = fontName;
@@ -136,7 +136,7 @@ class TextComponent extends DrawComponent {
     }
 
     private function _setSize() {
-        var max:Float32 = -1;
+        var max:Float = -1;
         for(line in _parsedText){
             var ww = font.width(_fontSize, line);
             if(ww > max){

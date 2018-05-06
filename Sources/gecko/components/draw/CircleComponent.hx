@@ -5,15 +5,15 @@ import gecko.Entity;
 import gecko.components.draw.DrawComponent;
 
 class CircleComponent extends DrawComponent {
-    public var radius(get, set):Float32;
-    private var _radius:Float32 = 1;
+    public var radius(get, set):Float;
+    private var _radius:Float = 1;
 
     public var fill:Bool = false;
-    public var strength:Float32 = 2;
+    public var strength:Float = 2;
     public var segments:Int = 0;
-    public var diameter(default, null):Float32 = 4;
+    public var diameter(default, null):Float = 4;
 
-    public function init(fill:Bool, radius:Float32 = 1, strength:Float32 = 2, segments:Int = 0) {
+    public function init(fill:Bool, radius:Float = 1, strength:Float = 2, segments:Int = 0) {
         this.radius = radius;
         this.fill = fill;
         this.strength = strength;
@@ -46,11 +46,11 @@ class CircleComponent extends DrawComponent {
         }
     }
 
-    inline function get_radius():Float32 {
+    inline function get_radius():Float {
         return _radius;
     }
 
-    function set_radius(value:Float32):Float32 {
+    function set_radius(value:Float):Float {
         if(value == _radius)return _radius;
 
         _radius = value;

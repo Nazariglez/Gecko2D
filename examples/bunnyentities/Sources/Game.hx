@@ -1,6 +1,6 @@
 package;
 
-import gecko.Float32;
+
 import gecko.components.draw.TextComponent;
 import gecko.components.draw.SpriteComponent;
 import gecko.Screen;
@@ -30,11 +30,11 @@ class Game {
         Gecko.onDraw += _onDraw;
 
         Mouse.enable();
-        Mouse.onLeftPressed += function(x:Float32, y:Float32){
+        Mouse.onLeftPressed += function(x:Float, y:Float){
           _addBunny(100);
         };
 
-        Mouse.onRightPressed += function(x:Float32, y:Float32){
+        Mouse.onRightPressed += function(x:Float, y:Float){
             _addBunny(500);
         };
 

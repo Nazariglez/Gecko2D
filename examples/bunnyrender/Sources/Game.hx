@@ -9,7 +9,7 @@ import gecko.Graphics;
 import gecko.Color;
 import gecko.Gecko;
 import gecko.Assets;
-import gecko.Float32;
+
 import gecko.math.Point;
 import gecko.resources.Font;
 
@@ -23,7 +23,7 @@ class Game {
     private var _font:Font;
     private var _texture:Texture;
 
-    private var _gravity:Float32 = 0.75;
+    private var _gravity:Float = 0.75;
     private var _bunnies:Array<Bunny> = [];
 
     public function new(){
@@ -43,11 +43,11 @@ class Game {
         Gecko.onDraw += _onDraw;
 
         Mouse.enable();
-        Mouse.onLeftPressed += function(x:Float32, y:Float32){
+        Mouse.onLeftPressed += function(x:Float, y:Float){
             _addBunny(500);
         };
 
-        Mouse.onRightPressed += function(x:Float32, y:Float32){
+        Mouse.onRightPressed += function(x:Float, y:Float){
             _addBunny(1000);
         }
 
@@ -71,7 +71,7 @@ class Game {
         }
     }
 
-    private function _onUpdate(dt:Float32) {
+    private function _onUpdate(dt:Float) {
         for(bunny in _bunnies){
             bunny.position.x += bunny.speed.x;
             bunny.position.y += bunny.speed.y;

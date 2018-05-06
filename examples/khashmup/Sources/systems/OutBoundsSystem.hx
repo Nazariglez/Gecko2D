@@ -1,7 +1,7 @@
 package systems;
 
 import gecko.Entity;
-import gecko.Float32;
+
 import gecko.math.Rect;
 import gecko.systems.System;
 import gecko.IUpdatable;
@@ -17,7 +17,7 @@ class OutBoundsSystem extends System implements IUpdatable {
         this.bounds = bounds;
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         eachEntity(function(e:Entity){
             //destroy entity if is out of bounds
             if(e.transform.top > bounds.bottom || e.transform.bottom < bounds.top || e.transform.left > bounds.right || e.transform.right < bounds.left){

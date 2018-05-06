@@ -9,12 +9,12 @@ class PolygonComponent extends DrawComponent {
     private var _points:Array<Point>;
 
     public var fill:Bool = false;
-    public var strength:Float32 = 2;
+    public var strength:Float = 2;
 
-    private var _width:Float32 = 0;
-    private var _height:Float32 = 0;
+    private var _width:Float = 0;
+    private var _height:Float = 0;
 
-    public function init(fill:Bool, points:Array<Point>, strength:Float32 = 2) {
+    public function init(fill:Bool, points:Array<Point>, strength:Float = 2) {
         this.fill = fill;
         this.strength = strength;
         setPoints(points);

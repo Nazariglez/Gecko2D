@@ -1,12 +1,12 @@
 package gecko.tween;
 
 import gecko.utils.Event;
-import gecko.Float32;
+
 
 using gecko.utils.ArrayHelper;
 
 class Tween extends BaseObject {
-    inline static public function interpolate(from:Float32, to:Float32, totalTime:Float32, elapsedTime:Float32, easing:Ease) : Float32 {
+    inline static public function interpolate(from:Float, to:Float, totalTime:Float, elapsedTime:Float, easing:Ease) : Float {
         return from + ((to - from) * easing(elapsedTime/totalTime));
     }
 
@@ -14,7 +14,7 @@ class Tween extends BaseObject {
     public var onStop:Event<Void->Void>;
     public var onInit:Event<Void->Void>;
     public var onEnd:Event<Void->Void>;
-    public var onUpdate:Event<Float32->Void>;
+    public var onUpdate:Event<Float->Void>;
     public var onYoyo:Event<Void->Void>;
     public var onRepeat:Event<Int->Void>;
     public var onPause:Event<Void->Void>;
@@ -28,8 +28,8 @@ class Tween extends BaseObject {
     public var destroyOnEnd:Bool = false;
     public var easing:Ease = Easing.linear;
     public var loop:Bool = false;
-    public var delay:Float32 = 0;
-    public var time:Float32 = 0;
+    public var delay:Float = 0;
+    public var time:Float = 0;
 
     public var repeat:Int = 0;
     private var _repeat:Int = 0;
@@ -37,8 +37,8 @@ class Tween extends BaseObject {
     public var yoyo:Bool = false;
     private var _yoyo:Bool = false;
 
-    private var _delayTime:Float32 = 0;
-    private var _elapsedTime:Float32 = 0;
+    private var _delayTime:Float = 0;
+    private var _elapsedTime:Float = 0;
 
     public var target:Dynamic;
     public var manager(default, null):TweenManager;
@@ -46,8 +46,8 @@ class Tween extends BaseObject {
     private var _to:Dynamic = {};
     private var _from:Dynamic = {};
 
-    private var _subtargetTo:Array<Map<String, Float32>> = [];
-    private var _subtargetFrom:Array<Map<String, Float32>> = [];
+    private var _subtargetTo:Array<Map<String, Float>> = [];
+    private var _subtargetFrom:Array<Map<String, Float>> = [];
     private var _subtarget:Array<Dynamic> = [];
 
     public function new() {
@@ -64,7 +64,7 @@ class Tween extends BaseObject {
         onResume = Event.create();
     }
 
-    public function init(target:Dynamic, valuesTo:Dynamic, time:Float32, ?easing:Ease, ?manager:TweenManager) {
+    public function init(target:Dynamic, valuesTo:Dynamic, time:Float, ?easing:Ease, ?manager:TweenManager) {
         this.target = target;
         this.easing = easing != null ? easing : Easing.linear;
         this.manager = manager != null ? manager : Gecko.tweenManager;
@@ -155,7 +155,7 @@ class Tween extends BaseObject {
         return time > 0 && isActive && !isPaused && target != null;
     }
 
-    public function update(dt:Float32) {
+    public function update(dt:Float) {
         if(!_canUpdate()) {
             return;
         }
@@ -235,12 +235,12 @@ class Tween extends BaseObject {
 
     private function _parse(to:Dynamic, from:Dynamic, targ:Dynamic) {
         var _target1:Dynamic = null;
-        var _to1:Map<String, Float32> = null;
-        var _from1:Map<String, Float32> = null;
+        var _to1:Map<String, Float> = null;
+        var _from1:Map<String, Float> = null;
 
         for(k in Reflect.fields(to)){
-            var toVal:Null<Float32> = Reflect.getProperty(to, k);
-            var fromVal:Null<Float32> = Reflect.getProperty(from, k);
+            var toVal:Null<Float> = Reflect.getProperty(to, k);
+            var fromVal:Null<Float> = Reflect.getProperty(from, k);
             var targetVal:Dynamic = Reflect.getProperty(targ, k);
 
             if(Reflect.isObject(toVal)){
@@ -266,7 +266,7 @@ class Tween extends BaseObject {
         }
     }
 
-    public function _apply(to:Map<String, Float32>, from:Map<String, Float32>, time:Float32, targ:Dynamic) {
+    public function _apply(to:Map<String, Float>, from:Map<String, Float>, time:Float, targ:Dynamic) {
         //trace(targ, to, from);
         for(k in to.keys()){ //todo avoid to use map.keys() because create an array each time
             var b = from[k];

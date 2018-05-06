@@ -2,7 +2,7 @@ package;
 
 import gecko.Assets;
 import gecko.Gecko;
-import gecko.Float32;
+
 import gecko.math.Random;
 import gecko.systems.draw.DrawSystem;
 import gecko.components.draw.NineSliceComponent;
@@ -19,7 +19,7 @@ class Game {
     }
 
     //create nine-slice sprites using positon and size
-    private function _createNineSlice(x:Float32, y:Float32, width:Float32, height:Float32) {
+    private function _createNineSlice(x:Float, y:Float, width:Float, height:Float) {
         //create an entity in the current scene
         var entity = Gecko.currentScene.createEntity();
 

@@ -21,11 +21,11 @@ class Audio extends BaseObject {
     public var isPlaying(default, null):Bool = false;
     public var isPaused(default, null):Bool = false;
 
-    public var position(get, null):Float32;
-    public var length(get, null):Float32;
+    public var position(get, null):Float;
+    public var length(get, null):Float;
 
-    public var volume(get, set):Float32;
-    private var _volume:Float32 = 1;
+    public var volume(get, set):Float;
+    private var _volume:Float = 1;
 
     private var _channel:AudioChannel;
     private var _lastLoop:Bool = false;
@@ -105,7 +105,7 @@ class Audio extends BaseObject {
         onResume.emit();
     }
 
-    public function update(dt:Float32) {
+    public function update(dt:Float) {
         if(isPlaying && _channel.finished){
             _finish();
         }
@@ -176,19 +176,19 @@ class Audio extends BaseObject {
         return _sound = snd;
     }
 
-    inline function get_position():Float32 {
+    inline function get_position():Float {
         return _channel != null ? _channel.position : 0;
     }
 
-    inline function get_length():Float32 {
+    inline function get_length():Float {
         return _channel != null ? _channel.length : 0;
     }
 
-    inline function get_volume() : Float32 {
+    inline function get_volume() : Float {
         return _volume;
     }
 
-    function set_volume(value:Float32) : Float32 {
+    function set_volume(value:Float) : Float {
         if(value == _volume)return _volume;
         return _channel != null ? (_channel.volume = value) : (_volume = value);
     }

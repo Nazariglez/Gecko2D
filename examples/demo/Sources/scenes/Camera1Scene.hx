@@ -5,7 +5,7 @@ import gecko.components.misc.BehaviorComponent;
 import gecko.Camera.CameraStyle;
 import gecko.math.Rect;
 import gecko.Graphics;
-import gecko.Float32;
+
 import gecko.input.KeyCode;
 import gecko.input.Keyboard;
 import gecko.components.draw.SpriteComponent;
@@ -47,7 +47,7 @@ class PlayerMovement extends BehaviorComponent {
         this.cam = cam;
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         if(Keyboard.isDown(KeyCode.Left)) entity.transform.position.x -= 350*dt;
         if(Keyboard.isDown(KeyCode.Right)) entity.transform.position.x += 350*dt;
         if(Keyboard.isDown(KeyCode.Up)) entity.transform.position.y -= 350*dt;

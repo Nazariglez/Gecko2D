@@ -4,7 +4,7 @@ import gecko.components.draw.DrawComponent;
 import gecko.systems.misc.BehaviorSystem;
 import gecko.systems.draw.DrawSystem;
 import gecko.Gecko;
-import gecko.Float32;
+
 import gecko.components.input.MouseComponent;
 import gecko.components.draw.SpriteComponent;
 import gecko.Screen;
@@ -49,18 +49,18 @@ class CustomScene extends Scene {
         var mouse = btn.addComponent(MouseComponent.create());
         mouse.onClick += _gotoMainScene;
 
-        mouse.onOver += function(x:Float32, y:Float32) {
+        mouse.onOver += function(x:Float, y:Float) {
             sprite.color = Color.Red;
         };
 
-        mouse.onOut += function(x:Float32, y:Float32) {
+        mouse.onOut += function(x:Float, y:Float) {
             sprite.color = Color.White;
         };
 
         return btn;
     }
 
-    private function _gotoMainScene(x:Float32, y:Float32) {
+    private function _gotoMainScene(x:Float, y:Float) {
         Gecko.world.changeScene(MainScene.create(), true);
     }
 }

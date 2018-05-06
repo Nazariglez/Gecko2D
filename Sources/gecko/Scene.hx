@@ -303,7 +303,7 @@ class Scene extends BaseObject {
         onSystemRemoved.emit(system);
     }
 
-    public function process(delta:Float32) {
+    public function process(delta:Float) {
         _isProcessing = true;
         if(_dirtySortSystems){
             _systemsList.sort(_sortSystems);
@@ -345,7 +345,7 @@ class Scene extends BaseObject {
         _isProcessing = false;
     }
 
-    public function update(delta:Float32) {
+    public function update(delta:Float) {
         timerManager.tick(delta);
         tweenManager.tick(delta);
 

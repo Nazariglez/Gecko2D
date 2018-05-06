@@ -13,32 +13,32 @@ class ScrollingSpriteComponent extends DrawComponent {
     public var position:Point;
     public var speed:Point;
 
-    public var width(get, set):Float32;
-    private var _width:Float32;
+    public var width(get, set):Float;
+    private var _width:Float;
 
-    public var height(get, set):Float32;
-    private var _height:Float32;
+    public var height(get, set):Float;
+    private var _height:Float;
 
-    private var _scrollX:Float32 = 0;
-    private var _scrollY:Float32 = 0;
+    private var _scrollX:Float = 0;
+    private var _scrollY:Float = 0;
     private var _lenX:Int = 0;
     private var _lenY:Int = 0;
-    private var _offsetX:Float32 = 0;
-    private var _offsetY:Float32 = 0;
+    private var _offsetX:Float = 0;
+    private var _offsetY:Float = 0;
 
-    private var _xx:Float32 = 0;
-    private var _yy:Float32 = 0;
-    private var _sx:Float32 = 0;
-    private var _sy:Float32 = 0;
-    private var _sw:Float32 = 0;
-    private var _sh:Float32 = 0;
-    private var _dw:Float32 = 0;
-    private var _dh:Float32 = 0;
+    private var _xx:Float = 0;
+    private var _yy:Float = 0;
+    private var _sx:Float = 0;
+    private var _sy:Float = 0;
+    private var _sw:Float = 0;
+    private var _sh:Float = 0;
+    private var _dw:Float = 0;
+    private var _dh:Float = 0;
 
-    private var _sizeScrollX:Float32 = 0;
-    private var _sizeScrollY:Float32 = 0;
+    private var _sizeScrollX:Float = 0;
+    private var _sizeScrollY:Float = 0;
 
-    public function init(texture:String, width:Float32, height:Float32){
+    public function init(texture:String, width:Float, height:Float){
         this.width = width;
         this.height = height;
         this.texture = Assets.textures.get(texture);
@@ -67,7 +67,7 @@ class ScrollingSpriteComponent extends DrawComponent {
         texture = null;
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         if(_texture == null)return;
 
         if(speed.x != 0){
@@ -169,25 +169,25 @@ class ScrollingSpriteComponent extends DrawComponent {
         return _texture = value;
     }
 
-    inline function get_width():Float32 {
+    inline function get_width():Float {
         return _width;
     }
 
-    function set_width(value:Float32):Float32 {
+    function set_width(value:Float):Float {
         if(entity != null && entity.transform != null){
             entity.transform.size.x = value / entity.transform.scale.x;
         }
         return _width = value;
     }
 
-    function set_height(value:Float32):Float32 {
+    function set_height(value:Float):Float {
         if(entity != null && entity.transform != null){
             entity.transform.size.y = value / entity.transform.scale.y;
         }
         return _height = value;
     }
 
-    inline function get_height():Float32 {
+    inline function get_height():Float {
         return _height;
     }
 }

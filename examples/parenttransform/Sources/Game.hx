@@ -1,6 +1,6 @@
 package;
 
-import gecko.Float32;
+
 import gecko.components.draw.DrawComponent;
 import gecko.components.draw.SpriteComponent;
 import gecko.Screen;
@@ -45,7 +45,7 @@ class Game {
         }
 
         //attach to the onUpdate event of gecko a simple function
-        Gecko.onUpdate += function(delta:Float32) {
+        Gecko.onUpdate += function(delta:Float) {
             //rotate the container using delta time
             container.transform.rotation += 1 * delta;
         };

@@ -7,7 +7,7 @@ class BehaviorSystem extends System implements IUpdatable {
         filter.base([BehaviorComponent]);
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         eachEntity(function(e:Entity){
             var components:Array<BehaviorComponent> = e.getComponentsOfType(BehaviorComponent);
             for(c in components){

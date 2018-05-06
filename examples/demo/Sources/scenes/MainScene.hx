@@ -5,7 +5,7 @@ import gecko.Gecko;
 import gecko.Color;
 import gecko.components.input.MouseComponent;
 import gecko.components.draw.NineSliceComponent;
-import gecko.Float32;
+
 import gecko.Screen;
 import gecko.components.draw.TextComponent;
 
@@ -157,7 +157,7 @@ class MainScene extends CustomScene {
         Gecko.world.changeScene(scene, true);
     }
 
-    private function _createButton(text:String, x:Float32, y:Float32, callback:Float32->Float32->Void) {
+    private function _createButton(text:String, x:Float, y:Float, callback:Float->Float->Void) {
         //Button sprite
         var btn = createEntity();
         btn.transform.position.set(x, y);
@@ -178,11 +178,11 @@ class MainScene extends CustomScene {
 
         //over and out color effect
         var mouse = btn.addComponent(MouseComponent.create());
-        mouse.onOver += function(x:Float32, y:Float32) {
+        mouse.onOver += function(x:Float, y:Float) {
             nineSlice.color = Color.LightGreen;
         };
 
-        mouse.onOut += function(x:Float32, y:Float32){
+        mouse.onOut += function(x:Float, y:Float){
             nineSlice.color = Color.White;
         };
 
@@ -190,7 +190,7 @@ class MainScene extends CustomScene {
         mouse.onClick += callback;
     }
 
-    private function _addTitle(x:Float32, y:Float32) {
+    private function _addTitle(x:Float, y:Float) {
         var entity = createEntity();
         entity.transform.position.set(x, y);
         entity.addComponent(TextComponent.create("Gecko2D Demo", "Ubuntu-B.ttf", 70));

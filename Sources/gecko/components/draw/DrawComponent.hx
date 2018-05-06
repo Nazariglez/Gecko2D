@@ -5,23 +5,23 @@ import gecko.resources.Texture;
 import gecko.Graphics;
 import gecko.IDrawable;
 import gecko.IUpdatable;
-import gecko.Float32;
+
 
 class DrawComponent extends Component implements IDrawable implements IUpdatable {
     public var visible:Bool = true;
     public var color:Color = Color.White;
 
-    public var localAlpha(get, set):Float32;
-    private var _localAlpha:Float32 = 1;
+    public var localAlpha(get, set):Float;
+    private var _localAlpha:Float = 1;
 
-    public var alpha(get, set):Float32;
-    private var _alpha:Float32 = 1;
+    public var alpha(get, set):Float;
+    private var _alpha:Float = 1;
 
     private var _dirtyAlpha:Bool = true;
 
     public var isVisible(get, null):Bool;
 
-    public function update(dt:Float32){}
+    public function update(dt:Float){}
 
     public function preDraw(g:Graphics){}
     public function draw(graphics:Graphics){}
@@ -74,18 +74,18 @@ class DrawComponent extends Component implements IDrawable implements IUpdatable
         return visible && alpha > 0;
     }
 
-    inline function get_localAlpha():Float32 {
+    inline function get_localAlpha():Float {
         return _localAlpha;
     }
 
-    function set_localAlpha(value:Float32):Float32 {
+    function set_localAlpha(value:Float):Float {
         if(value == _localAlpha)return _localAlpha;
 
         _dirtyAlpha = true;
         return _localAlpha = value;
     }
 
-    function get_alpha():Float32 {
+    function get_alpha():Float {
         if(_dirtyAlpha){
             if(entity != null && entity.transform.parent != null){
                 var drawComponent:DrawComponent = entity.transform.parent.entity.getDrawComponent();
@@ -102,7 +102,7 @@ class DrawComponent extends Component implements IDrawable implements IUpdatable
         return _alpha;
     }
 
-    function set_alpha(value:Float32):Float32 {
+    function set_alpha(value:Float):Float {
         if(value == _alpha)return _alpha;
         if(entity != null && entity.transform.parent != null){
             var drawComponent:DrawComponent = entity.transform.parent.entity.getDrawComponent();

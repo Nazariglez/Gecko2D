@@ -1,21 +1,21 @@
 package;
 
 import gecko.Transform;
-import gecko.Float32;
+
 import gecko.systems.System;
 import gecko.IUpdatable;
 import gecko.Screen;
 
 class BounceSystem extends System implements IUpdatable {
-    public var gravity:Float32;
+    public var gravity:Float;
 
-    public function init(gravity:Float32){
+    public function init(gravity:Float){
         filter.equal(BounceComponent);
 
         this.gravity = gravity;
     }
 
-    override public function update(dt:Float32) {
+    override public function update(dt:Float) {
         for(e in getEntities()){
             var transform:Transform = e.transform;
             var movement:BounceComponent = e.getComponent(BounceComponent);

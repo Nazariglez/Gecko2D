@@ -1,7 +1,7 @@
 package;
 
 import gecko.Gecko;
-import gecko.Float32;
+
 import gecko.components.draw.SpriteComponent;
 import gecko.systems.draw.DrawSystem;
 
@@ -27,7 +27,7 @@ class Game {
     }
 
     //Create an add the sprite
-    private function _createSprite(spriteName:String, x:Float32, y:Float32) {
+    private function _createSprite(spriteName:String, x:Float, y:Float) {
         //create an entity in the current scene
         var entity = Gecko.currentScene.createEntity();
 

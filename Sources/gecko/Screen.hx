@@ -21,8 +21,8 @@ class Screen {
 
     static public var buffer(default, null):Image;
 
-    static public var width(get, null):Float32;
-    static public var height(get, null):Float32;
+    static public var width(get, null):Float;
+    static public var height(get, null):Float;
     static public var mode(get, set):ScreenMode;
     static private var _mode:ScreenMode = ScreenMode.None;
 
@@ -36,8 +36,8 @@ class Screen {
     static public var windowWidth(default, null):Int = 0;
     static public var windowHeight(default, null):Int = 0;
 
-    static public var centerX(default, null):Float32 = 0;
-    static public var centerY(default, null):Float32 = 0;
+    static public var centerX(default, null):Float = 0;
+    static public var centerY(default, null):Float = 0;
 
     static public function init(opts:ScreenOptions, antialiasing:Int, _windowWidth:Int, _windowHeight:Int) {
         _size.x = opts.width;
@@ -63,7 +63,7 @@ class Screen {
         }
     }
     
-    inline static public function getRealScreenPoint(x:Float32, y:Float32, outPoint:Point) {
+    inline static public function getRealScreenPoint(x:Float, y:Float, outPoint:Point) {
         var id = 1 / ((matrix._00 * matrix._11) + (matrix._10 * -matrix._01));
         outPoint.set(
             (matrix._11 * id * x) + (-matrix._10 * id * y) + (((matrix._21 * matrix._10) - (matrix._20 * matrix._11)) * id),
@@ -155,11 +155,11 @@ class Screen {
         return _mode;
     }
 
-    static inline function get_width():Float32 {
+    static inline function get_width():Float {
         return buffer.width;
     }
 
-    static inline function get_height():Float32 {
+    static inline function get_height():Float {
         return buffer.height;
     }
 

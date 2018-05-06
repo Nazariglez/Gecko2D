@@ -1,7 +1,7 @@
 package gecko;
 
 import gecko.math.Random;
-import gecko.Float32;
+
 
 abstract Color(Int) from Int from UInt to Int to UInt {
 	public static inline var AliceBlue : Color = 0xF0F8FF;
@@ -153,7 +153,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static inline var Yellow : Color = 0xFFFF00;
 	public static inline var YellowGreen : Color = 0x9ACD32;
 
-	private static inline var invMaxChannelValue: Float32 = 1 / 255;
+	private static inline var invMaxChannelValue: Float = 1 / 255;
 
 	//todo add more colors
 	//todo added utilities like multiply, screen, saturate, etc...
@@ -170,7 +170,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		return (r << 16) | (g << 8) | b;
 	}
 
-	inline public static function fromFloats(r: Float32, g: Float32, b: Float32): Int {
+	inline public static function fromFloats(r: Float, g: Float, b: Float): Int {
 		return (Std.int(r * 255) << 16) | (Std.int(g * 255) << 8) | Std.int(b * 255);
 	}
 
@@ -223,35 +223,35 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		return i;
 	}
 
-	public var RedValue(get, set):Float32;
+	public var RedValue(get, set):Float;
 	
-	private inline function get_RedValue() : Float32 {
+	private inline function get_RedValue() : Float {
 		return get_RedByte() * invMaxChannelValue;
 	}
 
-	private inline function set_RedValue(f: Float32): Float32 {
+	private inline function set_RedValue(f: Float): Float {
 		this = (Std.int(f * 255) << 16) | (Std.int(GreenValue * 255) << 8) | Std.int(BlueValue * 255);
 		return f;
 	}
 
-	public var GreenValue(get, set):Float32;
+	public var GreenValue(get, set):Float;
 	
-	private inline function get_GreenValue() : Float32 {
+	private inline function get_GreenValue() : Float {
 		return get_GreenByte() * invMaxChannelValue;
 	}
 
-	private inline function set_GreenValue(f: Float32): Float32 {
+	private inline function set_GreenValue(f: Float): Float {
 		this = (Std.int(RedValue * 255) << 16) | (Std.int(f * 255) << 8) | Std.int(BlueValue * 255);
 		return f;
 	}
 
-	public var BlueValue(get, set):Float32;
+	public var BlueValue(get, set):Float;
 	
-	private inline function get_BlueValue() : Float32 {
+	private inline function get_BlueValue() : Float {
 		return get_BlueByte() * invMaxChannelValue;
 	}
 
-	private inline function set_BlueValue(f: Float32): Float32 {
+	private inline function set_BlueValue(f: Float): Float {
 		this = (Std.int(RedValue * 255) << 16) | (Std.int(GreenValue * 255) << 8) | Std.int(f * 255);
 		return f;
 	}

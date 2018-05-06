@@ -6,7 +6,7 @@ import gecko.input.KeyCode;
 import gecko.Screen;
 import gecko.components.draw.TextComponent;
 import gecko.Entity;
-import gecko.Float32;
+
 import gecko.systems.draw.DrawSystem;
 import gecko.Scene;
 
@@ -32,7 +32,7 @@ class MainScene extends Scene {
         }
     }
 
-    public function _createText(text:String, x:Float32, y:Float32, size:Int, align:String = "left"){
+    public function _createText(text:String, x:Float, y:Float, size:Int, align:String = "left"){
         var e:Entity = createEntity();
         e.transform.position.set(x, y);
         e.addComponent(TextComponent.create(text, "kenpixel_mini_square.ttf", size, align));

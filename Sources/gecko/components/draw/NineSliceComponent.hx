@@ -2,13 +2,13 @@ package gecko.components.draw;
 
 import gecko.resources.Texture;
 import gecko.Graphics;
-import gecko.Float32;
+
 
 typedef NineSliceOptions = {
-    var top:Float32;
-    var bottom:Float32;
-    var left:Float32;
-    var right:Float32;
+    var top:Float;
+    var bottom:Float;
+    var left:Float;
+    var right:Float;
 }
 
 class NineSliceComponent extends DrawComponent {
@@ -17,22 +17,22 @@ class NineSliceComponent extends DrawComponent {
 
     private var _options:NineSliceOptions;
 
-    private var _top:Float32 = 0;
-    private var _bottom:Float32 = 0;
-    private var _left:Float32 = 0;
-    private var _right:Float32 = 0;
-    private var _centerW:Float32 = 0;
-    private var _centerH:Float32 = 0;
-    private var _sw:Float32 = 0;
-    private var _sh:Float32 = 0;
+    private var _top:Float = 0;
+    private var _bottom:Float = 0;
+    private var _left:Float = 0;
+    private var _right:Float = 0;
+    private var _centerW:Float = 0;
+    private var _centerH:Float = 0;
+    private var _sw:Float = 0;
+    private var _sh:Float = 0;
 
-    public var width(get, set):Float32;
-    private var _width:Float32 = 0;
+    public var width(get, set):Float;
+    private var _width:Float = 0;
 
-    public var height(get, set):Float32;
-    private var _height:Float32 = 0;
+    public var height(get, set):Float;
+    private var _height:Float = 0;
 
-    public function init(texture:String, width:Float32 = 0, height:Float32 = 0, ?options:NineSliceOptions) {
+    public function init(texture:String, width:Float = 0, height:Float = 0, ?options:NineSliceOptions) {
         this.texture = Assets.textures.get(texture);
         _options = options;
 
@@ -106,22 +106,22 @@ class NineSliceComponent extends DrawComponent {
         return _texture;
     }
 
-    inline function get_width():Float32 {
+    inline function get_width():Float {
         return _width;
     }
 
-    function set_width(value:Float32):Float32 {
+    function set_width(value:Float):Float {
         if(entity != null && entity.transform != null){
             entity.transform.size.x = value / entity.transform.scale.x;
         }
         return _width = value;
     }
 
-    inline function get_height():Float32 {
+    inline function get_height():Float {
         return _height;
     }
 
-    function set_height(value:Float32):Float32 {
+    function set_height(value:Float):Float {
         if(entity != null && entity.transform != null){
             entity.transform.size.y = value / entity.transform.scale.y;
         }

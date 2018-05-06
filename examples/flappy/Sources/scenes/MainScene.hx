@@ -8,7 +8,7 @@ import gecko.components.draw.ScrollingSpriteComponent;
 import gecko.math.Rect;
 import gecko.Camera;
 import gecko.Gecko;
-import gecko.Float32;
+
 import gecko.input.Mouse;
 import gecko.components.draw.DrawComponent;
 import gecko.Assets;
@@ -125,7 +125,7 @@ class MainScene extends Scene {
         text.text = '$points';
     }
 
-    private function _initGame(x:Float32, y:Float32) {
+    private function _initGame(x:Float, y:Float) {
         if(GameState.State != FlappyState.Idle)return;
         GameState.State = FlappyState.Playing;
 
@@ -137,7 +137,7 @@ class MainScene extends Scene {
         Mouse.onLeftPressed -= _initGame;
     }
 
-    private function _restartGame(x:Float32, y:Float32) {
+    private function _restartGame(x:Float, y:Float) {
         if(GameState.State != FlappyState.End)return;
         Mouse.onLeftPressed -= _restartGame;
 

@@ -3,7 +3,7 @@ package gecko.input;
 import gecko.utils.Event;
 import kha.input.Mouse as KhaMouse;
 import gecko.math.Point;
-import gecko.Float32;
+
 import gecko.Screen;
 
 class Mouse {
@@ -11,30 +11,30 @@ class Mouse {
     static public var isLocked(get, null):Bool;
 
     static public var position(default, null):Point = Point.create(0, 0);
-    static public var x(get, set):Float32;
-    static public var y(get, set):Float32;
+    static public var x(get, set):Float;
+    static public var y(get, set):Float;
 
     static public var movementX:Int = 0;
     static public var movementY:Int = 0;
 
-    static public var onRightPressed:Event<Float32->Float32->Void> = Event.create();
-    static public var onRightReleased:Event<Float32->Float32->Void> = Event.create();
-    static public var onRightDown:Event<Float32->Float32->Void> = Event.create();
+    static public var onRightPressed:Event<Float->Float->Void> = Event.create();
+    static public var onRightReleased:Event<Float->Float->Void> = Event.create();
+    static public var onRightDown:Event<Float->Float->Void> = Event.create();
 
-    static public var onLeftPressed:Event<Float32->Float32->Void> = Event.create();
-    static public var onLeftReleased:Event<Float32->Float32->Void> = Event.create();
-    static public var onLeftDown:Event<Float32->Float32->Void> = Event.create();
+    static public var onLeftPressed:Event<Float->Float->Void> = Event.create();
+    static public var onLeftReleased:Event<Float->Float->Void> = Event.create();
+    static public var onLeftDown:Event<Float->Float->Void> = Event.create();
 
-    static public var onCenterPressed:Event<Float32->Float32->Void> = Event.create();
-    static public var onCenterReleased:Event<Float32->Float32->Void> = Event.create();
-    static public var onCenterDown:Event<Float32->Float32->Void> = Event.create();
+    static public var onCenterPressed:Event<Float->Float->Void> = Event.create();
+    static public var onCenterReleased:Event<Float->Float->Void> = Event.create();
+    static public var onCenterDown:Event<Float->Float->Void> = Event.create();
 
-    static public var onWheelMove:Event<Float32->Void> = Event.create();
-    static public var onMove:Event<Float32->Float32->Void> = Event.create();
+    static public var onWheelMove:Event<Float->Void> = Event.create();
+    static public var onMove:Event<Float->Float->Void> = Event.create();
 
     static private var _pressedButtons:Array<Bool> = [false, false, false];
     static private var _releasedButtons:Array<Bool> = [false, false, false];
-    static private var _downButtons:Array<Float32> = [-1, -1, -1];
+    static private var _downButtons:Array<Float> = [-1, -1, -1];
 
     //todo limit fps to 30 by default to check buttons state?
 
@@ -68,7 +68,7 @@ class Mouse {
         }
     }
 
-    static public function _update(dt:Float32) {
+    static public function _update(dt:Float) {
         for(i in 0..._pressedButtons.length){
             if(_pressedButtons[i]){
                 switch(i){
@@ -151,30 +151,30 @@ class Mouse {
         return false;
     }
 
-    static public function isDown(button:MouseButton, duration:Float32 = -1) : Bool {
+    static public function isDown(button:MouseButton, duration:Float = -1) : Bool {
         if(duration != -1){
             return _downButtons[button] != -1 && _downButtons[button] <= duration;
         }
         return _downButtons[button] != -1;
     }
 
-    inline static public function downDuration(button:MouseButton) : Float32 {
+    inline static public function downDuration(button:MouseButton) : Float {
         return _downButtons[button];
     }
 
-    inline static function get_x():Float32 {
+    inline static function get_x():Float {
         return position.x;
     }
 
-    inline static function set_x(value:Float32):Float32 {
+    inline static function set_x(value:Float):Float {
         return position.x = value;
     }
 
-    inline static function set_y(value:Float32):Float32 {
+    inline static function set_y(value:Float):Float {
         return position.y = value;
     }
 
-    inline static function get_y():Float32 {
+    inline static function get_y():Float {
         return position.y;
     }
 

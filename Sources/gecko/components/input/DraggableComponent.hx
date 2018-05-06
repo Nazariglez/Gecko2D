@@ -24,7 +24,7 @@ class DraggableComponent extends Component {
         dragButton = button;
     }
 
-    public function setBounds(x:Float32, y:Float32, width:Float32, height:Float32) {
+    public function setBounds(x:Float, y:Float, width:Float, height:Float) {
         if(bounds == null){
             bounds = Rect.create(x, y, width, height);
         }else{

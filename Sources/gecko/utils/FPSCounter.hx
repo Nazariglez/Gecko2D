@@ -1,16 +1,16 @@
 package gecko.utils;
 
-import gecko.Float32;
+
 import kha.Scheduler;
 
 class FPSCounter {
-    public var delta:Float32 = 0;
-    public var fps:Float32 = 0;
-    public var ms:Float32 = 0;
-    public var timeToMeasure:Float32 = 1;
+    public var delta:Float = 0;
+    public var fps:Float = 0;
+    public var ms:Float = 0;
+    public var timeToMeasure:Float = 1;
 
-    private var _frames:Float32 = 0;
-    private var _elapsed:Float32 = 0;
+    private var _frames:Float = 0;
+    private var _elapsed:Float = 0;
     private var _last:Float = 0;
 
     public var isFixed(default, null):Bool = false;

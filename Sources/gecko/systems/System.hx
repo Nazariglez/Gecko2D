@@ -50,11 +50,11 @@ class System extends BaseObject {
         onRemovedFromScene = Event.create();
     }
 
-    public function process(delta:Float32){
+    public function process(delta:Float){
         update(delta);
     }
 
-    public function update(delta:Float32){}
+    public function update(delta:Float){}
     public function draw(graphics:Graphics){}
 
     override public function beforeDestroy(){
