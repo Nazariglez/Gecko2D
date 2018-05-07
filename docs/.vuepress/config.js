@@ -28,7 +28,18 @@ module.exports = {
             }
         ],
         sidebar: {
-            "/examples/": require("./examples.json")
+            "/examples/": require("./examples.json"),
+            "/guide/": [
+                {
+                    title: "Guide",
+                    collapsable: false,
+                    children: [
+                        '',
+                        'ecs',
+                        'screen'
+                    ]
+                }
+            ]
         }
     }
 };
