@@ -16,7 +16,7 @@ export const commands:Command[] = [
     version,
     serve,
     watch,
-    docs,
+    //docs,
     dir,
     khafile
 ].map(c => c.cmd).sort((a, b)=>{
