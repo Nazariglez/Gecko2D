@@ -11,6 +11,7 @@ examples/test
 build_templates/docs/**/khafile.js
 build_templates/docs/**/korefile.js
 build_templates/docs/build
+docs/.vuepress/dist
 
 
 !*/.gitkeep
