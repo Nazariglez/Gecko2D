@@ -206,7 +206,7 @@ async function _runKhaMake(config:KhaMakeConfig, cb) {
     }else{
         let txt = `Compiling ${config.engineConfig.name} to ${config.target} using:`;
         for(let flag in config.engineConfig.flags){
-            txt += colors.gray(`\n- ${flag}: ${config.engineConfig.flags[flag]}`);
+            txt += colors.gray(`\n- ${C.FLAG_PREFIX + flag}: ${config.engineConfig.flags[flag]}`);
         }
         console.log(colors.cyan(txt));
     }
