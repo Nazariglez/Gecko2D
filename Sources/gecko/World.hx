@@ -36,6 +36,6 @@ class World {
     }
 
     public function draw(g:Graphics) {
-        currentScene.draw(g);
+        currentScene.processDraw(g);
     }
 }

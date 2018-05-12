@@ -392,10 +392,16 @@ class Scene extends BaseObject {
         return camera;
     }
 
-    public function draw(g:Graphics) {
+    public function processDraw(g:Graphics) {
         _isProcessing = true;
         currentCameraRendering = null;
 
+        draw(g);
+
+        _isProcessing = false;
+    }
+
+    public function draw(g:Graphics) {
         if(cameras.length > 0){
 
             //store the currentBuffer
@@ -442,7 +448,6 @@ class Scene extends BaseObject {
                 }
             }
         }
-        _isProcessing = false;
     }
 
     private function _onEntityAddComponent(entity:Entity, component:Component) {
