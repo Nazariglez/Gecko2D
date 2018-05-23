@@ -1,7 +1,6 @@
 package gecko;
 
 import gecko.math.Point;
-import gecko.math.Vector2;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.DepthStencilFormat;
 import gecko.math.Matrix;
@@ -28,10 +27,10 @@ class Screen {
 
     static public var matrix:Matrix = Matrix.identity();
 
-    static private var _scale:Vector2 = new Vector2(1, 1);
-    static private var _position:Vector2 = new Vector2(0, 0);
-    static private var _size:Vector2 = new Vector2(0, 0);
-    static private var _anchor:Vector2 = new Vector2(0.5, 0.5);
+    static private var _scale:Point = Point.create(1, 1);
+    static private var _position:Point = Point.create(0, 0);
+    static private var _size:Point = Point.create(0, 0);
+    static private var _anchor:Point = Point.create(0.5, 0.5);
 
     static public var windowWidth(default, null):Int = 0;
     static public var windowHeight(default, null):Int = 0;
