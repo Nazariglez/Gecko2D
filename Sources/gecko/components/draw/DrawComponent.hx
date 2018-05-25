@@ -1,5 +1,6 @@
 package gecko.components.draw;
 
+import gecko.render.BlendMode;
 import gecko.resources.Image;
 import gecko.resources.Texture;
 import gecko.Graphics;
@@ -20,6 +21,8 @@ class DrawComponent extends Component implements IDrawable implements IUpdatable
     private var _dirtyAlpha:Bool = true;
 
     public var isVisible(get, null):Bool;
+
+    public var blendMode:BlendMode = BlendMode.Normal;
 
     public function update(dt:Float){}
 

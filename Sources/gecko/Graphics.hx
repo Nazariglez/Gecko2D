@@ -1,5 +1,8 @@
 package gecko;
 
+import kha.Shaders;
+import kha.graphics4.VertexData;
+import kha.graphics4.VertexStructure;
 import gecko.Color;
 
 import gecko.math.Matrix;
@@ -25,7 +28,7 @@ class Graphics {
     public var g4:kha.graphics4.Graphics;
 	private var _g2Cache:kha.graphics2.Graphics;
     private var _g4Cache:kha.graphics4.Graphics;
-	
+
     public var color(get, set):Color;
     private var _color:Color = Color.White;
 
@@ -57,7 +60,28 @@ class Graphics {
 	private var _temp5:Float;
 	private var _temp6:Float;
 
-    public function new(){}
+    public function new(){
+		_blendPipeline = new PipelineState();
+
+		var structure = new VertexStructure();
+		structure.add("vertexPosition", VertexData.Float3);
+		structure.add("texPosition", VertexData.Float2);
+		structure.add("vertexColor", VertexData.Float4);
+
+		_blendPipeline.inputLayout = [structure];
+		_blendPipeline.fragmentShader = Shaders.painter_image_frag;
+		_blendPipeline.vertexShader = Shaders.painter_image_vert;
+
+		/*_blendPipeline.blendSource = mode.source;
+		_blendPipeline.alphaBlendSource = mode.source;
+		_blendPipeline.blendDestination = mode.destination;
+		_blendPipeline.alphaBlendDestination = mode.destination;
+		_blendPipeline.blendOperation = mode.operation;
+		_blendPipeline.alphaBlendOperation = mode.operation;*/
+
+		_applyBlendMode(BlendingFactor.SourceAlpha, BlendingFactor.InverseSourceAlpha);
+		_blendPipeline.compile();
+	}
 
     private static function _pointsToVec2(points:Array<Point>) : Array<Vector2> {
         var vecs:Array<Vector2> = []; //todo pool the array
@@ -121,10 +145,11 @@ class Graphics {
         matrix = Graphics.emptyMatrix;
     }
 
-	public function apply(transform:Matrix, color:Color, alpha:Float){
+	public function apply(transform:Matrix, color:Color, alpha:Float, blend:BlendMode){
 		this.color = color;
 		this.alpha = alpha;
 		this.matrix = transform;
+		this.blendMode = blend;
 	}
 
     public inline function drawLine(x1:Float, y1:Float, x2:Float, y2:Float, ?strength:Float) : Void {
@@ -432,10 +457,35 @@ class Graphics {
 		return _fontSize = value;
 	}
 
+	inline private function _applyBlendMode(src:BlendingFactor, dst:BlendingFactor, ?op:BlendingOperation) {
+		if(op == null)op = BlendingOperation.Add;
+
+		_blendPipeline.blendSource = src;
+		_blendPipeline.alphaBlendSource = src;
+		_blendPipeline.blendDestination = dst;
+		_blendPipeline.alphaBlendDestination = dst;
+		_blendPipeline.blendOperation = op;
+		_blendPipeline.alphaBlendOperation = op;
+	}
+
 	inline function set_blendMode(blend:BlendMode) : BlendMode {
 		if(blend != _blendMode){
 			_blendMode = blend;
-			buffer.g2.pipeline = blend != null ? blend.getPipeline() : null;
+			switch(blend){
+				case None: _applyBlendMode(BlendingFactor.BlendOne, BlendingFactor.BlendZero);
+				case Normal: _applyBlendMode(BlendingFactor.SourceAlpha, BlendingFactor.InverseSourceAlpha);
+				case Add: _applyBlendMode(BlendingFactor.BlendOne, BlendingFactor.BlendOne);
+				case Multiply: _applyBlendMode(BlendingFactor.DestinationColor, BlendingFactor.InverseSourceAlpha);
+				case Screen: _applyBlendMode(BlendingFactor.BlendOne, BlendingFactor.InverseSourceColor);
+				case Erase: _applyBlendMode(BlendingFactor.BlendZero, BlendingFactor.InverseSourceColor);
+				default:
+			}
+
+			if(blend == Normal){
+				buffer.g2.pipeline = null;
+			}else{
+				buffer.g2.pipeline = _blendPipeline;
+			}
 		}
 
 		return _blendMode;

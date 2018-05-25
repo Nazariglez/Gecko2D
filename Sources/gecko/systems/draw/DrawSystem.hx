@@ -47,7 +47,8 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
         }
 
         if(drawComponent.isVisible){
-            g.apply(t.worldMatrix, drawComponent.color, drawComponent.alpha);
+            g.apply(t.worldMatrix, drawComponent.color, drawComponent.alpha, drawComponent.blendMode);
+            //g.buffer.g2.pipeline = drawComponent.pipeline;
 
             drawComponent.preDraw(g);
             drawComponent.draw(g);
@@ -62,7 +63,8 @@ class DrawSystem extends System implements IDrawable implements IUpdatable {
                 }
             }
 
-            g.apply(t.worldMatrix, drawComponent.color, drawComponent.alpha);
+            g.apply(t.worldMatrix, drawComponent.color, drawComponent.alpha, drawComponent.blendMode);
+            //g.buffer.g2.pipeline = drawComponent.pipeline;
             drawComponent.postDraw(g);
         }
     }
