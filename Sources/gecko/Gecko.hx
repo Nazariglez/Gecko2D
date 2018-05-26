@@ -189,7 +189,7 @@ class Gecko {
         options.fps = opts.fps != null ? opts.fps : 60;
         options.useFixedDelta = opts.useFixedDelta != null ? opts.useFixedDelta : true;
 
-        options.screen = opts.screen != null ? opts.screen : {width:opts.width, height:opts.height, mode:ScreenMode.None};
+        options.screen = opts.screen != null ? opts.screen : {width:options.width, height:options.height, mode:ScreenMode.None};
         if(options.screen.mode == null){
             options.screen.mode = ScreenMode.None;
         }
