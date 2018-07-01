@@ -30,7 +30,7 @@ class Assets {
     static private function _parseAssetName(name:String, ext:Bool = false) : String {
         name = ext ? name : Path.withoutExtension(name);
         name = Std.parseInt(name.charAt(0)) != null ? "_" + name : name;
-        return (~/[\/\.-\s]/gi).replace(Path.normalize(name), "_");
+        return new EReg("[\\/\\.\\-\\s]", "gi").replace(Path.normalize(name), "_");
     }
 
     static inline private function _existsAssetsName(name:String, type:String) : Bool {
