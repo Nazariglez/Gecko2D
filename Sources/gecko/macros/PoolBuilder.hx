@@ -39,7 +39,6 @@ class PoolBuilder {
         //todo add a instancePoolId (unique id) to debug?
         var poolFields = (macro class {
             static var __pool__ = new gecko.utils.Pool($p{path}, {amount: $v{amount}/*, args: $v{arguments}*/});
-            static inline public function getPool() return __pool__;
         }).fields;
 
         //add create function
