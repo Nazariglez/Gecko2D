@@ -67,8 +67,8 @@ class Gecko {
             graphics = new Graphics();
         }
 
-        var _width:Int = opts.width;
-        var _height:Int = opts.height;
+        var _width:Int = opts.width <= 0 ? System.windowWidth() : opts.width;
+        var _height:Int = opts.height <= 0 ? System.windowHeight() : opts.height;
 
         #if kha_html5
         if(opts.maximizable){
@@ -149,9 +149,6 @@ class Gecko {
     }
 
     static public function resize(width:Int, height:Int){
-
-        width = width <= 0 ? 800 : width;
-        height = height <= 0 ? 600 : height;
         System.changeResolution(width, height);
 
         #if kha_html5
