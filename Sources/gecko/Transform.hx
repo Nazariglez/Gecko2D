@@ -71,8 +71,8 @@ class Transform {
     public var size(get, null):Point;
     private var _size:Point;
 
-    public var flip(get, null):Vector2g<Bool>;
-    private var _flip:Vector2g<Bool>;
+    public var flip(get, null):Vector2g;
+    private var _flip:Vector2g;
 
     public var rotation(get, set):Float;
     private var _rotation:Float = 0;
@@ -372,7 +372,7 @@ class Transform {
         _dirtyPosition = false;
     }
 
-    private function _vecDirty(vec:Vector2g<Bool>) {
+    private function _vecDirty(vec:Vector2g) {
         _setDirty(true);
         _dirtyPosition = false;
     }
@@ -546,7 +546,7 @@ class Transform {
         return _pivot;
     }
 
-    function get_flip():Vector2g<Bool> {
+    function get_flip():Vector2g {
         if(_dirty)updateTransform();
         return _flip;
     }
